@@ -1,0 +1,15 @@
+{
+  "name": "brumeval-online",
+  "private": true,
+  "type": "module",
+  "description": "Brumeval Online — MMORPG multijoueur navigateur (Three.js + Node.js), modèles 3D générés avec Blender",
+  "workspaces": ["client", "server"],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build -w client",
+    "start": "node server/src/index.js",
+    "assets": "node scripts/build-assets.mjs",
+    "inspect": "node scripts/inspect-glb.mjs",
+    "test": "npm test -w server"
+  }
+}

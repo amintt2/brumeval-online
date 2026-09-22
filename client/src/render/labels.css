@@ -1,0 +1,91 @@
+/* Nameplates and floating combat text (DOM overlay projected from world space). */
+#labels .np {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  font-family: 'Cinzel', 'Trajan Pro', Georgia, 'Times New Roman', serif;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+}
+#labels .np-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 0 3px #000, 0 1px 2px #000, 0 0 1px #000;
+  line-height: 1.15;
+}
+#labels .np-lv {
+  font-size: 11px;
+  opacity: 0.9;
+  margin-right: 4px;
+  font-family: 'Nunito', 'Inter', 'Segoe UI', sans-serif;
+  font-weight: 800;
+}
+#labels .np-hp {
+  width: 64px;
+  height: 6px;
+  margin-top: 2px;
+  background: rgba(10, 8, 6, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(217, 164, 65, 0.35);
+  overflow: hidden;
+  display: none;
+}
+#labels .np-hp > i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(#e8574a, #a8231a);
+  transform-origin: 0 50%;
+  transition: transform 0.18s ease-out;
+}
+#labels .np.friendly .np-hp > i { background: linear-gradient(#6fdc6a, #2d9a2a); }
+#labels .np.show-hp .np-hp { display: block; }
+#labels .np.boss .np-name { font-size: 16px; }
+#labels .np.boss .np-hp { width: 110px; height: 8px; }
+#labels .np.targeted .np-name { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.55); text-underline-offset: 3px; }
+#labels .np-q {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 900;
+  font-size: 30px;
+  line-height: 1;
+  color: #ffd24a;
+  text-shadow: 0 0 6px rgba(255, 190, 40, 0.9), 0 2px 2px #000, 0 0 2px #000;
+  display: none;
+  animation: np-bob 1.4s ease-in-out infinite;
+}
+#labels .np-q.on { display: block; }
+#labels .np-q.grey { color: #bdbdbd; text-shadow: 0 2px 2px #000; }
+@keyframes np-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+#labels .fct {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: 'Nunito', 'Inter', 'Segoe UI', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: #fff;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: transform, opacity;
+  text-shadow: 0 0 3px #000, 0 2px 3px #000, 0 0 1px #000;
+  display: none;
+  z-index: 5000;
+}
+#labels .fct.crit { color: #ffd92e; font-size: 28px; }
+#labels .fct.self { color: #ff4d4d; }
+#labels .fct.heal { color: #5cf26a; }
+#labels .fct.mana { color: #6cb8ff; }
+#labels .fct.info { color: #e8d8b0; font-size: 16px; }
+#labels .fct.xp { color: #c9a0ff; font-size: 17px; }
