@@ -11,7 +11,11 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BLENDER = process.env.BLENDER || (process.platform === 'win32'
   ? String.raw`C:\Program Files\Blender Foundation\Blender 5.0\blender.exe`
   : 'blender');
-const GROUPS = ['characters', 'creatures', 'nature', 'structures', 'icons'];
+// Every folder assets/blender/<group>/ that contains a build.py is a group (icons last: they may reuse models).
+const GROUPS = fs.readdirSync(path.join(ROOT, 'assets', 'blender'), { withFileTypes: true })
+  .filter((d) => d.isDirectory() && fs.existsSync(path.join(ROOT, 'assets', 'blender', d.name, 'build.py')))
+  .map((d) => d.name)
+  .sort((a, b) => (a === 'icons') - (b === 'icons') || a.localeCompare(b));
 
 const argv = process.argv.slice(2);
 const passthrough = [];
