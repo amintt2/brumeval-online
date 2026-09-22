@@ -244,6 +244,7 @@ export function createDialog(wm, { handlers, tooltip, onOpen, onClose }) {
     lastViewKey = key;
   }
   let lastViewKey = '';
+  let lastSelfKey = '';
 
   return {
     win,
@@ -278,7 +279,13 @@ export function createDialog(wm, { handlers, tooltip, onOpen, onClose }) {
     },
     update(s) {
       self = s;
-      if (d && win.isOpen) render();
+      if (!d || !win.isOpen) return;
+      // Only rebuild when something the dialog shows changed (hp/mp regen must not recreate the
+      // buttons under the cursor, or a click spanning the rebuild would be lost).
+      const key = `${s.gold}|${s.level}|${s.cls}|${JSON.stringify(s.quests || {})}`;
+      if (key === lastSelfKey) return;
+      lastSelfKey = key;
+      render();
     },
     close: () => close(false),
   };

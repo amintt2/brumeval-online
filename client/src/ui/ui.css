@@ -417,6 +417,7 @@
 }
 .bv-uf.is-dead .bv-uf-dead { display: grid; }
 .bv-uf.is-dead .bv-icon { filter: grayscale(1) brightness(0.6); }
+.bv-uf-target.is-dead .bv-uf-name { opacity: 0.55; filter: grayscale(0.6); }
 .bv-uf-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3em; }
 .bv-uf-top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5em; min-width: 0; }
 .bv-uf-name {
@@ -649,6 +650,8 @@
 .bv-mm-zone {
   pointer-events: auto;
   max-width: 100%;
+  min-height: 1.55em;
+  line-height: 1.35;
   padding: 0.15em 0.9em;
   font-family: var(--f-title);
   font-weight: 700;
@@ -728,7 +731,7 @@
 .bv-mm-zoom:disabled { opacity: 0.4; cursor: default; }
 .bv-mm-zoom.in { right: 0.05em; }
 .bv-mm-zoom.out { left: 0.05em; }
-.bv-mm-coords { font-size: 0.8em; font-weight: 700; color: var(--text-dim); font-variant-numeric: lining-nums tabular-nums; text-shadow: 0 1px 2px #000; letter-spacing: 0.04em; margin-top: 0.25em; }
+.bv-mm-coords { min-height: 1.3em; font-size: 0.8em; font-weight: 700; color: var(--text-dim); font-variant-numeric: lining-nums tabular-nums; text-shadow: 0 1px 2px #000; letter-spacing: 0.04em; margin-top: 0.25em; }
 .bv-status { display: flex; gap: 0.7em; font-size: 0.8em; font-weight: 700; color: var(--text-dim); text-shadow: 0 1px 2px #000; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
 .bv-status > span:empty { display: none; }
 .bv-st-online::before { content: ''; display: inline-block; width: 0.55em; height: 0.55em; margin-right: 0.35em; border-radius: 50%; background: var(--good); box-shadow: 0 0 5px var(--good); vertical-align: 0.05em; }
@@ -889,7 +892,10 @@
 .bv-chat.open .bv-chat-hint { display: block; }
 
 /* ------------------------------------------------------------------ windows */
-.bv-windows { position: absolute; inset: 0; pointer-events: none; }
+/* layer order (each layer is its own stacking context): hud < windows < fx (toasts, banners, death) < screens < overlay */
+.bv-hud { z-index: 1; }
+.bv-windows { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.bv-fx { z-index: 3; }
 .bv-win {
   pointer-events: auto;
   position: absolute;
@@ -1319,6 +1325,7 @@
   transition: top 0.35s ease;
 }
 .bv-fx.zone-on .bv-toasts { top: 13.8em; }
+.bv-fx.zone-on.lvl-on .bv-toast:nth-child(n + 3) { display: none; }
 .bv-toast {
   display: flex;
   align-items: center;
@@ -1678,6 +1685,17 @@
 @media (max-width: 1180px) {
   .bv-mbtn-l { display: none; }
   .bv-chat { width: 22em; }
+}
+/* narrow windows (e.g. a browser docked beside another app): stack the bottom HUD instead of overlapping —
+   action bar alone on the bottom row, chat (left) and menu + gold (right) above it; target frame under the
+   player frame so it never slides below the minimap */
+@media (max-width: 1000px) {
+  .bv-chat { bottom: 7.6em; width: min(22em, calc(100vw - 15em)); }
+  .bv-menuwrap { bottom: 7.6em; }
+  .bv-unitframes { flex-direction: column; gap: 0.6em; }
+  .bv-win-inventory { bottom: 13.6em; }
+  .bv-win-quests, .bv-win-help { left: 0.5em; width: calc(100vw - 1em); }
+  .bv-help-cols { grid-template-columns: 1fr; }
 }
 @media (max-height: 860px) {
   .bv-login { padding: 0.8em 1em; }

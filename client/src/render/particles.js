@@ -18,24 +18,25 @@ void main() {
 }`;
 
 const fragAdd = /* glsl */ `
+vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
 uniform sampler2D uMap;
 varying vec3 vColor;
 varying float vAlpha;
 void main() {
   float a = texture2D(uMap, gl_PointCoord).a * vAlpha;
   if (a < 0.004) discard;
-  gl_FragColor = vec4(vColor * a, 1.0);
-  #include <colorspace_fragment>
+  gl_FragColor = vec4(toSRGB(vColor) * a, 1.0);
 }`;
 
 const fragNormal = /* glsl */ `
 uniform sampler2D uMap;
+uniform float uLight;
 varying vec3 vColor;
 varying float vAlpha;
 void main() {
   float a = texture2D(uMap, gl_PointCoord).a * vAlpha;
   if (a < 0.004) discard;
-  gl_FragColor = vec4(vColor, a);
+  gl_FragColor = vec4(vColor * uLight, a);
   #include <colorspace_fragment>
 }`;
 
@@ -65,7 +66,7 @@ export class ParticleSystem {
     g.setAttribute('aSize', this.aSize);
     g.setAttribute('aAlpha', this.aAlpha);
     g.setDrawRange(0, 0);
-    this.uniforms = { uScale: { value: 400 }, uMap: { value: texture } };
+    this.uniforms = { uScale: { value: 400 }, uMap: { value: texture }, uLight: { value: 1 } };
     const m = new THREE.ShaderMaterial({
       name,
       uniforms: this.uniforms,

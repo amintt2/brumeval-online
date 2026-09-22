@@ -237,7 +237,15 @@ def bell_sleeve(b, P, side, m, r0=0.052, r1=0.092, ext=0.03, trim=None, n=8):
               trim, f"forearm.{side}")
 
 
-def apron(b, P, rings, m, span=0.95, n=3, bone="thigh"):
-    """Front panel following a skirt (same ring format), split in two halves weighted like the skirt."""
-    verts, idx = _half_rings(rings, n, a0=-math.pi / 2, a1=-math.pi / 2 + span)
+def apron(b, P, rings, m, span=0.95, n=3, bone="thigh", back=False, jag=0.0, seed=1):
+    """Front (or back) panel following a skirt (same ring format), split in two halves weighted like the skirt.
+    jag > 0 roughens the bottom edge (tattered cloth)."""
+    a0, a1 = (-math.pi / 2, -math.pi / 2 + span) if not back else (math.pi / 2 - span, math.pi / 2)
+    verts, idx = _half_rings(rings, n, a0=a0, a1=a1)
+    if jag > 0:
+        import random
+        rnd = random.Random(seed)
+        for i in idx[-1]:
+            x, y, z = verts[i]
+            verts[i] = (x, y, z - rnd.uniform(0.0, jag))
     b.sym((verts, _half_faces(idx)), m, bone)

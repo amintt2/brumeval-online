@@ -29,7 +29,7 @@ const C_WHITE = col('#ffffff'), C_SPARK = col('#ffe7b0'), C_FIRE = col('#ff7a1a'
 const C_SMOKE = col('#3a3530'), C_DUST = col('#9c8a6e'), C_FROST = col('#9fe0ff'), C_FROST2 = col('#e8f8ff');
 const C_GOLD = col('#ffd45a'), C_GOLD2 = col('#fff2b0'), C_HEAL = col('#6dff8a'), C_HEAL2 = col('#d8ffb0');
 const C_BLOOD = col('#ff5040'), C_GEL = col('#6fd35a'), C_BONE = col('#e8e0cc'), C_ROCK = col('#7d7a74');
-const C_RESPAWN = col('#8fd8ff');
+const C_RESPAWN = col('#8fd8ff'), C_MIST = col('#c8d6e4');
 
 const STYLE = { ring: 0, frost: 1, slam: 2, soft: 3, target: 4, fire: 5 };
 
@@ -44,6 +44,7 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 const decalFrag = /* glsl */ `
+vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
 uniform vec3 uColor;
 uniform float uP;
 uniform float uFade;
@@ -76,8 +77,8 @@ void main() {
   }
   float edge = smoothstep(1.0, 0.94, vR);
   float a = (ring * 0.75 + fill * pat) * uFade * edge;
-  gl_FragColor = vec4(uColor * a, 1.0);
-  #include <colorspace_fragment>
+  // additive in display space: intensities read linearly on screen
+  gl_FragColor = vec4(toSRGB(uColor) * a, 1.0);
 }`;
 
 const arcVert = /* glsl */ `
@@ -90,6 +91,7 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 const arcFrag = /* glsl */ `
+vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
 uniform vec3 uColor;
 uniform float uP;
 uniform float uFade;
@@ -101,8 +103,7 @@ void main() {
   float radial = smoothstep(0.0, 0.35, vR) * smoothstep(1.0, 0.75, vR);
   float core = smoothstep(0.45, 0.8, vR) * smoothstep(1.0, 0.85, vR);
   float a = tail * (radial * 0.7 + core * 0.9) * uFade;
-  gl_FragColor = vec4(mix(uColor, vec3(1.0), core * 0.5) * a, 1.0);
-  #include <colorspace_fragment>
+  gl_FragColor = vec4(toSRGB(mix(uColor, vec3(1.0), core * 0.5)) * a, 1.0);
 }`;
 
 const pillarVert = /* glsl */ `
@@ -112,6 +113,7 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 const pillarFrag = /* glsl */ `
+vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
 uniform vec3 uColor;
 uniform float uFade;
 uniform float uTime;
@@ -121,8 +123,7 @@ void main() {
   float stripes = 0.55 + 0.45 * sin(vUv.x * 6.2831853 * 6.0 + v * 9.0 - uTime * 7.0);
   float a = pow(1.0 - v, 1.6) * (0.55 + 0.45 * stripes) * uFade;
   a *= smoothstep(0.0, 0.06, v);
-  gl_FragColor = vec4(mix(uColor, vec3(1.0), (1.0 - v) * 0.35) * a, 1.0);
-  #include <colorspace_fragment>
+  gl_FragColor = vec4(toSRGB(mix(uColor, vec3(1.0), (1.0 - v) * 0.35)) * a, 1.0);
 }`;
 
 function discGeometry(rings = 7, segs = 48) {
@@ -283,7 +284,7 @@ export class Effects {
 
     // slash arcs / whirlwind
     this.slashGeo = arcGeometry(0.55, 1.75, (Math.PI * 2) / 3, 24);
-    this.spinGeo = arcGeometry(0.4, 1.0, Math.PI * 2 * 0.98, 64);
+    this.spinGeo = arcGeometry(0.74, 1.0, Math.PI * 2 * 0.98, 64);
     this.arcs = [];
     for (let i = 0; i < 6; i++) {
       const u = { uColor: { value: new THREE.Color() }, uP: { value: 0 }, uFade: { value: 1 } };
@@ -333,8 +334,8 @@ export class Effects {
     for (const s of this.systems) s.setViewport(heightPx, camera);
   }
 
-  addEmitter(x, y, z, kind) {
-    this.emitters.push({ x, y, z, kind, acc: 0 });
+  addEmitter(x, y, z, kind, r = 0) {
+    this.emitters.push({ x, y, z, kind, r, acc: 0 });
   }
 
   // ---------------------------------------------------------------- helpers
@@ -688,6 +689,7 @@ export class Effects {
     const top = this._v2.set(v.rec.x, v.topY + 0.2, v.rec.z);
     let cls = m.crit ? 'crit' : '';
     if (m.tg === selfId) cls = m.crit ? 'self crit' : 'self';
+    else if (m.src !== selfId) cls = cls ? `${cls} other` : 'other';
     this.ctx.labels.spawnText(m.crit ? `${m.v} !` : String(m.v), top, cls);
     E.flash(m.tg, m.crit ? 1 : 0.7);
     if (!v.rec.dead && m.hp > 0) E.playAnim(m.tg, 'Hit');
@@ -713,7 +715,7 @@ export class Effects {
   heal(m, selfId) {
     const v = this.ctx.entities.get(m.tg);
     if (!v) return;
-    this.ctx.labels.spawnText(`+${m.v}`, this._v2.set(v.rec.x, v.topY + 0.2, v.rec.z), 'heal');
+    this.ctx.labels.spawnText(`+${m.v}`, this._v2.set(v.rec.x, v.topY + 0.2, v.rec.z), m.tg === selfId ? 'heal' : 'heal other');
     v.rec.hp = m.hp;
     v.rec.dirtyLabel = true;
     if (m.tg === selfId) { /* sparkles come with fx HEAL; potions have no fx → small sparkle */ }
@@ -757,6 +759,11 @@ export class Effects {
   }
 
   // ---------------------------------------------------------------- per frame
+  /** Unlit smoke / dust / mist follow the scene brightness (night = darker). */
+  setAmbient(light) {
+    this.smoke.uniforms.uLight.value = light;
+  }
+
   update(dt, time, camera) {
     this.time = time;
     const E = this.ctx.entities;
@@ -838,7 +845,7 @@ export class Effects {
       const v = E.get(a.follow);
       if (v) this._placeArc(a, v);
       a.u.uP.value = a.spin ? 1.0 : Math.min(1.2, easeOut(k) * 1.25);
-      a.u.uFade.value = a.spin ? Math.sin(k * Math.PI) : (k < 0.6 ? 1 : 1 - (k - 0.6) / 0.4);
+      a.u.uFade.value = a.spin ? Math.sin(k * Math.PI) * 0.7 : (k < 0.6 ? 1 : 1 - (k - 0.6) / 0.4);
     }
     // pillars
     for (const p of this.pillars) {
@@ -891,10 +898,20 @@ export class Effects {
     } else if (this.rain.count) {
       this.rain.count = 0;
     }
-    // ambient emitters (campfire embers)
+    // ambient emitters (campfire embers, graveyard mist)
     for (const em of this.emitters) {
       if (!this._near(em, 60)) continue;
       em.acc += dt;
+      if (em.kind === 'mist') {
+        while (em.acc > 0.35) {
+          em.acc -= 0.35;
+          const a = Math.random() * Math.PI * 2, r = Math.random() * (em.r || 14);
+          const x = em.x + Math.cos(a) * r, z = em.z + Math.sin(a) * r;
+          this.smoke.emit(x, terrainHeight(x, z) + 0.25, z, (Math.random() - 0.5) * 0.35, 0.02, (Math.random() - 0.5) * 0.35,
+            C_MIST, 3.5 + Math.random() * 2, 6 + Math.random() * 3, 0, 0, 6.5, 0.22);
+        }
+        continue;
+      }
       while (em.acc > 0.06) {
         em.acc -= 0.06;
         this.glow.emit(em.x + (Math.random() - 0.5) * 0.6, em.y + 0.3, em.z + (Math.random() - 0.5) * 0.6,

@@ -172,6 +172,12 @@ export function createUI(root, handlers = {}) {
   ui.addEventListener('contextmenu', (e) => {
     if (!e.target.closest('input, textarea')) e.preventDefault();
   });
+  // Mouse clicks must not leave focus on a UI button: Space/Enter would otherwise re-trigger it
+  // while the player is playing. Keyboard activations (detail === 0) keep focus for accessibility.
+  ui.addEventListener('click', (e) => {
+    const b = e.target.closest?.('button');
+    if (b && e.detail > 0 && document.activeElement === b) b.blur();
+  });
 
   // ---------------------------------------------------------------- public API (SPEC §5.2)
   const api = {

@@ -5,6 +5,8 @@ import './labels.css';
 import { RENDER } from '../config.js';
 
 const _v = new THREE.Vector3();
+/** Floating combat text farther than this from the camera is not drawn. */
+const TEXT_MAX_DIST = 70;
 
 export class Nameplate {
   constructor(layer) {
@@ -140,12 +142,15 @@ export class LabelLayer {
         continue;
       }
       _v.copy(t.pos).project(camera);
-      if (_v.z > 1) { t.el.style.opacity = '0'; continue; }
+      const d = camPos.distanceTo(t.pos);
+      if (_v.z > 1 || d > TEXT_MAX_DIST) { t.el.style.opacity = '0'; continue; }
+      // shrink with distance (like the nameplates) so far-away fights do not clutter the screen
+      const ds = Math.min(1, Math.max(0.45, 1.2 - d / 45));
       const k = t.age / t.life;
       const ease = 1 - (1 - k) * (1 - k);
-      const x = (_v.x * 0.5 + 0.5) * W + t.dx * ease;
-      const y = (-_v.y * 0.5 + 0.5) * H - t.rise * ease;
-      const pop = t.age < 0.12 ? 1 + (t.big ? 0.8 : 0.45) * (1 - t.age / 0.12) : 1;
+      const x = (_v.x * 0.5 + 0.5) * W + t.dx * ease * ds;
+      const y = (-_v.y * 0.5 + 0.5) * H - t.rise * ease * ds;
+      const pop = (t.age < 0.12 ? 1 + (t.big ? 0.8 : 0.45) * (1 - t.age / 0.12) : 1) * ds;
       t.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) translate(-50%,-50%) scale(${pop.toFixed(2)})`;
       t.el.style.opacity = (k < 0.65 ? 1 : 1 - (k - 0.65) / 0.35).toFixed(2);
     }

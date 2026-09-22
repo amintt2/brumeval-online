@@ -5,8 +5,16 @@ import * as THREE from 'three';
 import { generateWorldObjects, OBJECT_TYPES, WORLD_HALF, terrainHeight } from '@shared/world.js';
 import { RENDER } from '../config.js';
 import { glowTexture } from './textures.js';
+import { patchStaticMaterial } from './seeThrough.js';
 
 const NO_SHADOW = new Set(['flowers']);
+/** Low props never hide the player: no need for line-of-sight dithering on them. */
+const NO_SEE_THROUGH = new Set(['flowers', 'bush', 'crate', 'barrel', 'gravestone', 'fence', 'campfire']);
+/** Wind sway amplitude (metres of sway per metre of height) for vegetation. */
+const WIND = { tree_pine: [0.009, 1.0], tree_oak: [0.008, 1.2], tree_dead: [0.004, 1.2], bush: [0.035, 0.15], flowers: [0.08, 0.04] };
+/** Small props: their batches are hidden when the whole chunk is far from the camera (tiny + fogged anyway). */
+const SMALL = new Set(['flowers', 'bush', 'crate', 'barrel', 'gravestone']);
+const SMALL_DIST = 105;
 const SINK = { rock_a: 0.12, rock_b: 0.15, tree_pine: 0.05, tree_oak: 0.05, tree_dead: 0.05, bush: 0.05, gravestone: 0.04 };
 const GLOW_TYPES = { lamp_post: { color: '#ffc46b', size: 1.7, light: 26, flicker: 0.08 }, campfire: { color: '#ff8a2a', size: 3.0, light: 60, flicker: 0.35 } };
 
@@ -30,14 +38,14 @@ void main() {
   gl_PointSize = min(aSize * fl * uScale / max(0.5, -mv.z), 220.0);
 }`;
 const glowFrag = /* glsl */ `
+vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
 uniform sampler2D uMap;
 varying vec3 vColor;
 varying float vAlpha;
 void main() {
   float a = texture2D(uMap, gl_PointCoord).a * vAlpha;
   if (a < 0.003) discard;
-  gl_FragColor = vec4(vColor * a, 1.0);
-  #include <colorspace_fragment>
+  gl_FragColor = vec4(toSRGB(vColor) * a, 1.0);
 }`;
 
 export class WorldObjects {
@@ -49,7 +57,17 @@ export class WorldObjects {
     this.lampSources = []; // { x, y, z, type, light, flicker }
     this.nightMats = [];   // lantern materials dimmed by day
     this.lights = [];
+    this.small = [];
     this._acc = 1;
+  }
+
+  /** Distance culling of small-prop batches (per chunk). */
+  cullSmall(camPos) {
+    for (const im of this.small) {
+      const s = im.boundingSphere;
+      const d = Math.hypot(s.center.x - camPos.x, s.center.z - camPos.z) - s.radius;
+      im.visible = d < SMALL_DIST;
+    }
   }
 
   build() {
@@ -70,6 +88,7 @@ export class WorldObjects {
     let drawn = 0;
     for (const { type, list } of buckets.values()) {
       const model = this.assets.staticModel(OBJECT_TYPES[type].model);
+      for (const part of model.parts) patchStaticMaterial(part.material, { seeThrough: !NO_SEE_THROUGH.has(type), wind: WIND[type]?.[0] || 0, windBase: WIND[type]?.[1] ?? 0.8 });
       const meshes = model.parts.map((part) => {
         const im = new THREE.InstancedMesh(part.geometry, part.material, list.length);
         im.name = `${type}`;
@@ -102,6 +121,7 @@ export class WorldObjects {
         im.computeBoundingSphere();
         im.computeBoundingBox();
         this.group.add(im);
+        if (SMALL.has(type)) this.small.push(im);
         drawn++;
       }
       if (type === 'lamp_post') {
@@ -163,23 +183,28 @@ export class WorldObjects {
     this.glowUniforms.uScale.value = heightPx / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
   }
 
-  update(dt, time, focus, night) {
+  update(dt, time, focus, night, camPos) {
+    if (camPos) this.cullSmall(camPos);
     this.glowUniforms.uTime.value = time;
     this.glowUniforms.uNight.value = night;
     for (const n of this.nightMats) n.mat.emissiveIntensity = n.base * (0.35 + 0.65 * night);
     this._acc += dt;
     if (this._acc > 0.3) {
       this._acc = 0;
-      // assign lights to the nearest sources
-      const cand = this.lampSources
-        .map((s) => ({ s, d: (s.x - focus.x) ** 2 + (s.z - focus.z) ** 2 }))
-        .filter((c) => c.d < 55 * 55)
-        .sort((a, b) => a.d - b.d);
-      for (let i = 0; i < this.lights.length; i++) {
-        const L = this.lights[i];
-        const c = cand[i];
-        L.userData.src = c ? c.s : null;
-        if (c) L.position.set(c.s.x, c.s.y, c.s.z);
+      // assign lights to the nearest sources (within 55 m), allocation-free selection
+      for (const s of this.lampSources) s._taken = false;
+      for (const L of this.lights) {
+        let best = null, bd = 55 * 55;
+        for (const s of this.lampSources) {
+          if (s._taken) continue;
+          const d = (s.x - focus.x) ** 2 + (s.z - focus.z) ** 2;
+          if (d < bd) { bd = d; best = s; }
+        }
+        L.userData.src = best;
+        if (best) {
+          best._taken = true;
+          L.position.set(best.x, best.y, best.z);
+        }
       }
     }
     for (const L of this.lights) {

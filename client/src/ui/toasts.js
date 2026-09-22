@@ -100,8 +100,12 @@ export function createToasts(parent) {
       lvl.classList.add('show');
       lvShownAt = performance.now();
     }
+    parent.classList.add('lvl-on'); // with the zone banner too, the toast stack is shortened
     clearTimeout(lvTimer);
-    lvTimer = setTimeout(() => lvl.classList.remove('show'), 3800);
+    lvTimer = setTimeout(() => {
+      lvl.classList.remove('show');
+      parent.classList.remove('lvl-on');
+    }, 3800);
   }
 
   return { toast, showZone, showLevel };

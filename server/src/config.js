@@ -6,7 +6,7 @@ import { dirname, resolve } from 'node:path';
 export const ROOT_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 export const MAX_PLAYERS = 100;
-export const SAVE_INTERVAL_MS = 30_000;
+export const SAVE_INTERVAL_MS = 10_000; // dev restarts (node --watch) kill the process without a graceful save
 export const MAX_PAYLOAD = 8 * 1024;           // ws maxPayload (bytes)
 export const MSG_RATE_PER_S = 60;              // more than this per second -> kick
 export const CHAT_RATE = { count: 5, windowMs: 5000 };

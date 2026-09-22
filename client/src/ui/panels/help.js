@@ -7,6 +7,7 @@ const CONTROLS = [
   [['Clic gauche'], 'Sélectionner une cible · parler à un PNJ'],
   [['Clic droit'], 'Attaquer le monstre visé'],
   [['Clic droit'], 'Maintenir et glisser : pivoter la caméra'],
+  [['Clic gauche', 'Clic droit'], 'Maintenir les deux : courir tout droit'],
   [['Molette'], 'Zoomer / dézoomer'],
   [['Tab'], 'Cibler l\'ennemi suivant'],
   [['Échap'], 'Fermer une fenêtre · annuler la cible'],
@@ -20,6 +21,7 @@ const WINDOWS = [
   [['L'], 'Journal de quêtes'],
   [['H'], 'Aide'],
   [['Entrée'], 'Ouvrir la discussion / envoyer'],
+  [['M'], 'Couper / rétablir le son'],
 ];
 const COMMANDS = [
   ['/w nom message', 'Chuchoter à un joueur'],

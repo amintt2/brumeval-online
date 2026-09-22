@@ -85,7 +85,7 @@ export function createActionBar(parent, { handlers, tooltip, isTyping, isActive,
   // keyboard feedback only (core performs the actions for keys 1-6)
   window.addEventListener('keydown', (e) => {
     if (e.repeat || e.ctrlKey || e.altKey || e.metaKey || !isActive() || isTyping()) return;
-    const m = /^(?:Digit|Numpad)([1-6])$/.exec(e.code);
+    const m = e.code ? /^(?:Digit|Numpad)([1-6])$/.exec(e.code) : /^([1-6])$/.exec(e.key || '');
     if (m) flash(Number(m[1]) - 1);
   });
 

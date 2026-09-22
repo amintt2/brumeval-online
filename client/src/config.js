@@ -45,7 +45,7 @@ export const CAMERA = {
 export const RENDER = {
   shadowSize: 2048,
   shadowExtent: 60,
-  chunkSize: 72,
+  chunkSize: 90,
   labelMaxDist: 55,
   lampLights: 3,
   fxLights: 2,

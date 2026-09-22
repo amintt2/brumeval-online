@@ -63,6 +63,22 @@ export class EntityRecord {
     this.st[idx] = t; this.sx[idx] = x; this.sz[idx] = z; this.sry[idx] = ry;
   }
 
+  /**
+   * Interpolate at server time `rt`, then (for other players) low-pass the result: their positions reach the
+   * server at the client's move rate (15 Hz) but are sampled by 10 Hz snapshots, so consecutive snapshots
+   * alternately contain one or two moves — without smoothing the walk would visibly pulse.
+   */
+  interpolateSmooth(rt, dt) {
+    const px = this.x, pz = this.z;
+    this.interpolate(rt);
+    if (this.k !== KIND.PLAYER || dt <= 0) return;
+    const tx = this.x, tz = this.z;
+    if (Math.abs(tx - px) + Math.abs(tz - pz) > 4) return; // teleport / first sample
+    const a = 1 - Math.exp(-dt / 0.13);
+    this.x = px + (tx - px) * a;
+    this.z = pz + (tz - pz) * a;
+  }
+
   /** Interpolate the buffered samples at server time `rt` into this.x/z/ry. */
   interpolate(rt) {
     const n = this.count;

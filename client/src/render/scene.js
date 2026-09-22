@@ -31,12 +31,12 @@ export function createCamera() {
 // ------------------------------------------------------------------ day / night palette
 // Sky / fog colours are "screen" colours (shown untonemapped). Light colours are linear-ish artist values.
 const KEYS = [
-  { t: 0.0, top: '#03060f', hor: '#121a30', fog: '#111829', ground: '#0d1220', sun: '#ffb070', sunI: 0, moonI: 0.75,
-    hemiSky: '#4a5f96', hemiGround: '#1d1f2a', hemiI: 0.75, dens: 0.0078, stars: 1, night: 1, cover: 0.62, cloudLit: '#2a3450', cloudDark: '#0e1322' },
-  { t: 0.19, top: '#070d22', hor: '#1d2440', fog: '#1a2136', ground: '#131a2c', sun: '#ff9a60', sunI: 0, moonI: 0.6,
-    hemiSky: '#4d5a8c', hemiGround: '#1f2029', hemiI: 0.72, dens: 0.0078, stars: 0.9, night: 1, cover: 0.6, cloudLit: '#343c5c', cloudDark: '#141a2c' },
+  { t: 0.0, top: '#03060f', hor: '#121a30', fog: '#111829', ground: '#0d1220', sun: '#ffb070', sunI: 0, moonI: 0.95,
+    hemiSky: '#5a70aa', hemiGround: '#23263a', hemiI: 1.05, dens: 0.0078, stars: 1, night: 1, cover: 0.62, cloudLit: '#2a3450', cloudDark: '#0e1322' },
+  { t: 0.19, top: '#070d22', hor: '#1d2440', fog: '#1a2136', ground: '#131a2c', sun: '#ff9a60', sunI: 0, moonI: 0.8,
+    hemiSky: '#5a68a0', hemiGround: '#23253a', hemiI: 0.98, dens: 0.0078, stars: 0.9, night: 1, cover: 0.6, cloudLit: '#343c5c', cloudDark: '#141a2c' },
   { t: 0.235, top: '#1e3160', hor: '#c9807a', fog: '#8a6f78', ground: '#4a3f4c', sun: '#ff8a4c', sunI: 0.6, moonI: 0.2,
-    hemiSky: '#7a82b0', hemiGround: '#3a2f30', hemiI: 0.72, dens: 0.0068, stars: 0.35, night: 0.8, cover: 0.56, cloudLit: '#ffb08a', cloudDark: '#6a5570' },
+    hemiSky: '#8088b4', hemiGround: '#3e3234', hemiI: 0.9, dens: 0.0068, stars: 0.35, night: 0.8, cover: 0.56, cloudLit: '#ffb08a', cloudDark: '#6a5570' },
   { t: 0.27, top: '#3d6cb0', hor: '#f3b98a', fog: '#d9b49a', ground: '#8a7a70', sun: '#ffb778', sunI: 1.9, moonI: 0,
     hemiSky: '#a9bde0', hemiGround: '#5a4a3c', hemiI: 0.85, dens: 0.0062, stars: 0, night: 0.35, cover: 0.54, cloudLit: '#ffe2c8', cloudDark: '#b09098' },
   { t: 0.33, top: '#3f7fd2', hor: '#bfdaf0', fog: '#b7d0e2', ground: '#9aaab4', sun: '#ffe7c4', sunI: 2.8, moonI: 0,
@@ -48,9 +48,9 @@ const KEYS = [
   { t: 0.73, top: '#34508e', hor: '#f4a46c', fog: '#d49a7c', ground: '#86706a', sun: '#ff9c58', sunI: 1.8, moonI: 0,
     hemiSky: '#a39ec0', hemiGround: '#5a4232', hemiI: 0.85, dens: 0.0062, stars: 0, night: 0.35, cover: 0.55, cloudLit: '#ffc49a', cloudDark: '#8a6a78' },
   { t: 0.765, top: '#1b2654', hor: '#b86a62', fog: '#6e5262', ground: '#3e3242', sun: '#ff7040', sunI: 0.5, moonI: 0.15,
-    hemiSky: '#6c6c9c', hemiGround: '#33272a', hemiI: 0.72, dens: 0.0068, stars: 0.35, night: 0.8, cover: 0.58, cloudLit: '#d07a6a', cloudDark: '#3a3048' },
-  { t: 0.81, top: '#060b1e', hor: '#1c2240', fog: '#191f36', ground: '#121829', sun: '#ff9a60', sunI: 0, moonI: 0.6,
-    hemiSky: '#4d5a8c', hemiGround: '#1f2029', hemiI: 0.72, dens: 0.0078, stars: 0.9, night: 1, cover: 0.6, cloudLit: '#343c5c', cloudDark: '#141a2c' },
+    hemiSky: '#7474a4', hemiGround: '#382c30', hemiI: 0.9, dens: 0.0068, stars: 0.35, night: 0.8, cover: 0.58, cloudLit: '#d07a6a', cloudDark: '#3a3048' },
+  { t: 0.81, top: '#060b1e', hor: '#1c2240', fog: '#191f36', ground: '#121829', sun: '#ff9a60', sunI: 0, moonI: 0.8,
+    hemiSky: '#5a68a0', hemiGround: '#23253a', hemiI: 0.98, dens: 0.0078, stars: 0.9, night: 1, cover: 0.6, cloudLit: '#343c5c', cloudDark: '#141a2c' },
 ];
 const COLOR_FIELDS = ['top', 'hor', 'fog', 'ground', 'sun', 'hemiSky', 'hemiGround', 'cloudLit', 'cloudDark'];
 const NUM_FIELDS = ['sunI', 'moonI', 'hemiI', 'dens', 'stars', 'night', 'cover'];

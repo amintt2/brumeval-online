@@ -16,8 +16,6 @@ import os
 import bpy
 from mathutils import Euler, Matrix, Quaternion, Vector
 
-import geo as G
-
 TAU = math.tau
 
 ORDER = ["root", "hips", "spine", "chest", "neck", "head",
@@ -165,13 +163,6 @@ def over(base, changes):
         else:
             out[k] = dict(e)
     return out
-
-
-def pivot(r, c):
-    """Root entry rotating by euler `r` around world point `c` (instead of the feet)."""
-    q = eq(r)
-    c = Vector(c)
-    return {"r": tuple(r), "t": tuple(c - q @ c)}
 
 
 EASE = {
@@ -444,7 +435,7 @@ def gait_spec(P, p, g, st):
             f = -S / 2 + S * _smooth(s)
             u = g["lift"] * math.sin(math.pi * min(1.0, s * 1.12))
             pitch = -g["toeoff"] + (g["toeoff"] + g["strike"]) * _smooth(s)
-        heel = foot_len * math.sin(math.radians(max(0.0, -pitch))) * 0.9
+        heel = foot_len * 1.22 * math.sin(math.radians(max(0.0, -pitch))) + 0.075 * math.sin(math.radians(max(0.0, pitch)))
         an = P.head[f"foot.{side}"]
         spec["IK"][f"leg.{side}"] = {"t": (sg * abs(an.x) * g["width"], -f, an.z + u + heel), "pole": (sg * 0.1, -1, 0)}
         spec[f"foot.{side}"] = {"a": (-pitch, 0, sg * g["toe_out"])}
@@ -477,9 +468,9 @@ def hit_keys(base, strength=1.0, frames=8):
     return [(0, base), (3, hit, "out"), (frames, base, "smooth")]
 
 
-def death_keys(P, body, base, fall="back", turn=12.0, exclude=None, arms=None, frames=29):
-    """Stagger, knees buckle, fall flat (backwards or face down) and settle; the final pose is lifted so the
-    lowest body vertex rests on the ground (z = 0)."""
+def death_keys(P, body, base, fall="back", turn=12.0, exclude=None, arms=None, fall_arms=None, frames=29):
+    """Stagger, knees buckle, fall flat (backwards or face down) and settle. The mid-fall and final poses are
+    lifted/lowered so the lowest body vertex (props in `exclude` ignored) touches the ground (z = 0)."""
     back = fall == "back"
     sgn = -1 if back else 1
     arms = arms or {}
@@ -489,34 +480,45 @@ def death_keys(P, body, base, fall="back", turn=12.0, exclude=None, arms=None, f
         "upper_arm.L": arm_r("L", 30, 40), "upper_arm.R": arm_r("R", 30, 40),
         "forearm.L": (-30, 0, 0), "forearm.R": (-30, 0, 0),
     })
-    legs_bent = {"thigh.L": (-35, 0, 0), "shin.L": (60, 0, 0), "thigh.R": (-25, 0, 0), "shin.R": (45, 0, 0),
-                 "foot.L": (-20, 0, 0), "foot.R": (-15, 0, 0), "IK": {"leg.L": None, "leg.R": None}}
+    if back:  # knees buckle while the body tips backwards
+        legs_bent = {"thigh.L": (-35, 0, 0), "shin.L": (60, 0, 0), "thigh.R": (-25, 0, 0), "shin.R": (45, 0, 0),
+                     "foot.L": (-20, 0, 0), "foot.R": (-15, 0, 0), "IK": {"leg.L": None, "leg.R": None}}
+    else:  # collapse onto the knees, then topple forwards
+        legs_bent = {"thigh.L": (-55, -4, 0), "shin.L": (95, 0, 0), "thigh.R": (-48, 4, 0), "shin.R": (88, 0, 0),
+                     "foot.L": (35, 0, 0), "foot.R": (35, 0, 0), "IK": {"leg.L": None, "leg.R": None}}
     falling = over(reel, dict(legs_bent, **{
-        "root": {"r": (sgn * 50, 0, turn), "t": (0, 0, -0.02)},
-        "hips": {"t": (0, 0, -0.12)},
-        "upper_arm.L": arm_r("L", 70 if back else 110, 55), "upper_arm.R": arm_r("R", 60 if back else 110, 55),
+        "root": {"r": (sgn * (50 if back else 38), 0, turn * 0.6)},
+        "hips": {"t": (0, 0, -0.06)},
+        "upper_arm.L": arm_r("L", 70 if back else 80, 55), "upper_arm.R": arm_r("R", 60 if back else 80, 55),
     }))
-    final_arms = {
-        "upper_arm.L": arm_r("L", 15 if back else 150, 70, 0), "upper_arm.R": arm_r("R", 5 if back else 150, 62, 0),
+    if fall_arms:
+        falling = over(falling, fall_arms)
+    falling["root"]["t"] = (0, 0, -P.min_z(body, falling, exclude))
+    # knees giving way (between the stagger and the fall), also kept on the ground
+    half = {k: (tuple(0.5 * a for a in v) if isinstance(v, tuple) else v) for k, v in legs_bent.items()}
+    buckle = over(reel, dict(half, **{"root": {"r": (sgn * (14 if back else 10), 0, turn * 0.3)},
+                                      "hips": {"t": (0, 0.03 if back else -0.03, -0.04)}}))
+    buckle["root"]["t"] = (0, 0, -P.min_z(body, buckle, exclude))
+    lie_d = {
+        "upper_arm.L": arm_r("L", 15 if back else 178, 70, 0), "upper_arm.R": arm_r("R", 5 if back else 176, 62, 0),
         "forearm.L": (-25, 0, 0), "forearm.R": (-35, 0, 0), "hand.L": (0, 0, 0), "hand.R": (0, 0, 0),
-    }
-    final_arms.update(arms)
-    lie = over(base, dict(final_arms, **{
         "root": {"r": (sgn * 90, 0, turn)},
         "hips": {"t": (0, 0, 0)},
         "spine": (2 * sgn, 0, 0), "chest": (3 * sgn, 0, 4), "neck": (0, 0, 0),
         "head": (-10 if back else 8, 0, 35 if back else 70),
-        "thigh.L": (-10 if back else 3, -8, 0), "shin.L": (14 if back else 5, 0, 0),
-        "thigh.R": (-4 if back else 1, 6, 0), "shin.R": (6 if back else 8, 0, 0),
-        "foot.L": (-25 if back else 55, 0, 0), "foot.R": (-20 if back else 50, 0, 0),
+        "thigh.L": (-10 if back else -2, -8, 0), "shin.L": (14 if back else 6, 0, 0),
+        "thigh.R": (-4 if back else -3, 6, 0), "shin.R": (6 if back else 9, 0, 0),
+        "foot.L": (-25 if back else 82, 0, 0), "foot.R": (-20 if back else 78, 0, 0),
         "IK": {"leg.L": None, "leg.R": None, "arm.L": None, "arm.R": None},
-    }))
+    }
+    lie_d.update(arms)  # caller overrides (arms, head, ...) win
+    lie = over(base, lie_d)
     # lift so the lowest body vertex touches the ground
     lift = -P.min_z(body, lie, exclude)
     lie["root"]["t"] = (0, 0, lift + 0.004)
-    bounce = plus(lie, {"root": {"t": (0, 0, 0.035)}, "chest": (-4 * sgn * -1, 0, 0), "head": (8 * (1 if back else -1), 0, 0),
-                        "upper_arm.L": arm_r("L", 8, 8), "upper_arm.R": arm_r("R", 8, 8)})
-    return [(0, base), (5, reel, "out"), (14, falling, "in"), (20, lie, "in"), (24, bounce, "out"), (frames, lie, "smooth")]
+    bounce = plus(lie, {"root": {"t": (0, 0, 0.035)}, "chest": (4 * sgn, 0, 0), "head": (8 * (1 if back else -1), 0, 0)})
+    return [(0, base), (5, reel, "out"), (10, buckle, "smooth"), (15, falling, "in"), (20, lie, "in"), (24, bounce, "out"),
+            (frames, lie, "smooth")]
 
 
 # --------------------------------------------------------------------------- rendering
@@ -643,7 +645,8 @@ def render_sheet(path, rig, body, entries, cell=260, yaw=35, pitch=14, labels=Tr
     me = bpy.data.meshes.new("_Ground")
     n = len(entries)
     x0, x1 = -1.5, (n - 1) * spacing + 1.5
-    corners = [right * x0 + Vector((0, -3, 0)), right * x1 + Vector((0, -3, 0)), right * x1 + Vector((0, 3, 0)) , right * x0 + Vector((0, 3, 0))]
+    perp = Vector((-right.y, right.x, 0.0))
+    corners = [right * x0 - perp * 3, right * x1 - perp * 3, right * x1 + perp * 3, right * x0 + perp * 3]
     me.from_pydata([tuple(c) for c in corners], [], [(0, 1, 2, 3)])
     me.materials.append(gm)
     ground = bpy.data.objects.new("_Ground", me)
@@ -678,15 +681,14 @@ def render_ui(path, rig, body, action, frame, size, mode="full", yaw=32, pitch=6
     d, right, up = _cam_basis(yaw, pitch)
     pts = _eval_points([body])
     if mode == "portrait":
+        # consistent head & shoulders framing from the head bone (hat tips may be cropped)
         pb = rig.pose.bones["head"]
         hh = rig.matrix_world @ pb.head
         ht = rig.matrix_world @ pb.tail
-        chest = rig.matrix_world @ rig.pose.bones["chest"].head
-        top = max(p.z for p in pts if (p - hh).length < 0.6)
-        zc = (top + chest.z) / 2 + 0.02
-        centre = Vector((hh.x, hh.y - 0.02, zc + 0.01))
-        ext = (top - chest.z) * 1.14
-        pts = [p for p in pts if abs(p.z - zc) < ext]
+        hl = (ht - hh).length
+        face = hh.lerp(ht, 0.45)
+        centre = Vector((face.x, face.y - 0.03, face.z - 0.2 * hl))
+        ext = 2.15 * hl
     else:
         xs = [p.dot(right) for p in pts]
         ys = [p.dot(up) for p in pts]

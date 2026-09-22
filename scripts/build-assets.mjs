@@ -5,10 +5,11 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BLENDER = process.env.BLENDER || (process.platform === 'win32'
-  ? 'C:\Program Files\Blender Foundation\Blender 5.0\blender.exe'
+  ? String.raw`C:\Program Files\Blender Foundation\Blender 5.0\blender.exe`
   : 'blender');
 const GROUPS = ['characters', 'creatures', 'nature', 'structures', 'icons'];
 
@@ -28,7 +29,8 @@ for (const g of groups.length ? groups : GROUPS) {
   console.log(`\n=== ${g} ===`);
   const t = Date.now();
   const r = spawnSync(BLENDER, ['--background', '--factory-startup', '--python-exit-code', '1', '--python', script, '--', ...passthrough], { stdio: 'inherit' });
-  if (r.status !== 0) { failed++; console.error(`✗ ${g} failed (exit ${r.status})`); }
+  if (r.error) { failed++; console.error(`✗ ${g} failed: ${r.error.message} (Blender: ${BLENDER}; set the BLENDER env var)`); }
+  else if (r.status !== 0) { failed++; console.error(`✗ ${g} failed (exit ${r.status})`); }
   else console.log(`✓ ${g} (${((Date.now() - t) / 1000).toFixed(1)} s)`);
 }
 process.exit(failed ? 1 : 0);

@@ -108,7 +108,7 @@ def warrior():
         dirv = Vector((0, math.sin(a) * hr[1], math.cos(a) * hr[2]))
         crest.append(hc + dirv + dirv.normalized() * hgt * 0.55)
         rads.append((0.014, hgt))
-    b.add(G.sweep(crest, rads, n=6, normal=(1, 0, 0)), red, "head")
+    b.add(G.sweep(crest, rads, n=6, normal=(1, 0, 0)), red, "head", ground=False)
 
     # ---- sword (right hand)
     M = PT.grip_matrix(P, "R", tilt=12)
@@ -125,9 +125,9 @@ def warrior():
     fa0, fa1 = P.head["forearm.L"], P.tail["forearm.L"]
     sc = fa0.lerp(fa1, 0.5) + Vector((0.085, 0.0, 0.0))
     Ms = G.T(sc) @ G.R(0, 90, 0)
-    b.add(G.loft([(0, 0, -0.03, 0.27, 0.27), (0, 0, 0.0, 0.29, 0.29), (0, 0, 0.018, 0.27, 0.27)], 14), wood, "forearm.L", M=Ms)
-    b.add(G.loft([(0, 0, 0.012, 0.25, 0.25), (0, 0, 0.03, 0.215, 0.215)], 14), red, "forearm.L", M=Ms)
-    b.add(G.ring_band((0, 0, 0.012), 0.255, 0.3, 0.045, 14), steel, "forearm.L", M=Ms)
+    b.add(G.loft([(0, 0, -0.03, 0.27, 0.27), (0, 0, 0.0, 0.29, 0.29), (0, 0, 0.018, 0.27, 0.27)], 12), wood, "forearm.L", M=Ms)
+    b.add(G.loft([(0, 0, 0.012, 0.25, 0.25), (0, 0, 0.03, 0.215, 0.215)], 12), red, "forearm.L", M=Ms)
+    b.add(G.ring_band((0, 0, 0.012), 0.255, 0.3, 0.045, 12), steel, "forearm.L", M=Ms)
     b.add(G.ellipsoid((0, 0, 0.03), (0.075, 0.075, 0.05), 10, 5, phi0=math.pi / 2), steel, "forearm.L", M=Ms)
     b.add(G.box((0, 0, 0.033), 0.022, 0.215, 0.008), gold, "forearm.L", M=Ms)
     b.add(G.box((0, 0, 0.033), 0.215, 0.022, 0.008), gold, "forearm.L", M=Ms)
@@ -168,8 +168,8 @@ def warrior():
     P.key_poses("Cast", [(0, base), (7, raise_, "out"), (13, roar, "smooth"), (19, base, "smooth")])
     P.key_poses("Hit", H.hit_keys(base))
     P.key_poses("Death", H.death_keys(P, body, base, "back", turn=10, arms={
-        "upper_arm.L": arm_r("L", 8, 28, -85), "forearm.L": (-8, 0, 0),
-        "upper_arm.R": arm_r("R", 8, 66, 0), "forearm.R": (-6, 0, 0), "hand.R": H.side_r("R", (78, 0, 0))}))
+        "upper_arm.L": arm_r("L", 8, 28, 0), "forearm.L": (-8, 0, -85),
+        "upper_arm.R": arm_r("R", 8, 66, 0), "forearm.R": (-6, 0, 90), "hand.R": (0, 0, 0)}))
     return rig, body, P
 
 
@@ -223,9 +223,9 @@ def mage():
         yy = -0.128 if bone != "chest" else -0.13
         b.add(G.box((0, yy, (z0 + z1) / 2), 0.016, 0.008, (z1 - z0) / 2), gold, bone)
     # mantle (shoulder cape) + gold edge + collar
-    b.add(G.loft([(0, 0.012, zn + 0.07, 0.095, 0.088), (0, 0.012, zn - 0.02, 0.252, 0.168), (0, 0.014, zn - 0.13, 0.292, 0.196)],
+    b.add(G.loft([(0, 0.012, zn + 0.07, 0.095, 0.088), (0, 0.012, zn - 0.02, 0.262, 0.172), (0, 0.014, zn - 0.13, 0.298, 0.2)],
                  12, cap0=False, cap1=False), purple, "chest")
-    b.add(G.loft([(0, 0.014, zn - 0.145, 0.298, 0.202), (0, 0.014, zn - 0.12, 0.294, 0.199)], 12, cap0=False, cap1=False),
+    b.add(G.loft([(0, 0.014, zn - 0.145, 0.305, 0.207), (0, 0.014, zn - 0.12, 0.301, 0.204)], 12, cap0=False, cap1=False),
           gold, "chest")
     b.add(G.loft([(0, 0.01, zn + 0.05, 0.1, 0.092), (0, 0.01, zn + 0.1, 0.085, 0.08)], 10, cap0=False, cap1=False), purple, "chest")
     b.add(G.ellipsoid((0, -0.1, zn + 0.02), (0.03, 0.014, 0.03), 6, 4), gem, "chest")
@@ -233,7 +233,7 @@ def mage():
     # ---- arms: sleeves, bell cuffs, hands
     for s in "LR":
         PT.limb(b, P, f"upper_arm.{s}", [0.056, 0.053, 0.05], blue, ext1=0.02)
-        PT.ball(b, P, f"upper_arm.{s}", 0.0, 0.054, blue, rings=4)
+        PT.ball(b, P, f"upper_arm.{s}", 0.0, 0.046, blue, rings=4)
         PT.bell_sleeve(b, P, s, blue, r0=0.052, r1=0.09, ext=0.02, trim=gold)
         PT.fist(b, P, s, skin, size=0.95)
     # ---- head: young face, long auburn hair
@@ -267,8 +267,8 @@ def mage():
     top = fp.z + 0.78
     ax = Vector((fp.x, fp.y, 0))
     staff = [
-        (G.tube(ax + Vector((0, 0, 0.05)), ax + Vector((0, 0, top)), 0.019, 0.021, n=6), wood),
-        (G.tube(ax + Vector((0, 0, 0.03)), ax + Vector((0, 0, 0.07)), 0.022, 0.024, n=6), gold),
+        (G.tube(ax + Vector((0, 0, 0.2)), ax + Vector((0, 0, top)), 0.019, 0.021, n=6), wood),
+        (G.tube(ax + Vector((0, 0, 0.18)), ax + Vector((0, 0, 0.22)), 0.022, 0.024, n=6), gold),
         (G.tube(ax + Vector((0, 0, top - 0.03)), ax + Vector((0, 0, top + 0.01)), 0.027, 0.027, n=6), gold),
         (G.tube(ax + Vector((0, 0, fp.z + 0.06)), ax + Vector((0, 0, fp.z + 0.1)), 0.024, 0.024, n=6), leather),
         (G.ellipsoid(ax + Vector((0, 0, top + 0.12)), (0.042, 0.042, 0.068), 4, 2), gem),
@@ -317,7 +317,8 @@ def mage():
     P.key_poses("Cast", [(0, base), (7, gather, "out"), (11, release, "in"), (14, hold, "smooth"), (19, base, "smooth")])
     P.key_poses("Hit", H.hit_keys(base))
     P.key_poses("Death", H.death_keys(P, body, base, "back", turn=-12, exclude=b.no_ground, arms={
-        "upper_arm.R": arm_r("R", 70, 50, 0), "forearm.R": (-20, 0, 0), "hand.R": (0, 0, 0)}))
+        "upper_arm.R": arm_r("R", 70, 50, 0), "forearm.R": (-20, 0, 0), "hand.R": (0, 0, 0),
+        "neck": (14, 0, 0), "head": (24, 0, 30)}))
     return rig, body, P
 
 
@@ -497,6 +498,8 @@ def ranger():
                          (19, base, "smooth")])
     P.key_poses("Hit", H.hit_keys(base))
     P.key_poses("Death", H.death_keys(P, body, base, "fwd", turn=14, exclude=b.no_ground, arms={
-        "upper_arm.L": arm_r("L", 150, 40, 90), "forearm.L": (-20, 0, 0), "hand.L": (0, 0, 0),
-        "upper_arm.R": arm_r("R", 20, 30, 0), "forearm.R": (-40, 0, 0)}))
+        "upper_arm.L": arm_r("L", 178, 40, 0), "forearm.L": (-8, 0, 90), "hand.L": (0, 0, 0),
+        "upper_arm.R": arm_r("R", -6, 28, 0), "forearm.R": (4, 0, 0), "hand.R": (0, 0, 0)},
+        fall_arms={"upper_arm.L": arm_r("L", 60, 55, 0), "forearm.L": (-20, 0, 90),
+                   "upper_arm.R": arm_r("R", 10, 65, 0), "forearm.R": (-5, 0, 0)}))
     return rig, body, P

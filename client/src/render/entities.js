@@ -194,6 +194,7 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 const ringFrag = /* glsl */ `
+vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
 uniform vec3 uColor;
 uniform float uTime;
 uniform float uOpacity;
@@ -203,8 +204,7 @@ void main() {
   float edge = smoothstep(0.0, 0.25, vR) * smoothstep(1.0, 0.7, vR);
   float dash = 0.65 + 0.35 * smoothstep(0.3, 0.7, abs(fract(vU * 12.0 - uTime * 0.6) - 0.5) * 2.0);
   float a = edge * dash * uOpacity;
-  gl_FragColor = vec4(uColor * (1.2 + vR * 0.4), a);
-  #include <colorspace_fragment>
+  gl_FragColor = vec4(toSRGB(uColor) * (0.9 + vR * 0.3) * a, 1.0);
 }`;
 
 export class SelectionRing {
@@ -380,7 +380,7 @@ export class EntityRenderer {
       let v = rec.view;
       if (!v || rec.dirtyModel) v = this.ensure(rec);
       if (!v) continue;
-      if (!rec.isSelf) rec.interpolate(rt);
+      if (!rec.isSelf) rec.interpolateSmooth(rt, dt);
       v.update(dt, now, camPos);
       if (rec.dirtyLabel) v.refreshLabel(this._selfLevel, rec.id === this.targetId);
     }

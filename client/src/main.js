@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createUI } from './ui/index.js';
 import { C2S, S2C, FX, KIND, CHAT_MAX_LEN } from '@shared/protocol.js';
-import { terrainHeight, regionAt, generateWorldObjects } from '@shared/world.js';
+import { terrainHeight, regionAt, generateWorldObjects, REGIONS } from '@shared/world.js';
 import { CollisionWorld } from '@shared/collision.js';
 import { URLP, AUTOLOGIN_PASSWORD } from './config.js';
 import { Connection } from './net.js';
@@ -14,6 +14,7 @@ import { WorldObjects } from './render/worldObjects.js';
 import { EntityRenderer } from './render/entities.js';
 import { Effects } from './render/effects.js';
 import { LabelLayer } from './render/labels.js';
+import { updateSeeThrough } from './render/seeThrough.js';
 import { Audio } from './audio.js';
 import { Input } from './game/input.js';
 import { OrbitCamera } from './game/camera.js';
@@ -266,6 +267,10 @@ function enterGame(m) {
   if (m.motd) ui.addChat({ ch: 'system', text: m.motd });
   lastZone = null;
   input.reset();
+  // the login form's input may still own the keyboard focus: give it back to the game
+  const a = document.activeElement;
+  if (a && a !== document.body && a !== canvas && typeof a.blur === 'function') a.blur();
+  canvas.focus({ preventScroll: true });
 }
 
 function leaveGame() {
@@ -403,6 +408,9 @@ async function boot() {
     },
   });
   for (const s of world.lampSources) if (s.type === 'campfire') effects.addEmitter(s.x, s.y - 0.5, s.z, 'fire');
+  // low mist drifting between the graves
+  const grave = REGIONS.find((r) => r.id === 'graveyard');
+  if (grave) effects.addEmitter(grave.x, 0, grave.z, 'mist', grave.r * 0.6);
   audio.listener = () => (state.inGame ? player : camera.position);
 
   input = new Input(canvas, {
@@ -455,6 +463,14 @@ async function boot() {
     fake = new FakeServer({ cls: URLP.cls, name: URLP.name || 'Voyageur', tod: URLP.tod });
     window.__game.offline = fake;
     ui.showLogin(false);
+    // Offline mode never reaches the server: make it impossible to mistake for the real game.
+    const banner = document.createElement('a');
+    banner.href = location.pathname;
+    banner.textContent = 'MODE HORS LIGNE — progression non sauvegardée · cliquer pour jouer en ligne';
+    banner.style.cssText = 'position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:auto;'
+      + 'padding:4px 14px;border-radius:0 0 8px 8px;background:#8b1d1d;color:#fff;font:600 13px system-ui,sans-serif;'
+      + 'text-decoration:none;box-shadow:0 2px 8px #0008';
+    document.body.appendChild(banner);
     conn.connectFake(fake);
   } else {
     ui.showLogin(true);
@@ -485,11 +501,17 @@ const focus = new THREE.Vector3();
 let fpsFrames = 0, fpsAcc = 0, slowAcc = 0;
 let miniAcc = 0, statusAcc = 0, pingAcc = 1.5, zoneAcc = 0;
 
+let simTime = 0;
+
 function frame(ts) {
   timer.update(ts);
-  const dt = Math.min(timer.getDelta(), 0.1);
-  const time = timer.getElapsed();
-  const now = performance.now();
+  step(Math.min(timer.getDelta(), 0.1), performance.now());
+}
+
+/** One simulation + render step (also driven manually by __game.advance() for headless debugging). */
+function step(dt, now) {
+  simTime += dt;
+  const time = simTime;
 
   // fps + adaptive resolution
   fpsFrames++;
@@ -518,17 +540,20 @@ function frame(ts) {
     if (rec) { rec.x = player.x; rec.z = player.z; rec.ry = player.ry; }
     focus.set(player.x, terrainHeight(player.x, player.z), player.z);
     orbit.update(dt, focus);
+    updateSeeThrough(camera.position, orbit.focus, orbit.curDist > 2.6 ? 1.45 : 0, time);
   } else {
     orbit.attract(dt);
     focus.set(0, 1.2, 0);
+    updateSeeThrough(camera.position, orbit.lookAt, 0, time);
   }
 
   entities.update(dt, now, camera, time);
   if (state.inGame) targeting.syncUi();
   effects.update(dt, time, camera);
   env.update(state.tod, focus, camera, time);
+  effects.setAmbient(1 - env.night * 0.72);
   water.update(time, env);
-  world.update(dt, time, focus, env.night);
+  world.update(dt, time, focus, env.night, camera.position);
   renderer.render(scene, camera);
   labels.update(camera, dt);
 
@@ -562,6 +587,22 @@ function pushMinimap() {
   ui.updateMinimap({ x: player.x, z: player.z, ry: player.ry, ents });
 }
 
+/**
+ * Wait about `ms` (debug helpers only). Hidden tabs throttle chained setTimeout to ~1 Hz after a few minutes,
+ * so there the wait yields through MessageChannel, which is never throttled.
+ */
+function debugPause(ms) {
+  return new Promise((resolve) => {
+    if (!document.hidden) { setTimeout(resolve, ms); return; }
+    const end = performance.now() + ms;
+    const ch = new MessageChannel();
+    ch.port1.onmessage = () => {
+      if (performance.now() >= end) { ch.port1.close(); resolve(); } else ch.port2.postMessage(0);
+    };
+    ch.port2.postMessage(0);
+  });
+}
+
 function exposeDebug() {
   window.__game = {
     state, scene, camera, renderer, entities, effects, labels, env, world, assets, player, orbit, targeting, ui, net: conn,
@@ -569,8 +610,38 @@ function exposeDebug() {
     get fps() { return fps; },
     get ping() { return ping; },
     send,
+    pause: debugPause,
     setTod(v) { state.todFrozen = v === null ? null : ((Number(v) % 1) + 1) % 1; },
-    teleport(x, z) { if (URLP.offline) { player.correct(x, z); player._send(performance.now(), true); } },
+    /** Run the game loop manually for `sec` seconds (useful when rAF is paused in a hidden tab). */
+    async advance(sec = 1) {
+      const end = performance.now() + sec * 1000;
+      let last = performance.now();
+      while (performance.now() < end) {
+        await debugPause(16);
+        const now = performance.now();
+        step(Math.min(0.1, (now - last) / 1000), now);
+        last = now;
+      }
+    },
+    /** Walk (simulated W key, camera steering) to (x, z); runs the loop manually. */
+    async walkTo(x, z, stop = 2) {
+      for (let k = 0; k < 80; k++) {
+        const dx = x - player.x, dz = z - player.z;
+        const d = Math.hypot(dx, dz);
+        if (d < stop) break;
+        orbit.yaw = Math.atan2(-dx, -dz);
+        input.held.add('KeyW');
+        await this.advance(Math.min(0.5, (d - stop) / Math.max(1, state.self?.stats?.speed || 6) + 0.05));
+        input.held.delete('KeyW');
+      }
+      await this.advance(0.2);
+    },
+    teleport(x, z) {
+      if (!URLP.offline || state.self?.dead) return;
+      player.correct(x, z);
+      player.sentX = NaN;
+      player._send(performance.now(), true);
+    },
     stats() {
       const info = renderer.info;
       return { fps, calls: info.render.calls, triangles: info.render.triangles, geometries: info.memory.geometries, textures: info.memory.textures, programs: info.programs?.length, entities: state.entities.size };

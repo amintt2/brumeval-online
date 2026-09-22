@@ -474,7 +474,8 @@ section('Écrans', [
 ]);
 section('Cible', [
   ['Loup', () => setTarget('monster')], ['Squelette (dur)', () => setTarget('high')], ['Gluant (facile)', () => setTarget('low')],
-  ['Boss', () => setTarget('boss')], ['PNJ', () => setTarget('npc')], ['Joueur', () => setTarget('player')], ['Aucune', () => setTarget(null)],
+  ['Boss', () => setTarget('boss')], ['PNJ', () => setTarget('npc')], ['Joueur', () => setTarget('player')],
+  ['Cible morte', () => { setTarget('monster'); target.hp = 0; ui.setTarget({ ...target }); }], ['Aucune', () => setTarget(null)],
 ]);
 section('Personnage', [
   ['−40 PV', () => damage(40)], ['PV bas', () => { self.hp = Math.round(self.mhp * 0.15); push(); }], ['Mana 0', () => { self.mp = 0; push(); }],

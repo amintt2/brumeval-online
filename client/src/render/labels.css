@@ -89,3 +89,6 @@
 #labels .fct.mana { color: #6cb8ff; }
 #labels .fct.info { color: #e8d8b0; font-size: 16px; }
 #labels .fct.xp { color: #c9a0ff; font-size: 17px; }
+/* numbers of fights that do not involve the local player: smaller and softer */
+#labels .fct.other { font-size: 15px; filter: saturate(0.7) brightness(0.92); }
+#labels .fct.other.crit { font-size: 19px; }

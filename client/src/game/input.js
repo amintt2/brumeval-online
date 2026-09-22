@@ -8,6 +8,18 @@ const MOVE_CODES = {
 };
 const DRAG_PX = 5;
 
+/**
+ * Physical key code of a keyboard event. Some virtual keyboards / remote-desktop tools send an empty
+ * `code`: fall back to a code derived from `key` (letters → KeyX, digits → DigitN, named keys as is).
+ */
+function keyCode(e) {
+  if (e.code) return e.code;
+  const k = e.key || '';
+  if (/^[a-z]$/i.test(k)) return `Key${k.toUpperCase()}`;
+  if (/^[0-9]$/.test(k)) return `Digit${k}`;
+  return k === ' ' ? 'Space' : k;
+}
+
 export class Input {
   /**
    * handlers: { isTyping(), onKey(code, ev), onClick(button, x, y, ev), onDrag(dx, dy, buttons), onWheel(dy),
@@ -24,7 +36,7 @@ export class Input {
     this.enabled = true;
 
     window.addEventListener('keydown', (e) => this._keyDown(e));
-    window.addEventListener('keyup', (e) => this.held.delete(e.code));
+    window.addEventListener('keyup', (e) => this.held.delete(keyCode(e)));
     window.addEventListener('blur', () => this.reset());
     document.addEventListener('visibilitychange', () => { if (document.hidden) this.reset(); });
 
@@ -68,12 +80,13 @@ export class Input {
       return; // a form field of the UI has focus
     }
     if (!this.enabled) return;
-    if (e.code === 'Tab') e.preventDefault();
-    if (MOVE_CODES[e.code]) {
-      this.held.add(e.code);
-      if (e.code.startsWith('Arrow')) e.preventDefault();
+    const code = keyCode(e);
+    if (code === 'Tab') e.preventDefault();
+    if (MOVE_CODES[code]) {
+      this.held.add(code);
+      if (code.startsWith('Arrow')) e.preventDefault();
     }
-    if (!e.repeat || e.code === 'Tab') this.h.onKey?.(e.code, e);
+    if (!e.repeat || code === 'Tab') this.h.onKey?.(code, e);
   }
 
   _pointerDown(e) {
@@ -84,7 +97,9 @@ export class Input {
     this.buttons = e.buttons;
     this.mouseX = e.clientX; this.mouseY = e.clientY;
     if (!this.down) {
-      this.down = { x: e.clientX, y: e.clientY, button: e.button, dragged: false, lastX: e.clientX, lastY: e.clientY };
+      this.down = { x: e.clientX, y: e.clientY, button: e.button, dragged: false, multi: false, lastX: e.clientX, lastY: e.clientY };
+    } else {
+      this.down.multi = true; // a second button joined (both buttons = run): never treat the release as a click
     }
     try {
       this.canvas.setPointerCapture(e.pointerId);
@@ -97,6 +112,8 @@ export class Input {
     this.mouseX = e.clientX; this.mouseY = e.clientY;
     this.buttons = e.buttons;
     const d = this.down;
+    // chorded presses (second button while one is held) only arrive as pointermove
+    if (d && (e.buttons & 3) === 3) d.multi = true;
     if (d && e.buttons) {
       if (!d.dragged && Math.hypot(e.clientX - d.x, e.clientY - d.y) > DRAG_PX) d.dragged = true;
       if (d.dragged) {
@@ -113,7 +130,7 @@ export class Input {
     const d = this.down;
     if (d && e.buttons === 0) {
       this.down = null;
-      if (!d.dragged) this.h.onClick?.(d.button, e.clientX, e.clientY, e);
+      if (!d.dragged && !d.multi) this.h.onClick?.(d.button, e.clientX, e.clientY, e);
       try {
         this.canvas.releasePointerCapture(e.pointerId);
       } catch {

@@ -106,6 +106,8 @@ if (isMain) {
       process.on('SIGINT', () => shutdown('SIGINT'));
       process.on('SIGTERM', () => shutdown('SIGTERM'));
       process.on('SIGBREAK', () => shutdown('SIGBREAK'));
+      // scripts/dev.mjs asks for a graceful stop over IPC before restarting (Windows has no SIGTERM handler).
+      process.on('message', (m) => { if (m === 'shutdown') shutdown('redémarrage'); });
     })
     .catch((err) => {
       console.error(err.code === 'EADDRINUSE' ? `Le port est déjà utilisé : ${err.message}` : err);

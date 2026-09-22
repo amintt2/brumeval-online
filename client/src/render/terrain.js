@@ -59,7 +59,7 @@ function groundColor(x, z, h, ny, out, tmp) {
   const road = 1 - smoothstep(half - 0.5 + n2 * 0.4, half + 0.9 + n3 * 0.6, rd);
   if (road > 0) out.lerp(tmp.copy(PAL.dirt).lerp(PAL.dirtB, n2), road * 0.92);
   // shore sand and wet ground below the water line
-  const sand = 1 - smoothstep(WATER_LEVEL + 0.35, WATER_LEVEL + 1.3 + n2 * 0.4, h);
+  const sand = 1 - smoothstep(WATER_LEVEL + 0.15, WATER_LEVEL + 0.7 + n2 * 0.3, h);
   if (sand > 0) out.lerp(PAL.sand, sand);
   if (h < WATER_LEVEL - 0.25) out.lerp(PAL.wet, smoothstep(WATER_LEVEL - 0.25, WATER_LEVEL - 2.5, h));
   // mountain foothills: darker scrub before the rock takes over
@@ -273,7 +273,7 @@ void main() {
   vec3 V = normalize(cameraPosition - vWorld);
   float fres = pow(1.0 - max(dot(n, V), 0.0), 4.0);
   vec3 base = mix(uShallow, uDeep, smoothstep(0.0, 3.5, depth));
-  vec3 col = mix(base, uSky, 0.15 + fres * 0.65);
+  vec3 col = mix(base, uSky, 0.1 + fres * 0.42);
   vec3 H = normalize(uSunDir + V);
   float spec = pow(max(dot(n, H), 0.0), 160.0) * 1.6;
   col += uSunColor * spec * smoothstep(-0.05, 0.1, uSunDir.y);
@@ -284,7 +284,7 @@ void main() {
   col = mix(col, vec3(0.92, 0.96, 1.0) * (1.0 - uNight * 0.6), clamp(foam, 0.0, 1.0) * 0.8);
   float alpha = mix(0.45, 0.88, smoothstep(0.0, 2.0, depth));
   alpha = max(alpha, foam * 0.9);
-  alpha = mix(alpha, 1.0, fres * 0.4);
+  alpha = mix(alpha, 1.0, fres * 0.25);
   gl_FragColor = vec4(col, alpha);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

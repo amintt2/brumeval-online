@@ -100,7 +100,7 @@ def elder():
     rnd = random.Random(7)
     pts, rad = [], []
     for i in range(8):
-        z = (fp.z + 0.13) * i / 7
+        z = 0.025 + (fp.z + 0.13 - 0.025) * i / 7
         j = 0.0 if i in (0, 7) else 0.012
         pts.append(Vector((fp.x + rnd.uniform(-j, j), fp.y + rnd.uniform(-j, j), z)))
         rad.append(0.017 + 0.005 * i / 7)
@@ -115,7 +115,7 @@ def elder():
     g = H.gait(frames=26, stride=0.4, lift=0.065, duty=0.63, drop=0.04, bob=0.012, lean=2.0, twist=4.0, sway=0.016, roll=2.0,
                arm_swing=10.0, elbow=20.0, elbow_swing=6.0, run=False, strike=8.0, toeoff=22.0, head_bob=1.0, toe_out=10.0,
                width=1.15, arms={"L": dict(swing=0.8, fwd=16, elbow=55, twist=-22, out=7),
-                                 "R": dict(swing=1.2, fwd=22, elbow=58, out=12, twist=10)})
+                                 "R": dict(swing=0.8, fwd=28, elbow=76, out=12, twist=10)})
     P.key_loop("Idle", 48, lambda t: H.idle_spec(P, t, st))
     P.key_loop("Walk", g["frames"], lambda p: H.gait_spec(P, p, g, st))
     return rig, body, P
@@ -156,7 +156,7 @@ def merchant():
     # ---- skirt, apron, waist, sash, pouch
     b.add(G.loft([(0, 0.0, zh - 0.06, 0.168, 0.135), (0, 0.0, zp + 0.02, 0.152, 0.118), (0, 0.0, zs + 0.03, 0.138, 0.106)], 10),
           skirt, "hips")
-    rings = [(zh + 0.02, 0.17, 0.138), (zh - 0.26, 0.228, 0.19), (zh - 0.52, 0.272, 0.228), (0.085, 0.298, 0.25)]
+    rings = [(zh + 0.02, 0.17, 0.138), (zh - 0.26, 0.228, 0.19), (zh - 0.52, 0.272, 0.228), (0.1, 0.298, 0.25)]
     PT.skirt(b, P, rings, skirt, n=6, hem=hem, hem_h=0.055, inner=dskirt, inner_to=0.45)
     ap = [(zh + 0.0, 0.19, 0.16), (zh - 0.26, 0.25, 0.212), (0.3, 0.296, 0.254)]
     PT.apron(b, P, ap, apron_m, span=0.95)

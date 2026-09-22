@@ -9,7 +9,7 @@ import {
   CLASSES, ABILITIES, MONSTERS, ITEMS, NPCS, QUESTS, INV_SIZE, REGEN, MAX_LEVEL,
   playerStats, monsterStats, computeDamage, monsterXp, xpToNext, canUse,
 } from '@shared/data.js';
-import { SPAWN_POINT, NPC_SPAWNS, inVillage, VILLAGE } from '@shared/world.js';
+import { SPAWN_POINT, NPC_SPAWNS, inVillage, VILLAGE, isWalkable } from '@shared/world.js';
 import { CollisionWorld } from '@shared/collision.js';
 
 const LATENCY_MS = 35;
@@ -92,8 +92,12 @@ export class FakeServer {
     const upgrade = { warrior: 'steel_sword', mage: 'arcane_staff', ranger: 'long_bow' }[this.cls];
     give.push([upgrade, 1]);
     give.forEach(([id, q], i) => { inv[i] = { id, q }; });
+    // ?at=x,z[,ry] → start somewhere else than the village square (screenshots, testing a zone)
+    const at = (new URLSearchParams(location.search).get('at') || '').split(',').map(Number);
+    const start = at.length >= 2 && at.every(Number.isFinite) && isWalkable(at[0], at[1])
+      ? { x: at[0], z: at[1], ry: at[2] || 0 } : SPAWN_POINT;
     this.player = this._add({
-      k: KIND.PLAYER, n: this.name, m: c.model, c: this.cls, lv: level, x: SPAWN_POINT.x, z: SPAWN_POINT.z, ry: SPAWN_POINT.ry,
+      k: KIND.PLAYER, n: this.name, m: c.model, c: this.cls, lv: level, x: start.x, z: start.z, ry: start.ry,
       hp: st.mhp, mhp: st.mhp,
     });
     Object.assign(this.player, {
@@ -109,6 +113,10 @@ export class FakeServer {
     const otherCls = this.cls === 'mage' ? 'ranger' : 'mage';
     this.buddy = this._add({ k: KIND.PLAYER, n: 'Aelis', m: CLASSES[otherCls].model, c: otherCls, lv: 8, x: 9, z: 0, ry: 0, hp: 150, mhp: 160, buddy: true, ang: 0 });
     for (const s of TEST_SPAWNS) for (let i = 0; i < s.n; i++) this._spawnMonster(s);
+    // ?mobs=40 → extra monsters around the eastern village exit (rendering stress test)
+    const extra = Math.min(200, Math.max(0, parseInt(new URLSearchParams(location.search).get('mobs') || '0', 10) || 0));
+    const kinds = ['slime', 'wolf', 'goblin', 'skeleton'];
+    for (let i = 0; i < extra; i++) this._spawnMonster({ mt: kinds[i % kinds.length], x: 48, z: 8, r: 16 });
   }
 
   _add(e) {

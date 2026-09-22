@@ -7,7 +7,7 @@ Coordinates: Blender world space, metres, Z up, characters face -Y (their left s
 import math
 
 import bpy
-from mathutils import Euler, Matrix, Quaternion, Vector
+from mathutils import Euler, Matrix, Vector
 
 TAU = math.tau
 
@@ -242,8 +242,46 @@ def deform(geo, fn):
 
 
 # --------------------------------------------------------------------------- builder
-def side_bone(name, side):
-    return f"{name}.{side}"
+def _vc_material(name, rough, metal, emit=None, strength=0.0):
+    """Principled material whose Base Color comes from the 'Col' colour attribute (glTF COLOR_0)."""
+    m = bpy.data.materials.new(name)
+    nt = m.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    ca = nt.nodes.new("ShaderNodeVertexColor")
+    ca.layer_name = "Col"
+    nt.links.new(ca.outputs["Color"], bsdf.inputs["Base Color"])
+    bsdf.inputs["Roughness"].default_value = rough
+    bsdf.inputs["Metallic"].default_value = metal
+    if emit is not None:
+        bsdf.inputs["Emission Color"].default_value = (*emit[:3], 1.0)
+        bsdf.inputs["Emission Strength"].default_value = strength
+    return m
+
+
+def _merge_materials(name, mats, face_mat):
+    """Map authored materials to shared ones; returns (materials, face material indices, face RGBA colours)."""
+    shared, index, info = [], {}, []
+    for m in mats:
+        bsdf = m.node_tree.nodes["Principled BSDF"]
+        col = tuple(bsdf.inputs["Base Color"].default_value)[:3] + (1.0,)
+        metal = bsdf.inputs["Metallic"].default_value
+        strength = bsdf.inputs["Emission Strength"].default_value
+        emit = tuple(bsdf.inputs["Emission Color"].default_value)[:3]
+        if strength > 0 and max(emit) > 0:
+            key = ("emit", m.name)
+            make = (lambda m=m, emit=emit, strength=strength, rough=bsdf.inputs["Roughness"].default_value:
+                    _vc_material(f"{name}_{m.name.split('_', 1)[-1]}", rough, 0.0, emit, strength))
+        elif metal > 0.2:
+            key = ("metal",)
+            make = lambda: _vc_material(f"{name}_Metal", 0.38, 0.5)
+        else:
+            key = ("matte",)
+            make = lambda: _vc_material(f"{name}_Matte", 0.75, 0.0)
+        if key not in index:
+            index[key] = len(shared)
+            shared.append(make())
+        info.append((index[key], col))
+    return shared, [info[mi][0] for mi in face_mat], [info[mi][1] for mi in face_mat]
 
 
 class MeshBuilder:
@@ -291,12 +329,28 @@ class MeshBuilder:
             out[self.mats[mi].name] = out.get(self.mats[mi].name, 0) + len(f) - 2
         return dict(sorted(out.items(), key=lambda kv: -kv[1]))
 
-    def build(self, name, rig=None):
+    def build(self, name, rig=None, merge=True):
+        """Create the mesh object. With merge=True (default) the authored materials are collapsed into a few
+        shared materials (matte / metal / one per emissive colour) and each part keeps its colour through a
+        per-corner colour attribute exported as glTF COLOR_0 -> 2-4 draw calls per character instead of ~15."""
         me = bpy.data.meshes.new(name)
         me.from_pydata(self.verts, [], self.faces)
-        for m in self.mats:
-            me.materials.append(m)
-        me.polygons.foreach_set("material_index", self.face_mat)
+        if merge:
+            mats, face_mat, colors = _merge_materials(name, self.mats, self.face_mat)
+            for m in mats:
+                me.materials.append(m)
+            me.polygons.foreach_set("material_index", face_mat)
+            attr = me.color_attributes.new("Col", "FLOAT_COLOR", "CORNER")
+            flat_cols = []
+            for p in me.polygons:
+                flat_cols.extend(colors[p.index] * p.loop_total)
+            attr.data.foreach_set("color", flat_cols)
+            me.color_attributes.active_color = attr
+            me.color_attributes.render_color_index = me.color_attributes.find("Col")
+        else:
+            for m in self.mats:
+                me.materials.append(m)
+            me.polygons.foreach_set("material_index", self.face_mat)
         me.update()
         for p in me.polygons:
             p.use_smooth = False
