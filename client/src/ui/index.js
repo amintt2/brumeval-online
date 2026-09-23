@@ -21,6 +21,7 @@ import { createCharacterPanel } from './panels/character.js';
 import { createQuestPanel } from './panels/quests.js';
 import { createHelpPanel } from './panels/help.js';
 import { createStaminaBar, createBossBar, createCombatOverlay } from './combat-hud.js'; // [combat-souls]
+import { createSettingsPanel } from './panels/settings.js'; // [render-souls] graphics settings (key O)
 
 const NOTIFY_KINDS = new Set(['info', 'error', 'xp', 'loot', 'quest', 'level', 'gold']);
 const FONTS_URL = 'https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700;800&display=swap';
@@ -39,6 +40,7 @@ function ensureFonts() {
   document.head.append(pre, css);
 }
 const PANEL_KEYS = { i: 'inventory', c: 'character', l: 'quests', h: 'help' };
+PANEL_KEYS.o = 'settings'; // [render-souls]
 
 export function createUI(root, handlers = {}) {
   ensureFonts();
@@ -107,6 +109,7 @@ export function createUI(root, handlers = {}) {
   const character = createCharacterPanel(wm, { handlers: H, tooltip, menus, onToggle: onToggle('character') });
   const quests = createQuestPanel(wm, { tooltip, onToggle: onToggle('quests') });
   createHelpPanel(wm, { onToggle: onToggle('help') });
+  createSettingsPanel(wm, { onToggle: onToggle('settings') }); // [render-souls]
   let invAutoOpened = false;
   const dialog = createDialog(wm, {
     handlers: H,

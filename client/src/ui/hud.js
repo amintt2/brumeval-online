@@ -214,6 +214,7 @@ export const MENU = [
   { id: 'character', label: 'Personnage', key: 'C', glyph: 'person' },
   { id: 'quests', label: 'Quêtes', key: 'L', glyph: 'scroll' },
   { id: 'help', label: 'Aide', key: 'H', glyph: 'help' },
+  { id: 'settings', label: 'Graphismes', key: 'O', glyph: 'gear' }, // [render-souls]
 ];
 
 export function createMenu(parent, onToggle, tooltip) {

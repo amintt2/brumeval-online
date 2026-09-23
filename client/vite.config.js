@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
+import { assetManifest } from './vite-asset-manifest.js'; // [render-souls]
 
 const shared = fileURLToPath(new URL('../shared', import.meta.url));
 
 export default defineConfig({
+  plugins: [assetManifest()], // [render-souls] /asset-manifest.json (optional assets present in public/)
   resolve: { alias: { '@shared': shared } },
   server: {
     port: 5173,

@@ -189,6 +189,7 @@ Mesures de charge : [docs/PERFORMANCES.md](docs/PERFORMANCES.md) (`node tests/lo
 | **I** / **C** / **L** / **H** | Sac / Personnage / Journal de quêtes / Aide |
 | **Entrée** | Ouvrir la discussion, envoyer le message |
 | **M** | Couper ou rétablir le son |
+| **O** | Réglages graphiques (préréglages Bas / Moyen / Élevé / Ultra, voir [docs/RENDU.md](docs/RENDU.md)) |
 
 Commandes de discussion : `/w nom message` (chuchoter), `/r message` (répondre au dernier chuchotement),
 `/who` (joueurs en ligne), `/help` (aide).
