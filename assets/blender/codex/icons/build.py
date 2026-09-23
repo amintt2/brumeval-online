@@ -83,7 +83,9 @@ def extra(key):
         for z in [.49,.54]:G.torus('DoseBand',.14,.021,32,12,band,loc=(0,0,z))
         if key=='potion_hp_m':
             for ob in bpy.context.scene.objects:
-                if ob.type=='MESH':ob.scale.z*=1.3
+                if ob.type=='MESH':
+                    ob.scale.z*=1.3
+                    ob.location.z*=1.3
         return dict(yaw=24,pitch=16)
     if key=='leather_strip':
         for j in range(3):

@@ -1,0 +1,696 @@
+{
+  "count": 53,
+  "referenced_keys": 34,
+  "checks": "dimensions, RGBA, alpha, safe bounds, data coverage, SHA-256",
+  "files": [
+    {
+      "key": "potion_hp_s",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 61477,
+      "sha256": "60b3adef4c8bb60dc78f70f7e0715dfa2f9b6c14df746b7f1d2c3b7a7093293c"
+    },
+    {
+      "key": "potion_hp_l",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 70378,
+      "sha256": "f8c17787c166d9ed8a681af3b3dcd6b2519d7ad5f81530f26aeac9344099374e"
+    },
+    {
+      "key": "potion_mp_s",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 61836,
+      "sha256": "64f354a9a4b76cfca38b8d95629cbb0db30d5357ad90329b38e80349f85c059e"
+    },
+    {
+      "key": "slime_gel",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 75164,
+      "sha256": "b4fc487c293f9e3661fd6fb18a43f045a6279de032b8e3364f459de55d5668b7"
+    },
+    {
+      "key": "wolf_pelt",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 57387,
+      "sha256": "d87186f00d89fe85c9b933ea6bab7a616c4e4833683cc7a7c96ec9d06387e2a7"
+    },
+    {
+      "key": "goblin_trinket",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 49395,
+      "sha256": "7cc369d226d92ce72f7b403aa41cbc33341ec1796d597a70e7d0b04dca496292"
+    },
+    {
+      "key": "ancient_bone",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 49030,
+      "sha256": "557a5c4ce204b0d474bf6634e174cdfdd295743a00643d373b9664f859ef3987"
+    },
+    {
+      "key": "golem_core",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 54659,
+      "sha256": "d5e712b5a647a57b84f0c8e0c9e45c5f6f31a482fe46ba3df7395de8c86b7de8"
+    },
+    {
+      "key": "rusty_sword",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 44290,
+      "sha256": "8990f5d0eb04afaef2d73ab3411224db4e525a5c83dfc00fae74c74c7b3ef78c"
+    },
+    {
+      "key": "steel_sword",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 45837,
+      "sha256": "9cd206778aa80aa8dba592ab15e83b86fda1438ce6b4eac2dc36020f14564631"
+    },
+    {
+      "key": "runeblade",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 47632,
+      "sha256": "0ab792b1cfdc939299bc01f99db59c7c231e146f2ab8f594971d480520c9a096"
+    },
+    {
+      "key": "apprentice_staff",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 38733,
+      "sha256": "acac572032dcbb127429fec8610bdf343a3be721c8dedc4fed68f21569884138"
+    },
+    {
+      "key": "arcane_staff",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 40223,
+      "sha256": "639892e2e66dca96ee82cf0c17ef5c41d3170fee7ed54bfd5da57dd7e1b7ad28"
+    },
+    {
+      "key": "ember_staff",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 41042,
+      "sha256": "3eda41efc7a1b8b4898548414b61e5f09993d67eae24ecd69dfe1c78666f234d"
+    },
+    {
+      "key": "short_bow",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 46064,
+      "sha256": "13770e0f4ffa48538ace92a5b59c71527ebcadf7943cb6a7c63ce44abfef753c"
+    },
+    {
+      "key": "long_bow",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 40928,
+      "sha256": "22358e7de4a44de8d1f4323774bdf644bdd110806eaf41dc18bef924537eae33"
+    },
+    {
+      "key": "elven_bow",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 45945,
+      "sha256": "9df482e841c001ba728d809385a61d4f8fbbe66909d91214a67a5ac1d33b7355"
+    },
+    {
+      "key": "leather_tunic",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 69423,
+      "sha256": "ab447f8801a8cdc4f1f703a3b07dce78626df2cdff039176064c533ddd9f7d2e"
+    },
+    {
+      "key": "mage_robe",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 64111,
+      "sha256": "d174b51bbb37c2fb7115b5b461e7f6a836726ed1461c7249518e1fa6f65766c7"
+    },
+    {
+      "key": "chainmail",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 81862,
+      "sha256": "1ef90adcdfddb9186e437fc13c55c0f7a9519b6a4b1017571f8e1ba1e73c76cc"
+    },
+    {
+      "key": "golem_plate",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 72050,
+      "sha256": "17d926d9bef6d5a76b6b5a97db43e7356102131cae1fc7a3c3e25945989abcff"
+    },
+    {
+      "key": "gold",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 58350,
+      "sha256": "166ed4c54af74aa14121791a5f0ceeafafd91febb74894ffcdd471ea5f9d7dbd"
+    },
+    {
+      "key": "ab_strike",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 98160,
+      "sha256": "fbcb9d78246a29617db0703eb72c514f814f24303cb150eb38c19d934b4486a5"
+    },
+    {
+      "key": "ab_heavy_blow",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 105691,
+      "sha256": "15025024255675c8392dd79ca3e73a7ae3b86fa0357f15903aea83d79da302a5"
+    },
+    {
+      "key": "ab_whirlwind",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 101885,
+      "sha256": "bfaf1d433d89a10fe4925518393afcf4b6ee69d4009f5bcd0e5dd43c19389185"
+    },
+    {
+      "key": "ab_war_cry",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 101361,
+      "sha256": "b48dd29b28c0b18a82a53f2748dbd645edc57cd9e01531abd01df4dcfb876831"
+    },
+    {
+      "key": "ab_firebolt",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 107988,
+      "sha256": "8366cde50f25b10cdd7a9116c5723740003b2c04b7c0867dd3691712501a3e1f"
+    },
+    {
+      "key": "ab_fireball",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 113877,
+      "sha256": "66ff290a908e3689bfcf80d3f6cc812ea69be4afcc08d73a9cec97f9b2a5aaf0"
+    },
+    {
+      "key": "ab_frost_nova",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 113425,
+      "sha256": "0ad01b45adbefa5d165efb2c95bd0f503d51f0d19e478d6ccefa7f803d258bc1"
+    },
+    {
+      "key": "ab_heal",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 102157,
+      "sha256": "3c48ddd81eb88cc3a3e077abe8124ced9ffee36bac273e8e53b0b8341704d6ea"
+    },
+    {
+      "key": "ab_shot",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 98912,
+      "sha256": "b2ee1150f09fcd630c5f1e1cfa61196c86e0da1e884cf9a662825849d8e32ad5"
+    },
+    {
+      "key": "ab_piercing_shot",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 103138,
+      "sha256": "01108e8690532beb69ac9f3d12a75ee085843e24d997c79a55ab71a1d83145ee"
+    },
+    {
+      "key": "ab_arrow_rain",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 105502,
+      "sha256": "637da48070cc195f5ec08bac9756898f4742a76c94ac3b704408c76f825b42b6"
+    },
+    {
+      "key": "ab_rapid_fire",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "bytes": 102008,
+      "sha256": "5c4b0f5aaa4984b0b663d8d3f196b22d85aec2ae9bf9b8ba4549e14c58fd9f47"
+    },
+    {
+      "key": "ore_copper",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 54881,
+      "sha256": "68e4212d3e6d2911bfe13a3501b1526e3b47466b63ba9d1d92bc8147a618fe01"
+    },
+    {
+      "key": "ore_iron",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 50110,
+      "sha256": "8fcaf346034af985ca32ce62b5cc48a655e8ca6c892faffcbfab5830cb8b7ae5"
+    },
+    {
+      "key": "ore_mithril",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 54258,
+      "sha256": "e889132cd130f9f39c237d8214995320a94bc7249176e3e0483c8f7cb6c1f749"
+    },
+    {
+      "key": "crystal_shard",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 60036,
+      "sha256": "67d8397b7e62cfa210a7aed77aab357abd5529b313af117b3eb29942882c034f"
+    },
+    {
+      "key": "herb_brume",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 47683,
+      "sha256": "9d342c7005de22fa285bf570603cdd154676095abfdf9c17bdee9c6b21652df0"
+    },
+    {
+      "key": "herb_givre",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 52544,
+      "sha256": "5c4e910b0327f42bc7eb37cd9fa0aa955c481f902a4d25ee90e7b0fad1e20dc4"
+    },
+    {
+      "key": "herb_braise",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 50350,
+      "sha256": "42a810c2ad7bd21d0c9c705d806be5980fe46a4e3ee3df4b9974941ec8f7eeb1"
+    },
+    {
+      "key": "ingot_copper",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 46966,
+      "sha256": "a9607610e2e603f9db231901c2ef99f6a550fa6f4ed47d027a84c6d452e36bc2"
+    },
+    {
+      "key": "ingot_iron",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 43353,
+      "sha256": "525a62df1b421b9e24572df001c08bb8d0789be32999ea540741c6e9b91d0e14"
+    },
+    {
+      "key": "ingot_mithril",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 45909,
+      "sha256": "02de047f8d3dca0bf343bea25baa9473d1c478081323ae656691ff152745af1d"
+    },
+    {
+      "key": "leather_strip",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 39241,
+      "sha256": "a5869c43add5a6d40e8a64dac01c8a54e8b0dea33763c2f7d4bc46f9662fa28b"
+    },
+    {
+      "key": "cloth_bolt",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 47183,
+      "sha256": "219c3a09a197e1b0e1d1d4e3de76da1f8ac57544c7fba1e7786a37d3b0386823"
+    },
+    {
+      "key": "potion_hp_m",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 61815,
+      "sha256": "3dbe6f7efb295fab5ad494c656c51bfd23ea3cb793ef5ff89dbe045d8043d5c7"
+    },
+    {
+      "key": "potion_stamina",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 69309,
+      "sha256": "a371c9f0d739227d1789ea284f7f7dc54eab4364bd3c24ee6b77db411e12d0cb"
+    },
+    {
+      "key": "helm_iron",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 55483,
+      "sha256": "f08373b23e0008a4b43e167ccc89183108136a36acc8091cf9bb802a0c3b69b5"
+    },
+    {
+      "key": "gloves_leather",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 56874,
+      "sha256": "71336e6cd8b8423de8bf2a275f458ac5cf027d220c9fef8fede63d07ea735de1"
+    },
+    {
+      "key": "boots_leather",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 72089,
+      "sha256": "508bb55c7f867b314ef323931df323340e16b3366621c4c2a7e33ea61e9cfd4d"
+    },
+    {
+      "key": "ring_silver",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 62038,
+      "sha256": "631be353d45022839888f50c5e533564796163a57086a4fa0213df39c30d8d0c"
+    },
+    {
+      "key": "amulet_bone",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 49828,
+      "sha256": "a07741e1ef497e395ed5555c4c84dbcdfa954d33eb92eafce571ad677177c218"
+    }
+  ]
+}
