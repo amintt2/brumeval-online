@@ -317,7 +317,10 @@ export function createHttpHandler({ staticDir, log, routes = {} }) {
       pathname = new URL(req.url, 'http://localhost').pathname;
     } catch { /* the static handler answers 400 */ }
     const route = Object.prototype.hasOwnProperty.call(routes, pathname) ? routes[pathname] : null;
-    if (!route) return statics(req, res);
+    if (!route) {
+      if (pathname.startsWith('/api/')) return sendJson(res, 404, { error: "Point d'accès inconnu" }, req.method === 'HEAD');
+      return statics(req, res);
+    }
     try {
       if (req.method === 'OPTIONS') {
         res.writeHead(204, { ...CORS, 'Content-Length': 0 });
