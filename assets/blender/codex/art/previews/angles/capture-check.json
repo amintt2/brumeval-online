@@ -19,7 +19,7 @@
         255
       ]
     ],
-    "sha256": "32c79aa0c6f0a20c9bfda0bb63accfdedc2830bf8cafefb59a692b8a6c42d9f4"
+    "sha256": "a193649c6c0bb772e0575e0f3623332e598ac2ed86b8c88c481bf9ba973d3dd4"
   },
   {
     "file": "cemetery-02-tombes.webp",
@@ -38,10 +38,10 @@
       ],
       [
         0,
-        254
+        255
       ]
     ],
-    "sha256": "210c15950a054c8579563f8a95caf59617eced3bd9476be37107e2099ee5af64"
+    "sha256": "9fa0e159ea4a3ae249b178175f060d5659c78c76ee9b7333e7064094abacd86b"
   },
   {
     "file": "cemetery-03-chapelle.webp",
@@ -59,11 +59,11 @@
         151
       ],
       [
-        2,
+        0,
         175
       ]
     ],
-    "sha256": "6e331a37414d5c392e0994a28f91df510849cbf9628c734b4df5a892ac7f9cff"
+    "sha256": "5335459095e4658f7ba8e5885300f5690f1b30fd0742ee56ea14a3b48cbf4c1a"
   },
   {
     "file": "cliff-01-village.webp",
@@ -73,7 +73,7 @@
     ],
     "extrema": [
       [
-        1,
+        0,
         255
       ],
       [
@@ -85,7 +85,7 @@
         255
       ]
     ],
-    "sha256": "9a72dc45859c854a66731641d58530610e3175d47f9b9af4bea2043286ac3b38"
+    "sha256": "8795f482df61568a69f95bf3e4a1f2f250f3192df3489aeedf0d3734b960de55"
   },
   {
     "file": "cliff-02-front-bas.webp",
@@ -104,10 +104,10 @@
       ],
       [
         0,
-        199
+        197
       ]
     ],
-    "sha256": "e6fa80503c13d1b03ba93f649a3be0702d72cf1812c075bb311f0a8625a2657b"
+    "sha256": "3e5cb37ba1a6865bb57fe0b2a6e7a58cd26981eaac59f9e9150c56bfce392e5b"
   },
   {
     "file": "cliff-03-gauche.webp",
@@ -117,19 +117,19 @@
     ],
     "extrema": [
       [
-        7,
+        8,
         186
       ],
       [
-        7,
-        172
+        8,
+        171
       ],
       [
-        0,
+        1,
         161
       ]
     ],
-    "sha256": "d2d79654c1964748eed5645c04dad5d4baaf442ad5f75f0cda0d03a94a088af5"
+    "sha256": "9547faa705905427485bbeb55bcb6d488275b69ddd4673890ac69c4881de2cb2"
   },
   {
     "file": "cliff-04-droite.webp",
@@ -139,19 +139,19 @@
     ],
     "extrema": [
       [
-        11,
-        185
+        12,
+        186
       ],
       [
         14,
-        175
+        180
       ],
       [
-        1,
-        171
+        2,
+        167
       ]
     ],
-    "sha256": "d41ebd95aafc683fe659aa81f0892946ea6b4eb3d6ed4b0dd991c22b803ca018"
+    "sha256": "862283c6ba56cbe285131762192610e1815dcb5df04bca6374a2a965fe08a4c4"
   },
   {
     "file": "cliff-05-strates.webp",
@@ -162,7 +162,7 @@
     "extrema": [
       [
         7,
-        168
+        161
       ],
       [
         6,
@@ -170,10 +170,10 @@
       ],
       [
         0,
-        163
+        159
       ]
     ],
-    "sha256": "657fed78bf0d7ae377a295e2cfdabececfbdcb2844976204daf507c91f4bad2f"
+    "sha256": "aca761836953030950633e8ee04f2efb6261a9cbaeb1f116b75920d48ec5d54b"
   },
   {
     "file": "cliff-06-remparts.webp",
@@ -183,19 +183,19 @@
     ],
     "extrema": [
       [
-        5,
-        185
+        6,
+        184
       ],
       [
-        8,
+        6,
         178
       ],
       [
         0,
-        170
+        169
       ]
     ],
-    "sha256": "7f50e2fd574986e581b98ed1c688528499834ab4ff554a178856f81f83efe919"
+    "sha256": "32a3dc1ead0fe03674dae5ce8b5cf1d1b8d9cefa276bd5d91f9300fcb6e041b6"
   },
   {
     "file": "cliff-07-silhouette.webp",
@@ -205,11 +205,11 @@
     ],
     "extrema": [
       [
-        9,
+        8,
         218
       ],
       [
-        9,
+        8,
         192
       ],
       [
@@ -217,7 +217,7 @@
         174
       ]
     ],
-    "sha256": "07ceec393a641def402f777d12b617d77c4088805cdd44dfd1cd3341289b84d1"
+    "sha256": "c7a9b8eaa3d8eee5943c427414fcf5e2b3b82279d7185b53ea672c4e112efa91"
   },
   {
     "file": "cliff-08-ensemble.webp",
@@ -227,19 +227,19 @@
     ],
     "extrema": [
       [
-        16,
-        156
+        17,
+        169
       ],
       [
         14,
-        156
+        167
       ],
       [
         0,
-        164
+        163
       ]
     ],
-    "sha256": "1b3e18c535d6ec2d7e0709e8e0d5dc173b948a871835351d84b074794a9e822e"
+    "sha256": "72fdf6a5df60e277d2dd07dcb31b24ca37a7ad0f1cf3cd72de3545e3191eb139"
   },
   {
     "file": "cliff_back-09-arriere-gauche.webp",
@@ -249,19 +249,19 @@
     ],
     "extrema": [
       [
-        0,
+        1,
         255
       ],
       [
         4,
-        236
+        234
       ],
       [
         0,
-        216
+        217
       ]
     ],
-    "sha256": "0abe591ff0290643e419dd361b24c3c9c442cc9ef8565617f39085cbd29f9d52"
+    "sha256": "5d38ec037d996affbcf4b98828d8854a84f54bac41004edb7b9bcf35cedf5760"
   },
   {
     "file": "cliff_back-10-arriere.webp",
@@ -271,19 +271,19 @@
     ],
     "extrema": [
       [
-        17,
+        12,
         255
       ],
       [
-        14,
+        8,
         236
       ],
       [
-        7,
+        0,
         216
       ]
     ],
-    "sha256": "5e51c8dcc47b4d3269e4615dc8a74e7a1f39647f32ffcffb7393df09cd80c99c"
+    "sha256": "7dbc560f86ba17decb6a78cbf3bfbe60bb1e12333348430072c52c3852c4ae98"
   },
   {
     "file": "cliff_back-11-arriere-droite.webp",
@@ -293,19 +293,19 @@
     ],
     "extrema": [
       [
-        12,
-        195
-      ],
-      [
-        10,
-        188
+        5,
+        193
       ],
       [
         6,
-        175
+        186
+      ],
+      [
+        2,
+        174
       ]
     ],
-    "sha256": "e5554d910855bde38ebb30e0dc375f68cb01e6a05e70d8fc94563d27daf03b97"
+    "sha256": "863512c30ed8dc88dacd4840c03b2e8e1ae3db003f1dc471eb496b13425b773a"
   },
   {
     "file": "forest-01-sentier.webp",
@@ -316,7 +316,7 @@
     "extrema": [
       [
         0,
-        214
+        213
       ],
       [
         0,
@@ -324,10 +324,10 @@
       ],
       [
         0,
-        210
+        212
       ]
     ],
-    "sha256": "ab1d3ab6c57af96031020963a5144e7e3e65180815d4a66d5fb1ed328eb57b05"
+    "sha256": "4043af8c293c47ac29cc50ede3676675b4e325fd528c5dcd8d7b0e02ac856dd2"
   },
   {
     "file": "forest-02-racines.webp",
@@ -338,18 +338,18 @@
     "extrema": [
       [
         0,
-        218
-      ],
-      [
-        0,
         233
       ],
       [
         0,
-        216
+        240
+      ],
+      [
+        0,
+        238
       ]
     ],
-    "sha256": "863bcd2957cc6204f119290adc77c34db6fc6add873cabcff12c4a61c49c4eec"
+    "sha256": "3f428fb9559c4a78741406a80a5fc0bc67d1c289fe9852885660787fa0136d9e"
   },
   {
     "file": "forest-03-stele.webp",
@@ -360,7 +360,7 @@
     "extrema": [
       [
         0,
-        228
+        229
       ],
       [
         0,
@@ -368,10 +368,10 @@
       ],
       [
         0,
-        222
+        225
       ]
     ],
-    "sha256": "13bff2008a52314d83b9084a27eba70f9473cced252deb37f700a1a5295eea4a"
+    "sha256": "ecf547cb60b23e7d757ad8f7e784bc8c86c0bab653cbcaf2d22b9935a0166a75"
   },
   {
     "file": "house-01-entree.webp",
@@ -393,7 +393,7 @@
         202
       ]
     ],
-    "sha256": "70af16e90c8cda78aa0a4214d42ceb0144a21c832e1e954a25274d48059eb447"
+    "sha256": "3bca8cd763da455222247e112e78eda393b7e20eacdd8de2cf641ab28951b502"
   },
   {
     "file": "house-02-profil.webp",
@@ -408,14 +408,14 @@
       ],
       [
         0,
-        218
+        214
       ],
       [
         0,
-        182
+        183
       ]
     ],
-    "sha256": "40bff2f2ffb3b62e4a12923507618607d171a3f00a5628de53fb04b9ce72152a"
+    "sha256": "d1359b48864229f26b5c6f68de14cc15b28780b3efd4e797b626e3b632f055a8"
   },
   {
     "file": "house-03-sol.webp",
@@ -425,19 +425,19 @@
     ],
     "extrema": [
       [
-        1,
+        0,
         255
       ],
       [
         0,
-        227
+        224
       ],
       [
         0,
-        200
+        196
       ]
     ],
-    "sha256": "d0e7c6995929af23e5307a6f0f6937e91af77c70a0deb0b2e5f4b7ff19aae8fe"
+    "sha256": "684c06fdb2869852511fc250153641ccfa371fecc4c1464736118b9323b6924e"
   },
   {
     "file": "lair-01-entree.webp",
@@ -459,7 +459,7 @@
         255
       ]
     ],
-    "sha256": "a6afe25a02448b966423110a1fa819f50622918a79cd4bc063ed772cebc2fd5c"
+    "sha256": "5906718259f1d9967ea7bf5eca92a5c0c26110d8d3afdb77523ab3bb4f3169a5"
   },
   {
     "file": "lair-02-gauche.webp",
@@ -473,7 +473,7 @@
         255
       ],
       [
-        1,
+        0,
         255
       ],
       [
@@ -481,7 +481,7 @@
         255
       ]
     ],
-    "sha256": "92090e68eaac3bf3659dadb33c7da20043d7e85abd53fbba5935f1a01580555f"
+    "sha256": "d2eded33d4828d409ee4c2feed848b1c35ded1d79e7582b242bdc7dcc9a057b8"
   },
   {
     "file": "lair-03-colonnes.webp",
@@ -495,14 +495,14 @@
         255
       ],
       [
-        6,
+        5,
         255
       ],
       [
-        5,
+        0,
         255
       ]
     ],
-    "sha256": "7867f0c101b6e595d28409f951e57b4d7d7fb3e005d9a5499c1694fcfd1712ce"
+    "sha256": "e5e175338f34e2f6c413eb75b4881ae0d6f7dba9c54deeb032a2f3cc429c0578"
   }
 ]

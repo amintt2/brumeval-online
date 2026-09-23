@@ -1,0 +1,26 @@
+[
+  {
+    "file": "01-banniere.webp",
+    "size": [
+      960,
+      640
+    ],
+    "sha256": "36e5c6740b1536dd345a2ae531d7ac5d42df654d2974c442f2ab2d6acc0a9e95"
+  },
+  {
+    "file": "02-herse.webp",
+    "size": [
+      960,
+      640
+    ],
+    "sha256": "13f3bcb85924e282fbe40724eeef562fea80750dea7ae1be52e5192755910263"
+  },
+  {
+    "file": "03-fondations.webp",
+    "size": [
+      960,
+      640
+    ],
+    "sha256": "492a8ff2c2ad1e458d4c689407128193a5489d16eb2e06c031296ac77effa382"
+  }
+]

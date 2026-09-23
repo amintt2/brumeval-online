@@ -66,7 +66,7 @@ def stone_weather(material):
     if material.get('castle_weathering_v1'):return
     g=Graph(material);base=g.source('Base Color');rough=g.source('Roughness')
     pos,broad,streak,cavity,z=masks(g,.35)
-    # Broad tonal modulation stays within 12%, so the ashlar and mortar remain dominant.
+    # Broad tonal modulation preserves the ashlar and mortar beneath the weathering.
     variation=g.remap(broad,.15,.85,.72,1.07)
     color=g.mix(base,variation,1,'MULTIPLY')
     low=g.remap(z,12.1,17,1,0)

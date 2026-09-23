@@ -14,7 +14,7 @@ python assets/blender/codex/art/review.py
 ## Captures extérieures
 
 ```powershell
-& 'C:/Program Files/Blender Foundation/Blender 5.0/blender.exe' --background --factory-startup --python-exit-code 1 --python assets/blender/codex/art/angles.py -- --only cliff,cliff_back,house,cemetery,lair,forest --samples 24
+& 'C:/Program Files/Blender Foundation/Blender 5.0/blender.exe' --background --factory-startup --python-exit-code 1 --python assets/blender/codex/art/angles.py -- --only cliff,cliff_back,house,cemetery,lair,forest --samples 24 --details
 python assets/blender/codex/art/scene_angle_sheets.py
 ```
 

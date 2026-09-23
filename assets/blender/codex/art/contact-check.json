@@ -1,0 +1,37 @@
+{
+  "finite": true,
+  "vertices": 132108,
+  "minimum_lift_m": 0.0,
+  "maximum_lift_m": 1.4248390197753906,
+  "raised_vertices": 2830,
+  "portal_lift_m": 0.0,
+  "contacts": [
+    {
+      "support": "left_tower",
+      "point": [
+        -0.07196030020713806,
+        83.85889434814453,
+        12.05999755859375
+      ],
+      "minimum_z": 12.04
+    },
+    {
+      "support": "front_platform",
+      "point": [
+        5.875930309295654,
+        74.41717529296875,
+        9.891651153564453
+      ],
+      "minimum_z": 9.04
+    },
+    {
+      "support": "right_tower",
+      "point": [
+        25.11910629272461,
+        87.00613403320312,
+        12.0599365234375
+      ],
+      "minimum_z": 12.04
+    }
+  ]
+}
