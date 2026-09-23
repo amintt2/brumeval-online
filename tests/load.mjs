@@ -49,6 +49,7 @@ if (flag('server')) {
   process.on('message', async (m) => {
     if (m.t === 'reset') {
       durations.length = 0;
+      game.perf?.resetPhases?.();
       cpu0 = process.cpuUsage();
       wall0 = performance.now();
       process.send({ t: 'reset' });
@@ -181,7 +182,7 @@ async function parent() {
   log(`CPU serveur : ${s.cpuPct.toFixed(1)} % d'un cœur · RSS ${(s.rss / 1e6).toFixed(0)} Mo · tas ${(s.heap / 1e6).toFixed(0)} Mo`);
   log(`par client : ${(wireBps / 1024).toFixed(2)} Ko/s sur le fil (${(rawBps / 1024).toFixed(2)} Ko/s avant compression), ${msgps.toFixed(1)} messages/s en ${framesps.toFixed(1)} trames/s`);
   log(`activité : ${chats} messages de discussion, ${attacks} attaques, ${corrections} corrections, ${stuck} trajets bloqués, ${s.errors} erreurs serveur`);
-  if (s.phases) log(`phases du tick (moyenne ms) : ${Object.entries(s.phases).map(([k, v]) => `${k} ${v.avg.toFixed(3)}`).join(' · ')}`);
+  if (s.phases) log(`phases du tick (ms par tick) : ${Object.entries(s.phases).map(([k, v]) => `${k} ${v.msPerTick.toFixed(3)}`).join(' · ')}`);
   const out = arg('json', null);
   if (out) fs.writeFileSync(out, JSON.stringify(result, null, 2));
 

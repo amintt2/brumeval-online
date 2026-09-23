@@ -8,6 +8,9 @@ import {
 import { validName, validPassword, validClass, nameKey, hashPassword, verifyPassword, dummyVerify } from './auth.js';
 import { newAccount } from './persistence.js';
 import { isNum } from './util.js';
+import { PERMESSAGE_DEFLATE, Outbox, wantsBatch, flushAll } from './wsout.js'; // [netcode-perf]
+import { clientIp } from './proxy.js'; // [netcode-perf]
+import { VERSION, buildId } from './version.js'; // [netcode-perf]
 
 const AUTH_MESSAGES = {
   bad_name: 'Nom invalide : 3 à 16 caractères (lettres, chiffres ou _).',
@@ -52,6 +55,7 @@ class Session {
       ws.terminate();
       return;
     }
+    if (this.outbox) return this.outbox.push(str); // [netcode-perf] per-tick `batch` coalescing (opt-in)
     ws.send(str);
   }
 
@@ -151,12 +155,13 @@ class Session {
     const { game, log } = this.ctx;
     const p = game.addPlayer(account, this);
     this.player = p;
-    this.send({ t: S2C.AUTH_OK, id: p.id, self: p.selfState(), tod: game.tod(), online: game.players.size, motd: MOTD });
+    this.send({ t: S2C.AUTH_OK, id: p.id, self: p.selfState(), tod: game.tod(), online: game.players.size, motd: MOTD, ver: VERSION, build: buildId() }); // [netcode-perf] ver/build
     log.info(`+ ${p.name} (${CLASSES[p.cls].name} niv. ${p.level}) connecté — ${game.players.size} en ligne`);
   }
 
   onClose() {
     this.closed = true;
+    this.outbox?.discard(); // [netcode-perf]
     const p = this.player;
     if (!p) return;
     this.player = null;
@@ -172,12 +177,13 @@ class Session {
 
 /** Attach the WebSocket endpoint to an http server. Returns { wss, close() }. */
 export function attachNet(httpServer, ctx) {
-  const wss = new WebSocketServer({ server: httpServer, path: WS_PATH, maxPayload: MAX_PAYLOAD });
+  const wss = new WebSocketServer({ server: httpServer, path: WS_PATH, maxPayload: MAX_PAYLOAD, perMessageDeflate: PERMESSAGE_DEFLATE }); // [netcode-perf] compression
   const sessions = new Set();
 
   wss.on('connection', (ws, req) => {
-    const ip = req.socket.remoteAddress || '?';
+    const ip = clientIp(req); // [netcode-perf] TRUST_PROXY aware
     const s = new Session(ws, ip, ctx);
+    s.outbox = new Outbox(ws, wantsBatch(req)); // [netcode-perf]
     sessions.add(s);
     ws.on('close', () => sessions.delete(s));
   });
@@ -200,6 +206,7 @@ export function attachNet(httpServer, ctx) {
     sessions,
     close() {
       clearInterval(heartbeat);
+      flushAll(); // [netcode-perf] deliver queued batches before closing
       for (const s of sessions) {
         try { s.ws.close(1001, 'Serveur arrêté'); } catch { /* ignore */ }
       }

@@ -6,6 +6,7 @@ import { RANGE_TOLERANCE, MULTI_HIT_INTERVAL_MS } from '../config.js';
 import { recordKill, killLabel } from '../quests.js';
 import { dist, isId, isInt, isNum, randInt, round2 } from '../util.js';
 import { grantXp, giveItem, giveGold, healPlayer } from './players.js';
+import { aoiOf } from '../aoi.js'; // [netcode-perf]
 
 const TARGETED = new Set(['melee', 'projectile']);
 
@@ -43,12 +44,15 @@ export function handleStop(game, p) {
 
 /** Monsters (alive, damageable) within `r` of (x, z). */
 export function monstersInRadius(game, x, z, r) {
-  const out = [];
-  for (const m of game.monsters.values()) {
-    if (m.dead || m.invulnerable) continue;
-    if (dist(x, z, m.x, m.z) <= r + m.radius) out.push(m);
+  // [netcode-perf] spatial grid query instead of a scan of every monster
+  const out = aoiOf(game).monstersNear(x, z, r, []);
+  let n = 0;
+  for (const m of out) {
+    if (m.dead || m.invulnerable || !game.monsters.has(m.id)) continue;
+    if (dist(x, z, m.x, m.z) <= r + m.radius) out[n++] = m;
   }
-  return out;
+  out.length = n;
+  return out.sort((a, b) => a.id - b.id); // spawn order, as before (deterministic damage rolls)
 }
 
 /**

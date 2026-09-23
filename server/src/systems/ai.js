@@ -5,14 +5,19 @@ import { VILLAGE, inVillage } from '../../../shared/world.js';
 import { LEASH_EXTRA } from '../config.js';
 import { dist, dist2, randRange, round2 } from '../util.js';
 import { damagePlayer } from './players.js';
+import { aoiOf } from '../aoi.js'; // [netcode-perf]
 
 const WANDER_SPEED = 0.35;   // fraction of speed while wandering
 const RETURN_SPEED = 1.5;    // fraction of speed while leashing back
 const MOVE_FLAG_MS = 150;    // `s` = MOVE for this long after a step
 
-export function updateMonsters(game, dt, now) {
+export function updateMonsters(game, tickDt, now) {
+  const aoi = aoiOf(game); // [netcode-perf] spatial grid + monsters far from every player sleep (low tick rate)
+  aoi.beginTick();
   for (const m of game.monsters.values()) {
     if (m.dead) continue;
+    const dt = aoi.monsterStep(m, tickDt); // [netcode-perf]
+    if (dt === 0) continue; // [netcode-perf] asleep this tick
     switch (m.ai) {
       case 'idle': idle(game, m, dt, now); break;
       case 'wander': wander(game, m, dt, now); break;
@@ -82,12 +87,14 @@ export function startReturn(m) {
   m.stuck = 0;
 }
 
+const aggroBuf = []; // [netcode-perf] reused query buffer
+
 /** Aggressive monsters attack the nearest valid player within `aggro` metres. */
 function tryAggro(game, m, now) {
   const r = m.def.aggro;
   if (!(r > 0)) return false;
   let best = null, bestD = r * r;
-  for (const p of game.players.values()) {
+  for (const p of aoiOf(game).playersNear(m.x, m.z, r, aggroBuf, false)) { // [netcode-perf] grid query
     if (!validVictim(p)) continue;
     const d = dist2(m.x, m.z, p.x, p.z);
     if (d <= bestD) { best = p; bestD = d; }

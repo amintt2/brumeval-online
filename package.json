@@ -1,6 +1,7 @@
 {
   "name": "brumeval-online",
   "private": true,
+  "version": "0.2.0",
   "type": "module",
   "description": "Brumeval Online — MMORPG multijoueur navigateur (Three.js + Node.js), modèles 3D générés avec Blender",
   "workspaces": ["client", "server"],
