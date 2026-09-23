@@ -211,7 +211,8 @@ async function main() {
   let fb = B.mark();
   await A.close();
   await B.waitFor((m) => m.t === 'chat' && m.ch === 'system' && m.text.includes(NAME_A) && m.text.includes('quitté'), { from: fb, desc: 'message de départ' });
-  await B.waitFor((m) => m.t === 'snap' && (m.gone.includes(oldId) || !m.ents.some((e) => e.id === oldId)), { from: fb, desc: 'gone de A' });
+  // with snapshot deltas an unchanged entity is simply omitted: only `gone` proves the departure
+  await B.waitFor((m) => m.t === 'snap' && m.gone.includes(oldId), { from: fb, desc: 'gone de A' });
   ok(!B.ents.has(oldId), 'B reçoit le départ de A (message système + gone)');
 
   const A2 = await new Bot(url, 'A2').connect(); bots.push(A2);
