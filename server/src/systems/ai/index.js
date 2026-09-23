@@ -20,6 +20,8 @@ export { stepToward, touchesVillage };
 
 const WANDER_SPEED = 0.35;   // fraction of speed while wandering
 const RETURN_SPEED = 1.5;    // fraction of speed while leashing back
+const GIVE_UP_DIST = 45;     // target farther than this: leash back
+const GIVE_UP_MS = 12_000;   // no attack given or taken for this long: leash back
 
 // How much each archetype likes to circle around its target / to pause.
 const STRAFE_W = { brute: 0.25, rusher: 0.5, skirmisher: 1.6, ranged: 1.1, caster: 0.9, pack: 1.2, boss: 0.15, hopper: 0.5 };
@@ -177,6 +179,8 @@ function combat(game, m, dt, now) {
   if (dist2(m.x, m.z, z.x, z.z) > leash * leash) return startReturn(m, game);
   const target = pickTarget(game, m);
   if (!target) return startReturn(m, game);
+  // give up when the target is out of reach (kited far away, blocked by the scenery) or nothing happened for long
+  if (dist2(m.x, m.z, target.x, target.z) > GIVE_UP_DIST * GIVE_UP_DIST || now - m.lastCombat > GIVE_UP_MS) return startReturn(m, game);
   m.target = target.id;
   checkPhase(game, m, now);
 
@@ -289,6 +293,15 @@ export function decide(game, m, target, now) {
   if (ranged && d < T.prefDist * 0.7) opts.push({ kind: 'backoff', w: 1.5 + T.caution * 2.5 });
   // hit & run: skirmishers step back after trading blows
   if (arch === 'skirmisher' && d < 2.6 && !opts.some((o) => o.kind === 'attack')) opts.push({ kind: 'backoff', w: 1 + T.caution * 2 });
+  // rushers / hoppers step out of melee to use their gap closer (lunge, leap) again
+  let gapStop = 0;
+  if (arch === 'rusher' || arch === 'hopper') {
+    const gap = B.attacks.find((a) => a.kind === 'tele' && (a.min || 0) >= 2 && now >= (m.cds[a.id] || 0) - 800);
+    if (gap && d < gap.min) {
+      gapStop = gap.min + 1;
+      opts.push({ kind: 'backoff', w: 0.5 + T.caution * 1.2 + (1 - T.aggression) * 0.5 });
+    }
+  }
   if (d < 10) opts.push({ kind: 'strafe', w: (STRAFE_W[arch] ?? 0.5) * (0.5 + (1 - T.aggression) * 0.8) * (opts.some((o) => o.kind === 'attack') ? 0.5 : 1) });
   opts.push({ kind: 'pause', w: (PAUSE_W[arch] ?? 0.3) * (0.3 + T.patience) });
   if (B.flee && hpRatio < B.flee && !m.fled && T.caution > 0.45) opts.push({ kind: 'flee', w: 8 });
@@ -313,7 +326,7 @@ export function decide(game, m, target, now) {
       if (rnd(m) < 0.2) T.strafeSide = -T.strafeSide; // change sides from time to time
       break;
     case 'backoff':
-      m.act = { kind: 'backoff', until: now + 500 + rnd(m) * 700, stop: ranged ? T.prefDist : 4.5 };
+      m.act = { kind: 'backoff', until: now + 500 + rnd(m) * 700, stop: ranged ? T.prefDist : gapStop || 4.5 };
       break;
     case 'flee':
       m.fled = true;
