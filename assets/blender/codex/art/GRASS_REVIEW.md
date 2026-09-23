@@ -18,3 +18,9 @@ Réserves conservées : les reliefs présentent encore des formes arrondies et b
 
 Ces images sont les illustrations fixes CX-1 ; aucune modification des modèles temps réel, collisions ou niveaux du jeu.
 Contrôle supplémentaire du raccord village/terrain : la première version remontait de 20 à 33 cm sous les deux maisons du fond. Le relief est maintenant maintenu sous le sol du village jusqu'à y=55 m, puis raccordé progressivement sur 12 m. `check_settlement_terrain.py` confirme le niveau -0,065 m aux centres et approches de ces deux maisons ; le terrain original est à -0,05 m. Ce contrôle géométrique ne simule pas le déplacement d'un joueur.
+
+## Complément demandé : usure et liaison des fondations
+
+Deux bannières délavées sont fixées aux remparts, avec plis, ourlets irréguliers et petites déchirures géométriques. La pierre conserve ses joints et reçoit des variations minérales, coulures et humidité ; la herse reçoit une oxydation localisée. Les gros plans permettent de juger ces effets sans dépendre de la caméra lointaine.
+
+Le nœud de contact corrige le vide sous les structures porteuses, y compris lorsque leurs empreintes se chevauchent. Contrôle sur le vrai château : 2 830 sommets relevés, correction maximale 1,425 m, aucun déplacement négatif, passage central inchangé. Voir `contact-check.json`. Il reste des limites artistiques : pierre encore régulière et relief arrondi par endroits ; ces corrections ne valent pas une validation globale du style Elden Ring.

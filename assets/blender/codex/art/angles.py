@@ -11,6 +11,7 @@ import argparse, importlib
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--views',default='');p.add_argument('--only',default='cliff');p.add_argument('--samples',type=int,default=24)
+    p.add_argument('--details',action='store_true')
     args=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     sets={
       'cliff':('bg_login',[
@@ -43,8 +44,11 @@ def main():
         ('02-racines',(-8,-3,1.2),(0,25,3),31),
         ('03-stele',(5,15,1.6),(0,31,2.4),32)])}
     out=HERE/'previews/angles';out.mkdir(parents=True,exist_ok=True)
+    previous_key=None
     for group in args.only.split(','):
-        key,views=sets[group];B.C.reset();importlib.reload(B.gpu);D.build(key,B)
+        key,views=sets[group]
+        if key!=previous_key:
+            B.C.reset();importlib.reload(B.gpu);D.build(key,B);previous_key=key
         s=bpy.context.scene;s.render.resolution_x=960;s.render.resolution_y=640;s.render.resolution_percentage=100
         s.render.use_persistent_data=True
         s.render.image_settings.file_format='WEBP';s.render.image_settings.color_mode='RGB';s.render.image_settings.quality=90
@@ -56,5 +60,14 @@ def main():
                 cam=s.camera;cam.location=pos;B.aim(cam,target);cam.data.lens=lens
                 s.render.filepath=str(out/(group+'-'+name+'.webp'));bpy.ops.render.render(write_still=True)
                 print('ANGLE DONE',group,name,flush=True)
+            if group=='cliff' and args.details:
+                detail_out=HERE/'previews/weathering';detail_out.mkdir(parents=True,exist_ok=True)
+                for name,pos,target,lens in [
+                    ('01-banniere',(20,74,18.3),(24,82,17.9),50),
+                    ('02-herse',(9,75,15.5),(6,83,15.3),52),
+                    ('03-fondations',(-10,66,10),(5,82,11.5),42)]:
+                    cam=s.camera;cam.location=pos;B.aim(cam,target);cam.data.lens=lens
+                    s.render.filepath=str(detail_out/(name+'.webp'));bpy.ops.render.render(write_still=True)
+                    print('WEATHERING DONE',name,flush=True)
 
 if __name__=='__main__':main()

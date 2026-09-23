@@ -39,3 +39,11 @@ Les cartes alpha à petits brins alignés sont remplacées, pour ces illustratio
 ## Relief procédural
 
 `terrain.py` remplace le socle circulaire et les montagnes ellipsoïdes du village : grilles de hauteur, bruit fractal déformé, simulation simplifiée de pluie/transport de sédiments et relaxation des talus. Le plateau de fondation et la rampe sont protégés. Voir `TERRAIN_METHOD.md` pour les références et `GRASS_REVIEW.md` pour les réserves artistiques. `grass_density.py` exporte la carte de densité procédurale ; le noir correspond au chemin et aux zones clairsemées, le blanc aux zones fournies. Les exclusions des bâtiments s'appliquent ensuite.
+
+## Raccord aux fondations
+
+`foundation_contact.py` crée le groupe Geometry Nodes `CastleFoundationContact`. Les emprises porteuses sont extraites des objets du château évalués en coordonnées monde. Le groupe combine proximité XY, échantillonnage de hauteur et raycast vertical pour sélectionner la base la plus haute lorsque plusieurs emprises se superposent. Le terrain monte uniquement, avec 6 cm de recouvrement et une transition bruitée de 1,5 à 2 m. Portes, arches, herses et rampes ne servent pas de sources de remplissage.
+
+Les emprises sont recalculées à la génération de la scène. Après une modification manuelle des bâtiments, relancer le générateur pour les actualiser. `check_contacts.py` vérifie le terrain évalué : contacts des deux tours, plateforme avant, absence de creusement et passage inchangé. Résultat dans `contact-check.json`.
+
+`weathering.py` choisit les masques selon pierre, fer et tissu ; deux bannières à géométrie légèrement abîmée sont fixées aux remparts. Voir `WEATHERING_METHOD.md`. Les gros plans sont régénérés avec `angles.py -- --only cliff --details --samples 24`, dans `previews/weathering/`.

@@ -7,6 +7,8 @@ import common as C
 from kit import materials as M, gn
 import grass_field
 import terrain as landscape
+import weathering
+import foundation_contact
 
 B=None
 R=random.Random(20260923)
@@ -244,6 +246,7 @@ def chapel(x,y,z=0,scale=1,ruined=False):
     objs=list(set(bpy.context.scene.objects)-before);G.pose(objs,loc=(x,y,z),scale=scale)
 
 def citadel():
+    before=set(bpy.context.scene.objects)
     stone=material('Fortress','stone_blocks',color='#737e85',color2='#4c5b65',mortar_color='#4d575d',moss=.10,scale=1.65,dirt=.3,wear=.65)
     roof=material('FortressSlate','slate',color='#293842',moss=.1)
     # Preserve the layout RNG while the old ring-shaped cliff is replaced.
@@ -255,6 +258,7 @@ def citadel():
     G.box('DessusPorte',(3.2,5,3.3),stone,loc=(6,85,18.85),bevel=.07)
     arch(6,82.3,12,r=1.7,height=3.3,depth=.65)
     iron=material('GateIron','metal',kind='blackiron',rust=.38)
+    weathering.apply_castle_weathering(stone,iron)
     for j in range(9):G.cyl('Herse',.035,4.7,10,iron,loc=(4.6+j*.35,82.9,14.4))
     for z in [12.8,14.2,15.6]:G.box('HerseTraverse',(3.2,.07,.06),iron,loc=(6,82.9,z))
     # A terraced stone approach gives the fortress a credible entrance and scale.
@@ -290,6 +294,39 @@ def citadel():
             G.box('Creneau',(.7,.7,1.2),stone,loc=(x+r*math.cos(a),y+r*math.sin(a),12+h+.45),bevel=.05)
     for i in range(30):G.box('Merlon',(.65,.9,.95),stone,loc=(-1.5+i*.92,82.8,20.8),bevel=.04)
     chapel(4,91,13,.7)
+    castle_banners(iron)
+    bpy.context.view_layer.update()
+    stats=foundation_contact.apply_foundation_contacts(bpy.data.objects['ErodedCastleTerrain'],set(bpy.context.scene.objects)-before)
+    import json
+    (B.HERE/'foundation-contact.json').write_text(json.dumps(stats,indent=2)+'\n',encoding='utf-8')
+
+def castle_banners(iron):
+    cloth=weathering.aged_banner_material('BannerOldCloth','#283f4b')
+    for index,sx in enumerate([-.5,24.]):
+        vs=[];fs=[];nx=36;ny=80
+        for j in range(ny+1):
+            v=j/ny
+            for i in range(nx+1):
+                u=i/nx
+                fray=.065*math.sin(u*71+index)+.045*math.sin(u*127)
+                vs.append((sx+(u-.5)*1.3+.06*math.sin(v*6)*v,
+                           81.93-.13*math.sin(u*math.tau+v*3)*v-.10*v,
+                           19.62-3.4*v+fray*v**12))
+        for j in range(ny):
+            for i in range(nx):
+                u=(i+.5)/nx;v=(j+.5)/ny
+                # Small physical tears concentrate near the exposed lower hem.
+                if ((u-.23)/.065)**2+((v-.86)/.048)**2<1:continue
+                if ((u-.81)/.045)**2+((v-.72)/.038)**2<1:continue
+                if j>ny-4 and i in [2+index,14-index]:continue
+                q=j*(nx+1)+i;fs.append((q,q+nx+1,q+nx+2,q+1))
+        ob=mesh('BannierePatinee'+str(index),vs,fs,cloth,True)
+        ob.modifiers.new('EpaisseurTissu','SOLIDIFY').thickness=.004
+        for side in [-1,1]:
+            G.rod('ConsoleBanniere',(sx+side*.72,82.65,19.68),(sx+side*.72,81.93,19.68),.045,12,iron)
+            G.tube('AttacheBanniere',[(sx+side*.50,81.93,19.62),(sx+side*.50,81.93,19.72)],.022,10,iron)
+        G.rod('TraverseBanniere',(sx-.76,81.93,19.68),(sx+.76,81.93,19.68),.04,12,iron)
+
 
 def houses():
     # Each raised threshold has a solid staircase: no translated floating treads.
