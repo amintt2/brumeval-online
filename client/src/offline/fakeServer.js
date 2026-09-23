@@ -11,6 +11,8 @@ import {
 } from '@shared/data.js';
 import { SPAWN_POINT, NPC_SPAWNS, inVillage, VILLAGE, isWalkable } from '@shared/world.js';
 import { CollisionWorld } from '@shared/collision.js';
+// [combat-souls]
+import { STAMINA, ROLL, ECHO, inTelegraph, regenStamina } from '@shared/combat.js';
 
 const LATENCY_MS = 35;
 const r2 = (v) => Math.round(v * 100) / 100;
@@ -104,7 +106,11 @@ export class FakeServer {
       name: this.name, cls: this.cls, level, xp: 40, gold: 180, mp: st.mmp, mmp: st.mmp, stats: st, inv, eq,
       quests: { q_slimes: { state: 'done', n: 8 } }, abilities: c.abilities.slice(), dead: false,
       cds: [0, 0, 0, 0], autoTarget: 0, lastCombat: -1e9, regenAcc: 0,
+      // [combat-souls]
+      st: STAMINA.max, mst: STAMINA.max, stSpentAt: -1e9, sentSt: STAMINA.max, sprint: false, exhausted: false,
+      iframeUntil: 0, rollReady: 0, echo: null,
     });
+    this.teleSeq = 0;
     for (const n of NPC_SPAWNS) {
       const def = NPCS[n.key];
       this._add({ k: KIND.NPC, n: def.name, m: def.model, nk: n.key, lv: 1, x: n.x, z: n.z, ry: n.ry, hp: 100, mhp: 100, home: { x: n.x, z: n.z } });
@@ -149,6 +155,7 @@ export class FakeServer {
       mp: p.mp, mmp: p.mmp, gold: p.gold, stats: { atk: p.stats.atk, def: p.stats.def, crit: p.stats.crit, speed: p.stats.speed },
       inv: p.inv.map((s) => (s ? { ...s } : null)), eq: { ...p.eq }, quests: JSON.parse(JSON.stringify(p.quests)),
       abilities: p.abilities.slice(), x: r2(p.x), z: r2(p.z), ry: r3(p.ry), dead: p.dead,
+      st: Math.floor(p.st), mst: p.mst, echo: p.echo ? { ...p.echo } : null, // [combat-souls]
     };
   }
 
@@ -197,6 +204,9 @@ export class FakeServer {
         if (p.inv[msg.slot]) { p.inv[msg.slot] = null; this._self(['inv']); this.notify('info', 'Objet jeté.'); }
         break;
       case C2S.RESPAWN: this._respawn(); break;
+      // [combat-souls]
+      case C2S.DODGE: this._dodge(msg); break;
+      case C2S.SPRINT: p.sprint = msg.on === true; break;
       default: break;
     }
   }
@@ -253,6 +263,7 @@ export class FakeServer {
     p.cds[slot] = now + ab.cd * 1000;
     this.send({ t: S2C.CD, slot, ms: ab.cd * 1000 });
     if (ab.mp) { p.mp -= ab.mp; this._self(['mp']); }
+    if (ab.st) { p.st = Math.max(0, p.st - ab.st); p.stSpentAt = now; } // [combat-souls]
     p.lastCombat = now;
     if (target) p.ry = Math.atan2(target.x - p.x, target.z - p.z);
     const fxNear = (m) => this.send({ t: S2C.FX, ...m });
@@ -375,9 +386,69 @@ export class FakeServer {
     this._self(['hp']);
   }
 
+  // ---------------------------------------------------------------- [combat-souls]
+  _dodge(msg) {
+    const p = this.player;
+    const now = this.now();
+    if (p.dead || !Number.isFinite(msg.dx) || !Number.isFinite(msg.dz)) return;
+    if (now < p.rollReady) { this.err('cooldown', 'Roulade pas encore prête'); return; }
+    if (p.st < STAMINA.roll) { this.err('no_stamina', 'Pas assez d\'endurance'); return; }
+    p.st -= STAMINA.roll;
+    p.stSpentAt = now;
+    p.iframeUntil = now + ROLL.iframeMs;
+    p.rollReady = now + ROLL.cdMs;
+    p.sentSt = Math.floor(p.st);
+    this._self(['st']);
+    this.send({ t: S2C.FX, k: FX.ROLL, src: p.id, dx: r3(msg.dx), dz: r3(msg.dz) });
+  }
+
+  _stamina(dt, now) {
+    const p = this.player;
+    if (p.dead) return;
+    const moving = now - (p.movedAt || 0) < 250;
+    if (p.sprint && !p.exhausted && p.st > 0 && moving) {
+      p.st = Math.max(0, p.st - STAMINA.sprintPerS * dt);
+      p.stSpentAt = now;
+      if (p.st <= 0) p.exhausted = true;
+    } else {
+      p.st = regenStamina(p.st, p.mst, now - p.stSpentAt, dt * 1000);
+    }
+    if (p.exhausted && p.st >= STAMINA.sprintMin) p.exhausted = false;
+    const v = Math.floor(p.st);
+    if (v !== p.sentSt && (Math.abs(v - p.sentSt) >= 4 || v === 0 || v >= p.mst)) { p.sentSt = v; this._self(['st']); }
+    // death echo pick-up
+    if (p.echo && Math.hypot(p.x - p.echo.x, p.z - p.echo.z) <= ECHO.pickupR) {
+      const xp = p.echo.xp;
+      p.echo = null;
+      this.send({ t: S2C.FX, k: FX.ECHO, src: p.id, v: xp });
+      this.notify('info', 'Écho récupéré : votre expérience vous revient.');
+      this._self(['echo']);
+      this._giveXp(xp);
+    }
+  }
+
+  /** Telegraphed heavy attack of an offline monster (same shapes as the server). */
+  _telegraph(m, atk) {
+    const p = this.player;
+    const a = Math.atan2(p.x - m.x, p.z - m.z);
+    const at = atk.at === 'target' ? { x: p.x, z: p.z } : { x: m.x, z: m.z };
+    const t = { id: ++this.teleSeq, src: m.id, shape: atk.shape, x: r2(at.x), z: r2(at.z), r: atk.r || 0, a: r3(a), ms: atk.windup, ab: atk.id, clip: atk.clip };
+    if (atk.shape === 'ring') t.r2 = atk.r2;
+    if (atk.shape === 'cone') t.arc = atk.arc;
+    if (atk.shape === 'line') { t.w = atk.wid; t.len = atk.len; }
+    m.ry = a;
+    m.busyUntil = this.now() + atk.windup + (atk.rec || 500);
+    this.send({ t: S2C.TELE, ...t });
+    this.later(atk.windup, () => {
+      if (m.s === STATE.DEAD || p.dead) return;
+      if (inTelegraph({ ...t, w: t.w }, p.x, p.z, 0.45)) this._damagePlayer(m, atk.power || 1.3);
+    });
+  }
+
   _damagePlayer(m, power) {
     const p = this.player;
     if (p.dead) return;
+    if (this.now() < p.iframeUntil) { this.send({ t: S2C.FX, k: FX.DODGE, tg: p.id }); return; } // [combat-souls]
     const d = computeDamage(m.st.atk, power, p.stats.def, m.st.crit, this.rand(), this.rand());
     p.hp = Math.max(0, p.hp - d.amount);
     p.lastCombat = this.now();
@@ -389,7 +460,15 @@ export class FakeServer {
       p.autoTarget = 0;
       this.send({ t: S2C.DEATH, id: p.id, by: m.id });
       this.notify('error', `Vous avez été vaincu par ${m.n}.`);
-      this._self(['dead', 'hp']);
+      // [combat-souls] death echo
+      if (p.echo) this.notify('error', `Votre écho précédent s'est dissipé à jamais (${p.echo.xp} XP perdus).`);
+      p.echo = null;
+      if (p.xp > 0) {
+        p.echo = { x: r2(p.x), z: r2(p.z), xp: p.xp };
+        p.xp = 0;
+        this.notify('info', `Votre écho (${p.echo.xp} XP) repose là où vous êtes tombé. Retrouvez-le avant de mourir à nouveau !`);
+      }
+      this._self(['dead', 'hp', 'xp', 'echo']);
     }
   }
 
@@ -399,8 +478,9 @@ export class FakeServer {
     p.dead = false;
     p.s = STATE.IDLE;
     p.hp = p.mhp; p.mp = p.mmp;
+    p.st = p.mst; p.sentSt = p.mst; p.exhausted = false; // [combat-souls]
     p.x = SPAWN_POINT.x; p.z = SPAWN_POINT.z; p.ry = SPAWN_POINT.ry;
-    this._self(['dead', 'hp', 'mp', 'x', 'z', 'ry']);
+    this._self(['dead', 'hp', 'mp', 'x', 'z', 'ry', 'st']);
     this.send({ t: S2C.CORRECT, x: p.x, z: p.z });
     this.send({ t: S2C.FX, k: FX.RESPAWN, src: p.id });
     this.notify('info', 'Vous êtes de retour au village de Brumeval.');
@@ -553,6 +633,7 @@ export class FakeServer {
       else if (p.cds[0] <= now && !inVillage(p.x, p.z) && Math.hypot(t.x - p.x, t.z - p.z) <= ABILITIES[p.abilities[0]].range + 0.5) this._cast(0, t, {});
     }
     p.s = p.dead ? STATE.DEAD : now - (p.movedAt || 0) < 250 ? STATE.MOVE : STATE.IDLE;
+    this._stamina(dt, now); // [combat-souls]
     // regen
     p.regenAcc += dt;
     if (p.regenAcc >= 1 && !p.dead) {
@@ -622,21 +703,21 @@ export class FakeServer {
         m.returning = true;
       } else {
         m.tg = p.id;
-        if (dp > def.range) moved = this._moveToward(m, p.x, p.z, speed, dt);
+        // [combat-souls] now and then a telegraphed heavy attack (dodge it with Space)
+        const heavy = (def.ai?.attacks || []).filter((a) => a.kind === 'tele' && (!a.phase || a.phase <= 1));
+        if (now < (m.busyUntil || 0)) { /* winding up */ } else if (heavy.length && now >= (m.nextHeavy || 0) && dp <= Math.max(...heavy.map((a) => a.max || 4))) {
+          if (!m.nextHeavy) m.nextHeavy = now + 2500 + this.rand() * 2500;
+          else {
+            m.nextHeavy = now + 5000 + this.rand() * 4000;
+            this._telegraph(m, heavy[Math.floor(this.rand() * heavy.length)]);
+          }
+        } else if (dp > def.range) moved = this._moveToward(m, p.x, p.z, speed, dt);
         else {
           m.ry = Math.atan2(p.x - m.x, p.z - m.z);
           if (now >= m.nextAtk) {
             m.nextAtk = now + def.atkCd * 1000;
-            this.send({ t: S2C.FX, k: FX.SWING, src: m.id, tg: p.id });
-            this.later(250, () => { if (m.s !== STATE.DEAD && Math.hypot(p.x - m.x, p.z - m.z) <= def.range + 1) this._damagePlayer(m, 1); });
-          }
-        }
-        if (def.slam && now >= m.nextSlam) {
-          if (!m.nextSlam) m.nextSlam = now + 3000;
-          else {
-            m.nextSlam = now + def.slam.cd * 1000;
-            this.send({ t: S2C.FX, k: FX.AOE, src: m.id, x: r2(m.x), z: r2(m.z), r: def.slam.radius, ab: 'slam' });
-            if (dp <= def.slam.radius) this._damagePlayer(m, def.slam.power);
+            this.send({ t: S2C.FX, k: FX.SWING, src: m.id, tg: p.id, ms: 380 });
+            this.later(380, () => { if (m.s !== STATE.DEAD && Math.hypot(p.x - m.x, p.z - m.z) <= def.range + 1) this._damagePlayer(m, 1); });
           }
         }
       }

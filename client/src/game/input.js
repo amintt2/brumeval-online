@@ -29,6 +29,7 @@ export class Input {
     this.canvas = canvas;
     this.h = handlers;
     this.held = new Set();
+    this.shift = new Set(); // [combat-souls] sprint key(s) held
     this.mouseX = window.innerWidth / 2;
     this.mouseY = window.innerHeight / 2;
     this.buttons = 0;
@@ -36,7 +37,11 @@ export class Input {
     this.enabled = true;
 
     window.addEventListener('keydown', (e) => this._keyDown(e));
-    window.addEventListener('keyup', (e) => this.held.delete(keyCode(e)));
+    window.addEventListener('keyup', (e) => {
+      const c = keyCode(e);
+      this.held.delete(c);
+      if (c === 'ShiftLeft' || c === 'ShiftRight' || c === 'Shift') this.shift.delete(c); // [combat-souls]
+    });
     window.addEventListener('blur', () => this.reset());
     document.addEventListener('visibilitychange', () => { if (document.hidden) this.reset(); });
 
@@ -58,6 +63,7 @@ export class Input {
 
   reset() {
     this.held.clear();
+    this.shift.clear();
     this.buttons = 0;
     this.down = null;
   }
@@ -82,6 +88,9 @@ export class Input {
     if (!this.enabled) return;
     const code = keyCode(e);
     if (code === 'Tab') e.preventDefault();
+    // [combat-souls] Space = dodge roll (no page scroll / button press), Shift = sprint (held)
+    if (code === 'Space') e.preventDefault();
+    if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'Shift') this.shift.add(code);
     if (MOVE_CODES[code]) {
       this.held.add(code);
       if (code.startsWith('Arrow')) e.preventDefault();
@@ -137,6 +146,11 @@ export class Input {
         /* ignore */
       }
     }
+  }
+
+  /** [combat-souls] Sprint key held (and not typing). */
+  get sprinting() {
+    return this.shift.size > 0 && this.enabled && !this.typing();
   }
 
   get dragging() {

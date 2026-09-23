@@ -1,0 +1,12 @@
+/* [combat-souls] nameplates of elites + floating combat texts of the soulslike combat. */
+#labels .np.elite .np-name {
+  color: #ffcf45;
+  text-shadow: 0 0 6px rgba(255, 190, 40, 0.75), 0 1px 2px #000, 0 0 2px #000;
+}
+#labels .np.elite .np-hp { box-shadow: 0 0 0 1px rgba(255, 207, 69, 0.9), 0 0 6px rgba(255, 190, 40, 0.5); }
+#labels .fct.dodge { color: #9fe6ff; font-size: 17px; font-style: italic; letter-spacing: 0.04em; }
+#labels .fct.stagger { color: #ffb03a; font-size: 19px; letter-spacing: 0.03em; }
+#labels .fct.guard { color: #c9d2dc; font-size: 15px; }
+#labels .fct.notice { color: #ff4a2e; font-size: 30px; font-family: 'Cinzel', Georgia, serif; }
+#labels .fct.phase { color: #ff5a3a; font-size: 24px; font-family: 'Cinzel', Georgia, serif; letter-spacing: 0.05em; }
+#labels .fct.echo { color: #8ff0ff; font-size: 22px; text-shadow: 0 0 8px rgba(80, 220, 255, 0.9), 0 2px 3px #000; }

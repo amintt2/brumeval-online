@@ -198,6 +198,44 @@ function buildStaticMap(onDone) {
   setTimeout(work, 0);
 }
 
+/** [combat-souls] Death echo marker (cyan diamond with a glow; on the rim with an arrow when far away). */
+function drawEcho(ctx, e, px, pz, scale, cx, dotR, W) {
+  let dx = (e.x - px) * scale, dz = (e.z - pz) * scale;
+  const d = Math.hypot(dx, dz);
+  const rim = cx - dotR * 2.2;
+  const far = d > rim;
+  if (far) { dx *= rim / d; dz *= rim / d; }
+  const x = cx + dx, y = cx + dz, r = dotR * 1.5;
+  ctx.save();
+  ctx.shadowColor = 'rgba(90, 225, 255, 0.95)';
+  ctx.shadowBlur = r * 2.2;
+  ctx.beginPath();
+  ctx.moveTo(x, y - r * 1.3);
+  ctx.lineTo(x + r, y);
+  ctx.lineTo(x, y + r * 1.3);
+  ctx.lineTo(x - r, y);
+  ctx.closePath();
+  ctx.fillStyle = '#8ff0ff';
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.lineWidth = Math.max(1, W / 180);
+  ctx.strokeStyle = '#0b3140';
+  ctx.stroke();
+  if (far) {
+    const a = Math.atan2(dz, dx);
+    ctx.translate(x + Math.cos(a) * r * 1.9, y + Math.sin(a) * r * 1.9);
+    ctx.rotate(a);
+    ctx.beginPath();
+    ctx.moveTo(r * 0.8, 0);
+    ctx.lineTo(-r * 0.4, r * 0.6);
+    ctx.lineTo(-r * 0.4, -r * 0.6);
+    ctx.closePath();
+    ctx.fillStyle = '#8ff0ff';
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 export function createMinimap(parent, tooltip) {
   const canvas = h('canvas', { class: 'bv-mm-canvas', 'aria-label': 'Minicarte', role: 'img' });
   const zoneEl = h('div', { class: 'bv-mm-zone' });
@@ -277,6 +315,7 @@ export function createMinimap(parent, tooltip) {
       const order = { npc: 0, monster: 1, player: 2 };
       const sorted = ents.slice().sort((a, b) => (order[a.k] ?? 1) + (a.boss ? 3 : 0) - ((order[b.k] ?? 1) + (b.boss ? 3 : 0)));
       for (const e of sorted) {
+        if (e.k === 'echo') continue; // [combat-souls] drawn below
         const dx = (e.x - px) * scale;
         const dz = (e.z - pz) * scale;
         if (dx * dx + dz * dz > (cx - dotR) * (cx - dotR)) continue;
@@ -305,6 +344,8 @@ export function createMinimap(parent, tooltip) {
           ctx.stroke();
         }
       }
+      // [combat-souls] death echo: glowing marker, pinned to the rim when out of range
+      if (last.echo) drawEcho(ctx, last.echo, px, pz, scale, cx, dotR, W);
       // self arrow — ry = atan2(dirX, dirZ); map x → right, z → down
       const ry = Number(last.ry) || 0;
       const ang = Math.atan2(Math.cos(ry), Math.sin(ry));

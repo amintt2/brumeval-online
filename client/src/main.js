@@ -20,6 +20,10 @@ import { Input } from './game/input.js';
 import { OrbitCamera } from './game/camera.js';
 import { LocalPlayer } from './game/player.js';
 import { Targeting } from './game/targeting.js';
+// [combat-souls]
+import { ABILITIES, MONSTERS } from '@shared/data.js';
+import { Telegraphs } from './render/telegraphs.js';
+import { EchoRenderer } from './render/echo.js';
 
 const canvas = document.getElementById('game');
 const labelsRoot = document.getElementById('labels');
@@ -56,6 +60,8 @@ const state = new GameState();
 if (URLP.tod !== null) state.todFrozen = URLP.tod;
 const audio = new Audio();
 let renderer, scene, camera, env, water, world, entities, effects, labels, orbit, player, targeting, input, collision, assets;
+let telegraphs, echoFx; // [combat-souls]
+const bossSeen = new Map(); // [combat-souls] boss id -> last time it fought the local player (ms)
 let fake = null;
 let ping = 0;
 let fps = 60;
@@ -176,7 +182,9 @@ function onMessage(m) {
       if (m.tg === state.selfId && state.self) {
         state.self.hp = m.hp;
         ui.setSelf(state.self);
+        damageDirection(m); // [combat-souls]
       }
+      noteBossFight(m, now); // [combat-souls]
       break;
     case S2C.HEAL:
       if (!state.inGame) break;
@@ -206,6 +214,11 @@ function onMessage(m) {
       if (m.slot >= 0 && m.slot < 4) {
         state.cooldowns[m.slot] = now + (m.ms || 0);
         ui.setCooldown(m.slot, m.ms || 0);
+        // [combat-souls] the server swung the auto-attack: same recovery / stamina as the server
+        if (m.slot === 0 && state.self) {
+          const ab = ABILITIES[state.self.abilities?.[0]];
+          if (ab) { player.commit(ab, now); player.spend(ab.st || 0, now); }
+        }
       }
       break;
     case S2C.DIALOG:
@@ -226,6 +239,14 @@ function onMessage(m) {
       break;
     case S2C.ERR:
       notify(m.msg || 'Action impossible.', 'error');
+      if (m.code === 'no_stamina') ui.staminaEmpty(); // [combat-souls]
+      break;
+    // [combat-souls] telegraphed attacks
+    case S2C.TELE:
+      if (state.inGame) telegraphs.add(m, now);
+      break;
+    case S2C.TELE_END:
+      if (state.inGame) telegraphs.cancel(m.id);
       break;
     case S2C.PONG:
       if (Number.isFinite(m.c)) ping = Math.max(0, Math.round(performance.now() - m.c));
@@ -253,6 +274,8 @@ function enterGame(m) {
   state.entities.set(m.id, rec);
   state.emit('add', rec);
   player.reset(self.x, self.z, self.ry || 0);
+  player.syncStamina(self.st ?? player.mst, self.mst, performance.now()); // [combat-souls]
+  echoFx.set(self.echo || null); // [combat-souls]
   orbit.behind(self.ry || 0);
   orbit.update(0, new THREE.Vector3(self.x, terrainHeight(self.x, self.z), self.z), true);
   autoMode = null;
@@ -280,6 +303,11 @@ function leaveGame() {
   labels?.clearTexts();
   if (targeting) targeting.id = 0;
   entities?.setTarget(0);
+  // [combat-souls]
+  telegraphs?.clear();
+  echoFx?.set(null);
+  bossSeen.clear();
+  ui.setBoss(null);
 }
 
 function onDisconnect() {
@@ -306,6 +334,9 @@ state.on('self', (self, changed) => {
     if (rec.lv !== self.level) { rec.lv = self.level; rec.dirtyLabel = true; }
     if (rec.hp !== self.hp || rec.mhp !== self.mhp) { rec.hp = self.hp; rec.mhp = self.mhp; rec.dirtyLabel = true; }
   }
+  // [combat-souls] stamina / death echo
+  if (changed && ('st' in changed || 'mst' in changed)) player.syncStamina(self.st, self.mst, performance.now());
+  if (changed && 'echo' in changed) echoFx?.set(self.echo || null);
   if (changed && 'dead' in changed) {
     ui.showDeath(!!self.dead);
     if (!self.dead) {
@@ -327,6 +358,7 @@ function onKey(code, e) {
     case 'Digit5': case 'Numpad5': targeting.usePotion(false); break;
     case 'Digit6': case 'Numpad6': targeting.usePotion(true); break;
     case 'Tab': targeting.cycle(); break;
+    case 'Space': roll(); break; // [combat-souls] dodge roll
     case 'Escape':
       if (!e.defaultPrevented && targeting.id) {
         targeting.clear();
@@ -407,6 +439,10 @@ async function boot() {
       if (t && !player.moving) player.faceTowards(t.x, t.z);
     },
   });
+  // [combat-souls] telegraph decals, death echo, local roll animation
+  telegraphs = new Telegraphs({ scene, entities });
+  echoFx = new EchoRenderer({ scene, effects });
+  player.onRoll = () => entities.playAnim(state.selfId, 'Roll');
   for (const s of world.lampSources) if (s.type === 'campfire') effects.addEmitter(s.x, s.y - 0.5, s.z, 'fire');
   // low mist drifting between the graves
   const grave = REGIONS.find((r) => r.id === 'graveyard');
@@ -535,7 +571,8 @@ function step(dt, now) {
   if (state.inGame && self) {
     input.axes(axes);
     orbit.forward(fwd);
-    player.update(dt, axes, fwd, self.stats?.speed || 6, !self.dead, now);
+    player.update(dt, axes, fwd, self.stats?.speed || 6, !self.dead, now, input.sprinting); // [combat-souls] + sprint
+    ui.setStamina(player.st, player.mst); // [combat-souls]
     const rec = state.entities.get(state.selfId);
     if (rec) { rec.x = player.x; rec.z = player.z; rec.ry = player.ry; }
     focus.set(player.x, terrainHeight(player.x, player.z), player.z);
@@ -547,7 +584,9 @@ function step(dt, now) {
     updateSeeThrough(camera.position, orbit.lookAt, 0, time);
   }
 
-  entities.update(dt, now, camera, time);
+  entities.update(dt * effects.timeScale(now), now, camera, time); // [combat-souls] hitstop
+  telegraphs.update(dt, time, now); // [combat-souls]
+  echoFx.update(dt, time, state.inGame ? player : null); // [combat-souls]
   if (state.inGame) targeting.syncUi();
   effects.update(dt, time, camera);
   env.update(state.tod, focus, camera, time);
@@ -560,7 +599,7 @@ function step(dt, now) {
   // periodic UI feeds
   if (state.inGame) {
     miniAcc += dt;
-    if (miniAcc >= 0.2) { miniAcc = 0; pushMinimap(); }
+    if (miniAcc >= 0.2) { miniAcc = 0; pushMinimap(); updateBossBar(performance.now()); }
     zoneAcc += dt;
     if (zoneAcc >= 0.5) {
       zoneAcc = 0;
@@ -580,11 +619,65 @@ function step(dt, now) {
 function pushMinimap() {
   const ents = [];
   for (const rec of state.entities.values()) {
-    if (rec.isSelf || !rec.k) continue;
+    if (rec.isSelf || !rec.k || rec.k === KIND.ECHO) continue;
     if (rec.dead && rec.k === KIND.MONSTER) continue;
     ents.push({ x: rec.x, z: rec.z, k: rec.k, boss: !!rec.b });
   }
-  ui.updateMinimap({ x: player.x, z: player.z, ry: player.ry, ents });
+  ui.updateMinimap({ x: player.x, z: player.z, ry: player.ry, ents, echo: state.self?.echo || null }); // [combat-souls] + echo
+}
+
+// ------------------------------------------------------------------ [combat-souls]
+const rollAxes = { fx: 0, fz: 0 };
+const rollFwd = { x: 0, z: 1 };
+/** Space: dodge roll in the movement direction (backwards without input). */
+function roll() {
+  const self = state.self;
+  if (!self || self.dead) return;
+  input.axes(rollAxes);
+  orbit.forward(rollFwd);
+  const now = performance.now();
+  if (player.tryRoll(rollAxes, rollFwd, now)) return;
+  if (!player.rolling && player.st < 30) ui.staminaEmpty();
+}
+
+/** Red arc on the screen edge pointing to the attacker (relative to the camera). */
+function damageDirection(m) {
+  const src = state.entities.get(m.src);
+  const self = state.self;
+  if (!self) return;
+  const heavy = self.mhp > 0 && m.v >= self.mhp * 0.15;
+  if (!src || src.isSelf) { ui.damageTaken(null, heavy); return; }
+  const dx = src.x - player.x, dz = src.z - player.z;
+  const l = Math.hypot(dx, dz);
+  if (l < 0.05) { ui.damageTaken(null, heavy); return; }
+  orbit.forward(rollFwd);
+  const front = (dx * rollFwd.x + dz * rollFwd.z) / l;
+  const side = (-dx * rollFwd.z + dz * rollFwd.x) / l;
+  ui.damageTaken(Math.atan2(side, front), heavy);
+}
+
+/** Remember bosses that fight the local player (boss bar). */
+function noteBossFight(m, now) {
+  if (m.src !== state.selfId && m.tg !== state.selfId) return;
+  const other = state.entities.get(m.src === state.selfId ? m.tg : m.src);
+  if (other && other.k === KIND.MONSTER && (other.b || MONSTERS[other.mt]?.boss)) bossSeen.set(other.id, now);
+}
+
+/** Show the big health bar of the boss we are fighting (targeting us or recently hit / hitting us). */
+function updateBossBar(now) {
+  let best = null, bestD = 55;
+  for (const rec of state.entities.values()) {
+    if (rec.k !== KIND.MONSTER || rec.dead || !(rec.b || MONSTERS[rec.mt]?.boss)) continue;
+    const d = Math.hypot(rec.x - player.x, rec.z - player.z);
+    const engaged = rec.tg === state.selfId || now - (bossSeen.get(rec.id) || -1e9) < 15_000;
+    if (engaged && d < bestD) { best = rec; bestD = d; }
+  }
+  if (!best || state.self?.dead) { ui.setBoss(null); return; }
+  const marks = MONSTERS[best.mt]?.ai?.phases || [];
+  const ratio = best.mhp > 0 ? best.hp / best.mhp : 1;
+  let phase = 1;
+  marks.forEach((t, i) => { if (ratio <= t) phase = i + 2; });
+  ui.setBoss({ id: best.id, name: best.n, hp: best.hp, mhp: best.mhp, phase, marks });
 }
 
 /**
@@ -606,6 +699,7 @@ function debugPause(ms) {
 function exposeDebug() {
   window.__game = {
     state, scene, camera, renderer, entities, effects, labels, env, world, assets, player, orbit, targeting, ui, net: conn,
+    telegraphs, echo: echoFx, roll, // [combat-souls]
     bootTimes,
     get fps() { return fps; },
     get ping() { return ping; },

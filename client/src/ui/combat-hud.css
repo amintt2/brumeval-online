@@ -1,0 +1,99 @@
+/* [combat-souls] stamina bar, boss health bar, low-hp vignette, hit pulse and damage direction indicators. */
+
+/* ------------------------------------------------------------------ stamina */
+.bv-bar.st { --c1: #9ddf52; --c2: #3f7d1b; height: 0.55em; }
+.bv-bar.st .bv-bar-fill { transition: width 0.12s linear; }
+.bv-bar.st .bv-bar-lag { background: linear-gradient(180deg, rgba(240, 255, 200, 0.6), rgba(200, 240, 150, 0.35)); transition: width 0.45s ease-in 0.15s; }
+.bv-bar.st.low { --c1: #e3cf4a; --c2: #8c6d12; }
+.bv-bar.st.empty { animation: bv-st-empty 0.6s ease-out; }
+@keyframes bv-st-empty {
+  0%, 40% { box-shadow: 0 0 0 1px #ff5d50, 0 0 0.8em rgba(255, 70, 50, 0.8); }
+  100% { box-shadow: 0 0 0 1px rgba(201, 162, 77, 0.28); }
+}
+
+/* ------------------------------------------------------------------ boss bar */
+.bv-boss {
+  position: absolute;
+  left: 50%;
+  bottom: 8.4em;
+  width: min(36em, 48vw);
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity 0.5s, visibility 0s;
+}
+.bv-boss.bv-hidden { opacity: 0; visibility: hidden; transition: opacity 0.8s, visibility 0s linear 0.8s; }
+.bv-boss.enter { animation: bv-boss-in 0.9s ease-out; }
+@keyframes bv-boss-in { from { opacity: 0; transform: translate(-50%, 0.6em); } }
+.bv-boss-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.25em; }
+.bv-boss-name {
+  font-family: var(--f-title);
+  font-weight: 700;
+  font-size: 1.05em;
+  letter-spacing: 0.08em;
+  color: #f4e6c4;
+  text-shadow: 0 0 4px #000, 0 1px 2px #000, 0 0 12px rgba(0, 0, 0, 0.8);
+}
+.bv-boss-phase {
+  font-family: var(--f-title);
+  font-weight: 700;
+  font-size: 0.78em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffb070;
+  text-shadow: 0 0 3px #000, 0 1px 2px #000;
+}
+.bv-boss.enraged .bv-boss-phase { color: #ff5a3a; animation: bv-boss-rage 1.1s ease-in-out infinite; }
+@keyframes bv-boss-rage { 50% { text-shadow: 0 0 10px rgba(255, 60, 30, 0.9), 0 1px 2px #000; } }
+.bv-boss-bar {
+  position: relative;
+  height: 0.8em;
+  border-radius: 0.15em;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8), rgba(24, 18, 14, 0.9));
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 0 1px rgba(201, 162, 77, 0.45), 0 0 1.2em rgba(0, 0, 0, 0.6), inset 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+.bv-boss-fill, .bv-boss-lag { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; }
+.bv-boss-fill { background: linear-gradient(180deg, #c8321f, #6d110a); transition: width 0.18s ease-out; box-shadow: 1px 0 0 rgba(255, 220, 190, 0.5); }
+.bv-boss-fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 55%); }
+.bv-boss-lag { background: linear-gradient(180deg, rgba(255, 214, 150, 0.85), rgba(230, 160, 90, 0.6)); transition: width 0.9s ease-in 0.45s; }
+.bv-boss.enraged .bv-boss-fill { background: linear-gradient(180deg, #ff4a1f, #8e1606); }
+.bv-boss-marks > i { position: absolute; top: -1px; bottom: -1px; width: 2px; margin-left: -1px; background: rgba(255, 236, 200, 0.75); box-shadow: 0 0 3px #000; }
+
+/* ------------------------------------------------------------------ overlay */
+.bv-combat-overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.bv-vignette {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 48%, rgba(150, 0, 0, 0.35) 72%, rgba(110, 0, 0, 0.85) 100%);
+  transition: opacity 0.4s;
+}
+.bv-vignette.critical { animation: bv-vig-beat 1s ease-in-out infinite; }
+@keyframes bv-vig-beat { 50% { filter: brightness(1.45); } }
+.bv-hitpulse {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(200, 20, 10, 0.45) 100%);
+}
+.bv-hitpulse.on { animation: bv-hitpulse 0.45s ease-out; }
+.bv-hitpulse.on.heavy { animation: bv-hitpulse 0.7s ease-out; background: radial-gradient(ellipse at center, transparent 40%, rgba(220, 30, 10, 0.6) 100%); }
+@keyframes bv-hitpulse { 0% { opacity: 1; } 100% { opacity: 0; } }
+.bv-dmgdirs { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+.bv-dmgdir {
+  position: absolute;
+  left: -5em;
+  top: -12.5em;
+  width: 10em;
+  height: 3.2em;
+  opacity: 0;
+  transform-origin: 50% 12.5em;
+  transform: rotate(var(--a, 0rad));
+  background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(255, 60, 30, 0.85), rgba(255, 40, 20, 0.25) 55%, transparent 72%);
+  filter: blur(0.5px);
+}
+.bv-dmgdir.on { animation: bv-dmgdir 0.9s ease-out; }
+.bv-dmgdir.on.heavy { background: radial-gradient(ellipse 55% 70% at 50% 0%, rgba(255, 80, 40, 1), rgba(255, 40, 20, 0.35) 55%, transparent 72%); }
+@keyframes bv-dmgdir { 0% { opacity: 1; } 60% { opacity: 0.8; } 100% { opacity: 0; } }
+.bv-ui.is-dead .bv-combat-overlay { display: none; }

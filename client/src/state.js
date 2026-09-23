@@ -4,6 +4,7 @@ import { TICK_RATE, INTERP_DELAY_MS, STATE, KIND, DAY_LENGTH_S } from '@shared/p
 
 const RING = 16;
 const STATIC_FIELDS = ['k', 'n', 'm', 'lv', 'c', 'sc', 'b', 'mt', 'nk'];
+STATIC_FIELDS.push('el', 'vr'); // [combat-souls] elite flag, monster variant
 const TWO_PI = Math.PI * 2;
 
 /** Shortest signed angle from a to b. */

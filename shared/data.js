@@ -111,7 +111,6 @@ export const MONSTERS = {
     name: 'Golem ancien', model: 'golem', level: [14, 14], radius: 1.4, scale: 1, boss: true,
     hp: 2600, hpLvl: 0, atk: 42, atkLvl: 0, def: 20, defLvl: 0, speed: 3.6,
     aggro: 14, range: 3.4, atkCd: 2.2, leash: 30, xp: 1500, xpLvl: 0, respawn: 180, gold: [120, 220],
-    slam: { radius: 6, cd: 9, power: 1.6 },   // periodic area attack around the golem
     drops: [{ id: 'golem_core', ch: 1 }, { id: 'runeblade', ch: 0.25 }, { id: 'ember_staff', ch: 0.25 }, { id: 'elven_bow', ch: 0.25 }, { id: 'golem_plate', ch: 0.2 }],
   },
 };

@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 
 const FADE = 0.15;
-const PROC_DUR = { Attack: 0.45, Cast: 0.7, Hit: 0.32, Death: 0.9 };
+const PROC_DUR = { Attack: 0.45, Cast: 0.7, Hit: 0.32, Death: 0.9, Roll: 0.55, Attack2: 1.2, Special: 1.8, Shoot: 0.8 }; // [combat-souls] + Roll…
 const ease = (k) => 1 - (1 - k) * (1 - k);
 
 export class Animator {
@@ -47,10 +47,19 @@ export class Animator {
     return this.actions.has(name);
   }
 
+  /** [combat-souls] Duration (s) of a clip, or of its procedural fallback. */
+  clipDuration(name) {
+    const a = this.actions.get(name);
+    return a ? a.getClip().duration : PROC_DUR[name] || 0.4;
+  }
+
   /** Locomotion state; ratio scales the Walk clip speed (1 = nominal). */
   setMoving(moving, ratio = 1) {
     this.speedRatio = Math.min(1.8, Math.max(0.55, ratio));
-    const name = moving ? 'Walk' : 'Idle';
+    // [combat-souls] fast movement (sprint, monsters closing a gap) uses the Run clip when the model has one
+    const run = moving && ratio > 1.28 && this.actions.has('Run');
+    if (run) this.speedRatio = Math.min(1.6, Math.max(0.7, ratio / 1.45));
+    const name = moving ? (run ? 'Run' : 'Walk') : 'Idle';
     if (name === this.baseName) return;
     this.baseName = name;
     if (this.dead) return;
@@ -79,10 +88,16 @@ export class Animator {
     if (prev) prev.fadeOut(fade);
   }
 
-  /** Play a one-shot clip. Returns true if a real clip was used. */
-  play(name) {
+  /**
+   * Play a one-shot clip. Returns true if a real clip was used.
+   * [combat-souls] opts.timeScale speeds the clip up / down (telegraphs sync the strike with the impact),
+   * opts.force lets Hit interrupt an attack (stagger).
+   */
+  play(name, opts = {}) {
     if (this.dead && name !== 'Death') return false;
-    if (name === 'Hit' && this.one && (this.one.name === 'Attack' || this.one.name === 'Cast' || this.one.name === 'Death')) return false;
+    if (name === 'Hit' && !opts.force && this.one && (this.one.name === 'Attack' || this.one.name === 'Cast' || this.one.name === 'Death'
+      || this.one.name === 'Attack2' || this.one.name === 'Special' || this.one.name === 'Roll' || this.one.name === 'Shoot')) return false;
+    const ts = Math.min(3, Math.max(0.3, opts.timeScale || 1));
     if (name === 'Death') this.dead = true;
     const a = this.actions.get(name);
     if (this.one && this.one.action && this.one.action !== a) this.one.action.fadeOut(0.08);
@@ -90,14 +105,14 @@ export class Animator {
       a.reset();
       a.setLoop(THREE.LoopOnce, 1);
       a.clampWhenFinished = true;
-      a.setEffectiveTimeScale(1);
+      a.setEffectiveTimeScale(ts);
       a.setEffectiveWeight(1);
       a.fadeIn(0.08).play();
       if (this.baseAction) this.baseAction.fadeOut(0.08);
-      this.one = { name, action: a, t: 0, dur: a.getClip().duration };
+      this.one = { name, action: a, t: 0, dur: a.getClip().duration / ts };
       return true;
     }
-    this.one = { name, action: null, t: 0, dur: PROC_DUR[name] || 0.4 };
+    this.one = { name, action: null, t: 0, dur: (PROC_DUR[name] || 0.4) / ts };
     return false;
   }
 
@@ -143,7 +158,7 @@ export class Animator {
         this.one = null;
       }
     }
-    if (this.baseAction && this.baseName === 'Walk' && this.actions.has('Walk')) {
+    if (this.baseAction && (this.baseName === 'Walk' || this.baseName === 'Run') && this.actions.has(this.baseName)) {
       this.baseAction.setEffectiveTimeScale(this.speedRatio);
     }
     if (this.mixer) this.mixer.update(dt);
@@ -153,8 +168,8 @@ export class Animator {
   _procedural(dt) {
     const p = this.pivot;
     const h = this.height;
-    let py = 0, rx = 0, rz = 0, sx = 1, sy = 1;
-    const walkingProc = !this.dead && this.baseName === 'Walk' && !this.actions.has('Walk');
+    let py = 0, pz = 0, rx = 0, rz = 0, sx = 1, sy = 1;
+    const walkingProc = !this.dead && (this.baseName === 'Walk' || this.baseName === 'Run') && !this.actions.has(this.baseName) && !this.actions.has('Walk');
     this.walkBlend += ((walkingProc ? 1 : 0) - this.walkBlend) * Math.min(1, dt * 10);
     if (this.walkBlend > 0.001) {
       this.phase += dt * 9 * this.speedRatio;
@@ -191,6 +206,34 @@ export class Animator {
           rx -= bell * 0.22;
           sy *= 1 - bell * 0.05;
           break;
+        // [combat-souls] procedural fallbacks for the new clips
+        case 'Roll': {
+          // forward somersault around the body centre, tucked
+          const c = h * 0.45;
+          const th = ease(k) * Math.PI * 2;
+          rx += th;
+          py += c - c * Math.cos(th) + bell * 0.1 * h;
+          pz += -c * Math.sin(th);
+          sy *= 1 - bell * 0.3;
+          sx *= 1 + bell * 0.08;
+          break;
+        }
+        case 'Attack2': {
+          // wind-up (lean back, rise) then a heavy strike forward
+          const wind = Math.min(1, k / 0.55), strike = k > 0.55 ? Math.sin(((k - 0.55) / 0.45) * Math.PI) : 0;
+          if (this.style === 'slime') { sy *= 1 - wind * 0.35 + strike * 0.6; sx *= 1 + wind * 0.25 - strike * 0.2; py += strike * 0.5 * h; }
+          else { rx += -wind * 0.3 * (1 - strike) + strike * 0.65; py += wind * 0.06 * h * (1 - strike); }
+          break;
+        }
+        case 'Special':
+          rx -= bell * 0.25;
+          py += bell * 0.1 * h;
+          sy *= 1 + bell * 0.08;
+          sx *= 1 + bell * 0.06;
+          break;
+        case 'Shoot':
+          rx -= bell * 0.12;
+          break;
         case 'Death': {
           const e = ease(k);
           if (this.style === 'slime') { sy *= 1 - 0.75 * e; sx *= 1 + 0.35 * e; }
@@ -201,6 +244,7 @@ export class Animator {
       }
     }
     p.position.y = py;
+    p.position.z = pz;
     p.rotation.x = rx;
     p.rotation.z = rz;
     p.scale.set(sx, sy, sx);
