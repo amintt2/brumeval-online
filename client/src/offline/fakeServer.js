@@ -703,7 +703,7 @@ export class FakeServer {
         m.returning = true;
       } else {
         m.tg = p.id;
-        // [combat-souls] now and then a telegraphed heavy attack (dodge it with Space)
+        // [combat-souls] now and then a telegraphed heavy attack (dodge it with a Shift tap)
         const heavy = (def.ai?.attacks || []).filter((a) => a.kind === 'tele' && (!a.phase || a.phase <= 1));
         if (now < (m.busyUntil || 0)) { /* winding up */ } else if (heavy.length && now >= (m.nextHeavy || 0) && dp <= Math.max(...heavy.map((a) => a.max || 4))) {
           if (!m.nextHeavy) m.nextHeavy = now + 2500 + this.rand() * 2500;

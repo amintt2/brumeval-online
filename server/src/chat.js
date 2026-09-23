@@ -40,7 +40,7 @@ export const HELP_LINES = [
   '/who — liste des joueurs en ligne',
   '/ignore <nom> — ne plus voir les messages d\'un joueur (/ignore seul : votre liste) · /unignore <nom>',
   '/help — afficher cette aide',
-  'Déplacement : ZQSD / WASD ou flèches · Clic : sélectionner · Tab : cible suivante · 1-4 : capacités · 5-6 : potions',
+  'Déplacement : ZQSD / WASD ou flèches · Clic : sélectionner · Tab : cible suivante · Maj : roulade (appui court) ou sprint (maintenue) · 1-4 : capacités · 5-6 : potions',
 ];
 
 export function handleChat(game, p, msg) {

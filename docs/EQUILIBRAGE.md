@@ -17,8 +17,8 @@
 | Règle | Valeur | Où |
 |---|---|---|
 | Endurance max / régénération | 100 · 35 par seconde après 0,8 s sans dépense | `shared/combat.js` (`STAMINA`) |
-| Roulade (Espace) | 30 d'endurance, 5 m en 0,55 s, invulnérable 0,35 s, 0,6 s entre deux roulades | `ROLL` |
-| Sprint (Maj) | vitesse × 1,45, 18 d'endurance par seconde en mouvement | `STAMINA` |
+| Roulade (Maj, appui court) | 30 d'endurance, 5 m en 0,55 s, invulnérable 0,35 s, 0,6 s entre deux roulades | `ROLL` |
+| Sprint (Maj maintenue) | vitesse × 1,45, 18 d'endurance par seconde en mouvement | `STAMINA` |
 | Engagement des attaques | après chaque capacité, 0,25 à 0,6 s à 25–50 % de la vitesse (`rec`, `recSlow`) | `ABILITIES[*]` |
 | Coût d'endurance des capacités | 5 à 18 (`st`) — l'auto-attaque aussi | `ABILITIES[*].st` |
 | Tir automatique à distance | seulement en se déplaçant à moins de 40 % de sa vitesse | `COMMIT.rangedMoveMax` |

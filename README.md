@@ -180,8 +180,9 @@ Mesures de charge : [docs/PERFORMANCES.md](docs/PERFORMANCES.md) (`node tests/lo
 | Clic gauche + clic droit maintenus | Courir tout droit |
 | Molette | Zoomer / dézoomer (3 à 28 m) |
 | **Tab** | Cibler l'ennemi suivant devant vous |
-| **Espace** | Roulade d'esquive (direction du déplacement, sinon en arrière) — 30 d'endurance |
-| **Maj** (maintenue) | Sprinter (consomme de l'endurance) |
+| **Maj** (appui court, < 0,2 s) | Roulade d'esquive (direction du déplacement, sinon en arrière) — 30 d'endurance |
+| **Maj** (maintenue) | Sprinter (consomme de l'endurance) ; un appui court ne sprinte jamais |
+| **Espace** | Réservé au saut (v0.3) : sans effet pour l'instant |
 | **Échap** | Fermer la fenêtre du dessus, sinon annuler la cible |
 | **1** | Attaque automatique de la classe |
 | **2 3 4** | Capacités |

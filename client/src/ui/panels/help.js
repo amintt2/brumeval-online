@@ -17,7 +17,7 @@ const CONTROLS = [
 ];
 // [combat-souls]
 CONTROLS.splice(1, 0,
-  [['Espace'], 'Roulade d\'esquive (invulnérable un instant, coûte de l\'endurance)'],
+  [['Maj'], 'Appui court : roulade d\'esquive (invulnérable un instant, coûte de l\'endurance)'],
   [['Maj'], 'Maintenir : sprinter (consomme de l\'endurance)']);
 const WINDOWS = [
   [['I'], 'Sac'],

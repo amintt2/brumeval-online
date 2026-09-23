@@ -7,7 +7,7 @@ import './combat-hud.css';
 /** Stamina bar appended to the player unit frame. */
 export function createStaminaBar(frameMain) {
   const bar = createBar('st', 'bv-st');
-  bar.el.title = 'Endurance — roulade (Espace), sprint (Maj)';
+  bar.el.title = 'Endurance — roulade (Maj appui court), sprint (Maj maintenue)';
   frameMain?.appendChild(bar.el);
   let flashT = 0;
   return {

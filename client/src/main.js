@@ -359,7 +359,6 @@ function onKey(code, e) {
     case 'Digit5': case 'Numpad5': targeting.usePotion(false); break;
     case 'Digit6': case 'Numpad6': targeting.usePotion(true); break;
     case 'Tab': targeting.cycle(); break;
-    case 'Space': roll(); break; // [combat-souls] dodge roll
     case 'Escape':
       if (!e.defaultPrevented && targeting.id) {
         targeting.clear();
@@ -453,6 +452,7 @@ async function boot() {
   input = new Input(canvas, {
     isTyping: () => !!ui.isTyping?.(),
     onKey,
+    onDodge: () => { if (state.inGame) roll(); }, // Shift tap = dodge roll (hold = sprint)
     onClick: (button, x, y) => targeting.onClick(button, x, y),
     onDrag: (dx, dy) => orbit.rotate(dx, dy),
     onWheel: (dy) => orbit.zoom(dy),
@@ -639,7 +639,7 @@ function pushMinimap() {
 // ------------------------------------------------------------------ [combat-souls]
 const rollAxes = { fx: 0, fz: 0 };
 const rollFwd = { x: 0, z: 1 };
-/** Space: dodge roll in the movement direction (backwards without input). */
+/** Shift tap: dodge roll in the movement direction (backwards without input). */
 function roll() {
   const self = state.self;
   if (!self || self.dead) return;

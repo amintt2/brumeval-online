@@ -9,8 +9,8 @@
       "summary": "Combats exigeants à la manière d'un soulslike, monstres plus malins, un monde plus beau et un launcher pour jouer depuis votre ordinateur.",
       "body": [
         "Endurance : une nouvelle jauge alimente la roulade, le sprint et certaines capacités. Elle se recharge dès que vous soufflez un instant.",
-        "Roulade d'esquive : esquivez au bon moment pour traverser une attaque sans dégâts.",
-        "Sprint : traversez les plaines plus vite, tant que votre endurance le permet.",
+        "Roulade d'esquive (appui court sur Maj) : esquivez au bon moment pour traverser une attaque sans dégâts.",
+        "Sprint (Maj maintenue) : traversez les plaines plus vite, tant que votre endurance le permet.",
         "Attaques télégraphiées : les coups puissants des monstres s'annoncent au sol. Lisez-les, esquivez-les.",
         "IA revue : les monstres chargent, tournent autour de vous, se replient, tirent à distance… et ne se comportent jamais deux fois de la même façon.",
         "Le Golem ancien combat désormais en plusieurs phases.",
@@ -18,7 +18,7 @@
         "Rééquilibrage du Mage et du Rôdeur, jugés trop puissants.",
         "Anti-triche côté serveur : vitesse, téléportation et spam sont détectés ; les tricheurs sont bannis.",
         "Nouveau rendu : herbe qui ondule au vent, arbres vivants, ciel, eau et lumière plus doux.",
-        "Serveur et réseau optimisés pour accueillir plus de joueurs sur une carte plus grande."
+        "Serveur et réseau optimisés : bien moins de données échangées, plus de joueurs en même temps."
       ]
     },
     {

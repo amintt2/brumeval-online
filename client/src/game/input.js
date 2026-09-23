@@ -7,6 +7,9 @@ const MOVE_CODES = {
   KeyD: 'r', ArrowRight: 'r',
 };
 const DRAG_PX = 5;
+/** Shift pressed shorter than this = dodge roll (on release); held longer = sprint (docs/design/DECISIONS.md §4). */
+export const SHIFT_TAP_MS = 200;
+const isShift = (c) => c === 'ShiftLeft' || c === 'ShiftRight' || c === 'Shift';
 
 /**
  * Physical key code of a keyboard event. Some virtual keyboards / remote-desktop tools send an empty
@@ -23,13 +26,16 @@ function keyCode(e) {
 export class Input {
   /**
    * handlers: { isTyping(), onKey(code, ev), onClick(button, x, y, ev), onDrag(dx, dy, buttons), onWheel(dy),
-   *             onHover(x, y) }
+   *             onHover(x, y), onDodge() (Shift tapped) }
    */
   constructor(canvas, handlers) {
     this.canvas = canvas;
     this.h = handlers;
     this.held = new Set();
-    this.shift = new Set(); // [combat-souls] sprint key(s) held
+    this.shift = new Set(); // [combat-souls] Shift key(s) held: tap = roll, hold = sprint
+    this.shiftAt = 0;       // when the first Shift key went down (performance.now)
+    this.shiftCombo = false; // Shift used as a modifier (Maj + clic droit, Maj + touche): no roll on release
+    window.addEventListener('pointerdown', () => { if (this.shift.size) this.shiftCombo = true; }, true);
     this.mouseX = window.innerWidth / 2;
     this.mouseY = window.innerHeight / 2;
     this.buttons = 0;
@@ -40,7 +46,10 @@ export class Input {
     window.addEventListener('keyup', (e) => {
       const c = keyCode(e);
       this.held.delete(c);
-      if (c === 'ShiftLeft' || c === 'ShiftRight' || c === 'Shift') this.shift.delete(c); // [combat-souls]
+      if (isShift(c) && this.shift.delete(c) && this.shift.size === 0) {
+        // released before the sprint threshold: a tap = dodge roll
+        if (this.enabled && !this.typing() && !this.shiftCombo && performance.now() - this.shiftAt < SHIFT_TAP_MS) this.h.onDodge?.();
+      }
     });
     window.addEventListener('blur', () => this.reset());
     document.addEventListener('visibilitychange', () => { if (document.hidden) this.reset(); });
@@ -88,9 +97,14 @@ export class Input {
     if (!this.enabled) return;
     const code = keyCode(e);
     if (code === 'Tab') e.preventDefault();
-    // [combat-souls] Space = dodge roll (no page scroll / button press), Shift = sprint (held)
+    // Space is reserved for the jump (v0.3): no page scroll / button press. Shift: tap = roll, hold = sprint.
     if (code === 'Space') e.preventDefault();
-    if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'Shift') this.shift.add(code);
+    if (isShift(code) && !this.shift.has(code)) {
+      if (this.shift.size === 0) { this.shiftAt = performance.now(); this.shiftCombo = false; }
+      this.shift.add(code);
+    } else if (!isShift(code) && this.shift.size && !MOVE_CODES[code]) {
+      this.shiftCombo = true;
+    }
     if (MOVE_CODES[code]) {
       this.held.add(code);
       if (code.startsWith('Arrow')) e.preventDefault();
@@ -148,9 +162,9 @@ export class Input {
     }
   }
 
-  /** [combat-souls] Sprint key held (and not typing). */
+  /** Shift held longer than SHIFT_TAP_MS (and not typing): sprint. A tap never sprints. */
   get sprinting() {
-    return this.shift.size > 0 && this.enabled && !this.typing();
+    return this.shift.size > 0 && this.enabled && !this.typing() && performance.now() - this.shiftAt >= SHIFT_TAP_MS;
   }
 
   get dragging() {
