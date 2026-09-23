@@ -14,6 +14,7 @@ Si le kit n'est pas encore fusionné, `BRUMEVAL_KIT_ROOT` désigne le dossier `a
 
 - Unités mètres. Pivot local `(0,0,0)` au milieu de la prise. Lame/hampe en **+Z Blender**, donc **+Y glTF** ; avant **-Y Blender**, donc **+Z glTF**.
 - Arcs bandés au repos, corde derrière la prise. Bouclier devant la main, poignée à l'origine. Modèles statiques : animation de corde/décoche non incluse.
+- Progression visuelle des arcs : 1 bois sombre, 2 bois cuivré, 3 frêne clair avec dorures, 4 branches dorées et incrustations sombres. Courbure et épaisseur augmentées sur les paliers supérieurs ; le modèle royal utilise une finition or PBR, pas seulement une petite garniture de poignée.
 - `eq_sword_1..5`, `eq_greatsword_1..2`, `eq_staff_1..4`, `eq_bow_1..4`, `eq_shield_1..3` ; suffixes `_lod1`, `_lod2`.
 - Propositions de correspondance : épée rouillée→sword1, acier→sword2, runeblade→sword3 ; apprenti→staff1, arcanique→staff2, braises→staff3 ; arc court→bow1, long→bow2, elfique→bow3. Les autres variantes sont destinées à l'équipement futur ; Claude décide des clés de gameplay.
 - PBR baseColor/normal/ORM, émission pour pierres. WebP embarqué, une matière par modèle. Cibles LOD1 ≈30 % et LOD2 ≈8 %, textures 512/256. Les quotas par pièce peuvent dépasser ces cibles pour préserver les silhouettes ; ratios réels et avertissements sont inscrits dans les rapports. Le LOD2 retire les petits décors filaires et rivets, conserve les éléments structurels.

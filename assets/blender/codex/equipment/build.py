@@ -128,10 +128,21 @@ def staff(i):
 
 def bow(i):
     m=mats(i); half=[.56,.78,.72,.84][i-1];brace=.15 if i>=3 else .11
-    if i in (2,4):
+    curvature=[.13,.11,.18,.22][i-1]
+    thickness=[.024,.026,.025,.033][i-1]
+    if i==2:
+        m['wood']=M.wood('Copperwood',color='#98522f',color2='#472719',scale=1.2,seed=22,dirt=.15,wear=.35,bump=.35)
+    elif i==3:
+        m['wood']=M.wood('PaleAsh',color='#bca47a',color2='#76654b',scale=1.2,seed=33,dirt=.12,wear=.35,bump=.3)
+        m['bronze']=M.metal('ElvenGold',kind='gold',rust=.05,grime=.12,wear=.5,scale=2,seed=33,bump=.25)
+    elif i==4:
+        m['wood']=M.metal('RoyalGoldLimbs',kind='gold',color='#c89932',rust=.04,grime=.14,wear=.55,scale=2,seed=44,bump=.25)
+        m['bronze']=M.metal('DarkInlay',kind='blackiron',rust=.05,grime=.12,wear=.4,scale=2,seed=44,bump=.25)
+    if i in (2,3,4):
         # Long, thin limbs have few texels across their width. Limit albedo microcontrast
         # to avoid unstable grain/engraving at atlas seams; roughness and bump stay intact.
-        for material,mean in [(m['wood'],(.075,.042,.022,1)),(m['bronze'],(.20,.11,.043,1))]:
+        means={2:[(.22,.075,.028,1),(.20,.11,.043,1)],3:[(.40,.31,.20,1),(.52,.33,.065,1)],4:[(.52,.29,.055,1),(.025,.022,.018,1)]}[i]
+        for material,mean in zip([m['wood'],m['bronze']],means):
             nt=material.node_tree;bs=next(n for n in nt.nodes if n.type=='BSDF_PRINCIPLED')
             source=bs.inputs['Base Color'].links[0].from_socket
             mix=nt.nodes.new('ShaderNodeMixRGB');mix.inputs[0].default_value=.45;mix.inputs[2].default_value=mean
@@ -139,19 +150,19 @@ def bow(i):
     for side in [-1,1]:
         points=[]
         for j in range(25):
-            t=j/24; recur=.13*math.sin(t*math.pi)-brace*t**5
+            t=j/24; recur=curvature*math.sin(t*math.pi)-brace*t**5
             points.append((recur,0,side*half*t))
-        tube('Carved flexible limb',points,[.024*(1-.65*j/24) for j in range(25)],m['wood'],12)
+        tube('Carved flexible limb',points,[thickness*(1-.65*j/24) for j in range(25)],m['wood'],12)
         if i>=2:
-            tube('Metal limb binding',[(p[0],-.016,p[2]) for p in points[3:17]],.0045,m['bronze'],6)
+            tube('Metal limb binding',[(p[0],-thickness*(1-.65*j/24)*.85,p[2]) for j,p in enumerate(points) if 3<=j<17],.0055 if i>=3 else .0045,m['bronze'],6)
     grip(m,.19,.028)
     # String ends are attached to limb tips; string is offset from the hand at full brace.
     tip=-brace
     tube('Taut bowstring',[(tip,0,-half),(tip,0,half)],.0016,m['leather'],6)
     if i>=3:
         for side in [-1,1]:
-            t=.13/half; x=.13*math.sin(t*math.pi)-brace*t**5
-            C.ico('Grip cabochon',r=.018,subdiv=2,mat=m['gem'],loc=(x,-.016,side*.13),scale=(.8,.4,1.3))
+            t=.13/half; x=curvature*math.sin(t*math.pi)-brace*t**5
+            C.ico('Grip cabochon',r=.023 if i==4 else .018,subdiv=2,mat=m['gem'],loc=(x,-thickness*(1-.65*t)*.85,side*.13),scale=(.8,.4,1.3))
     # Bow fires toward -Y like the other assets; braced string sits behind the grip at +Y.
     for ob in bpy.context.scene.objects:
         if ob.type=='MESH':

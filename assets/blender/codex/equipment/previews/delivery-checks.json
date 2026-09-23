@@ -901,7 +901,7 @@
       {
         "file": "eq_bow_2.glb",
         "triangles": 2620,
-        "bytes": 220680,
+        "bytes": 369708,
         "textures": [
           [
             1024,
@@ -916,12 +916,12 @@
             1024
           ]
         ],
-        "sha256": "615880af884b3adf4d2c879847d885590f2091549a96b9d3e9684e0ae70685e7"
+        "sha256": "1523c34cba5935f0282ad5fbb548b8776f1f4161225ff7d463b524a082bf9024"
       },
       {
         "file": "eq_bow_2_lod1.glb",
         "triangles": 844,
-        "bytes": 81316,
+        "bytes": 144400,
         "textures": [
           [
             512,
@@ -936,12 +936,12 @@
             512
           ]
         ],
-        "sha256": "4a7f9d0c3282c3de1f9e97ae719478e8ed0e67b4992fef8a62c2d82e0ef1aa9a"
+        "sha256": "008b5bbc85484c9eefbad506a672500c9c56125d36e8f0591844f79f0a467cd5"
       },
       {
         "file": "eq_bow_2_lod2.glb",
         "triangles": 246,
-        "bytes": 29560,
+        "bytes": 48484,
         "textures": [
           [
             256,
@@ -956,11 +956,14 @@
             256
           ]
         ],
-        "sha256": "7994e4b9a32ae77bb160b719eea202c81de48e994f1f7da45d2a43643736c9aa"
+        "sha256": "35101b1daf520fd56d104722b1818385fc47c95b93af55c07024bebb605f9f44"
       }
     ],
     "warnings": [
-      "texture eq_bow_2_Main_basecolor: UV coverage only 11% (texels wasted; pack tighter / smaller size)"
+      "eq_bow_2: fragmented UVs (178 islands, 50 of 1-2 faces for 2620 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "eq_bow_2: UV island border close to a visible offset (score 0.78)",
+      "eq_bow_2: baseColor texture SEAM across UV islands p50=0.011 p95=0.083 (same-island edges p50=0.007 p95=0.051); worst near [[-0.02, -0.11, -0.31], [-0.03, 0.02, 0.1], [-0.01, -0.09, 0.48]]",
+      "texture eq_bow_2_Main_basecolor: UV coverage only 31% (texels wasted; pack tighter / smaller size)"
     ]
   },
   {
@@ -969,7 +972,7 @@
       {
         "file": "eq_bow_3.glb",
         "triangles": 2780,
-        "bytes": 444400,
+        "bytes": 423500,
         "textures": [
           [
             1024,
@@ -988,12 +991,12 @@
             1024
           ]
         ],
-        "sha256": "29799bb5debf00d4bdaa99f8660b92c2605f8348f64374d528b163261c835f30"
+        "sha256": "c5f098c947aa9fe164d8ee5ed64c8e1f5fa8e60ff091804e668310a6a06479f1"
       },
       {
         "file": "eq_bow_3_lod1.glb",
-        "triangles": 892,
-        "bytes": 173596,
+        "triangles": 844,
+        "bytes": 168760,
         "textures": [
           [
             512,
@@ -1012,12 +1015,12 @@
             512
           ]
         ],
-        "sha256": "e55135d5b6393dcb3925bf642fecd587c59d938b61562d49e83cbca9b69928b5"
+        "sha256": "e04865e5dda28f739f4e3e6b2cb7724fe76f2a6fa6446a83c6892c9ebf8c83fe"
       },
       {
         "file": "eq_bow_3_lod2.glb",
-        "triangles": 274,
-        "bytes": 60308,
+        "triangles": 246,
+        "bytes": 62252,
         "textures": [
           [
             256,
@@ -1036,13 +1039,12 @@
             256
           ]
         ],
-        "sha256": "5dd888bd28b1e71e9895b81ab98b7fc99a394604857d44ae2c77d8bc776a19ee"
+        "sha256": "146677ad4f3408edb6d537382e3cede9f07690eb4d49da3ae46c3259c3196358"
       }
     ],
     "warnings": [
-      "eq_bow_3: fragmented UVs (162 islands, 17 of 1-2 faces for 2780 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
-      "eq_bow_3: UV coverage only 17% of the texture",
-      "eq_bow_3: UV island border close to a visible offset (score 0.99)"
+      "eq_bow_3: fragmented UVs (188 islands, 22 of 1-2 faces for 2780 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "texture eq_bow_3_Main_basecolor: UV coverage only 18% (texels wasted; pack tighter / smaller size)"
     ]
   },
   {
@@ -1051,7 +1053,7 @@
       {
         "file": "eq_bow_4.glb",
         "triangles": 2780,
-        "bytes": 259708,
+        "bytes": 356944,
         "textures": [
           [
             1024,
@@ -1070,12 +1072,12 @@
             1024
           ]
         ],
-        "sha256": "b2426fb6f8b4bd11648a8e5cee1ac10b890f435bbb9b9c573dfd295117ca25c4"
+        "sha256": "9936786bc0bb09ecac588844520671e913ce79aaeb32f40566b912f5e1bdc3a1"
       },
       {
         "file": "eq_bow_4_lod1.glb",
-        "triangles": 892,
-        "bytes": 94360,
+        "triangles": 844,
+        "bytes": 137616,
         "textures": [
           [
             512,
@@ -1094,12 +1096,12 @@
             512
           ]
         ],
-        "sha256": "1329444a305a289dd6184f640eb4b960b1a239a15bdbafc7964ad50a88640b5e"
+        "sha256": "4cfb85737ee337966b57e2a4b52929a4366bd1e5284f18014bd811241ddf1c1c"
       },
       {
         "file": "eq_bow_4_lod2.glb",
-        "triangles": 270,
-        "bytes": 36140,
+        "triangles": 222,
+        "bytes": 47524,
         "textures": [
           [
             256,
@@ -1118,11 +1120,14 @@
             256
           ]
         ],
-        "sha256": "5a3365f6ecd0205113a443eef655ad39562fac223c3be17ae0bc4aa36c937866"
+        "sha256": "f973e56475e28c37b7758aebdaf494c6417c0388374ce7c545e12423e1510a64"
       }
     ],
     "warnings": [
-      "texture eq_bow_4_Main_basecolor: UV coverage only 11% (texels wasted; pack tighter / smaller size)"
+      "eq_bow_4: fragmented UVs (158 islands, 16 of 1-2 faces for 2780 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "eq_bow_4: baseColor texture SEAM across UV islands p50=0.010 p95=0.109 (same-island edges p50=0.003 p95=0.045); worst near [[0.0, 0.03, -0.02], [0.0, 0.03, 0.05], [0.0, 0.03, -0.0]]",
+      "eq_bow_4: normal(deg) texture SEAM across UV islands p50=0.635 p95=12.762 (same-island edges p50=0.000 p95=7.073); worst near [[0.0, 0.03, -0.02], [0.0, 0.03, 0.05], [0.0, 0.03, -0.0]]",
+      "texture eq_bow_4_Main_basecolor: UV coverage only 30% (texels wasted; pack tighter / smaller size)"
     ]
   },
   {

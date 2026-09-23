@@ -4,24 +4,24 @@
     bbox size (x,y,z)=0.06, 1.13, 0.26  min=-0.03, -0.57, -0.11  max=0.03, 0.57, 0.14
 ● eq_bow_1.glb  382.8 KB  tris=2292  nodes=1  materials=1
     bbox size (x,y,z)=0.07, 1.13, 0.26  min=-0.03, -0.57, -0.11  max=0.03, 0.57, 0.14
-● eq_bow_2_lod1.glb  79.4 KB  tris=844  nodes=1  materials=1
-    bbox size (x,y,z)=0.07, 1.57, 0.26  min=-0.03, -0.79, -0.12  max=0.03, 0.79, 0.14
-● eq_bow_2_lod2.glb  28.9 KB  tris=246  nodes=1  materials=1
-    bbox size (x,y,z)=0.06, 1.58, 0.26  min=-0.03, -0.79, -0.12  max=0.03, 0.79, 0.14
-● eq_bow_2.glb  215.5 KB  tris=2620  nodes=1  materials=1
-    bbox size (x,y,z)=0.07, 1.57, 0.26  min=-0.03, -0.79, -0.12  max=0.03, 0.79, 0.14
-● eq_bow_3_lod1.glb  169.5 KB  tris=892  nodes=1  materials=1
-    bbox size (x,y,z)=0.07, 1.45, 0.3  min=-0.03, -0.73, -0.15  max=0.03, 0.73, 0.14
-● eq_bow_3_lod2.glb  58.9 KB  tris=274  nodes=1  materials=1
-    bbox size (x,y,z)=0.06, 1.45, 0.3  min=-0.03, -0.73, -0.15  max=0.03, 0.73, 0.15
-● eq_bow_3.glb  434 KB  tris=2780  nodes=1  materials=1
-    bbox size (x,y,z)=0.07, 1.45, 0.3  min=-0.03, -0.73, -0.15  max=0.03, 0.73, 0.14
-● eq_bow_4_lod1.glb  92.1 KB  tris=892  nodes=1  materials=1
-    bbox size (x,y,z)=0.07, 1.69, 0.3  min=-0.03, -0.85, -0.16  max=0.03, 0.85, 0.14
-● eq_bow_4_lod2.glb  35.3 KB  tris=270  nodes=1  materials=1
-    bbox size (x,y,z)=0.06, 1.69, 0.29  min=-0.03, -0.84, -0.15  max=0.03, 0.84, 0.14
-● eq_bow_4.glb  253.6 KB  tris=2780  nodes=1  materials=1
-    bbox size (x,y,z)=0.07, 1.69, 0.3  min=-0.03, -0.85, -0.16  max=0.03, 0.85, 0.14
+● eq_bow_2_lod1.glb  141 KB  tris=844  nodes=1  materials=1
+    bbox size (x,y,z)=0.07, 1.57, 0.24  min=-0.03, -0.79, -0.12  max=0.03, 0.79, 0.12
+● eq_bow_2_lod2.glb  47.3 KB  tris=246  nodes=1  materials=1
+    bbox size (x,y,z)=0.06, 1.57, 0.24  min=-0.03, -0.79, -0.12  max=0.03, 0.79, 0.13
+● eq_bow_2.glb  361 KB  tris=2620  nodes=1  materials=1
+    bbox size (x,y,z)=0.07, 1.57, 0.24  min=-0.03, -0.79, -0.12  max=0.03, 0.79, 0.13
+● eq_bow_3_lod1.glb  164.8 KB  tris=844  nodes=1  materials=1
+    bbox size (x,y,z)=0.07, 1.45, 0.35  min=-0.03, -0.73, -0.15  max=0.03, 0.73, 0.19
+● eq_bow_3_lod2.glb  60.8 KB  tris=246  nodes=1  materials=1
+    bbox size (x,y,z)=0.06, 1.46, 0.34  min=-0.03, -0.73, -0.15  max=0.03, 0.73, 0.19
+● eq_bow_3.glb  413.6 KB  tris=2780  nodes=1  materials=1
+    bbox size (x,y,z)=0.07, 1.46, 0.35  min=-0.03, -0.73, -0.15  max=0.03, 0.73, 0.19
+● eq_bow_4_lod1.glb  134.4 KB  tris=844  nodes=1  materials=1
+    bbox size (x,y,z)=0.07, 1.7, 0.39  min=-0.04, -0.85, -0.16  max=0.03, 0.85, 0.24
+● eq_bow_4_lod2.glb  46.4 KB  tris=222  nodes=1  materials=1
+    bbox size (x,y,z)=0.07, 1.7, 0.4  min=-0.04, -0.85, -0.16  max=0.03, 0.85, 0.24
+● eq_bow_4.glb  348.6 KB  tris=2780  nodes=1  materials=1
+    bbox size (x,y,z)=0.07, 1.7, 0.39  min=-0.03, -0.85, -0.16  max=0.03, 0.85, 0.24
 ● eq_greatsword_1_lod1.glb  140.6 KB  tris=692  nodes=1  materials=1
     bbox size (x,y,z)=0.49, 1.82, 0.07  min=-0.24, -0.26, -0.04  max=0.24, 1.56, 0.04
 ● eq_greatsword_1_lod2.glb  48.9 KB  tris=262  nodes=1  materials=1

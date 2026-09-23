@@ -2,137 +2,140 @@
  "key": "eq_bow_2",
  "fails": [],
  "warns": [
-  "texture eq_bow_2_Main_basecolor: UV coverage only 11% (texels wasted; pack tighter / smaller size)"
+  "eq_bow_2: fragmented UVs (178 islands, 50 of 1-2 faces for 2620 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+  "eq_bow_2: UV island border close to a visible offset (score 0.78)",
+  "eq_bow_2: baseColor texture SEAM across UV islands p50=0.011 p95=0.083 (same-island edges p50=0.007 p95=0.051); worst near [[-0.02, -0.11, -0.31], [-0.03, 0.02, 0.1], [-0.01, -0.09, 0.48]]",
+  "texture eq_bow_2_Main_basecolor: UV coverage only 31% (texels wasted; pack tighter / smaller size)"
  ],
  "info": {
   "objects": {
    "eq_bow_2": {
     "faces": 2620,
-    "islands": 9,
+    "islands": 8,
     "boundary_edges": 0,
     "nonmanifold_edges": 0
    }
   },
   "uv": {
    "eq_bow_2": {
-    "islands": 36,
-    "splinter_islands": 9,
-    "coverage": 0.11,
+    "islands": 178,
+    "splinter_islands": 50,
+    "coverage": 0.311,
     "overlap": 0.0,
     "flipped_tris": 0
    }
   },
   "seams": {
    "eq_bow_2": {
-    "seam_edges": 562,
+    "seam_edges": 551,
     "worst_at": [
      [
       -0.02,
-      -0.08,
-      -0.15
+      -0.11,
+      -0.31
+     ],
+     [
+      -0.03,
+      0.02,
+      0.1
      ],
      [
       -0.01,
-      0.03,
-      -0.1
+      -0.09,
+      0.48
      ],
      [
       -0.02,
       -0.1,
-      0.51
+      0.3
      ],
      [
       -0.02,
-      -0.12,
-      0.4
+      -0.07,
+      0.17
      ],
      [
       -0.01,
-      -0.05,
-      -0.11
-     ],
-     [
-      -0.02,
-      -0.12,
-      0.34
+      -0.1,
+      -0.48
      ]
     ],
-    "island_pairs": 12,
+    "island_pairs": 10,
     "island_offset_worst": [
      {
-      "lum": 0.0179,
+      "lum": 0.0272,
       "ao": 0.0,
-      "normal_deg": 1.07,
-      "edges": 18,
+      "normal_deg": 3.16,
+      "edges": 26,
       "at": [
-       0.01,
-       0.03,
-       0.03
+       -0.02,
+       -0.08,
+       -0.51
       ]
      },
      {
-      "lum": 0.0006,
+      "lum": 0.0164,
       "ao": 0.0,
-      "normal_deg": 3.88,
-      "edges": 32,
+      "normal_deg": 4.33,
+      "edges": 24,
+      "at": [
+       -0.02,
+       -0.05,
+       0.12
+      ]
+     },
+     {
+      "lum": 0.0005,
+      "ao": 0.0,
+      "normal_deg": 0.64,
+      "edges": 24,
       "at": [
        -0.01,
-       -0.1,
-       -0.5
+       -0.09,
+       -0.44
       ]
      },
      {
-      "lum": 0.0056,
+      "lum": 0.0019,
       "ao": 0.0,
-      "normal_deg": 2.39,
-      "edges": 18,
+      "normal_deg": 0.24,
+      "edges": 24,
       "at": [
        0.01,
-       0.01,
-       -0.08
-      ]
-     },
-     {
-      "lum": 0.0035,
-      "ao": 0.0196,
-      "normal_deg": 0.79,
-      "edges": 208,
-      "at": [
-       0.0,
-       -0.03,
-       0.09
+       0.08,
+       -0.76
       ]
      }
     ],
     "baseColor": {
-     "seam_p50": 0.015,
-     "seam_p95": 0.0779,
-     "ref_p50": 0.0098,
-     "ref_p95": 0.0559
+     "seam_p50": 0.0113,
+     "seam_p95": 0.0829,
+     "ref_p50": 0.0073,
+     "ref_p95": 0.0505
     },
     "AO": {
-     "seam_p50": 0.0099,
-     "seam_p95": 0.1276,
-     "ref_p50": 0.0042,
-     "ref_p95": 0.0519
+     "seam_p50": 0.016,
+     "seam_p95": 0.0662,
+     "ref_p50": 0.0023,
+     "ref_p95": 0.0676
     },
     "roughness": {
-     "seam_p50": 0.016,
-     "seam_p95": 0.1058,
-     "ref_p50": 0.0084,
-     "ref_p95": 0.0982
+     "seam_p50": 0.0118,
+     "seam_p95": 0.1487,
+     "ref_p50": 0.0061,
+     "ref_p95": 0.1252
     },
     "metallic": {
      "seam_p50": 0.0,
-     "seam_p95": 0.1545,
+     "seam_p95": 0.2395,
      "ref_p50": 0.0,
-     "ref_p95": 0.1655
+     "ref_p95": 0.2311
     },
     "normal(deg)": {
-     "seam_p50": 4.3896,
-     "seam_p95": 21.4639,
-     "ref_p50": 3.0364,
-     "ref_p95": 17.4621
+     "seam_p50": 3.8566,
+     "seam_p95": 23.7029,
+     "ref_p50": 2.1851,
+     "ref_p95": 20.0269
     }
    }
   },
@@ -141,23 +144,23 @@
     "objects": [
      "eq_bow_2"
     ],
-    "coverage": 0.11,
+    "coverage": 0.311,
     "overlap_between_objects": 0.0
    }
   },
   "bbox_min": [
    -0.033,
-   -0.144,
-   -0.786
+   -0.125,
+   -0.787
   ],
   "bbox_max": [
    0.033,
-   0.115,
-   0.786
+   0.116,
+   0.787
   ],
   "dims": [
    0.066,
-   0.259,
+   0.241,
    1.573
   ],
   "tris": 2620,
@@ -175,7 +178,7 @@
     1024
    ]
   },
-  "glb_bytes": 220680,
+  "glb_bytes": 369708,
   "attachment": {
    "origin": [
     0,
@@ -188,7 +191,7 @@
   "lods": [
    {
     "path": "C:\\Users\\amin2\\mmorpg-codex-cx3\\client\\public\\models\\eq_bow_2_lod1.glb",
-    "bytes": 81316,
+    "bytes": 144400,
     "tris": 844,
     "textures": {
      "eq_bow_2_Main_basecolor_lod1": [
@@ -216,9 +219,9 @@
       "minimumTris": 72,
       "targetTris": 358,
       "extent": [
-       0.048,
-       0.258957,
-       1.572775
+       0.052,
+       0.241232,
+       1.573414
       ],
       "elongated": true,
       "structural": true,
@@ -231,16 +234,16 @@
         "silhouettePass": true
        }
       ],
-      "maxSupportWidthLoss": 0.00163
+      "maxSupportWidthLoss": 0.0013
      },
      {
       "sourceTris": 164,
       "minimumTris": 72,
       "targetTris": 72,
       "extent": [
-       0.007794,
-       0.085489,
-       0.425914
+       0.015574,
+       0.073424,
+       0.425526
       ],
       "elongated": true,
       "structural": true,
@@ -253,16 +256,16 @@
         "silhouettePass": true
        }
       ],
-      "maxSupportWidthLoss": 0.01129
+      "maxSupportWidthLoss": 0.01148
      },
      {
       "sourceTris": 164,
       "minimumTris": 72,
       "targetTris": 72,
       "extent": [
-       0.007794,
-       0.085489,
-       0.425914
+       0.015574,
+       0.073424,
+       0.425526
       ],
       "elongated": true,
       "structural": true,
@@ -275,7 +278,7 @@
         "silhouettePass": true
        }
       ],
-      "maxSupportWidthLoss": 0.01129
+      "maxSupportWidthLoss": 0.01148
      },
      {
       "sourceTris": 60,
@@ -393,7 +396,7 @@
    },
    {
     "path": "C:\\Users\\amin2\\mmorpg-codex-cx3\\client\\public\\models\\eq_bow_2_lod2.glb",
-    "bytes": 29560,
+    "bytes": 48484,
     "tris": 246,
     "textures": {
      "eq_bow_2_Main_basecolor_lod2": [
@@ -421,9 +424,9 @@
       "minimumTris": 48,
       "targetTris": 95,
       "extent": [
-       0.048,
-       0.258957,
-       1.572775
+       0.052,
+       0.241232,
+       1.573414
       ],
       "elongated": true,
       "structural": true,
@@ -436,16 +439,16 @@
         "silhouettePass": true
        }
       ],
-      "maxSupportWidthLoss": 0.01872
+      "maxSupportWidthLoss": 0.03379
      },
      {
       "sourceTris": 164,
       "minimumTris": 48,
       "targetTris": 48,
       "extent": [
-       0.007794,
-       0.085489,
-       0.425914
+       0.015574,
+       0.073424,
+       0.425526
       ],
       "elongated": true,
       "structural": true,
@@ -458,16 +461,16 @@
         "silhouettePass": true
        }
       ],
-      "maxSupportWidthLoss": 0.01192
+      "maxSupportWidthLoss": 0.01318
      },
      {
       "sourceTris": 164,
       "minimumTris": 48,
       "targetTris": 48,
       "extent": [
-       0.007794,
-       0.085489,
-       0.425914
+       0.015574,
+       0.073424,
+       0.425526
       ],
       "elongated": true,
       "structural": true,
@@ -480,7 +483,7 @@
         "silhouettePass": true
        }
       ],
-      "maxSupportWidthLoss": 0.01174
+      "maxSupportWidthLoss": 0.01318
      },
      {
       "sourceTris": 60,

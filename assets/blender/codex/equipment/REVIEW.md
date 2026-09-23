@@ -27,8 +27,12 @@ Les diagnostics conservent les alertes de coutures et de faces coplanaires aux r
 
 ## Livraison contrôlée
 
-54 GLB validés : 18 modèles et 36 LOD. Les modèles de base comptent 1 288 à 2 780 triangles ; le plus gros pèse 483 460 octets. L'ensemble des GLB pèse 9 673 556 octets. Une matière par fichier, textures WebP embarquées, positions/normales/UV/tangentes présentes et pivots à zéro. Les 126 PNG de contrôle sont décodables.
+54 GLB validés : 18 modèles et 36 LOD. Les modèles de base comptent 1 288 à 2 780 triangles ; le plus gros pèse 483 460 octets. Après la retouche des arcs, l'ensemble des GLB pèse 10 032 676 octets. Une matière par fichier, textures WebP embarquées, positions/normales/UV/tangentes présentes et pivots à zéro. Les 126 PNG de contrôle sont décodables.
 
 LOD1 : 30,0 à 38,2 % des triangles de base. LOD2 : 6,7 à 14,3 %. Ce dépassement ciblé de la cible initiale évite la disparition des pièces porteuses. Les contours de boucliers restent plus anguleux au LOD2 et nécessitent un seuil d'affichage lointain.
 
-Zéro erreur dans les rapports source finaux. Les avertissements restants concernent surtout des îlots UV fragmentés, une occupation d'atlas faible (11 à 35 % sur certains arcs/boucliers), des écarts de texture locaux et quelques faces proches dans les assemblages de bâton. Ils restent dans `delivery-checks.json` et les rapports individuels ; l'utilisation mémoire des atlas peut encore être optimisée.
+Zéro erreur dans les rapports source finaux. Les avertissements restants concernent surtout des îlots UV fragmentés, une occupation d'atlas faible sur certains arcs/boucliers, des écarts de texture locaux et quelques faces proches dans les assemblages de bâton. Ils restent dans `delivery-checks.json` et les rapports individuels ; l'utilisation mémoire des atlas peut encore être optimisée.
+
+## Retouche des arcs demandée par Amin
+
+Les quatre arcs semblaient trop proches dans la galerie. La progression devient bois sombre / bois cuivré / frêne clair avec dorures / branches largement dorées avec incrustations et cuir sombres. Les courbures sont également différenciées et le quatrième est plus épais. La version dorée conserve une rugosité et une patine procédurales ; sa silhouette et sa corde sont conservées aux LOD. Les rendus GLB, vues tournantes, normales et LOD ont été inspectés. Comparaisons dans `bows-current.jpg` et `bow-comparison.jpg` ; les anciennes vues sont archivées dans `bow-revision-before/`.
