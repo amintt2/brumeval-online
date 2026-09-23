@@ -30,7 +30,11 @@ export function setupPwa() {
       return;
     }
     const register = () => {
-      navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((err) => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(() => navigator.serviceWorker.ready).then((reg) => {
+        // First visit: hand the models / icons already downloaded to the worker so the next start is instant.
+        const urls = performance.getEntriesByType('resource').map((e) => e.name).filter((u) => /\/(models|icons|ui|pwa)\//.test(u));
+        if (urls.length) reg.active?.postMessage({ type: 'brumeval:warm', urls });
+      }).catch((err) => {
         console.info('[pwa] service worker non enregistré :', err?.message || err);
       });
     };

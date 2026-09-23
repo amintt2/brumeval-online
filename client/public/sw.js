@@ -38,12 +38,35 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data === 'brumeval:clear-caches') {
+  const msg = event.data;
+  if (msg === 'brumeval:clear-caches') {
     event.waitUntil((async () => {
       for (const key of await caches.keys()) if (key.startsWith('brumeval-')) await caches.delete(key);
     })());
+  } else if (msg && msg.type === 'brumeval:warm' && Array.isArray(msg.urls)) {
+    // Files the page downloaded before this worker controlled it (first visit): store them now.
+    event.waitUntil(warm(msg.urls.slice(0, 400)));
   }
 });
+
+async function warm(urls) {
+  const cache = await caches.open(ASSET_CACHE);
+  for (const raw of urls) {
+    let url;
+    try {
+      url = new URL(raw, self.location.origin);
+    } catch {
+      continue;
+    }
+    if (url.origin !== self.location.origin || !startsWithAny(url.pathname, ASSET_PREFIXES)) continue;
+    const req = new Request(url.pathname);
+    if (await cache.match(req)) continue;
+    try {
+      const res = await fetch(req); // normally served by the HTTP cache (revalidation only)
+      if (res.ok && res.status === 200 && res.type === 'basic') await cache.put(req, res);
+    } catch { /* offline: next visit */ }
+  }
+}
 
 const startsWithAny = (path, prefixes) => prefixes.some((p) => path.startsWith(p));
 

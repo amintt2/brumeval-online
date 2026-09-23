@@ -1,0 +1,66 @@
+# Checks every push and pull request to main: server tests + client build (+ launcher unit tests).
+# No Blender here: the generated models are committed in client/public.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  game:
+    name: Tests et build du jeu
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installation
+        run: npm ci
+
+      - name: Tests
+        run: npm test
+
+      - name: Build du client
+        run: npm run build
+
+  launcher:
+    name: Tests du launcher
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: launcher
+    env:
+      # Unit tests only: no need for the Electron binary.
+      ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: launcher/package-lock.json
+
+      - name: Installation
+        run: npm ci
+
+      - name: Tests unitaires
+        run: npm test
+
+      - name: Ressources de l'interface
+        run: npm run prepare-ui

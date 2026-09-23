@@ -520,7 +520,11 @@ async function runSmoke() {
     ok('csp');
     const news = await waitFor('nouvelles', () => lwc.executeJavaScript("document.querySelectorAll('.news-item').length"));
     const newsOffline = await lwc.executeJavaScript("!document.getElementById('news-offline').hidden");
-    if (newsOffline) throw new Error('news.json du serveur non chargé (copie locale affichée)');
+    if (newsOffline) {
+      // A local test server always has news.json; an older remote server may not (the bundled copy is shown).
+      if (/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(target + '/')) throw new Error('news.json du serveur non chargé (copie locale affichée)');
+      log.warn('SMOKE : news.json absent du serveur, copie locale affichée');
+    }
     ok('nouvelles', `${news} article(s)`);
     const status = await waitFor('statut du serveur', () => lwc.executeJavaScript("document.getElementById('status').dataset.state === 'online' && document.getElementById('status-text').textContent"));
     ok('statut', status);
@@ -549,6 +553,18 @@ async function runSmoke() {
       return t === 'Brumeval Online' && t;
     });
     ok('jeu', title);
+    if (/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(target + '/')) {
+      // The web game's service worker (PWA) works inside the launcher and stores the 3D models.
+      const cached = await waitFor('service worker du jeu', () => gwc.executeJavaScript(`(async () => {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (!reg || !reg.active) return 0;
+        const keys = await caches.keys();
+        if (!keys.includes('brumeval-assets-v1')) return 0;
+        const entries = await (await caches.open('brumeval-assets-v1')).keys();
+        return entries.filter((r) => r.url.includes('/models/')).length;
+      })()`), 30000);
+      ok('service-worker', `${cached} modèle(s) en cache`);
+    }
     const playing = await lwc.executeJavaScript("document.body.classList.contains('is-playing')");
     if (!playing) throw new Error('le launcher n\'affiche pas « En jeu »');
     ok('en-jeu');
@@ -566,6 +582,8 @@ async function runSmoke() {
 
     const cleared = await lwc.executeJavaScript('window.brumeval.clearGameCache()');
     if (!cleared?.ok) throw new Error('vidage du cache');
+    const left = await gwc.executeJavaScript("caches.keys().then((k) => k.filter((n) => n.startsWith('brumeval-')).length)");
+    if (left) throw new Error(`${left} cache(s) du service worker restant(s) après le vidage`);
     ok('cache');
 
     gameWin.close();
