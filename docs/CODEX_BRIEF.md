@@ -39,7 +39,9 @@ Règles :
 - **Contrôle qualité avant de livrer** : `node scripts/inspect-glb.mjs <fichier.glb>` (taille, triangles, os, animations), plus des rendus sous 8 angles, en fil de fer et avec l'orientation des faces, que tu regardes vraiment. Dépose-les dans `assets/previews/codex/`.
 - Tout texte visible par les joueurs est en **français**.
 
-## 4. Tes tâches (par priorité) — dossiers réservés pour toi
+## 4. Tes tâches — dossiers réservés pour toi
+
+Ordre de priorité (mis à jour le 2026-09-23) : 2ᵉ passes de CX-1 et CX-2 → CX-3, CX-6, CX-9 en parallèle → CX-10 → CX-5 → CX-4 → CX-11 → CX-7 → CX-8.
 
 | Id | Tâche | Livrables | Dossiers réservés |
 |---|---|---|---|
@@ -51,5 +53,9 @@ Règles :
 | **CX-6** | **Effets météo** (v0.3) — planches d'animation rendues dans Blender (WebP avec transparence) : `rain_streaks`, `rain_splash`, `snowflakes`, `sandstorm`, `fog_wisps`, `lightning_flash`, `embers` + `manifest.json` au même format que `client/public/vfx/manifest.json` (`{ nom: { file, cols, rows, frames, fps, loop, blending, size } }`). | `client/public/vfx/weather/` | `client/public/vfx/weather/`, `assets/blender/codex/weather/` |
 | **CX-7** | **Monture** (v0.4) — `mount_steed` « Destrier de brume » : cheval spectral original (crinière et queue émissives, armure légère), animations `Idle`, `Walk`, `Trot`, `Gallop`, `Jump`, `Hit`, `Death`. | `client/public/models/mount_steed.glb` | `assets/blender/codex/mount/` |
 | **CX-8** | *(optionnel)* **Serveur MCP du projet** — `tools/brumeval-mcp/` (Node, SDK MCP officiel) avec les outils `board_read`, `board_update` (ta ligne seulement), `outbox_post`, `inspect_glb`, `build_assets(group, only)`, `render_preview(key)`, `server_status(url)`, `run_tests`. | `tools/brumeval-mcp/` | `tools/brumeval-mcp/` |
+
+| **CX-9** | **Kit d'interface dark fantasy** (v0.2/v0.3) — textures rendues dans Blender pour habiller l'interface : fond de panneau (cuir sombre / pierre, 512×512, découpable en 9 parties), coins et bordures en filigrane doré (PNG transparent), boutons (normal / survol / pressé), cadres de barres PV / mana / endurance + textures de remplissage, cadre d'emplacement d'objet et de compétence (128), anneau de minicarte (512), fond d'infobulle, ornements séparateurs, curseurs 32/64 px (normal, attaque = épée, parler = bulle, ramasser = main). Avec un `manifest.json` qui donne les marges de découpe en 9 parties. | `client/public/ui/kit/` | `client/public/ui/kit/`, `assets/blender/codex/uikit/` |
+| **CX-10** | **L'Arbre-Brume** (v0.3) — repère colossal visible de toute la carte (≈ 120 m, dans l'esprit de l'Arbre-Monde d'Elden Ring mais original) : tronc torsadé, racines géantes, feuillage lumineux or-argent (émissif, matériau `Leaf*`), brume dorée. Budget LOD0 ≤ 40 k triangles + `_lod1` / `_lod2` + une carte « imposteur » pour le lointain. Clé `landmark_brume_tree`. | `client/public/models/landmark_brume_tree*.glb` | `assets/blender/codex/landmark/` |
+| **CX-11** | **Kit « Grotte gelée »** (v0.4, 2ᵉ donjon) — pièces sur la grille de 4 m : `ice_floor`, `ice_wall`, `ice_wall_corner`, `ice_entrance`, `ice_pillar` (stalagmite), `ice_icicles`, `ice_crystal` (émissif bleu), `ice_bridge`, `ice_frozen_warrior` (guerrier pris dans la glace), `ice_chest`. | `client/public/models/ice_*.glb` (+ LOD) | `assets/blender/codex/icecave/` |
 
 L'intégration dans le jeu (code, `shared/data.js`, interface) est faite par Claude : tu livres les fichiers et tu le signales dans ta boîte d'envoi.
