@@ -1,0 +1,26 @@
+# Brumeval Online — docker compose up -d --build   (voir docs/DEPLOIEMENT.md)
+services:
+  brumeval:
+    build: .
+    image: brumeval-online:latest
+    container_name: brumeval
+    restart: unless-stopped
+    ports:
+      - "${BRUMEVAL_PORT:-3000}:3000"
+    environment:
+      PORT: "3000"
+      # 1 derrière un proxy inverse (nginx, Caddy…) sur la même machine, 0 si le port est exposé directement
+      TRUST_PROXY: "${TRUST_PROXY:-0}"
+      MAX_PLAYERS: "${MAX_PLAYERS:-100}"
+    volumes:
+      - brumeval-data:/app/server/data
+    # laisse le temps au serveur d'enregistrer tous les comptes à l'arrêt
+    stop_grace_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  brumeval-data:
