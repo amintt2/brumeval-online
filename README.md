@@ -91,12 +91,16 @@ cimetière. Tout le texte du jeu est en français.
   flood et les paquets malformés, bannissements et journal de sécurité — voir [docs/SECURITE.md](docs/SECURITE.md).
 
 **Interface**
-- Écran de connexion et de création de personnage avec portraits des classes, écran de chargement.
+- **Comptes** : un compte, jusqu'à 5 personnages ; écran de sélection avec aperçu 3D, création, suppression,
+  « Rester connecté », **clés d'accès (passkeys)**, changement de mot de passe, « Se déconnecter partout »
+  (voir [docs/COMPTES.md](docs/COMPTES.md)). Écrans de connexion et de chargement illustrés.
+- **Menu principal** (Échap) et **carte du monde** (M) avec objectifs de quêtes et repère personnel.
+- Sur le site, proposition de télécharger le launcher (ou de jouer directement dans le navigateur).
 - Portrait, barres de vie et de mana, cadre de cible, barre d'expérience, barre d'action avec temps de
   recharge, emplacements de potions, suivi de quêtes, minicarte avec zoom.
 - Fenêtres déplaçables : Sac, Personnage, Journal de quêtes, Aide. Dialogues des PNJ avec quêtes et boutique.
 - Notifications, bannières de zone et de niveau, écran de mort, textes de combat flottants.
-- Effets sonores synthétisés en direct (WebAudio), désactivables avec **M**.
+- Effets sonores synthétisés en direct (WebAudio), volume réglable dans Options (**O**).
 
 **Graphismes**
 - Ciel et éclairage d'ambiance qui suivent le soleil, ombres en cascade, occlusion ambiante, brume au sol et
@@ -155,12 +159,13 @@ Variables d'environnement reconnues par `npm start` :
 | Variable | Défaut | Rôle |
 |---|---|---|
 | `PORT` | `3000` | Port HTTP et WebSocket (`/ws`) |
-| `DATA_DIR` | `server/data` | Dossier de sauvegarde des comptes (`accounts/<nom>.json`, `backups/`) |
+| `DATA_DIR` | `server/data` | Dossier de sauvegarde des comptes (`accounts/<compte>.json`, `backups/`) |
 | `STATIC_DIR` | `client/dist` | Dossier du client compilé |
 | `TRUST_PROXY` | `0` | `1` derrière un proxy inverse (nginx) : IP réelle des joueurs via `X-Forwarded-For` |
 | `MAX_PLAYERS` | `100` | Nombre maximal de joueurs connectés |
 | `ADMIN_NAMES` | *(vide)* | Noms des administrateurs (commandes de modération `/mj`), séparés par des virgules |
-| `ALLOWED_ORIGINS` | `https://brumel.mciut.fr` | Origines web autorisées à se connecter (en plus de localhost et de la même origine) |
+| `ALLOWED_ORIGINS` | `https://brumel.mciut.fr` | Origines web autorisées à se connecter (en plus de localhost et de la même origine) ; aussi les origines acceptées pour les passkeys |
+| `RP_ID` | *(hôte de la requête)* | Domaine des clés d'accès (passkeys), p. ex. `brumel.mciut.fr` — voir [docs/COMPTES.md](docs/COMPTES.md) |
 
 Anti-triche, limites, bannissements, commandes des maîtres du jeu et journal de sécurité :
 voir **[docs/SECURITE.md](docs/SECURITE.md)** (toutes les variables d'environnement y sont décrites).
@@ -200,14 +205,14 @@ Mesures de charge : [docs/PERFORMANCES.md](docs/PERFORMANCES.md) (`node tests/lo
 | **Maj** (appui court, < 0,2 s) | Roulade d'esquive (direction du déplacement, sinon en arrière) — 30 d'endurance |
 | **Maj** (maintenue) | Sprinter (consomme de l'endurance) ; un appui court ne sprinte jamais |
 | **Espace** | Réservé au saut (v0.3) : sans effet pour l'instant |
-| **Échap** | Fermer la fenêtre du dessus, sinon annuler la cible |
+| **Échap** | Fermer la fenêtre du dessus, sinon annuler la cible, sinon ouvrir le menu principal |
 | **1** | Attaque automatique de la classe |
 | **2 3 4** | Capacités |
 | **5** / **6** | Potion de soin (la meilleure disponible) / potion de mana |
 | **I** / **C** / **L** / **H** | Sac / Personnage / Journal de quêtes / Aide |
 | **Entrée** | Ouvrir la discussion, envoyer le message |
-| **M** | Couper ou rétablir le son |
-| **O** | Réglages graphiques (préréglages Bas / Moyen / Élevé / Ultra, voir [docs/RENDU.md](docs/RENDU.md)) |
+| **M** | Carte du monde (molette : zoom, glisser : déplacer, clic : poser un repère) |
+| **O** | Options : graphismes (préréglages Bas / Moyen / Élevé / Ultra, voir [docs/RENDU.md](docs/RENDU.md)), volume du son, commandes |
 
 Commandes de discussion : `/w nom message` (chuchoter), `/r message` (répondre au dernier chuchotement),
 `/who` (joueurs en ligne), `/help` (aide).
@@ -369,12 +374,14 @@ npm test
 ```
 
 - **Tests unitaires** (`server/test/*.test.js`) : formules, inventaire, validation des déplacements,
-  quêtes, combat, authentification, persistance, HTTP, réseau, anti-triche, modération.
+  quêtes, combat, authentification, persistance, HTTP, réseau, anti-triche, modération, comptes (migrations,
+  jetons « Rester connecté », personnages, passkeys vérifiées avec un authentificateur logiciel).
 - **Test de bout en bout** (`tests/bot.mjs`, environ 25 s) : le serveur démarre sur un port libre avec un
   dossier de données temporaire, deux bots créent leur compte, se voient, discutent et chuchotent ; le premier
   parle à l'Ancien, accepte la quête, achète une potion, marche jusqu'aux plaines à vitesse réelle, tue un
   gluant avec l'attaque automatique, gagne XP, or et progression de quête, se fait corriger en cas de
-  *speed hack*, puis se reconnecte en retrouvant toute sa progression.
+  *speed hack*, puis se reconnecte en retrouvant toute sa progression ; un troisième crée un compte et un
+  guerrier, joue, change de personnage, crée une rôdeuse, joue, puis se reconnecte avec son jeton.
 - **Test de sécurité de bout en bout** (`tests/security.mjs`, environ 60 s) : un joueur honnête au réseau
   capricieux ne reçoit aucune correction, puis speed hack, téléportation, traversée de maison, paquets
   malformés, force brute, flood, noms interdits, commandes MJ par un joueur… sont bloqués, et un tricheur
@@ -388,7 +395,7 @@ Paramètres d'URL du client :
 
 | Paramètre | Effet |
 |---|---|
-| `?autologin=Nom&cls=mage` | Se connecte automatiquement (mot de passe `test1234`) et crée le compte s'il n'existe pas |
+| `?autologin=Nom&cls=mage` | Se connecte automatiquement (mot de passe `test1234`) et crée le compte et son personnage s'ils n'existent pas, directement dans le monde |
 | `?offline=1` | Mode hors ligne : simulation locale, sans serveur (options `cls`, `name`, `tod`, `mobs=N`, `at=x,z,angle`) |
 | `?tod=0.9` | Fige l'heure affichée (0 minuit, 0,25 lever du soleil, 0,5 midi, 0,75 coucher) |
 | `?quality=low` | Sans ombres, résolution réduite, pour les machines modestes |

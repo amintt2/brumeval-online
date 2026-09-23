@@ -12,6 +12,8 @@ COPY server/package.json server/
 RUN npm ci --no-audit --no-fund
 COPY shared shared
 COPY client client
+# [accounts] version of the launcher installers linked by the website (client/vite.config.js)
+COPY launcher/package.json launcher/package.json
 RUN npm run build
 
 # ---- 2. dépendances d'exécution du serveur seulement (ws) ----------------------------------------

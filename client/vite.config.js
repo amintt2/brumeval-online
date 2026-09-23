@@ -1,12 +1,18 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { assetManifest } from './vite-asset-manifest.js'; // [render-souls]
 
 const shared = fileURLToPath(new URL('../shared', import.meta.url));
+// [accounts] launcher version of this build: the website's « Télécharger le launcher » card links its installers
+const launcherVersion = (() => {
+  try { return JSON.parse(readFileSync(new URL('../launcher/package.json', import.meta.url), 'utf8')).version; } catch { return '0.2.0'; }
+})();
 
 export default defineConfig({
   plugins: [assetManifest()], // [render-souls] /asset-manifest.json (optional assets present in public/)
   resolve: { alias: { '@shared': shared } },
+  define: { __LAUNCHER_VERSION__: JSON.stringify(launcherVersion) },
   server: {
     port: 5173,
     fs: { allow: ['..'] },

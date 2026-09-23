@@ -24,12 +24,17 @@ import { Targeting } from './game/targeting.js';
 import { ABILITIES, MONSTERS } from '@shared/data.js';
 import { Telegraphs } from './render/telegraphs.js';
 import { EchoRenderer } from './render/echo.js';
+// [accounts] accounts, characters, remembered sessions, passkeys (docs/COMPTES.md)
+import { store as accountStore, launcherQuit, canQuit } from './account/session.js';
+import { passkeysSupported, createPasskey, usePasskey, passkeyErrorText, defaultPasskeyLabel } from './account/passkey.js';
+import { CharPreview } from './render/charPreview.js';
 
 const canvas = document.getElementById('game');
 const labelsRoot = document.getElementById('labels');
 const uiRoot = document.getElementById('ui-root');
 
 const AUTH_ERRORS = {
+  bad_token: '', // [accounts] expired / revoked remembered session: back to the login form, no error
   bad_name: 'Nom invalide (3 à 16 lettres, chiffres ou _).',
   bad_password: 'Mot de passe invalide (4 à 64 caractères).',
   bad_class: 'Classe invalide.',
@@ -70,6 +75,12 @@ let kickMsg = null;
 let autoMode = null;
 let pendingAuth = null;
 let lastZone = null;
+// [accounts]
+let account = null;        // last account_ok
+let switching = false;     // char_logout sent from the world: the next account_ok leaves it
+let pendingPasskey = null; // { purpose: 'login' | 'register', remember }
+let charPreview = null;
+let autoRelogin = false;   // one silent token login after a lost connection
 
 const conn = new Connection({
   onMessage: (m) => onMessage(m),
@@ -87,12 +98,79 @@ function notify(text, kind = 'info') {
 
 // ------------------------------------------------------------------ UI handlers
 const handlers = {
-  login(name, password) {
-    startAuth({ t: C2S.LOGIN, name: String(name || '').trim(), password: String(password || '') });
+  // [accounts] `remember` present = accounts flow (account_ok → character selection); absent = legacy direct entry
+  login(name, password, remember) {
+    const msg = { t: C2S.LOGIN, name: String(name || '').trim(), password: String(password || '') };
+    if (typeof remember === 'boolean') msg.remember = remember;
+    startAuth(msg);
   },
-  register(name, password, cls) {
-    startAuth({ t: C2S.REGISTER, name: String(name || '').trim(), password: String(password || ''), cls });
+  register(name, password, remember, cls) {
+    const msg = { t: C2S.REGISTER, name: String(name || '').trim(), password: String(password || '') };
+    if (typeof remember === 'boolean') msg.remember = remember;
+    if (cls) msg.cls = cls; // legacy: account + first character + direct entry
+    startAuth(msg);
   },
+  passkeyLogin(remember) {
+    if (!passkeysSupported()) {
+      ui.setLoginError('Votre navigateur ne prend pas en charge les clés d’accès.');
+      return;
+    }
+    pendingPasskey = { purpose: 'login', remember: !!remember };
+    startAuth({ t: C2S.PASSKEY_LOGIN_OPTIONS });
+  },
+  charSelect(id) {
+    ui.setCharSelectBusy(true);
+    accountStore.lastChar = id;
+    if (!send({ t: C2S.CHAR_SELECT, id })) connectionLost();
+  },
+  charCreate(name, cls) {
+    ui.setCharCreateBusy(true);
+    if (!send({ t: C2S.CHAR_CREATE, name: String(name || '').trim(), cls })) connectionLost();
+  },
+  charDelete(id, confirm) {
+    ui.setCharSelectBusy(true);
+    if (!send({ t: C2S.CHAR_DELETE, id, confirm })) connectionLost();
+  },
+  charLogout() {
+    if (!state.inGame) return;
+    switching = true;
+    send({ t: C2S.CHAR_LOGOUT });
+  },
+  showCharCreate(show) { ui.showCharCreate(show); },
+  logout() {
+    accountStore.token = null;
+    if (!send({ t: C2S.LOGOUT })) backToLogin();
+  },
+  logoutAll() {
+    accountStore.token = null;
+    if (!send({ t: C2S.LOGOUT_ALL })) backToLogin();
+  },
+  openAccount() { ui.openAccount(); send({ t: C2S.ACCOUNT_GET }); },
+  openOptions() { ui.openOptions(); },
+  openMap() { ui.openMap(); },
+  passkeyAdd() {
+    if (!passkeysSupported()) {
+      reportAccountError('Votre navigateur ne prend pas en charge les clés d’accès.');
+      return;
+    }
+    pendingPasskey = { purpose: 'register' };
+    send({ t: C2S.PASSKEY_REG_OPTIONS });
+  },
+  passkeyRename(id, label) { send({ t: C2S.PASSKEY_RENAME, id, label }); },
+  passkeyDelete(id) { send({ t: C2S.PASSKEY_DELETE, id }); },
+  passwordChange(old, password) { send({ t: C2S.PASSWORD_CHANGE, old, password }); },
+  quit() { launcherQuit(); },
+  canQuit: () => canQuit(),
+  hasTarget: () => !!targeting?.id,
+  getAudio: () => ({ volume: audio.volume, muted: audio.muted }),
+  setVolume(v) { audio.setVolume(v); },
+  setMuted(m) { audio.setMuted(m); },
+  previewAttach(el) {
+    if (!assets) return false;
+    charPreview ||= new CharPreview(assets);
+    return charPreview.attach(el);
+  },
+  previewChar(ch) { charPreview?.show(ch); },
   chat(text) {
     const t = String(text || '').trim().slice(0, CHAT_MAX_LEN);
     if (t) send({ t: C2S.CHAT, text: t });
@@ -133,13 +211,121 @@ async function startAuth(msg) {
     try {
       await conn.connect();
     } catch {
+      ui.setLoading(null);
       ui.setLoginBusy(false);
+      if (msg.t === C2S.LOGIN_TOKEN) ui.showLogin(true);
       ui.setLoginError('Impossible de joindre le serveur. Réessayez dans un instant.');
       return;
     }
   }
   kickMsg = null;
   send(msg);
+}
+
+// ------------------------------------------------------------------ [accounts] account messages
+/** Remembered session: straight to the character selection (last played character pre-selected). */
+function tokenLogin() {
+  const token = accountStore.token;
+  if (!token) return false;
+  ui.setLoading(1, 'Reconnexion à votre compte…');
+  startAuth({ t: C2S.LOGIN_TOKEN, token });
+  return true;
+}
+
+function onAccount(m) {
+  if (m.token) accountStore.token = m.token;
+  account = m;
+  pendingAuth = null;
+  autoRelogin = false;
+  ui.setLoading(null);
+  ui.setLoginBusy(false);
+  ui.setCharSelectBusy(false);
+  ui.setCharCreateBusy(false);
+  if (m.account?.name) accountStore.login = m.account.name;
+  if (m.passkeyAdded) {
+    ui.showPasskeyOffer(false);
+    accountStore.passkeyOfferDismissed = true;
+  }
+  if (m.info) {
+    if (ui.accountOpen) ui.accountInfo(m.info);
+    else if (!state.inGame) ui.setCharSelectInfo(m.info);
+    else ui.notify(m.info, 'info');
+  }
+  if (switching || !state.inGame) {
+    if (switching) {
+      switching = false;
+      leaveGame();
+    }
+    const preselect = m.created || null;
+    ui.showCharCreate(false);
+    ui.showCharSelect(true, m, { preselect });
+    // after a password login (or a new account) without any passkey: offer one (dismissible, re-offered in Compte)
+    if (m.method) {
+      const offer = (m.method === 'password' || m.method === 'register') && !(m.account?.passkeys?.length)
+        && passkeysSupported() && !accountStore.passkeyOfferDismissed;
+      ui.showPasskeyOffer(offer);
+    }
+    if (m.method && !m.chars?.length) ui.showCharCreate(true); // brand-new account: straight to creation
+  } else ui.setAccount(m);
+}
+
+function reportAccountError(msg) {
+  if (ui.accountOpen) ui.accountError(msg);
+  else if (ui.charSelectVisible) ui.setCharSelectError(msg);
+  else notify(msg, 'error');
+}
+
+function onAccountErr(m) {
+  const msg = m.msg || 'Opération refusée.';
+  ui.setCharSelectBusy(false);
+  ui.setCharCreateBusy(false);
+  switch (m.op) {
+    case C2S.CHAR_CREATE: ui.setCharCreateError(msg); break;
+    case C2S.CHAR_SELECT:
+    case C2S.CHAR_DELETE: ui.setCharSelectError(msg); break;
+    case C2S.CHAR_LOGOUT: switching = false; notify(msg, 'error'); break;
+    default: reportAccountError(msg);
+  }
+}
+
+/** Server options for a passkey ceremony: run the browser dialog, send the result. */
+async function onPasskeyOptions(m) {
+  const pend = pendingPasskey;
+  pendingPasskey = null;
+  if (!pend || pend.purpose !== m.purpose) return;
+  try {
+    if (m.purpose === 'login') {
+      const resp = await usePasskey(m.options);
+      ui.setLoginBusy(true);
+      send({ t: C2S.PASSKEY_LOGIN_VERIFY, resp, remember: !!pend.remember });
+    } else {
+      const resp = await createPasskey(m.options);
+      send({ t: C2S.PASSKEY_REG_VERIFY, resp, label: defaultPasskeyLabel() });
+    }
+  } catch (err) {
+    console.info('[passkey]', err?.name || '', err?.message || err);
+    const text = passkeyErrorText(err, m.purpose);
+    if (m.purpose === 'login') {
+      ui.setLoginBusy(false);
+      ui.setLoginError(text);
+    } else reportAccountError(text);
+  }
+}
+
+/** Back to the login form (logout, expired session). The socket stays open when it still is. */
+function backToLogin(error = null) {
+  leaveGame();
+  account = null;
+  switching = false;
+  ui.setLoading(null);
+  ui.showLogin(true);
+  ui.setLoginError(error);
+}
+
+function connectionLost() {
+  ui.setCharSelectBusy(false);
+  ui.setCharCreateBusy(false);
+  backToLogin('Connexion au serveur perdue. Reconnectez-vous.');
 }
 
 // ------------------------------------------------------------------ network messages
@@ -152,14 +338,38 @@ function onMessage(m) {
     case S2C.AUTH_ERR: {
       if (autoMode && autoMode.stage === 'login' && (m.code === 'wrong_credentials' || m.code === 'unknown' || m.code === 'bad_request')) {
         autoMode.stage = 'register';
-        handlers.register(autoMode.name, AUTOLOGIN_PASSWORD, autoMode.cls);
+        handlers.register(autoMode.name, AUTOLOGIN_PASSWORD, undefined, autoMode.cls);
         return;
       }
       autoMode = null;
+      pendingAuth = null;
+      ui.setLoading(null);
       ui.setLoginBusy(false);
+      if (m.code === 'bad_token') { // [accounts] expired / revoked remembered session
+        accountStore.token = null;
+        ui.showLogin(true);
+        ui.setLoginError(autoRelogin ? 'Connexion au serveur perdue. Reconnectez-vous.' : null);
+        autoRelogin = false;
+        break;
+      }
+      if (!ui.charSelectVisible) ui.showLogin(true);
       ui.setLoginError(m.msg || AUTH_ERRORS[m.code] || 'Connexion refusée.');
       break;
     }
+    // [accounts]
+    case S2C.ACCOUNT_OK:
+      onAccount(m);
+      break;
+    case S2C.ACCOUNT_ERR:
+      onAccountErr(m);
+      break;
+    case S2C.PASSKEY_OPTIONS:
+      onPasskeyOptions(m);
+      break;
+    case S2C.LOGGED_OUT:
+      if (m.all) accountStore.token = null;
+      backToLogin(m.all ? 'Vous êtes déconnecté de tous vos appareils.' : null);
+      break;
     case S2C.SNAP:
       if (state.inGame) state.applySnap(m, now);
       break;
@@ -281,9 +491,15 @@ function enterGame(m) {
   orbit.update(0, new THREE.Vector3(self.x, terrainHeight(self.x, self.z), self.z), true);
   autoMode = null;
   pendingAuth = null;
+  switching = false;
+  ui.setLoading(null);
   ui.setLoginBusy(false);
   ui.setLoginError(null);
+  ui.setCharSelectBusy(false);
   ui.showLogin(false);
+  ui.showCharSelect(false); // [accounts]
+  ui.showCharCreate(false);
+  charPreview?.show(null);
   ui.setSelf(state.self);
   ui.setTarget(null);
   ui.showDeath(!!self.dead);
@@ -313,15 +529,28 @@ function leaveGame() {
 
 function onDisconnect() {
   const wasInGame = state.inGame;
+  const hadAccount = !!account;
   leaveGame();
   autoMode = null;
+  account = null;
+  switching = false;
+  pendingPasskey = null;
   ui.setTarget(null);
   ui.showDeath(false);
   ui.showDialog(null);
   ui.setLoginBusy(false);
+  ui.setCharSelectBusy(false);
+  ui.setCharCreateBusy(false);
   ui.showLogin(true);
+  // [accounts] a dropped connection (server restart, network) with a remembered session: one silent retry
+  if (!kickMsg && (wasInGame || hadAccount) && accountStore.token && !autoRelogin) {
+    autoRelogin = true;
+    pendingAuth = null;
+    setTimeout(() => { if (!state.inGame && !conn.isOpen()) tokenLogin(); }, 1500);
+    return;
+  }
   if (kickMsg) ui.setLoginError(kickMsg);
-  else if (wasInGame || pendingAuth) ui.setLoginError('Connexion au serveur perdue. Reconnectez-vous.');
+  else if (wasInGame || pendingAuth || hadAccount) ui.setLoginError('Connexion au serveur perdue. Reconnectez-vous.');
   kickMsg = null;
   pendingAuth = null;
 }
@@ -365,11 +594,7 @@ function onKey(code, e) {
         send({ t: C2S.STOP });
       }
       break;
-    case 'KeyM': {
-      const muted = audio.toggleMute();
-      ui.notify(muted ? 'Son coupé (M)' : 'Son activé (M)', 'info');
-      break;
-    }
+    // [accounts] M opens the world map (ui/index.js); the sound is in Options → Son
     default:
       break;
   }
@@ -499,7 +724,7 @@ async function boot() {
   await nextFrame();
   ui.setLoading(1, 'Bienvenue à Brumeval !');
   await nextFrame();
-  ui.setLoading(null);
+  if (!accountStore.token || URLP.offline || URLP.autologin) ui.setLoading(null); // [accounts] else: kept until the token login answers
 
   if (assets.missing.length) console.info(`[assets] modèles de remplacement : ${assets.missing.join(', ')}`);
 
@@ -518,11 +743,12 @@ async function boot() {
     document.body.appendChild(banner);
     conn.connectFake(fake);
   } else {
-    ui.showLogin(true);
+    ui.setPasskeySupported(passkeysSupported()); // [accounts]
     if (URLP.autologin) {
+      ui.showLogin(true);
       autoMode = { name: URLP.autologin, cls: URLP.cls, stage: 'login' };
-      handlers.login(URLP.autologin, AUTOLOGIN_PASSWORD);
-    }
+      handlers.login(URLP.autologin, AUTOLOGIN_PASSWORD); // legacy flow: straight into the world
+    } else if (!tokenLogin()) ui.showLogin(true); // [accounts] « Rester connecté »
   }
 }
 
@@ -709,6 +935,7 @@ function debugPause(ms) {
 function exposeDebug() {
   window.__game = {
     state, scene, camera, renderer, entities, effects, labels, env, world, assets, player, orbit, targeting, ui, net: conn,
+    get account() { return account; }, accountStore, handlers, get charPreview() { return charPreview; }, // [accounts]
     telegraphs, echo: echoFx, roll, input, // [combat-souls]
     bootTimes,
     get fps() { return fps; },

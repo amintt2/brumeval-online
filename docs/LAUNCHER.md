@@ -103,6 +103,7 @@ launcher/
     store.js, log.js      réglages (écriture atomique) et journal
     lib/                  logique pure testée par node --test (URL, réglages, flux, erreurs)
   src/preload/launcher.js pont minimal window.brumeval (seule API exposée à l'interface)
+  src/preload/game.js     pont du jeu window.brumevalLauncher (isLauncher, info, quit)
   src/renderer/           interface du launcher (HTML/CSS/JS sans framework)
   test/                   tests unitaires
 ```
@@ -131,7 +132,11 @@ launcher/
   jamais le réseau. Les appels réseau (nouvelles, statut) passent par le processus principal.
 - Le pont `window.brumeval` n'expose que des fonctions précises ; chaque appel IPC vérifie qu'il vient de
   l'interface du launcher. Les réglages envoyés sont validés (URL http/https uniquement, sans identifiants).
-- La fenêtre du jeu n'a **aucun** preload. Elle ne peut naviguer que sur l'origine du serveur configuré ;
+- La fenêtre du jeu a un preload minuscule (`src/preload/game.js`) qui expose `window.brumevalLauncher` :
+  `isLauncher`, `info()` (version, système) et `quit()` (bouton « Quitter » du menu du jeu). Ses appels IPC ne
+  sont acceptés que depuis la page du jeu à l'origine du serveur configuré. Le site s'en sert aussi pour ne pas
+  proposer de télécharger le launcher à quelqu'un qui l'utilise déjà.
+- La fenêtre du jeu ne peut naviguer que sur l'origine du serveur configuré ;
   les autres liens et les `window.open` sont bloqués et ouverts dans le navigateur du système (http/https
   uniquement). Permissions accordées au seul serveur : plein écran, verrouillage du pointeur et du clavier,
   écriture dans le presse-papiers. Le jeu a sa propre session (`persist:brumeval-game`).

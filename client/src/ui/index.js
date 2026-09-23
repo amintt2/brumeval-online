@@ -22,6 +22,14 @@ import { createQuestPanel } from './panels/quests.js';
 import { createHelpPanel } from './panels/help.js';
 import { createStaminaBar, createBossBar, createCombatOverlay } from './combat-hud.js'; // [combat-souls]
 import { createSettingsPanel } from './panels/settings.js'; // [render-souls] graphics settings (key O)
+// [accounts] character screens, account panel, in-game main menu, world map
+import './account.css';
+import { createCharSelect, createCharCreate } from './charscreens.js';
+import { createSheetStack, createAccountSheet, createGameMenu } from './sheets.js';
+import { createWorldMap } from './worldmap.js';
+import { brumevalMap } from './mapdata.js';
+import { lsGet, lsSet } from './dom.js';
+import { glyph } from './icons.js';
 
 const NOTIFY_KINDS = new Set(['info', 'error', 'xp', 'loot', 'quest', 'level', 'gold']);
 const FONTS_URL = 'https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700;800&display=swap';
@@ -57,9 +65,14 @@ export function createUI(root, handlers = {}) {
   const fxLayer = h('div', { class: 'bv-fx' });
   const screens = h('div', { class: 'bv-screens' });
   const overlay = h('div', { class: 'bv-overlay' });
+  const mapLayer = h('div', { class: 'bv-maplayer' }); // [accounts] world map (above the HUD and windows)
+  const sheetLayer = h('div', { class: 'bv-sheets' }); // [accounts] account panel, main menu (above everything)
   const backdrop = createBackdrop();
+  // [accounts] Codex artwork over the procedural backdrop (login / characters, rotating loading screens)
+  const bdArt = h('div', { class: 'bv-bd-art' });
+  backdrop.insertBefore(bdArt, backdrop.querySelector('.bv-bd-fog'));
   screens.appendChild(backdrop);
-  ui.append(hud, fxLayer, winLayer, screens, overlay);
+  ui.append(hud, fxLayer, winLayer, mapLayer, screens, sheetLayer, overlay);
 
   const tooltip = createTooltip(overlay);
   const menus = createMenus(overlay);
@@ -75,8 +88,12 @@ export function createUI(root, handlers = {}) {
   };
 
   // ---------------------------------------------------------------- screens
-  const login = createLogin(screens, H, tooltip);
+  const login = createLogin(screens, H);
   const loading = createLoading(screens);
+  // [accounts]
+  const charSelect = createCharSelect(screens, H, { overlay: sheetLayer });
+  const charCreate = createCharCreate(screens, H, tooltip);
+  const sheets = createSheetStack();
   const death = createDeath(fxLayer, H);
   const toasts = createToasts(fxLayer);
 
@@ -92,10 +109,18 @@ export function createUI(root, handlers = {}) {
   const minimapCol = h('div', { class: 'bv-rightcol' });
   hud.appendChild(minimapCol);
   const minimap = createMinimap(minimapCol, tooltip);
+  // [accounts] world map and main menu buttons under the minimap (the bottom menu bar is full)
+  const mapBtn = h('button', { class: 'bv-mm-tool', type: 'button', 'aria-label': 'Carte du monde (M)', onclick: () => H.openMap() }, glyph('map'), h('span', { text: 'Carte' }), h('kbd', { text: 'M' }));
+  const menuBtn = h('button', { class: 'bv-mm-tool', type: 'button', 'aria-label': 'Menu principal (Échap)', onclick: () => gameMenu.toggle() }, glyph('menu'), h('span', { text: 'Menu' }), h('kbd', { text: 'Échap' }));
+  minimapCol.querySelector('.bv-minimap')?.appendChild(h('div', { class: 'bv-mm-tools' }, mapBtn, menuBtn));
   const chat = createChat(hud, { handlers: H });
   const notify = (text, kind = 'info') => api.notify(text, kind);
   const actionbar = createActionBar(hud, { handlers: H, tooltip, isTyping, isActive: () => hudActive(), notify });
-  const menu = createMenu(hud, (id) => wm.toggle(id), tooltip);
+  const menu = createMenu(hud, (id) => {
+    if (id === 'map') worldMap.toggle(); // [accounts]
+    else if (id === 'menu') gameMenu.toggle();
+    else wm.toggle(id);
+  }, tooltip);
   const xpbar = createXpBar(hud, tooltip);
 
   // ---------------------------------------------------------------- windows
@@ -109,7 +134,7 @@ export function createUI(root, handlers = {}) {
   const character = createCharacterPanel(wm, { handlers: H, tooltip, menus, onToggle: onToggle('character') });
   const quests = createQuestPanel(wm, { tooltip, onToggle: onToggle('quests') });
   createHelpPanel(wm, { onToggle: onToggle('help') });
-  createSettingsPanel(wm, { onToggle: onToggle('settings') }); // [render-souls]
+  createSettingsPanel(wm, { onToggle: onToggle('settings'), H, onHelp: () => wm.open('help') }); // [render-souls] + [accounts] audio, controls
   let invAutoOpened = false;
   const dialog = createDialog(wm, {
     handlers: H,
@@ -130,28 +155,87 @@ export function createUI(root, handlers = {}) {
     },
   });
 
-  // ---------------------------------------------------------------- visibility
-  function hudActive() {
-    return !!self && !login.visible && !loading.visible;
+  // ---------------------------------------------------------------- [accounts] account panel, main menu, map
+  const accountSheet = createAccountSheet(sheetLayer, sheets, H, menus);
+  const gameMenu = createGameMenu(sheetLayer, sheets, H, { canQuit: () => !!H.canQuit() });
+  const markerKey = () => (self?.name ? `bv.marker.${self.name.toLowerCase()}` : null);
+  const worldMap = createWorldMap(mapLayer, {
+    onMarker: (m) => {
+      minimap.setMarker(m);
+      const k = markerKey();
+      if (k) lsSet(k, m ? JSON.stringify(m) : '');
+    },
+    onClose: () => mapBtn.classList.remove('active'),
+  });
+  worldMap.setMap(brumevalMap());
+  function loadMarker() {
+    let m = null;
+    try { m = JSON.parse(lsGet(markerKey() || '', '') || 'null'); } catch { m = null; }
+    minimap.setMarker(m);
+    worldMap.setMarker(m);
   }
+
+  // ---------------------------------------------------------------- visibility
+  const screenOpen = () => login.visible || loading.visible || charSelect.visible || charCreate.visible;
+  function hudActive() {
+    return !!self && !screenOpen();
+  }
+  let artTimer = 0;
   function syncVisibility() {
     const inGame = hudActive();
+    const open = screenOpen();
     ui.classList.toggle('in-game', inGame);
-    ui.classList.toggle('screen-open', login.visible || loading.visible);
-    backdrop.classList.toggle('show', login.visible || loading.visible);
-    if (!inGame) tooltip.hide();
+    ui.classList.toggle('screen-open', open);
+    backdrop.classList.toggle('show', open);
+    // [accounts] artwork: bg_login on the login / character screens, bg_loading_1..3 rotated while loading
+    const art = loading.visible ? 'loading' : open ? 'login' : null;
+    if (art !== bdArt.dataset.art) {
+      bdArt.dataset.art = art || '';
+      clearInterval(artTimer);
+      if (art === 'login') setArt('/ui/art/bg_login.webp');
+      else if (art === 'loading') {
+        let i = Math.floor(Math.random() * 3);
+        const next = () => { setArt(`/ui/art/bg_loading_${(i++ % 3) + 1}.webp`); };
+        next();
+        artTimer = setInterval(next, 8000);
+      }
+    }
+    if (!inGame) {
+      tooltip.hide();
+      worldMap.close();
+      gameMenu.close();
+    }
+  }
+  /** Fade to an artwork once it is loaded; a missing file simply keeps the procedural backdrop. */
+  function setArt(url) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => {
+      bdArt.style.backgroundImage = `url("${url}")`;
+      bdArt.classList.add('show');
+    };
+    img.onerror = () => bdArt.classList.remove('show');
+    img.src = url;
   }
 
   // ---------------------------------------------------------------- keyboard
   window.addEventListener('keydown', (e) => {
     if (e.defaultPrevented && e.key !== 'Escape') return;
-    if (login.visible || loading.visible) return; // the login form handles its own keys
-    if (isTyping()) return; // the chat input handles Enter / Escape itself
-    if (e.ctrlKey || e.altKey || e.metaKey) return;
     const consume = () => {
       e.preventDefault();
       e.stopImmediatePropagation();
     };
+    // [accounts] modal layers first: confirmation, account panel / main menu
+    if (e.key === 'Escape' && (menus.modalOpen || sheets.open)) {
+      if (!e.repeat) { if (!menus.closeTop()) sheets.closeTop(); }
+      consume();
+      return;
+    }
+    if (sheets.open) return; // the sheet's own controls handle the keys
+    if (charCreate.visible && e.key === 'Escape') { consume(); H.showCharCreate(false); return; }
+    if (screenOpen()) return; // the login / character screens handle their own keys
+    if (isTyping()) return; // the chat input handles Enter / Escape itself
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
     if (e.key === 'Escape') {
       if (e.repeat) {
         e.preventDefault();
@@ -159,10 +243,21 @@ export function createUI(root, handlers = {}) {
         return;
       }
       tooltip.hide();
-      if (menus.closeTop() || wm.closeTop()) consume();
+      if (worldMap.isOpen) { worldMap.close(); consume(); return; }
+      if (menus.closeTop() || wm.closeTop()) { consume(); return; }
+      // nothing to close: the target is cleared by the game (main.js); otherwise open the main menu
+      if (self && !H.hasTarget()) { gameMenu.open(); consume(); }
       return;
     }
     if (!self) return;
+    // [accounts] M: world map
+    if ((e.key === 'm' || e.key === 'M') && !e.repeat && !menus.modalOpen) {
+      consume();
+      worldMap.toggle();
+      mapBtn.classList.toggle('active', worldMap.isOpen);
+      return;
+    }
+    if (worldMap.isOpen) return;
     if (e.key === 'Enter' || e.key === 'NumpadEnter') {
       if (menus.modalOpen) return;
       consume();
@@ -196,6 +291,11 @@ export function createUI(root, handlers = {}) {
     showLogin(show) {
       login.show(!!show);
       if (show) {
+        charSelect.show(false); // [accounts]
+        charCreate.show(false);
+        accountSheet.close();
+        gameMenu.close();
+        worldMap.close();
         login.setBusy(false);
         chat.close();
         menus.closeTop();
@@ -216,10 +316,12 @@ export function createUI(root, handlers = {}) {
     setSelf(s) {
       if (!s || typeof s !== 'object') return;
       const key = `${s.id}|${s.name}`;
+      const newChar = key !== selfKey;
       if (key !== selfKey) {
         selfKey = key;
         prevLevel = null;
       }
+      if (newChar) { self = s; loadMarker(); } // [accounts] personal marker of this character
       if (prevLevel != null && s.level > prevLevel) toasts.showLevel(s.level);
       prevLevel = s.level;
       self = s;
@@ -275,7 +377,58 @@ export function createUI(root, handlers = {}) {
     },
     updateMinimap(d) {
       minimap.update(d);
+      worldMap.update({ ...d, self }); // [accounts]
     },
+    // ---------------------------------------------------------------- [accounts] accounts & characters
+    /** Character selection screen (data = account_ok). */
+    showCharSelect(show, data = null, opts = {}) {
+      if (data) { charSelect.set(data, opts); accountSheet.set(data); }
+      if (show) {
+        login.show(false);
+        charCreate.show(false);
+        gameMenu.close();
+        worldMap.close();
+        chat.close();
+        dialog.close();
+        wm.closeAll();
+        death.show(false);
+        targetFrame.set(null);
+        self = null;
+        selfKey = null;
+      }
+      charSelect.show(!!show);
+      syncVisibility();
+    },
+    setAccount(data, opts = {}) {
+      if (!data) return;
+      charSelect.set(data, opts);
+      accountSheet.set(data);
+    },
+    showCharCreate(show) {
+      charCreate.show(!!show);
+      if (show) charSelect.show(false);
+      else if (!self) charSelect.show(true);
+      syncVisibility();
+    },
+    setCharSelectError: (m) => charSelect.setError(m || null),
+    setCharSelectInfo: (m) => charSelect.setInfo(m || null),
+    setCharSelectBusy: (b) => charSelect.setBusy(!!b),
+    setCharCreateError: (m) => charCreate.setError(m || null),
+    setCharCreateBusy: (b) => charCreate.setBusy(!!b),
+    showPasskeyOffer: (show) => charSelect.showPasskeyOffer(!!show),
+    setPasskeySupported(ok) {
+      login.setPasskeySupported(ok);
+      accountSheet.setPasskeySupported(ok);
+    },
+    openAccount() { accountSheet.open(); },
+    openOptions() { wm.open('settings'); },
+    accountInfo(text) { accountSheet.info(text); },
+    accountError(text) { accountSheet.error(text); },
+    get accountOpen() { return accountSheet.isOpen; },
+    openGameMenu() { if (hudActive()) gameMenu.open(); },
+    openMap() { if (hudActive()) { worldMap.open(); mapBtn.classList.add('active'); } },
+    get charSelectVisible() { return charSelect.visible; },
+    get charCreateVisible() { return charCreate.visible; },
     // [combat-souls]
     setStamina(st, mst) { stamina.set(Math.round(st * 2) / 2, mst); },
     staminaEmpty() { stamina.flashEmpty(); },
@@ -292,6 +445,6 @@ export function createUI(root, handlers = {}) {
   syncVisibility();
 
   // Non-API helpers for the sandbox page / debugging.
-  Object.defineProperty(api, '_dev', { value: { wm, chat, menus, tooltip }, enumerable: false });
+  Object.defineProperty(api, '_dev', { value: { wm, chat, menus, tooltip, charSelect, charCreate, accountSheet, gameMenu, worldMap }, enumerable: false });
   return api;
 }

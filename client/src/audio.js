@@ -2,11 +2,19 @@
 // user gesture (browsers refuse to start audio before one). Volume falls off with distance to the listener.
 import { URLP } from './config.js';
 
+function readPref(k) {
+  try { return localStorage.getItem(k); } catch { return null; }
+}
+function writePref(k, v) {
+  try { localStorage.setItem(k, v); } catch { /* ignore */ }
+}
+
 export class Audio {
   constructor() {
     this.ctx = null;
     this.master = null;
-    this.muted = URLP.mute;
+    this.muted = URLP.mute || readPref('bv.muted') === '1';
+    this.volume = Math.max(0, Math.min(1, Number(readPref('bv.volume') ?? 1))); // [accounts] Options → Son
     this.listener = null; // () => {x, z}
     this.noiseBuf = null;
     this.lastPlay = new Map();
@@ -32,7 +40,7 @@ export class Audio {
       return;
     }
     this.master = this.ctx.createGain();
-    this.master.gain.value = this.muted ? 0 : 0.32;
+    this.master.gain.value = this.gain();
     const comp = this.ctx.createDynamicsCompressor();
     comp.threshold.value = -18;
     comp.ratio.value = 4;
@@ -44,10 +52,24 @@ export class Audio {
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
   }
 
+  gain() { return this.muted ? 0 : 0.32 * this.volume; }
+
   toggleMute() {
-    this.muted = !this.muted;
-    if (this.master) this.master.gain.value = this.muted ? 0 : 0.32;
+    this.setMuted(!this.muted);
     return this.muted;
+  }
+
+  /** [accounts] 0..1, remembered on this device. */
+  setVolume(v) {
+    this.volume = Math.max(0, Math.min(1, Number(v) || 0));
+    writePref('bv.volume', String(this.volume));
+    if (this.master) this.master.gain.value = this.gain();
+  }
+
+  setMuted(m) {
+    this.muted = !!m;
+    writePref('bv.muted', this.muted ? '1' : '0');
+    if (this.master) this.master.gain.value = this.gain();
   }
 
   _env(g, t, a, peak, dur) {

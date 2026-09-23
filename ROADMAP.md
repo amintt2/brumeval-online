@@ -146,6 +146,10 @@ Chaque vague est lancée en parallèle par une équipe d'agents IA. Chaque group
   writes of dirty accounts only, automatic one-time import of the legacy `accounts.json` (kept as backup
   `accounts.v1.bak.json`), and a `sanitizeAccount`-style migration step where every feature adds defaults.
   Other agents add new persistent fields through that single migration function (additive edit).
+- **[accounts] v3 schema**: one file per ACCOUNT (`accounts/<loginKey>.json`) holding `chars[]` (≤ 5), remembered
+  sessions (hashed tokens) and passkeys. `migrateAccount` upgrades v1/v2 records (login = old name, one character
+  with all the progression); per-character fields are added in `migrateCharacter` (same additive rule). A game
+  `Player.account` is the CHARACTER record, `Player.login` its account. See docs/COMPTES.md.
 
 ### 4.3 Protocol additions (all additive; `shared/protocol.js` stays the reference)
 - **Stamina** (`combat-souls`): SelfState gains `st` (stamina) and `mst` (max stamina, default 100). Regen ≈ 35/s after

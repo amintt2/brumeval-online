@@ -2,6 +2,24 @@
 
 ## v0.2.0 — 23/09/2026 · Fondations & Âme
 
+### Comptes et personnages
+- **Un compte, jusqu'à 5 personnages** : un nom de compte et un mot de passe, puis un écran de **sélection des personnages** (nom, classe, niveau, zone, dernière partie, aperçu 3D du personnage sur un piédestal). Créez un autre personnage ou changez de classe sans créer de nouveau compte.
+- Vos anciens personnages sont conservés : chacun devient un compte **du même nom, avec le même mot de passe**, contenant ce personnage avec toute sa progression.
+- **Rester connecté** : case à cocher (cochée par défaut dans le launcher). Au prochain lancement, vous arrivez directement sur vos personnages, le dernier joué présélectionné : appuyez sur **Entrée** pour jouer.
+- **Clés d'accès (passkeys)** : connectez-vous sans mot de passe avec l'empreinte, le visage ou le code de votre appareil (« Se connecter avec une passkey »). Proposé après une connexion par mot de passe, et à tout moment dans **Compte**.
+- **Compte** : clés d'accès (ajouter, renommer, supprimer), changement de mot de passe, « Se déconnecter partout ».
+- **Changer de personnage** sans quitter le jeu, supprimer un personnage (en tapant son nom pour confirmer).
+- Détails : docs/COMPTES.md.
+
+### Menus et carte
+- **Menu principal** (**Échap** quand aucune fenêtre n'est ouverte, ou bouton « Menu » sous la minicarte) : Reprendre, Carte, Options, Compte, Changer de personnage, Se déconnecter, Quitter (dans le launcher).
+- **Carte du monde** (touche **M** ou bouton « Carte ») : régions, village, camps, routes, lacs, personnages, objectifs de vos quêtes en cours, joueurs proches, votre position et votre orientation. Zoom à la molette, déplacement en glissant, **clic pour poser un repère** (visible aussi sur la minicarte), clic droit pour le retirer.
+- **Options** (touche **O**) : graphismes, **volume du son** et commandes. Le son ne se coupe plus avec **M** (qui ouvre la carte) mais dans Options.
+- Nouveaux écrans de connexion et de chargement illustrés (logo et artworks).
+
+### Site web
+- Sur le site, une carte propose de **télécharger le launcher** pour votre système (Windows, macOS, Linux) — performances, mises à jour automatiques, plein écran — ou de **jouer directement dans le navigateur**. Elle peut être masquée ; l'installation de l'application web est proposée quand le navigateur le permet.
+
 ### Combat (à la manière d'un soulslike)
 - **Endurance** : nouvelle jauge sous la barre de vie. Elle alimente la roulade, le sprint et les capacités, et se recharge dès que vous soufflez un instant. À zéro, vous êtes essoufflé jusqu'à récupérer un peu.
 - **Roulade d'esquive** : appui court sur **Maj**. 5 m dans la direction du déplacement (en arrière sans direction), invulnérable un court instant, 30 d'endurance.

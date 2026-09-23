@@ -2,7 +2,8 @@
 //  - launcher window: news, server status, options, launcher self-update (UI served from the brumeval:// scheme)
 //  - game window: the web game loaded from the configured server (always the latest deploy)
 // Security: contextIsolation + sandbox everywhere, no Node in any page, a minimal preload bridge for the launcher
-// UI only, navigation locked to the configured server origin, links opened in the system browser, strict CSP.
+// UI and a tiny one for the game page (isLauncher / info / quit, src/preload/game.js), navigation locked to the
+// configured server origin, links opened in the system browser, strict CSP.
 'use strict';
 
 const fs = require('node:fs');
@@ -36,6 +37,7 @@ const LAUNCHER_ORIGIN = `${SCHEME}://launcher`;
 const LAUNCHER_URL = `${LAUNCHER_ORIGIN}/index.html`;
 const RENDERER_DIR = path.join(__dirname, '..', 'renderer');
 const PRELOAD = path.join(__dirname, '..', 'preload', 'launcher.js');
+const GAME_PRELOAD = path.join(__dirname, '..', 'preload', 'game.js'); // window.brumevalLauncher (isLauncher, info, quit)
 const ICON = path.join(__dirname, '..', '..', 'build', 'icon.png');
 const GAME_PARTITION = 'persist:brumeval-game';
 const IS_MAC = process.platform === 'darwin';
@@ -314,6 +316,7 @@ function openGame() {
     fullscreen: settings.fullscreen && !SMOKE,
     webPreferences: {
       partition: GAME_PARTITION,
+      preload: GAME_PRELOAD,
       contextIsolation: true,
       sandbox: true,
       nodeIntegration: false,
@@ -404,7 +407,26 @@ function handle(channel, fn) {
   });
 }
 
+/** IPC from the game window (its own preload): only from the game page at the configured server origin. */
+function fromGame(event) {
+  return !!gameWin && !gameWin.isDestroyed() && event.sender === gameWin.webContents
+    && isSameOrigin(event.senderFrame?.url || '', store.get().serverUrl);
+}
+
+function registerGameIpc() {
+  ipcMain.handle('game:info', (event) => {
+    if (!fromGame(event)) throw new Error('origine refusée');
+    return { version: app.getVersion(), platform: process.platform };
+  });
+  ipcMain.handle('game:quit', (event) => {
+    if (!fromGame(event)) throw new Error('origine refusée');
+    setImmediate(() => { if (gameWin && !gameWin.isDestroyed()) gameWin.close(); });
+    return true;
+  });
+}
+
 function registerIpc() {
+  registerGameIpc();
   handle('launcher:get-state', () => ({
     settings: publicSettings(),
     defaults: { serverUrl: defaultSettings().serverUrl },

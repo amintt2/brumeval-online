@@ -1,5 +1,5 @@
 // Minimal bridge between the launcher UI and the main process (sandboxed preload: only `electron` is available).
-// The game window has no preload at all.
+// The game window has its own tiny bridge (src/preload/game.js).
 'use strict';
 
 const { contextBridge, ipcRenderer } = require('electron');

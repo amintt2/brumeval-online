@@ -8,7 +8,7 @@ import { h, setText, fmt } from './dom.js';
 import { simpleTooltip } from './tooltip.js';
 
 const GRID = 360;                 // heightmap samples per side (1 m)
-const MAP_PX = 1024;              // static map canvas size
+const MAP_PX = 2048;              // static map canvas size (shared with the world map, M)
 const K = MAP_PX / (WORLD_HALF * 2);
 const ZOOMS = [36, 60, 95, 180];  // visible radius in metres
 const DOT = {
@@ -198,6 +198,50 @@ function buildStaticMap(onDone) {
   setTimeout(work, 0);
 }
 
+// [accounts] one static map for the minimap and the full-screen world map
+let staticCanvas = null;
+let staticWaiters = null;
+/** The pre-rendered world map canvas (MAP_PX², world [-WORLD_HALF, WORLD_HALF]); built once, on first use. */
+export function getStaticMap(cb) {
+  if (staticCanvas) { cb(staticCanvas); return; }
+  if (staticWaiters) { staticWaiters.push(cb); return; }
+  staticWaiters = [cb];
+  buildStaticMap((c) => {
+    staticCanvas = c;
+    const list = staticWaiters;
+    staticWaiters = null;
+    for (const fn of list) fn(c);
+  });
+}
+export const STATIC_MAP_PX = MAP_PX;
+
+/** [accounts] Personal marker (world map click) drawn on the minimap: a gold pin, on the rim when far away. */
+function drawMarker(ctx, m, px, pz, scale, cx, dotR) {
+  let dx = (m.x - px) * scale, dz = (m.z - pz) * scale;
+  const d = Math.hypot(dx, dz);
+  const rim = cx - dotR * 2.4;
+  if (d > rim) { dx *= rim / d; dz *= rim / d; }
+  const x = cx + dx, y = cx + dz, r = dotR * 1.35;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.8)';
+  ctx.shadowBlur = r;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.bezierCurveTo(x - r * 1.4, y - r * 1.6, x - r * 1.1, y - r * 3.1, x, y - r * 3.1);
+  ctx.bezierCurveTo(x + r * 1.1, y - r * 3.1, x + r * 1.4, y - r * 1.6, x, y);
+  ctx.fillStyle = '#ffd35a';
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.lineWidth = Math.max(1, r / 3);
+  ctx.strokeStyle = '#3a2508';
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(x, y - r * 2.05, r * 0.45, 0, Math.PI * 2);
+  ctx.fillStyle = '#3a2508';
+  ctx.fill();
+  ctx.restore();
+}
+
 /** [combat-souls] Death echo marker (cyan diamond with a glow; on the rim with an arrow when far away). */
 function drawEcho(ctx, e, px, pz, scale, cx, dotR, W) {
   let dx = (e.x - px) * scale, dz = (e.z - pz) * scale;
@@ -259,6 +303,7 @@ export function createMinimap(parent, tooltip) {
   });
 
   let staticMap = null;
+  let marker = null; // [accounts] { x, z } personal marker
   let zoomIdx = 1;
   let last = null;
   const ctx = canvas.getContext('2d');
@@ -346,6 +391,7 @@ export function createMinimap(parent, tooltip) {
       }
       // [combat-souls] death echo: glowing marker, pinned to the rim when out of range
       if (last.echo) drawEcho(ctx, last.echo, px, pz, scale, cx, dotR, W);
+      if (marker) drawMarker(ctx, marker, px, pz, scale, cx, dotR); // [accounts]
       // self arrow — ry = atan2(dirX, dirZ); map x → right, z → down
       const ry = Number(last.ry) || 0;
       const ang = Math.atan2(Math.cos(ry), Math.sin(ry));
@@ -394,7 +440,7 @@ export function createMinimap(parent, tooltip) {
   function ensureMap() {
     if (building || staticMap) return;
     building = true;
-    buildStaticMap((c) => {
+    getStaticMap((c) => {
       staticMap = c;
       draw();
     });
@@ -410,6 +456,10 @@ export function createMinimap(parent, tooltip) {
       setText(zoneEl, region.name);
       el.classList.toggle('safe', !!region.safe);
       setText(coordEl, `${fmt(d.x)} · ${fmt(d.z)}`);
+      draw();
+    },
+    setMarker(m) {
+      marker = m && Number.isFinite(m.x) && Number.isFinite(m.z) ? { x: m.x, z: m.z } : null;
       draw();
     },
     setStatus(s) {

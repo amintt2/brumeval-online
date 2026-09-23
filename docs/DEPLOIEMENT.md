@@ -17,7 +17,8 @@ Trois façons de le faire tourner :
 | Variable | Défaut | Rôle |
 |---|---|---|
 | `PORT` | `3000` | Port HTTP et WebSocket (`/ws`) |
-| `DATA_DIR` | `server/data` | Dossier des sauvegardes : `accounts/`, `backups/`, `accounts.v1.bak.json` |
+| `DATA_DIR` | `server/data` | Dossier des sauvegardes : `accounts/` (un fichier par compte), `backups/`, `accounts.v1.bak.json`, `accounts.v2.bak/` |
+| `RP_ID` | hôte de la requête | Domaine des clés d'accès (passkeys) : `brumel.mciut.fr` en production. Voir [COMPTES.md](COMPTES.md) |
 | `STATIC_DIR` | `client/dist` | Dossier du client compilé |
 | `TRUST_PROXY` | `0` | Nombre de proxys inverses de confiance devant le serveur (`1` derrière nginx/Caddy). Voir [plus bas](#trust_proxy) |
 | `MAX_PLAYERS` | `100` | Nombre maximal de joueurs connectés simultanément |

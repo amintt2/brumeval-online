@@ -87,12 +87,13 @@ function rangeRow(label, hint, { min, max, step }, format, onChange) {
   };
 }
 
-export function createSettingsPanel(wm, { onToggle } = {}) {
+export function createSettingsPanel(wm, { onToggle, H = null, onHelp = null } = {}) {
   let statsTimer = 0;
   const win = wm.add(createWindow({
-    id: 'settings', title: 'Graphismes', subtitle: 'Qualité de l\'image et performances', keyHint: 'O',
+    id: 'settings', title: 'Options', subtitle: 'Graphismes, son et commandes', keyHint: 'O',
     onShow: () => {
       refresh(getSettings());
+      refreshAudio(); // [accounts]
       startStats();
       onToggle?.(true);
     },
@@ -165,8 +166,25 @@ export function createSettingsPanel(wm, { onToggle } = {}) {
     },
   });
 
+  // ---------------------------------------------------------------- [accounts] audio & controls
+  const volume = rangeRow('Volume', 'Effets sonores du jeu', { min: 0, max: 1, step: 0.05 },
+    (v) => (v <= 0.001 ? 'Muet' : pct(v)), (v) => H?.setVolume(v));
+  const mute = toggleRow('Couper le son', null, (v) => H?.setMuted(v));
+  const helpBtn = h('button', { type: 'button', class: 'bv-btn small secondary', text: 'Voir les commandes', onclick: () => onHelp?.() });
+  function refreshAudio() {
+    const a = H?.getAudio?.() || { volume: 1, muted: false };
+    volume.set(a.volume);
+    mute.set(a.muted);
+  }
+
   win.body.append(
-    h('div', { class: 'bv-sec-title', text: 'Préréglage' }),
+    h('div', { class: 'bv-sec-title', text: 'Son' }),
+    volume.row, mute.row,
+    h('div', { class: 'bv-sec-title', text: 'Commandes' }),
+    h('div', { class: 'bv-set-row' },
+      h('span', { class: 'bv-set-label' }, h('span', { text: 'Clavier et souris' }), h('small', { text: 'Déplacements, combat, fenêtres, discussion (touche H)' })),
+      helpBtn),
+    h('div', { class: 'bv-sec-title', text: 'Graphismes : préréglage' }),
     presetBar,
     presetNote,
     h('div', { class: 'bv-sec-title', text: 'Lumière et ambiance' }),

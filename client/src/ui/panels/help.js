@@ -10,7 +10,7 @@ const CONTROLS = [
   [['Clic gauche', 'Clic droit'], 'Maintenir les deux : courir tout droit'],
   [['Molette'], 'Zoomer / dézoomer'],
   [['Tab'], 'Cibler l\'ennemi suivant'],
-  [['Échap'], 'Fermer une fenêtre · annuler la cible'],
+  [['Échap'], 'Fermer une fenêtre · annuler la cible · menu principal'],
   [['1', '2', '3', '4'], 'Capacités de la barre d\'action'],
   [['5'], 'Boire une potion de soin'],
   [['6'], 'Boire une potion de mana'],
@@ -24,9 +24,9 @@ const WINDOWS = [
   [['C'], 'Personnage'],
   [['L'], 'Journal de quêtes'],
   [['H'], 'Aide'],
-  [['O'], 'Graphismes'], // [render-souls]
+  [['O'], 'Options (graphismes, son, commandes)'], // [render-souls]
+  [['M'], 'Carte du monde'], // [accounts]
   [['Entrée'], 'Ouvrir la discussion / envoyer'],
-  [['M'], 'Couper / rétablir le son'],
 ];
 const COMMANDS = [
   ['/w nom message', 'Chuchoter à un joueur'],
