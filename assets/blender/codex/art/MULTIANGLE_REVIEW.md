@@ -1,3 +1,5 @@
+> Mise à jour terrain et herbe : voir [GRASS_REVIEW.md](GRASS_REVIEW.md), [TERRAIN_METHOD.md](TERRAIN_METHOD.md) et les comparaisons dans `previews/`. Les remarques ci-dessous documentent la passe antérieure.
+
 # Revue multiangle — seconde passe
 
 Demandée par Amin : voir plusieurs scènes depuis différents côtés et confronter les captures à la direction dark fantasy d'Elden Ring, avec des critiques positives et négatives indépendantes.

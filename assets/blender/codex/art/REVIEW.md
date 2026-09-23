@@ -1,3 +1,5 @@
+> Mise à jour terrain et herbe : voir [GRASS_REVIEW.md](GRASS_REVIEW.md), [TERRAIN_METHOD.md](TERRAIN_METHOD.md) et les comparaisons dans `previews/`. Les remarques ci-dessous documentent la passe antérieure.
+
 # Revue CX-1 — seconde passe et inspections multiangles
 
 Les illustrations et les scènes ont été retravaillées à partir des retours de Claude, puis des défauts repérés par Amin et trois sous-agents. Le logo approuvé reste strictement identique à la première passe.

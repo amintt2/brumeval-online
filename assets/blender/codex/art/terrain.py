@@ -154,6 +154,9 @@ def build_terrain(B,mesh,material):
     dy=np.maximum(np.maximum(82-y,y-100.5),0)
     pad=1-smooth(np.hypot(dx,dy)/2.8)
     h=h*(1-pad)+11.96*pad
+    # Keep the settled village and all five house access footprints at the original grade.
+    approach=smooth((y-55)/12)
+    h=h*approach-.065*(1-approach)
     d,roadheight=corridor(x,y);blend=1-smooth((d-1.9)/2.4)
     # Ramp support must not bury the rising roadway under the plateau.
     h=h*(1-blend)+roadheight*blend
