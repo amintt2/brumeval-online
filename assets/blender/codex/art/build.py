@@ -8,7 +8,7 @@ import os, math, random, argparse, json
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[3]
-sys.path[:0]=[str(ROOT/'assets/blender'),str(ROOT/'assets/blender/icons')]
+sys.path[:0]=[str(HERE),str(ROOT/'assets/blender'),str(ROOT/'assets/blender/icons')]
 kitroot=Path(os.environ.get('BRUMEVAL_KIT_ROOT',str(ROOT/'assets/blender')))
 if not (kitroot/'kit').is_dir(): kitroot=Path('C:/Users/amin2/mmorpg/assets/blender')
 sys.path.append(str(kitroot))
@@ -264,22 +264,20 @@ def logo():
     camera((0,-15,.55),(0,0,.55),ortho=7.4)
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--only',default=''); p.add_argument('--samples',type=int,default=32); p.add_argument('--percent',type=int,default=100); p.add_argument('--no-preview',action='store_true')
+    p=argparse.ArgumentParser(); p.add_argument('--only',default=''); p.add_argument('--samples',type=int,default=32); p.add_argument('--percent',type=int,default=100); p.add_argument('--no-preview',action='store_true');p.add_argument('--draft',action='store_true')
     a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     keys=a.only.split(',') if a.only else KEYS
     if set(keys)-set(KEYS):raise ValueError('Unknown key')
     OUT.mkdir(parents=True,exist_ok=True)
     for key in keys:
+        if key.startswith('logo') and (OUT/(key+'.png')).is_file():
+            print('Logo validé conservé:',key,flush=True)
+            continue
         C.reset()
         if key.startswith('logo'):logo()
-        else:landscape(key)
-        if key=='launcher_banner':
-            cam=bpy.context.scene.camera;q=cam.rotation_euler.to_quaternion()
-            mat=M.engraved_metal('BannerGold',kind='gold',grime=.1,rust=.04)
-            for txt,y,size in [('BRUMEVAL',-.4,.44),('O N L I N E',-.67,.13)]:
-                title(txt,0,size,mat)
-                ob=bpy.context.scene.objects[txt];ob.rotation_euler=cam.rotation_euler
-                ob.location=cam.location+q@Vector((0,y,-6))
+        else:
+            import cinematics
+            cinematics.build(key,sys.modules[__name__])
         s=bpy.context.scene
         if key=='logo': w=h=2048
         elif key=='logo_512':w=h=512
@@ -290,14 +288,19 @@ def main():
         s.render.image_settings.file_format='PNG' if key.startswith('logo') else 'WEBP'
         s.render.image_settings.color_mode='RGBA' if key.startswith('logo') else 'RGB'
         s.render.image_settings.quality=92
-        s.view_settings.view_transform='AgX'
-        s.render.filepath=str(OUT/(key+('.png' if key.startswith('logo') else '.webp')))
-        # Dense alpha foliage + participating media: this first-pass forest is denoised at 8 samples.
-        samples=min(a.samples,8) if key=='bg_loading_3' else a.samples
+        s.view_settings.view_transform='AgX';s.view_settings.look='AgX - Medium High Contrast'
+        destination=HERE/'previews/drafts' if a.draft else OUT
+        destination.mkdir(parents=True,exist_ok=True)
+        s.render.filepath=str(destination/(key+('.png' if key.startswith('logo') else '.webp')))
+        samples=a.samples
         with gpu.device(s,samples=samples,wait=30):
             s.cycles.use_denoising=True; s.cycles.max_bounces=6
             s.cycles.volume_bounces=1
             bpy.ops.render.render(write_still=True)
+        if key=='launcher_banner':
+            import subprocess,shutil
+            subprocess.run([os.environ.get('BRUMEVAL_IMAGE_PYTHON',shutil.which('python') or 'python'),str(HERE/'compose_banner.py'),s.render.filepath,str(OUT/'logo.png')],check=True)
         print('CX1 DONE',key,flush=True)
-    (HERE/'manifest.json').write_text(json.dumps({'keys':KEYS,'engine':'Cycles','seed':410,'samples':{k:min(a.samples,8) if k=='bg_loading_3' else a.samples for k in KEYS},'percent':a.percent,'kit_root':str(kitroot)},indent=2)+'\n')
+    if not a.draft:
+        (HERE/'manifest.json').write_text(json.dumps({'keys':KEYS,'engine':'Cycles','pass':2,'seed':20260923,'samples':a.samples,'percent':a.percent,'kit_root':str(kitroot),'approved_logo':'unchanged'},indent=2)+'\n')
 if __name__=='__main__':main()

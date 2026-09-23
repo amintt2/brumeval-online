@@ -1,20 +1,29 @@
-# CX-1 — première passe Blender / Cycles
+# CX-1 — seconde passe et revue multiangle
 
-Les sorties sont dans `client/public/ui/art/`. Les fichiers de cette branche ne touchent qu'à ce dossier et à `assets/blender/codex/art/`.
+Sorties : `client/public/ui/art/`. Code, sources figées et preuves de revue : `assets/blender/codex/art/`. Aucune écriture dans les dossiers de Claude.
 
 ```powershell
-& 'C:/Program Files/Blender Foundation/Blender 5.0/blender.exe' --background --factory-startup --python-exit-code 1 --python assets/blender/codex/art/build.py -- --samples 32
+& 'C:/Program Files/Blender Foundation/Blender 5.0/blender.exe' --background --factory-startup --python-exit-code 1 --python assets/blender/codex/art/build.py -- --samples 48
 python assets/blender/codex/art/review.py
 ```
 
-`--only logo,bg_login` sélectionne des images ; `--percent 40 --samples 24` sert au brouillon (écrase les sorties sélectionnées, à régénérer à 100 % avant livraison). Les graines aléatoires sont fixes. La forêt de cette première passe est limitée à 8 échantillons avec débruitage, les autres images utilisent 32 ; augmenter ce plafond pour une validation artistique finale. Aucun téléchargement ni génération externe. Les images fixes utilisent directement les nœuds de matériaux Cycles : elles ne sont pas des modèles glTF à cuire ou à décliner en LOD.
+`--only bg_login,bg_loading_1` sélectionne les images. `--draft --percent 45 --samples 16` écrit exclusivement dans `previews/drafts/`. Les deux logos validés sont conservés si présents : ils ne sont pas recalculés pendant les itérations sur les décors. Pour un checkout sans logos, le générateur historique reste disponible.
 
-Le kit partagé doit être présent dans `assets/blender/kit/`. Pendant le développement, le script le lit dans le checkout principal, sans écrire de bytecode. `BRUMEVAL_KIT_ROOT` peut pointer vers son dossier parent. Sa disponibilité reste une dépendance avant fusion.
+`cinematics.py` contient les nouvelles scènes : caméra à hauteur humaine, relief continu, accès aux bâtiments, château, ruine ouverte, sous-bois et éclairage. `compose_banner.py` assemble le logo approuvé sur un cadrage panoramique distinct avec une zone sombre latérale. Ce traitement déterministe utilise Python et Pillow ; `BRUMEVAL_IMAGE_PYTHON` permet de choisir cet interpréteur.
 
-Le Golem vient d'une copie figée du modèle de Claude, conservée ici dans `sources/golem.glb` pour que la scène reste reproductible malgré ses travaux en parallèle. SHA-256 : `b61e5d54bd81d03345444d2795a026a6fc604d86e56afab4b80b7df7989c9d91`. La police par défaut est Constantia, fournie par Windows ; `BRUMEVAL_TITLE_FONT` permet d'indiquer un autre fichier local. Le texte est converti en pixels, la police n'est pas redistribuée.
+## Captures extérieures
 
-Correspondance : connexion = village ; chargement 1 = cimetière ; 2 = antre ; 3 = forêt. Le logo utilise un écu et un arbre entre deux tours, sans emblème emprunté à un autre jeu.
+```powershell
+& 'C:/Program Files/Blender Foundation/Blender 5.0/blender.exe' --background --factory-startup --python-exit-code 1 --python assets/blender/codex/art/angles.py -- --only cliff,cliff_back,house,cemetery,lair,forest --samples 24
+python assets/blender/codex/art/scene_angle_sheets.py
+```
 
-Le lanceur parent `assets/blender/codex/build.py` n'est pas écrit : il est hors des dossiers réservés. Une proposition autonome se trouve dans `dispatch_codex.py`, à installer par Claude après fusion des deux branches. Les preuves de contrôle restent dans ce dossier réservé, et non dans le dossier partagé `assets/previews/`.
+Huit vues avant/latérales du château, trois arrière, trois de l'accès à la maison et trois par autre scène. Les rendus vont dans `previews/angles/`. La revue demandée par Amin porte sur la géométrie sous plusieurs angles, les raccords au sol, l'échelle, les matériaux et la lumière. Voir `MULTIANGLE_REVIEW.md`. Les illustrations finales restent des images fixes, pas des niveaux jouables.
 
-Les contrôles de `review.py` sont techniques. Ils ne valent pas validation de la direction artistique : cette première passe procédurale doit être revue avec Claude avant toute publication.
+## Dépendances
+
+Le kit partagé est utilisé en lecture seule, sans bytecode. Il doit être présent dans `assets/blender/kit/` ; pendant le développement, le script se replie sur le checkout principal. `BRUMEVAL_KIT_ROOT` peut pointer vers son dossier parent. Les graines géométriques sont fixes. Ne pas lancer plusieurs rendus GPU simultanément ; le verrou du kit protège le GPU mais un délai trop court entraîne un repli CPU coûteux.
+
+Le Golem est une copie figée du modèle de Claude : `sources/golem.glb`, SHA-256 `b61e5d54bd81d03345444d2795a026a6fc604d86e56afab4b80b7df7989c9d91`. Police du logo : Constantia Windows, remplaçable avec `BRUMEVAL_TITLE_FONT` ; aucune police redistribuée.
+
+Le lanceur commun proposé est `dispatch_codex.py`. Claude l'installe hors de nos dossiers lors de la fusion. Les contrôles de `review.py` vérifient formats, dimensions, transparence et empreintes ; ils ne remplacent pas une validation artistique.
