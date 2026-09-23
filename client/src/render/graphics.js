@@ -369,17 +369,32 @@ export class Graphics {
       /* optional */
     }
     const px = new Uint8Array(4);
-    const times = [];
-    for (let i = 0; i < 14; i++) {
+    const focus = this.camera.position.clone().setY(0);
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    let frameNo = 0;
+    const frame = () => {
       const t0 = performance.now();
-      this.update(1 / 60, i / 60, 0.3, this.camera.position.clone().setY(0), null);
-      this.render(i / 60);
+      this.update(1 / 60, frameNo / 60, 0.3, focus, null);
+      this.render(frameNo / 60);
       gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); // forces the GPU to finish
-      const ms = performance.now() - t0;
-      if (i >= 4) times.push(ms);
-    }
-    times.sort((a, b) => a - b);
-    const median = times[Math.floor(times.length / 2)] || 16;
+      frameNo++;
+      return performance.now() - t0;
+    };
+    // warm-up: the first frames compile the post / shadow programs and upload the big textures
+    for (let i = 0; i < 8; i++) frame();
+    await sleep(80);
+    const run = async () => {
+      const times = [];
+      for (let i = 0; i < 16; i++) {
+        times.push(frame());
+        if (i % 4 === 3) await sleep(0); // let the browser breathe (and the compositor run)
+      }
+      times.sort((a, b) => a - b);
+      return times[Math.floor(times.length / 2)] || 16;
+    };
+    let median = await run();
+    // a background hiccup (other tab, driver compile) must not condemn a good GPU to "Bas": measure twice
+    if (median > 9) median = Math.min(median, await (sleep(120).then(run)));
     // scale the measure to 1080p when the window is smaller / bigger
     const pixels = this.renderer.domElement.width * this.renderer.domElement.height;
     const norm = median * Math.min(2.5, Math.max(0.6, (1920 * 1080) / Math.max(1, pixels)));
