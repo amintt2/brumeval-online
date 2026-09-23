@@ -168,9 +168,10 @@ test('movement allowance: a roll burst is accepted, roll speed without rolling i
     }
     return x;
   };
-  // without rolling, moving at roll speed for a while is a speed hack
+  // without rolling, moving at roll speed for a while is a speed hack (the anticheat budget absorbs
+  // ~1.5 s of lag bursts, so the hack has to last a few seconds to be corrected)
   let xh = walk(50, 2000);
-  for (let i = 0; i < 5; i++) xh = rollMoves(xh);
+  for (let i = 0; i < 12; i++) xh = rollMoves(xh);
   assert.ok(p.session.of('correct').length > 0, 'roll speed without roll corrected');
   place(game, p, 50, 30);
   advance(game, 3500);

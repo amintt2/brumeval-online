@@ -68,6 +68,8 @@ test('monsters far from every player sleep (low tick rate) and wake up when a pl
   place(game, p, m.x + 3, m.z);
   advance(game, 50);
   assert.equal(aoi.monsterStep(m, 0.05), 0.05);
+  assert.ok(m.ai === 'alert' || m.ai === 'chase', m.ai); // [combat-souls] noticing takes a reaction time
+  advance(game, 800);
   assert.equal(m.ai, 'chase');
   assert.equal(m.target, p.id);
 });
