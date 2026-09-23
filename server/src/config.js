@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path';
 /** Repository root (…/mmorpg), used to resolve relative data/static directories. */
 export const ROOT_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-export const MAX_PLAYERS = 100;
+export const MAX_PLAYERS = Math.max(1, Number.parseInt(process.env.MAX_PLAYERS || '', 10) || 100); // [netcode-perf] env override (load tests)
 export const SAVE_INTERVAL_MS = 10_000; // dev restarts (node --watch) kill the process without a graceful save
 export const MAX_PAYLOAD = 8 * 1024;           // ws maxPayload (bytes)
 export const MSG_RATE_PER_S = 60;              // more than this per second -> kick

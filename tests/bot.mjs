@@ -78,11 +78,17 @@ async function main() {
   await B.waitFor((m) => m.t === 'snap' && m.ents.some((e) => e.id === A.id && e.k === 'player' && e.n === NAME_A && e.c === 'mage' && e.lv === 1),
     { from: 0, timeout: 3000, desc: 'A dans un snap de B' });
   ok(true, 'B voit A dans un snap (champs statiques k/n/c/lv présents)');
-  const snapB = await B.waitType('snap', (m) => m.ents.some((e) => e.id === A.id), { timeout: 2000 });
+  // [netcode-perf] field-level deltas: A moves a little, B's next snap only carries A's changed fields
+  const fromMove = B.mark();
+  A.x += 0.5;
+  A.send({ t: 'move', x: +A.x.toFixed(2), z: +A.z.toFixed(2), ry: 0 });
+  const snapB = await B.waitType('snap', (m) => m.ents.some((e) => e.id === A.id), { timeout: 2000, from: fromMove });
   const entA = snapB.ents.find((e) => e.id === A.id);
-  ok(entA.k === undefined && entA.n === undefined && typeof entA.x === 'number' && typeof entA.hp === 'number',
-    'règle delta : champs statiques absents des snaps suivants');
-  ok(snapB.ents.some((e) => e.id === B.id) && typeof snapB.tod === 'number' && snapB.on === 2, 'snap : propre entité incluse, tod et on=2');
+  ok(entA.k === undefined && entA.n === undefined && typeof entA.x === 'number' && entA.hp === undefined && entA.mhp === undefined,
+    'règle delta : champs statiques et dynamiques inchangés absents des snaps suivants');
+  const mergedA = B.ents.get(A.id);
+  ok(mergedA && mergedA.n === NAME_A && typeof mergedA.hp === 'number' && Math.abs(mergedA.x - A.x) < 0.06, 'fusion champ par champ côté client');
+  ok(B.ents.has(B.id) && typeof snapB.tod === 'number' && snapB.on === 2, 'snap : propre entité connue, tod et on=2');
 
   // ---------------------------------------------------------------- chat
   let from = B.mark();
@@ -205,7 +211,8 @@ async function main() {
   let fb = B.mark();
   await A.close();
   await B.waitFor((m) => m.t === 'chat' && m.ch === 'system' && m.text.includes(NAME_A) && m.text.includes('quitté'), { from: fb, desc: 'message de départ' });
-  await B.waitFor((m) => m.t === 'snap' && (m.gone.includes(oldId) || !m.ents.some((e) => e.id === oldId)), { from: fb, desc: 'gone de A' });
+  // with snapshot deltas an unchanged entity is simply omitted: only `gone` proves the departure
+  await B.waitFor((m) => m.t === 'snap' && m.gone.includes(oldId), { from: fb, desc: 'gone de A' });
   ok(!B.ents.has(oldId), 'B reçoit le départ de A (message système + gone)');
 
   const A2 = await new Bot(url, 'A2').connect(); bots.push(A2);
@@ -224,9 +231,10 @@ async function main() {
   await A2.waitType('pong', (m) => m.c === 7, { from });
   ok(true, 'messages malformés ignorés, session toujours active');
 
-  const persisted = JSON.parse(fs.readFileSync(path.join(dataDir, 'accounts.json'), 'utf8'));
-  ok(persisted.accounts[NAME_A.toLowerCase()]?.xp === before.xp && !('password' in persisted.accounts[NAME_A.toLowerCase()]),
-    'accounts.json écrit (xp persistée, mot de passe haché uniquement)');
+  await server.store.flush(); // [netcode-perf] one file per account, written in the background
+  const persisted = JSON.parse(fs.readFileSync(path.join(dataDir, 'accounts', `${NAME_A.toLowerCase()}.json`), 'utf8'));
+  ok(persisted.xp === before.xp && !('password' in persisted) && typeof persisted.hash === 'string',
+    'accounts/<nom>.json écrit (xp persistée, mot de passe haché uniquement)');
 }
 
 /** Engage a slime with slot 0 only; returns { id, index } on death, null if lost. */

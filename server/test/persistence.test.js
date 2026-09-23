@@ -18,9 +18,10 @@ test('save / load round trip keeps every character field', () => {
     Object.assign(acc, { level: 7, xp: 123, gold: 456, hp: 80, mp: 12, x: 40.5, z: 21.25 });
     acc.inv[4] = { id: 'wolf_pelt', q: 9 };
     acc.quests = { q_slimes: { state: 'done', n: 8 }, q_wolves: { state: 'active', n: 2 } };
-    assert.equal(store.save(), true);
+    assert.equal(store.save(true), true);
     assert.equal(store.dirty, false);
-    assert.deepEqual(fs.readdirSync(dir), ['accounts.json'], 'no temp file left behind');
+    assert.deepEqual(fs.readdirSync(dir), ['accounts']);
+    assert.deepEqual(fs.readdirSync(path.join(dir, 'accounts')), ['éloïse.json'], 'one file per account, no temp file left behind');
 
     const again = new AccountStore(dir, quiet).load();
     assert.equal(again.size, 1);
@@ -35,7 +36,7 @@ test('save / load round trip keeps every character field', () => {
   }
 });
 
-test('corrupt accounts.json is backed up and the server starts empty', () => {
+test('corrupt legacy accounts.json is set aside and the server starts empty', () => {
   const dir = tmp();
   try {
     fs.writeFileSync(path.join(dir, 'accounts.json'), '{ oops');
@@ -59,6 +60,7 @@ test('sanitizeAccount repairs or rejects persisted records', () => {
     x: lake.x, z: lake.z,
   });
   assert.equal(a.level, 20);
+  assert.equal(a.v, 2);
   assert.equal(a.xp, 0);
   assert.equal(a.gold, 25);
   assert.deepEqual(a.eq, { weapon: null, armor: 'chainmail' }); // armor in the weapon slot is dropped

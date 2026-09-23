@@ -329,7 +329,7 @@ test('join / leave system messages; disconnect removes the entity (gone) and cle
   game.removePlayer(b); // idempotent
 });
 
-test('snapshots: AOI, static fields on first sight / change only, gone, self always included', () => {
+test('snapshots: AOI, static fields on first sight / change only, field deltas, gone', () => {
   const game = makeGame();
   const a = addPlayer(game, { cls: 'mage', name: 'Anna' });
   const b = addPlayer(game, { cls: 'ranger', name: 'Bruno' });
@@ -359,9 +359,20 @@ test('snapshots: AOI, static fields on first sight / change only, gone, self alw
   assert.equal(bFull.c, 'ranger');
   assert.equal(bFull.m, 'ranger');
   advance(game, 100);
+  // [netcode-perf] field-level deltas: an unchanged entity is omitted, a moved one only carries x/z
+  assert.equal(a.session.last('snap').ents.find((e) => e.id === b.id), undefined, 'unchanged entity omitted');
+  place(game, b, 5.5, 12);
+  advance(game, 100);
   const bDyn = a.session.last('snap').ents.find((e) => e.id === b.id);
-  assert.deepEqual(Object.keys(bDyn).sort(), ['hp', 'id', 'mhp', 'ry', 's', 'tg', 'x', 'z']);
-  assert.equal(a.session.last('snap').ents.find((e) => e.id === a.id).n, undefined);
+  assert.deepEqual(Object.keys(bDyn).sort(), ['id', 'x']);
+  assert.equal(bDyn.x, 5.5);
+  b.hp = Math.max(1, b.hp - 7);
+  b.ry = 1.234;
+  advance(game, 100);
+  const bHit = a.session.last('snap').ents.find((e) => e.id === b.id);
+  assert.deepEqual(Object.keys(bHit).sort(), ['hp', 'id', 'ry']);
+  assert.equal(bHit.ry, 1.24, 'angles quantised to 0.02 rad');
+  assert.equal(a.session.last('snap').ents.find((e) => e.id === a.id)?.n, undefined);
 
   // hysteresis: slightly beyond VIEW_RADIUS keeps it, far beyond sends gone
   place(game, b, 0, 7 + VIEW_RADIUS + 2);

@@ -125,11 +125,18 @@ Variables d'environnement reconnues par `npm start` :
 | Variable | Défaut | Rôle |
 |---|---|---|
 | `PORT` | `3000` | Port HTTP et WebSocket (`/ws`) |
-| `DATA_DIR` | `server/data` | Dossier de sauvegarde des comptes (`accounts.json`) |
+| `DATA_DIR` | `server/data` | Dossier de sauvegarde des comptes (`accounts/<nom>.json`, `backups/`) |
 | `STATIC_DIR` | `client/dist` | Dossier du client compilé |
+| `TRUST_PROXY` | `0` | `1` derrière un proxy inverse (nginx, Caddy) : adresse IP des joueurs lue dans `X-Forwarded-For` |
+| `MAX_PLAYERS` | `100` | Nombre maximal de joueurs connectés |
 
-Les comptes sont enregistrés toutes les 10 secondes, à chaque déconnexion et à l'arrêt du serveur
-(écriture atomique : fichier temporaire puis renommage). Les mots de passe sont hachés avec scrypt.
+Les comptes (un fichier par compte) sont enregistrés toutes les 10 secondes s'ils ont changé, à chaque
+déconnexion et à l'arrêt du serveur (écriture atomique : fichier temporaire puis renommage) ; une sauvegarde
+complète est archivée chaque jour (7 jours conservés). Un ancien `accounts.json` (v0.1) est importé
+automatiquement. Les mots de passe sont hachés avec scrypt.
+
+Mise en production (Docker, systemd/pm2, nginx/Caddy, sauvegardes) : voir [docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md).
+Mesures de charge : [docs/PERFORMANCES.md](docs/PERFORMANCES.md) (`node tests/load.mjs`).
 
 ## Commandes npm
 

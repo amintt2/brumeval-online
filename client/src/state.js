@@ -33,6 +33,7 @@ export class EntityRecord {
     this.dirtyLabel = true;   // nameplate text/colour must be refreshed
     this.deadAt = 0;
     this.seenAt = 0;
+    this.snapStamp = 0;       // [netcode-perf] GameState.snapStamp of the last snapshot that carried it
   }
   get dead() { return this.s === STATE.DEAD; }
   get hostile() { return this.k === KIND.MONSTER; }
@@ -127,6 +128,13 @@ export class EntityRecord {
   }
 }
 
+/** [netcode-perf] Repeat the newest interpolation sample at server time t (entity unchanged). */
+function holdSample(rec, t) {
+  if (rec.count === 0) return;
+  const last = (rec.head + rec.count - 1) % RING;
+  if (t > rec.st[last]) rec.pushSample(t, rec.sx[last], rec.sz[last], rec.sry[last]);
+}
+
 export class GameState {
   constructor() {
     this.selfId = 0;
@@ -139,6 +147,7 @@ export class GameState {
     this.clockOffset = null;
     this.lastSnapAt = 0;
     this.lastTick = -1;
+    this.snapStamp = 0;          // [netcode-perf] snapshots applied (marks the entities each one carried)
     this.dialog = null;          // currently open NPC dialog payload
     this.cooldowns = [0, 0, 0, 0]; // performance.now() when each slot is ready again
     this.listeners = { add: [], remove: [], self: [] };
@@ -220,11 +229,29 @@ export class GameState {
           if (e.s === STATE.DEAD && rec.s !== STATE.DEAD) rec.deadAt = now;
           rec.s = e.s;
         }
-        rec.tg = e.tg || 0;
-        rec.sl = e.sl || 0;
-        if (typeof e.x === 'number' && typeof e.z === 'number') rec.pushSample(t, e.x, e.z, e.ry || 0);
+        // [netcode-perf] field-level deltas (ROADMAP §4.3): an omitted field keeps its previous value
+        if (e.tg !== undefined) rec.tg = e.tg || 0;
+        if (e.sl !== undefined) rec.sl = e.sl || 0;
+        rec.snapStamp = this.snapStamp + 1;
+        const hasX = typeof e.x === 'number', hasZ = typeof e.z === 'number', hasRy = typeof e.ry === 'number';
+        if (hasX || hasZ || hasRy) {
+          if (rec.count > 0) {
+            const last = (rec.head + rec.count - 1) % RING;
+            rec.pushSample(t, hasX ? e.x : rec.sx[last], hasZ ? e.z : rec.sz[last], hasRy ? e.ry : rec.sry[last]);
+          } else if (hasX && hasZ) {
+            rec.pushSample(t, e.x, e.z, hasRy ? e.ry : rec.ry);
+          }
+        } else {
+          holdSample(rec, t);
+        }
         if (isNew) this.emit('add', rec);
       }
+    }
+    // [netcode-perf] entities left out of this snapshot did not change: extend their timeline at the same
+    // place so that interpolation does not stretch their next move over the whole idle period
+    this.snapStamp++;
+    for (const rec of this.entities.values()) {
+      if (rec.snapStamp !== this.snapStamp && !rec.isSelf) holdSample(rec, t);
     }
     if (Array.isArray(snap.gone)) {
       for (const id of snap.gone) {
