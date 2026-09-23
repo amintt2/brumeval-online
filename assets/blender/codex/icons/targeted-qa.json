@@ -1,0 +1,20 @@
+{
+  "base": "47da7ad",
+  "changed_count": 12,
+  "unchanged_count": 41,
+  "changed_keys": [
+    "potion_hp_s",
+    "potion_hp_l",
+    "potion_mp_s",
+    "ab_heavy_blow",
+    "ab_firebolt",
+    "ab_fireball",
+    "ab_shot",
+    "ab_piercing_shot",
+    "ab_arrow_rain",
+    "ab_rapid_fire",
+    "potion_hp_m",
+    "potion_stamina"
+  ],
+  "checks": "53 dimension/alpha/reference checks; 41 non-target PNGs byte-identical; native 40 px visual sheets"
+}
