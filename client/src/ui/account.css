@@ -256,3 +256,7 @@
 .bv-mm-tool kbd { font-size: 0.7em; }
 .bv-mm-tool:hover, .bv-mm-tool:focus-visible, .bv-mm-tool.active { border-color: var(--gold-hi); color: #fff1d0; outline: none; }
 .bv-login-error.is-info { color: var(--good); }
+/* [accounts] passkey add: password confirmation; password change: revoke passkeys */
+.bv-acc .bv-field[hidden], .bv-acc-revoke[hidden] { display: none; }
+.bv-acc-revoke { font-weight: 500; align-items: flex-start; margin: 0.2em 0 0.4em; }
+.bv-acc-revoke small { color: var(--text-dim, var(--text-mute)); line-height: 1.35; }

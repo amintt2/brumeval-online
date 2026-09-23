@@ -96,7 +96,7 @@ const finite = (v, d) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
 const CORE_FIELDS = new Set(['id', 'name', 'cls', 'salt', 'hash', 'level', 'xp', 'gold', 'hp', 'mp', 'inv', 'eq', 'quests', 'x', 'z', 'created', 'lastSeen', 'v']);
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 /** Fields of a v3 account record (anything else found at its top level is carried over untouched). */
-const ACCOUNT_FIELDS = new Set(['v', 'login', 'salt', 'hash', 'uid', 'role', 'lastIp', 'created', 'lastSeen', 'lastChar', 'chars', 'sessions', 'passkeys', 'deleted']);
+const ACCOUNT_FIELDS = new Set(['v', 'login', 'salt', 'hash', 'uid', 'role', 'lastIp', 'authIps', 'created', 'lastSeen', 'lastChar', 'chars', 'sessions', 'passkeys', 'deleted']);
 
 /**
  * Validate / normalise one CHARACTER record (a v1/v2 account record is exactly a character plus salt/hash).
@@ -245,6 +245,11 @@ export function migrateAccount(raw) {
   });
   if (raw.role === 'admin' || raw.role === 'gm') acc.role = raw.role;
   if (typeof raw.lastIp === 'string' && raw.lastIp.length <= 64) acc.lastIp = raw.lastIp;
+  // [accounts] addresses of the last password / passkey logins (targeted-lockout exemption, admins only)
+  if (Array.isArray(raw.authIps)) {
+    const ips = raw.authIps.filter((x) => typeof x === 'string' && x.length <= 64).slice(0, 3);
+    if (ips.length) acc.authIps = ips;
+  }
   if (deleted.length) acc.deleted = deleted;
   return acc;
 }

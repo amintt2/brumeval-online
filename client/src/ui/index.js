@@ -424,6 +424,7 @@ export function createUI(root, handlers = {}) {
     openOptions() { wm.open('settings'); },
     accountInfo(text) { accountSheet.info(text); },
     accountError(text) { accountSheet.error(text); },
+    accountNeedPassword() { accountSheet.needPassword(); },
     get accountOpen() { return accountSheet.isOpen; },
     openGameMenu() { if (hudActive()) gameMenu.open(); },
     openMap() { if (hudActive()) { worldMap.open(); mapBtn.classList.add('active'); } },

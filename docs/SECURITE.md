@@ -96,6 +96,10 @@ roulades, glissades le long des obstacles) et exigent **zéro correction et zér
 - **Verrouillage progressif** : par compte (5 essais gratuits, puis 1 s, 2 s, 4 s… jusqu'à 5 min) et par IP
   (8 essais gratuits, jusqu'à 15 min). Le compteur est oublié après 15 min sans échec et remis à zéro à la
   connexion réussie. Le verrouillage s'applique aussi aux noms qui n'existent pas (pas d'énumération).
+  Le verrouillage **par compte** ne s'applique pas aux adresses d'où ce compte s'est récemment connecté avec son
+  mot de passe ou une clé d'accès (3 dernières, champ `authIps`) : des échecs envoyés depuis d'autres adresses ne
+  peuvent pas bloquer le joueur chez lui (le verrouillage par IP s'applique toujours). Un compte verrouillé peut
+  aussi toujours se connecter par « Rester connecté » ou par une clé d'accès (compteurs séparés).
   Réponse : `auth_err` code `rate_limit`, « Trop de tentatives de connexion. Réessayez dans … ».
 - **12 tentatives au maximum par connexion**, puis expulsion.
 - **Création de comptes** : 5 par IP et par heure (`ACCOUNTS_PER_IP_PER_HOUR`).

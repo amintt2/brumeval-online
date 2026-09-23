@@ -24,7 +24,11 @@ lancement suivant, le jeu ouvre directement l'écran des personnages avec le der
 
 - « Se déconnecter » oublie la connexion de cet appareil.
 - « Compte » → « Se déconnecter partout » oublie tous les appareils et ferme les autres connexions ouvertes.
-- Changer de mot de passe déconnecte tous les autres appareils mémorisés.
+- Changer de mot de passe déconnecte tous les autres appareils mémorisés et ferme leurs connexions ouvertes. La
+  case « Supprimer aussi toutes les clés d'accès » (cochée par défaut quand le compte en a) les révoque en même
+  temps : à utiliser si quelqu'un d'autre a pu accéder au compte.
+- « Rester connecté » est une preuve **faible** (un jeton stocké dans le navigateur) : elle suffit pour jouer, mais
+  pas pour ajouter une clé d'accès (voir ci-dessous).
 
 ### Clés d'accès (passkeys)
 
@@ -36,6 +40,9 @@ Touch ID / Face ID, Android, gestionnaire de mots de passe, clé de sécurité U
 - Pour se connecter : « Se connecter avec une passkey » sur l'écran de connexion — **pas besoin de taper son nom**,
   l'appareil propose les clés enregistrées pour le site.
 - **Compte** liste vos clés (date d'ajout, dernière utilisation) : renommer, supprimer, en ajouter (10 au maximum).
+- **Ajouter une clé** exige d'avoir tapé son mot de passe (ou utilisé une clé d'accès) **dans les 10 dernières
+  minutes** sur cette connexion ; sinon (connexion par « Rester connecté », ou plus tard) le jeu redemande le mot
+  de passe actuel. Un jeton volé ne permet donc pas d'installer une clé d'accès durable.
 - Fonctionne dans Chrome, Edge, Firefox et Safari récents, et dans le launcher (Windows Hello sous Windows). Le site
   doit être en **HTTPS** (ou `http://localhost` en développement).
 
@@ -61,7 +68,7 @@ quotidienne compressée dans `backups/`). Schéma v3 :
 ```json
 {
   "v": 3, "login": "Nom", "salt": "…", "hash": "…", "uid": "…",
-  "role": "gm", "lastIp": "…", "created": 0, "lastSeen": 0, "lastChar": "a1b2c3d4e5f6",
+  "role": "gm", "lastIp": "…", "authIps": ["3 dernières adresses de connexion par mot de passe / clé"], "created": 0, "lastSeen": 0, "lastChar": "a1b2c3d4e5f6",
   "chars": [ { "id": "a1b2c3d4e5f6", "name": "Nom", "cls": "warrior", "level": 9, "xp": 410, "gold": 1234,
                "inv": [], "eq": {}, "quests": {}, "x": 52.5, "z": 28.25, "echo": null, "…": "…" } ],
   "sessions": [ { "id": "…", "h": "sha256 du jeton", "created": 0, "exp": 0, "used": 0, "ua": "…" } ],
@@ -93,8 +100,8 @@ char_create { name, cls } / char_delete { id, confirm } → account_ok (liste à
 char_select { id }                            → auth_ok (inchangé : le reste du jeu est identique)
 char_logout {}                                → account_ok (retour à la sélection)
 logout {} / logout_all {}                     → logged_out
-passkey_reg_options {} → passkey_options → passkey_reg_verify { resp, label? } → account_ok
-passkey_rename / passkey_delete / password_change / account_get → account_ok | account_err
+passkey_reg_options { password? } → passkey_options (ou account_err reauth_required) → passkey_reg_verify { resp, label? } → account_ok
+passkey_rename / passkey_delete / password_change { old, password, revokePasskeys? } / account_get → account_ok | account_err
 ```
 
 Compatibilité : un client de la version précédente (`register { name, password, cls }`, ou `login` **sans** champ

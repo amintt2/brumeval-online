@@ -68,7 +68,12 @@ export function createAccountSheet(layer, stack, H, menus) {
 
   // passkeys
   const pkList = h('ul', { class: 'bv-acc-pk' });
-  const pkAdd = h('button', { class: 'bv-btn small gold', type: 'button', onclick: () => H.passkeyAdd() }, glyph('key'), h('span', { text: 'Ajouter une clé d’accès' }));
+  // adding a passkey needs the password again unless it was typed a few minutes ago (server: reauth_required)
+  const pkPw = h('input', { class: 'bv-input', type: 'password', autocomplete: 'current-password', maxLength: 64, id: 'bv-acc-pkpw' });
+  const pkPwField = h('label', { class: 'bv-field', for: 'bv-acc-pkpw', hidden: true },
+    h('span', { class: 'bv-field-l', text: 'Mot de passe actuel (confirmation)' }), pkPw);
+  const pkAdd = h('button', { class: 'bv-btn small gold', type: 'button', onclick: () => { H.passkeyAdd(pkPw.value); pkPw.value = ''; } }, glyph('key'), h('span', { text: 'Ajouter une clé d’accès' }));
+  pkPw.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); pkAdd.click(); } });
   const pkNote = h('p', { class: 'bv-acc-note' });
 
   // password
@@ -76,18 +81,25 @@ export function createAccountSheet(layer, stack, H, menus) {
   const newIn = h('input', { class: 'bv-input', type: 'password', autocomplete: 'new-password', maxLength: 64, id: 'bv-acc-new' });
   const new2In = h('input', { class: 'bv-input', type: 'password', autocomplete: 'new-password', maxLength: 64, id: 'bv-acc-new2' });
   const pwBtn = h('button', { class: 'bv-btn small secondary', type: 'submit', text: 'Changer le mot de passe' });
+  const revokeIn = h('input', { type: 'checkbox', id: 'bv-acc-revoke', class: 'bv-check' });
+  revokeIn.checked = true;
+  const revokeField = h('label', { class: 'bv-remember bv-acc-revoke', for: 'bv-acc-revoke' }, revokeIn,
+    h('span', { class: 'bv-remember-box', 'aria-hidden': 'true' }),
+    h('small', { text: 'Supprimer aussi toutes les clés d’accès (recommandé si quelqu’un d’autre a pu accéder au compte)' }));
   const pwForm = h('form', { class: 'bv-acc-pw', novalidate: true },
     h('input', { type: 'text', autocomplete: 'username', hidden: true, class: 'bv-acc-user', 'aria-hidden': 'true', tabIndex: -1 }),
     h('label', { class: 'bv-field', for: 'bv-acc-old' }, h('span', { class: 'bv-field-l', text: 'Mot de passe actuel' }), oldIn),
     h('label', { class: 'bv-field', for: 'bv-acc-new' }, h('span', { class: 'bv-field-l', text: 'Nouveau (6 à 64 caractères)' }), newIn),
     h('label', { class: 'bv-field', for: 'bv-acc-new2' }, h('span', { class: 'bv-field-l', text: 'Confirmation' }), new2In),
+    revokeField,
     pwBtn);
   pwForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (newIn.value.length < 6 || newIn.value.length > 64) return setMsg('Le nouveau mot de passe doit comporter 6 à 64 caractères.', true);
     if (newIn.value !== new2In.value) return setMsg('Les deux mots de passe ne correspondent pas.', true);
     if (!oldIn.value) return setMsg('Entrez votre mot de passe actuel.', true);
-    H.passwordChange(oldIn.value, newIn.value);
+    const hasKeys = (data?.account?.passkeys || []).length > 0;
+    H.passwordChange(oldIn.value, newIn.value, hasKeys && revokeIn.checked);
   });
 
   // sessions
@@ -107,7 +119,7 @@ export function createAccountSheet(layer, stack, H, menus) {
     h('section', { class: 'bv-acc-sec' },
       h('h3', { class: 'bv-sec-title', text: 'Clés d’accès (passkeys)' }),
       h('p', { class: 'bv-acc-note', text: 'Connectez-vous sans mot de passe avec l’empreinte, le visage ou le code de votre appareil.' }),
-      pkList, pkNote, h('div', { class: 'bv-acc-row' }, pkAdd)),
+      pkList, pkNote, pkPwField, h('div', { class: 'bv-acc-row' }, pkAdd)),
     h('section', { class: 'bv-acc-sec' },
       h('h3', { class: 'bv-sec-title', text: 'Mot de passe' }),
       pwForm),
@@ -162,6 +174,7 @@ export function createAccountSheet(layer, stack, H, menus) {
         rename, del));
     }
     pkAdd.disabled = !passkeyOk;
+    revokeField.hidden = !keys.length;
     setText(pkNote, passkeyOk ? '' : 'Ce navigateur ne prend pas en charge les clés d’accès (ou la page n’est pas en HTTPS).');
     pkNote.hidden = passkeyOk;
   }
@@ -170,7 +183,8 @@ export function createAccountSheet(layer, stack, H, menus) {
     get isOpen() { return sheet.isOpen; },
     open() {
       setMsg('');
-      oldIn.value = newIn.value = new2In.value = '';
+      oldIn.value = newIn.value = new2In.value = pkPw.value = '';
+      revokeIn.checked = true;
       sheet.open();
     },
     close: () => sheet.close(),
@@ -193,6 +207,12 @@ export function createAccountSheet(layer, stack, H, menus) {
       oldIn.value = newIn.value = new2In.value = '';
     },
     error(text) { setMsg(text, true); },
+    /** The server wants the password before adding a passkey: show the field and focus it. */
+    needPassword() {
+      pkPwField.hidden = false;
+      pkPw.value = '';
+      setTimeout(() => pkPw.focus({ preventScroll: false }), 60);
+    },
   };
 }
 

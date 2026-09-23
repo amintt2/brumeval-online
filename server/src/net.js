@@ -57,7 +57,15 @@ const ACCOUNT_MESSAGES = {
   wrong_credentials: 'Mot de passe actuel incorrect.',
   passkey_failed: 'La clé d’accès n’a pas pu être enregistrée.',
   too_many_passkeys: `Vous avez déjà ${MAX_PASSKEYS} clés d’accès : supprimez-en une d’abord.`,
+  reauth_required: 'Confirmez votre mot de passe actuel pour ajouter une clé d’accès.',
 };
+
+/**
+ * Adding a passkey mints a durable, high-assurance credential: it needs a FRESH proof of the password (or of an
+ * existing passkey). A remembered-session token (login_token, stored in the browser) is low-assurance and is
+ * never enough on its own: the password must be typed again. See docs/COMPTES.md.
+ */
+export const REAUTH_WINDOW_MS = 10 * 60 * 1000;
 
 /** Message types that count as player activity for the idle kick. */
 const PASSIVE_TYPES = new Set([C2S.PING]);
@@ -71,6 +79,11 @@ const ACCOUNT_TYPES = new Set([
 
 let sessionSeq = 0;
 
+/** An address this account recently logged in from with its password or a passkey. */
+function trustedIp(account, ip) {
+  return !!(account && ip && ip !== '?' && account.authIps?.includes(ip));
+}
+
 class Session {
   constructor(ws, ip, ctx, req = null) {
     this.id = ++sessionSeq;
@@ -80,6 +93,7 @@ class Session {
     this.account = null;   // [accounts] authenticated account (character selection or in world)
     this.tokenId = null;   // [accounts] remembered session used / issued by this connection (revoked by `logout`)
     this.webauthn = null;  // [accounts] pending passkey challenge { purpose, challenge, exp }
+    this.strongAuthAt = 0; // [accounts] last proof of the password or of a passkey on this connection (not a token)
     this.player = null;
     this.authBusy = false;
     this.accBusy = false;
@@ -285,12 +299,12 @@ class Session {
     }
     const ipBan = sec.ipBan(this.ip); // banned while this connection was already open
     if (ipBan) return this.authErr('banned', sec.banMessage(ipBan));
-    const wait = sec.loginBlockedFor(this.ip, name);
+    const account = store.getAccount(name);
+    const wait = sec.loginBlockedFor(this.ip, name, { trusted: trustedIp(account, this.ip) });
     if (wait > 0) {
       sec.loginRefusedWhileBlocked(this, name);
       return this.authErr('rate_limit', `Trop de tentatives de connexion. Réessayez dans ${formatDuration(wait)}.`);
     }
-    const account = store.getAccount(name);
     const ok = account ? await verifyPassword(password, account.salt, account.hash) : await dummyVerify(password);
     if (this.closed) return;
     if (!ok) {
@@ -386,9 +400,14 @@ class Session {
     if (method === 'passkey') sec.loginSucceeded(this, '#passkey');
     clearTimeout(this.authTimer);
     this.account = account;
+    this.strongAuthAt = method === 'token' ? 0 : Date.now();
     this.lastActivity = Date.now();
     account.lastSeen = Date.now();
-    if (this.ip && this.ip !== '?') account.lastIp = this.ip;
+    if (this.ip && this.ip !== '?') {
+      account.lastIp = this.ip;
+      // a proof of the password / a passkey makes this address "usual" for the account (not a token login)
+      if (method !== 'token') account.authIps = [this.ip, ...(account.authIps || []).filter((x) => x !== this.ip)].slice(0, 3);
+    }
     store.markDirty(account);
     let set = this.ctx.accountSessions.get(nameKey(account.login));
     if (!set) this.ctx.accountSessions.set(nameKey(account.login), (set = new Set()));
@@ -436,6 +455,7 @@ class Session {
     this.account = null;
     this.tokenId = null;
     this.webauthn = null;
+    this.strongAuthAt = 0;
     this.armAuthTimer();
   }
 
@@ -452,7 +472,7 @@ class Session {
         case C2S.LOGOUT: return this.logout(false);
         case C2S.LOGOUT_ALL: return this.logout(true);
         case C2S.PASSWORD_CHANGE: return this.passwordChange(msg);
-        case C2S.PASSKEY_REG_OPTIONS: return this.passkeyRegOptions();
+        case C2S.PASSKEY_REG_OPTIONS: return this.passkeyRegOptions(msg);
         case C2S.PASSKEY_REG_VERIFY: return this.passkeyRegVerify(msg);
         case C2S.PASSKEY_RENAME: return this.passkeyRename(msg);
         case C2S.PASSKEY_DELETE: return this.passkeyDelete(msg);
@@ -545,7 +565,7 @@ class Session {
     const sec = this.security;
     const acc = this.account;
     const op = C2S.PASSWORD_CHANGE;
-    const wait = sec.loginBlockedFor(this.ip, acc.login);
+    const wait = sec.loginBlockedFor(this.ip, acc.login, { trusted: trustedIp(acc, this.ip) });
     if (wait > 0) return this.accErr(op, 'rate_limit', `Trop de tentatives. Réessayez dans ${formatDuration(wait)}.`);
     const ok = await verifyPassword(msg.old, acc.salt, acc.hash);
     if (this.closed || this.account !== acc) return undefined;
@@ -558,17 +578,48 @@ class Session {
     if (this.closed || this.account !== acc) return undefined;
     acc.salt = salt;
     acc.hash = hash;
+    this.strongAuthAt = Date.now();
     // every other remembered session stops working (a stolen token dies with the old password)
     revokeAllSessions(store, acc, this.tokenId);
+    // ... and, on request (the client's default), every passkey: a passkey enrolled by an intruder would survive
+    const nKeys = msg.revokePasskeys === true ? acc.passkeys.length : 0;
+    if (nKeys) {
+      acc.passkeys = [];
+      store.index(acc);
+    }
+    // the account's other open connections are closed too (like logout_all)
+    for (const s of [...(this.ctx.accountSessions.get(nameKey(acc.login)) || [])]) {
+      if (s !== this) s.kick('Vous avez été déconnecté : le mot de passe du compte a été modifié.');
+    }
     store.markDirty(acc);
     store.save();
-    sec.seclog.write({ type: 'auth', result: 'password_change', name: acc.login, ip: this.ip });
-    return this.sendAccount({ info: 'Mot de passe modifié. Les autres appareils devront se reconnecter.' });
+    sec.seclog.write({ type: 'auth', result: 'password_change', name: acc.login, ip: this.ip, passkeysRevoked: nKeys });
+    const keys = nKeys ? ` ${nKeys} clé${nKeys > 1 ? 's' : ''} d’accès supprimée${nKeys > 1 ? 's' : ''}.` : '';
+    return this.sendAccount({ info: `Mot de passe modifié. Les autres appareils devront se reconnecter.${keys}` });
   }
 
-  async passkeyRegOptions() {
+  /** True when this connection proved the password or a passkey recently (a token login never counts). */
+  freshAuth() {
+    return this.strongAuthAt > 0 && Date.now() - this.strongAuthAt < REAUTH_WINDOW_MS;
+  }
+
+  async passkeyRegOptions(msg = {}) {
     const op = C2S.PASSKEY_REG_OPTIONS;
-    if (this.account.passkeys.length >= MAX_PASSKEYS) return this.accErr(op, 'too_many_passkeys');
+    const sec = this.security;
+    const acc = this.account;
+    if (acc.passkeys.length >= MAX_PASSKEYS) return this.accErr(op, 'too_many_passkeys');
+    if (!this.freshAuth()) {
+      if (typeof msg.password !== 'string' || !msg.password) return this.accErr(op, 'reauth_required');
+      const wait = sec.loginBlockedFor(this.ip, acc.login, { trusted: trustedIp(acc, this.ip) });
+      if (wait > 0) return this.accErr(op, 'rate_limit', `Trop de tentatives. Réessayez dans ${formatDuration(wait)}.`);
+      const ok = await verifyPassword(msg.password, acc.salt, acc.hash);
+      if (this.closed || this.account !== acc) return undefined;
+      if (!ok) {
+        sec.loginFailed(this, acc.login);
+        return this.accErr(op, 'wrong_credentials');
+      }
+      this.strongAuthAt = Date.now();
+    }
     const rp = this.rp();
     if (!rp) return this.accErr(op, 'unavailable');
     const options = await registrationOptions(this.account, rp);
@@ -584,6 +635,7 @@ class Session {
     const ch = this.webauthn;
     this.webauthn = null;
     if (!ch || ch.purpose !== 'register' || ch.exp < Date.now()) return this.accErr(op, 'passkey_failed', 'Délai dépassé : recommencez l’ajout de la clé.');
+    if (!this.freshAuth()) return this.accErr(op, 'reauth_required');
     if (!responseShapeOk(msg.resp, 'register')) return this.accErr(op, 'passkey_failed');
     if (acc.passkeys.length >= MAX_PASSKEYS) return this.accErr(op, 'too_many_passkeys');
     let cred;

@@ -461,6 +461,76 @@ test('passkeys: register after a password login, then log in with the discoverab
   }, { security: { loginFreeFailsIp: 100, loginFreeFailsAccount: 100 } });
 });
 
+test('passkey enrolment needs a fresh password proof: a stolen remembered token cannot mint a passkey; password change can revoke them', async () => {
+  const auth = new SoftAuthenticator();
+  const thief = new SoftAuthenticator();
+  await withServer(async ({ srv, c }) => {
+    const v = await c();
+    const token = (await v.req({ t: 'register', name: 'Victime', password: 'motdepasse', remember: true })).token;
+    // the victim enrols her own passkey right after the password login (fresh proof: no password asked)
+    let r = await v.req({ t: 'passkey_reg_options' });
+    assert.equal(r.t, 'passkey_options');
+    r = await v.req({ t: 'passkey_reg_verify', resp: auth.register(r.options, { origin: ORIGIN }) });
+    assert.equal(r.account.passkeys.length, 1);
+
+    // an attacker holding only the remembered-session token
+    const t = await c({ ip: '203.0.113.9' });
+    r = await t.req({ t: 'login_token', token });
+    assert.equal(r.t, 'account_ok');
+    assert.equal((await t.req({ t: 'passkey_reg_options' })).code, 'reauth_required', 'token session: password needed');
+    assert.equal((await t.req({ t: 'passkey_reg_verify', resp: thief.register({ challenge: 'AAAAAAAAAAAAAAAAAAAAAA', rp: { id: 'localhost' }, user: { id: 'QUFB' } }, { origin: ORIGIN }) })).code, 'passkey_failed');
+    assert.equal((await t.req({ t: 'passkey_reg_options', password: 'mauvais' })).code, 'wrong_credentials');
+    assert.equal(srv.store.getAccount('victime').passkeys.length, 1, 'no passkey minted');
+    // with the password typed again it works (the legitimate "Rester connecté" user)
+    r = await t.req({ t: 'passkey_reg_options', password: 'motdepasse' });
+    assert.equal(r.t, 'passkey_options');
+    r = await t.req({ t: 'passkey_reg_verify', resp: thief.register(r.options, { origin: ORIGIN }) });
+    assert.equal(r.account.passkeys.length, 2);
+
+    // recovery: password change with revokePasskeys removes every passkey and closes the other connections
+    r = await v.req({ t: 'password_change', old: 'motdepasse', password: 'nouveau123', revokePasskeys: true });
+    assert.equal(r.t, 'account_ok');
+    assert.equal(r.account.passkeys.length, 0);
+    assert.match(r.info, /2 clés d’accès supprimées/);
+    assert.equal(await t.closed, 4000, 'other connection closed');
+    for (const who of [auth, thief]) {
+      const x = await c();
+      const o = await x.req({ t: 'passkey_login_options' });
+      assert.equal((await x.req({ t: 'passkey_login_verify', resp: who.authenticate(o.options, { origin: ORIGIN }) })).code, 'passkey_failed');
+    }
+    // password change without revokePasskeys keeps them (explicit choice)
+    r = await v.req({ t: 'passkey_reg_options' });
+    r = await v.req({ t: 'passkey_reg_verify', resp: auth.register(r.options, { origin: ORIGIN }) });
+    r = await v.req({ t: 'password_change', old: 'nouveau123', password: 'encore123' });
+    assert.equal(r.account.passkeys.length, 1);
+  }, { security: { trustProxy: 1, loginFreeFailsIp: 100, loginFreeFailsAccount: 100 } });
+});
+
+test('targeted lockout: failures from many addresses do not lock the owner out of her usual address; token login unaffected', async () => {
+  await withServer(async ({ srv, c }) => {
+    const home = '198.51.100.20';
+    const o = await c({ ip: home });
+    const token = (await o.req({ t: 'register', name: 'Cible', password: 'motdepasse', remember: true })).token;
+    o.close();
+    assert.deepEqual(srv.store.getAccount('cible').authIps, [home]);
+    for (let i = 0; i < 20; i++) {
+      const x = await c({ ip: `192.0.2.${100 + i}` });
+      assert.ok(['wrong_credentials', 'rate_limit'].includes((await x.req({ t: 'login', name: 'Cible', password: `essai${i}`, remember: false })).code));
+      x.close();
+    }
+    // a new address is still held by the per-account lock (distributed brute force stays slow) ...
+    const away = await c({ ip: '203.0.113.77' });
+    assert.equal((await away.req({ t: 'login', name: 'Cible', password: 'motdepasse', remember: false })).code, 'rate_limit');
+    // ... but the owner's usual address is not, and neither is her remembered session
+    const back = await c({ ip: home });
+    assert.equal((await back.req({ t: 'login', name: 'Cible', password: 'motdepasse', remember: false })).t, 'account_ok');
+    const tok = await c({ ip: '203.0.113.78' });
+    assert.equal((await tok.req({ t: 'login_token', token })).t, 'account_ok');
+    // the token login does not make its address trusted
+    assert.deepEqual(srv.store.getAccount('cible').authIps, [home]);
+  }, { security: { trustProxy: 1 } });
+});
+
 test('malformed passkey payloads are rejected by validation, oversized ones never reach the verifier', async () => {
   await withServer(async ({ c }) => {
     const x = await c();

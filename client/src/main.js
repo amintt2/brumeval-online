@@ -70,6 +70,7 @@ const bossSeen = new Map(); // [combat-souls] boss id -> last time it fought the
 let gfx; // [render-souls] graphics orchestrator (settings, post-processing, terrain, grass…)
 let fake = null;
 let ping = 0;
+let rtt = 0; // smoothed round trip (telegraph lead, see Telegraphs.add)
 let fps = 60;
 let kickMsg = null;
 let autoMode = null;
@@ -148,17 +149,18 @@ const handlers = {
   openAccount() { ui.openAccount(); send({ t: C2S.ACCOUNT_GET }); },
   openOptions() { ui.openOptions(); },
   openMap() { ui.openMap(); },
-  passkeyAdd() {
+  passkeyAdd(password = '') {
     if (!passkeysSupported()) {
       reportAccountError('Votre navigateur ne prend pas en charge les clés d’accès.');
       return;
     }
     pendingPasskey = { purpose: 'register' };
-    send({ t: C2S.PASSKEY_REG_OPTIONS });
+    // the server asks for the password again unless it was typed a few minutes ago (reauth_required)
+    send(password ? { t: C2S.PASSKEY_REG_OPTIONS, password } : { t: C2S.PASSKEY_REG_OPTIONS });
   },
   passkeyRename(id, label) { send({ t: C2S.PASSKEY_RENAME, id, label }); },
   passkeyDelete(id) { send({ t: C2S.PASSKEY_DELETE, id }); },
-  passwordChange(old, password) { send({ t: C2S.PASSWORD_CHANGE, old, password }); },
+  passwordChange(old, password, revokePasskeys = false) { send({ t: C2S.PASSWORD_CHANGE, old, password, revokePasskeys: !!revokePasskeys }); },
   quit() { launcherQuit(); },
   canQuit: () => canQuit(),
   hasTarget: () => !!targeting?.id,
@@ -284,6 +286,16 @@ function onAccountErr(m) {
     case C2S.CHAR_SELECT:
     case C2S.CHAR_DELETE: ui.setCharSelectError(msg); break;
     case C2S.CHAR_LOGOUT: switching = false; notify(msg, 'error'); break;
+    case C2S.PASSKEY_REG_OPTIONS:
+    case C2S.PASSKEY_REG_VERIFY:
+      pendingPasskey = null;
+      if (m.code === 'reauth_required' || m.code === 'wrong_credentials') {
+        // password needed: the Compte window has the field (the offer on the selection screen leads there)
+        if (!ui.accountOpen) handlers.openAccount();
+        ui.accountNeedPassword?.();
+      }
+      reportAccountError(msg);
+      break;
     default: reportAccountError(msg);
   }
 }
@@ -454,13 +466,18 @@ function onMessage(m) {
       break;
     // [combat-souls] telegraphed attacks
     case S2C.TELE:
-      if (state.inGame) telegraphs.add(m, now);
+      if (state.inGame) telegraphs.add(m, now, rtt);
       break;
     case S2C.TELE_END:
       if (state.inGame) telegraphs.cancel(m.id);
       break;
     case S2C.PONG:
-      if (Number.isFinite(m.c)) ping = Math.max(0, Math.round(performance.now() - m.c));
+      if (Number.isFinite(m.c)) {
+        ping = Math.max(0, Math.round(performance.now() - m.c));
+        // smoothed, and a lag spike does not shorten every following telegraph at once
+        const sample = Math.min(ping, 400);
+        rtt = rtt ? rtt * 0.8 + sample * 0.2 : sample;
+      }
       break;
     case S2C.KICK:
       kickMsg = m.msg || 'Vous avez été déconnecté.';

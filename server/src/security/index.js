@@ -270,11 +270,17 @@ export class Security {
 
   // ------------------------------------------------------------------ authentication
   /** Remaining lockout (ms) before `ip` may try to log into `name` (0 = allowed). */
-  loginBlockedFor(ip, name) {
+  /**
+   * Remaining login lock for this address and account name (0 = allowed). The per-name lock slows a brute force
+   * spread over many addresses; `trusted` (an address this account recently logged in from with its password or a
+   * passkey) skips it, so failures sent from elsewhere cannot lock the owner out of her usual device. The per-IP
+   * lock still applies to everyone. A locked account can always use a remembered session or a passkey.
+   */
+  loginBlockedFor(ip, name, { trusted = false } = {}) {
     const now = this.clock();
     const k = typeof name === 'string' ? nameKey(name) : '';
     const byIp = this.ipExempt(ip) ? 0 : this.loginIp.blockedFor(ip, now);
-    const byAcc = k ? this.loginAccount.blockedFor(k, now) : 0;
+    const byAcc = k && !trusted ? this.loginAccount.blockedFor(k, now) : 0;
     return Math.max(byIp, byAcc);
   }
 
