@@ -1,15 +1,16 @@
 // Per-client snapshots: area of interest from the spatial grid (aoi.js), static-field delta rule
 // (SPEC §4.3) and field-level dynamic deltas (ROADMAP §4.3).
 //
-// For every client and every entity it knows, the server remembers the last value sent for each dynamic
-// field (x z ry hp mhp s tg sl and any field other features add to entState). A snapshot only carries the
-// fields that changed since; an entity with no change at all is left out of `ents` (it is still known: only
-// `gone` removes it). The client keeps the previous value of every omitted field.
-// Positions are quantised to QPOS metres and angles to QANG radians, so idle jitter never costs bytes.
-// Every entity is re-sent whole to each client every FULL_EVERY rounds (staggered by id) as a safety net.
+// A snapshot only carries the dynamic fields (x z ry hp mhp s tg sl and any field other features add to
+// entState) that changed since the previous snapshot round; an entity with no change at all is left out of
+// `ents` (it is still known: only `gone` removes it). The client keeps the previous value of every omitted
+// field. Positions are quantised to QPOS metres and angles to QANG radians, so idle jitter costs nothing.
 //
-// Each entity's fields are serialised once per round (shared by all clients); only the concatenation of the
-// changed fragments is per client.
+// Every known entity is processed for every client at every round (or reported `gone`), so a client that
+// knows an entity always holds its state of the previous round: the delta "previous round → this round" is
+// the same for every such client and is serialised once per entity. Clients that see an entity for the
+// first time (or after a static/layout change) get it whole, and each entity is re-sent whole to every
+// client every FULL_EVERY rounds (staggered by id) as a safety net for client-side edits.
 import { VIEW_RADIUS } from '../../shared/protocol.js';
 import { AOI_EXIT_MARGIN } from './config.js';
 import { aoiOf } from './aoi.js';
@@ -32,7 +33,7 @@ const prefix = (k) => {
   if (s === undefined) prefixes.set(k, (s = `${JSON.stringify(k)}:`));
   return s;
 };
-const jsonValue = (v) => (typeof v === 'number' ? (Number.isFinite(v) ? String(v) : 'null') : (JSON.stringify(v) ?? 'null'));
+const jsonValue = (v) => (typeof v === 'number' ? String(v) : (JSON.stringify(v) ?? 'null'));
 
 /** Per-entity serialisation cache, refreshed once per round the entity is visible to someone. */
 class EntCache {
@@ -40,36 +41,52 @@ class EntCache {
     this.id = id;
     this.round = -1;
     this.keys = [];        // dynamic field names (without id)
-    this.frags = [];       // `"key":value` for each key, aligned with keys
+    this.vals = [];        // comparable value of each key (primitive, or its JSON for objects)
     this.shape = 0;        // bumped whenever the key list changes
+    this.full = '';        // `{"id":…,<every dynamic field>` (no closing brace)
+    this.delta = null;     // `{"id":…,<fields changed since the previous round>}` or null (no change)
     this.staticVer = -1;
-    this.staticFrag = '';  // `"k":…,"n":…` (static fields), for staticVer
-    this.idFrag = `{"id":${id}`;
+    this.staticFrag = '';  // `,"k":…,"n":…` (static fields), for staticVer
   }
 
   refresh(e, now, round) {
+    const consecutive = this.round === round - 1;
     this.round = round;
     const st = e.entState(now);
-    const keys = this.keys, frags = this.frags;
-    let i = 0, same = true;
+    const keys = this.keys, vals = this.vals;
+    const head = `{"id":${this.id}`;
+    let full = head, delta = head, i = 0, same = true, changed = false;
     for (const k in st) {
       if (k === 'id') continue;
       let v = st[k];
       if (typeof v === 'number') {
-        if (k === 'x' || k === 'z') v = qpos(v);
+        if (!Number.isFinite(v)) v = null;
+        else if (k === 'x' || k === 'z') v = qpos(v);
         else if (k === 'ry') v = qang(v);
+      } else if (v === undefined) {
+        continue;
       }
-      if (same && keys[i] !== k) same = false;
+      const frag = prefix(k) + jsonValue(v);
+      const cmp = v !== null && typeof v === 'object' ? frag : v;
+      if (keys[i] !== k) same = false;
+      else if (vals[i] !== cmp) {
+        changed = true;
+        delta += `,${frag}`;
+      }
       keys[i] = k;
-      frags[i] = prefix(k) + jsonValue(v);
+      vals[i] = cmp;
+      full += `,${frag}`;
       i++;
     }
     if (keys.length !== i) {
       same = false;
       keys.length = i;
-      frags.length = i;
+      vals.length = i;
     }
     if (!same) this.shape++;
+    this.full = full;
+    // not refreshed last round or new layout: nobody can be up to date, clients get the full state
+    this.delta = !consecutive || !same ? `${full}}` : changed ? `${delta}}` : null;
     if (this.staticVer !== e.staticVer) {
       this.staticVer = e.staticVer;
       const s = e.staticState();
@@ -86,19 +103,16 @@ class EntCache {
 /** What one client knows about one entity. */
 class Known {
   constructor() {
-    this.ver = -1;
-    this.stamp = 0;
-    this.shape = -1;
-    this.last = [];        // last fragment sent for each key of the entity's cache (aligned)
+    this.ver = -1;     // static version sent
+    this.stamp = 0;    // last round this entity was processed for this client
+    this.shape = -1;   // field layout sent
   }
 }
 
 /** Snapshot state attached to the game (created lazily). */
 function stateOf(game) {
   let s = game.snapState;
-  if (!s) {
-    s = game.snapState = { round: 0, cache: new Map(), buf: [], parts: [], gone: [] };
-  }
+  if (!s) s = game.snapState = { round: 0, cache: new Map(), buf: [], parts: [], gone: [] };
   return s;
 }
 
@@ -128,30 +142,18 @@ export function sendSnapshots(game, now) {
       if (c === undefined) cache.set(e.id, (c = new EntCache(e.id)));
       if (c.round !== round) c.refresh(e, now, round);
       if (k === undefined) known.set(e.id, (k = new Known()));
+      const upToDate = k.stamp === round - 1;
       k.stamp = round;
-      const keys = c.keys, frags = c.frags, last = k.last;
       if (k.ver !== c.staticVer || k.shape !== c.shape) {
         // first sight, static change or new field layout: everything
         k.ver = c.staticVer;
         k.shape = c.shape;
-        last.length = keys.length;
-        let s = c.idFrag;
-        for (let i = 0; i < keys.length; i++) {
-          last[i] = frags[i];
-          s += `,${frags[i]}`;
-        }
-        parts.push(`${s}${c.staticFrag}}`);
-        continue;
+        parts.push(`${c.full}${c.staticFrag}}`);
+      } else if (!upToDate || (round + e.id) % FULL_EVERY === 0) {
+        parts.push(`${c.full}}`);
+      } else if (c.delta !== null) {
+        parts.push(c.delta);
       }
-      const all = (round + e.id) % FULL_EVERY === 0;
-      let s = null;
-      for (let i = 0; i < keys.length; i++) {
-        const f = frags[i];
-        if (!all && last[i] === f) continue;
-        last[i] = f;
-        s = s === null ? `${c.idFrag},${f}` : `${s},${f}`;
-      }
-      if (s !== null) parts.push(`${s}}`);
     }
     for (const [id, k] of known) {
       if (k.stamp !== round) {

@@ -6,12 +6,20 @@
 // `{"t":"batch","m":[msg, msg, …]}` (order preserved; the client unpacks it transparently). Other clients
 // (raw tests, old launchers) get one frame per message, sent immediately, exactly as before.
 
-/** permessage-deflate (RFC 7692) settings for the WebSocketServer. */
-export const PERMESSAGE_DEFLATE = {
+const envInt = (name, def, lo, hi) => {
+  const v = Number.parseInt(process.env[name] ?? '', 10);
+  return Number.isFinite(v) ? Math.max(lo, Math.min(hi, v)) : def;
+};
+
+/**
+ * permessage-deflate (RFC 7692) settings for the WebSocketServer.
+ * WS_COMPRESSION=0 disables it (e.g. when a proxy already compresses), WS_DEFLATE_LEVEL=1..9 tunes it.
+ */
+export const PERMESSAGE_DEFLATE = process.env.WS_COMPRESSION === '0' ? false : {
   threshold: 128,                 // tiny frames (pong, cd…) are not worth a deflate round
   concurrencyLimit: 16,           // zlib jobs in flight (they run on the libuv thread pool)
   serverMaxWindowBits: 14,        // 16 KB sliding window: several snapshots of context, 64 KB of RAM
-  zlibDeflateOptions: { level: 4, memLevel: 7 },
+  zlibDeflateOptions: { level: envInt('WS_DEFLATE_LEVEL', 3, 1, 9), memLevel: 7 },
   clientNoContextTakeover: true,  // client → server messages are tiny; keeps the inflate side cheap
 };
 

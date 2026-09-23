@@ -1,10 +1,33 @@
 // Network transport: a thin wrapper around WebSocket (JSON frames, see shared/protocol.js), or around the
 // offline fake server which speaks exactly the same protocol.
 import { WS_PATH, encode, decode } from '@shared/protocol.js';
+import { observeServerVersion } from './version.js'; // [netcode-perf]
 
 export function serverUrl() {
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${proto}//${location.host}${WS_PATH}`;
+  // [netcode-perf] batch=1: the server coalesces the messages of one tick into one `batch` frame
+  return `${proto}//${location.host}${WS_PATH}?batch=1`;
+}
+
+/**
+ * [netcode-perf] Deliver one decoded server frame: a `batch` { m: [...] } is unpacked in order, so the rest
+ * of the client only ever sees plain messages. auth_ok also feeds the "new version" check.
+ */
+export function dispatchFrame(msg, onMessage) {
+  if (msg.t === 'batch') {
+    if (!Array.isArray(msg.m)) return;
+    for (const m of msg.m) {
+      if (!m || typeof m !== 'object' || typeof m.t !== 'string' || m.t === 'batch') continue;
+      try {
+        dispatchFrame(m, onMessage);
+      } catch (err) {
+        console.error(`[net] message « ${m.t} » :`, err); // one faulty handler must not drop the rest of the batch
+      }
+    }
+    return;
+  }
+  if (msg.t === 'auth_ok') observeServerVersion(msg);
+  onMessage(msg);
 }
 
 /**
@@ -46,7 +69,7 @@ export class Connection {
       ws.onmessage = (ev) => {
         if (this.ws !== ws) return;
         const msg = decode(ev.data);
-        if (msg) this.h.onMessage(msg);
+        if (msg) dispatchFrame(msg, (m) => this.h.onMessage(m)); // [netcode-perf]
       };
       ws.onerror = () => {
         if (!settled) {
