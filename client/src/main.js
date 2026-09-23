@@ -8,7 +8,7 @@ import { URLP, AUTOLOGIN_PASSWORD } from './config.js';
 import { Connection } from './net.js';
 import { GameState, EntityRecord } from './state.js';
 import { createRenderer, createCamera, Environment } from './render/scene.js';
-import { buildTerrain, buildWater, buildMountainRing } from './render/terrain.js';
+import { Graphics } from './render/graphics.js'; // [render-souls]
 import { AssetLibrary } from './render/assets.js';
 import { WorldObjects } from './render/worldObjects.js';
 import { EntityRenderer } from './render/entities.js';
@@ -56,6 +56,7 @@ const state = new GameState();
 if (URLP.tod !== null) state.todFrozen = URLP.tod;
 const audio = new Audio();
 let renderer, scene, camera, env, water, world, entities, effects, labels, orbit, player, targeting, input, collision, assets;
+let gfx; // [render-souls] graphics orchestrator (settings, post-processing, terrain, grass…)
 let fake = null;
 let ping = 0;
 let fps = 60;
@@ -362,6 +363,7 @@ async function boot() {
   scene.name = 'Brumeval';
   camera = createCamera();
   env = new Environment(scene, renderer);
+  gfx = new Graphics({ renderer, scene, camera, env }); // [render-souls]
   labels = new LabelLayer(labelsRoot);
   orbit = new OrbitCamera(camera);
   orbit.setOccluders(generateWorldObjects());
@@ -371,15 +373,13 @@ async function boot() {
   ui.setLoading(0.06, 'Sculpture du terrain…');
   await nextFrame();
   mark('yield');
-  const terrain = buildTerrain();
-  scene.add(terrain.mesh);
-  scene.add(buildMountainRing(terrain.mesh.material));
-  water = buildWater(terrain.heights, terrain.size);
-  scene.add(water.mesh);
+  // [render-souls] chunked PBR terrain, water, grass, HDRIs (terrain data computed in a worker)
+  ({ water } = await gfx.buildWorld((p, text) => ui.setLoading(0.06 + p * 0.06, text)));
   collision = new CollisionWorld();
   mark('terrain');
 
   assets = new AssetLibrary();
+  assets.anisotropy = gfx.anisotropy; // [render-souls]
   ui.setLoading(0.12, 'Chargement des modèles 3D…');
   await assets.loadAll((done, total) => {
     ui.setLoading(0.12 + 0.72 * (done / total), `Chargement des modèles 3D… (${done}/${total})`);
@@ -390,6 +390,7 @@ async function boot() {
   await nextFrame();
   world = new WorldObjects(scene, assets);
   world.build();
+  gfx.attachWorld(world); // [render-souls]
 
   entities = new EntityRenderer({ scene, assets, labels }, state);
   player = new LocalPlayer(collision, send);
@@ -427,6 +428,13 @@ async function boot() {
   window.addEventListener('resize', onResize);
 
   mark('world');
+  // [render-souls] first launch: quick benchmark → initial graphics preset
+  ui.setLoading(0.9, 'Réglage automatique des graphismes…');
+  try {
+    await gfx.autoDetect();
+  } catch (err) {
+    console.info('[render] test de performance impossible', err?.message || err);
+  }
   // pre-compile shaders (world + one instance of every character model) to avoid hitches later
   ui.setLoading(0.93, 'Compilation des shaders…');
   const warm = new THREE.Group();
@@ -438,7 +446,7 @@ async function boot() {
     warmInst.push(inst);
   }
   scene.add(warm);
-  env.update(state.tod, new THREE.Vector3(), camera, 0);
+  gfx.update(0.016, 0, state.tod, new THREE.Vector3(), null); // [render-souls]
   try {
     await renderer.compileAsync(scene, camera);
   } catch {
@@ -484,6 +492,7 @@ async function boot() {
 function onResize() {
   const w = window.innerWidth, h = window.innerHeight;
   renderer.setSize(w, h, false);
+  gfx.resize(); // [render-souls] post-processing targets (dynamic resolution)
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
   labels.resize(w, h);
@@ -504,6 +513,7 @@ let miniAcc = 0, statusAcc = 0, pingAcc = 1.5, zoneAcc = 0;
 let simTime = 0;
 
 function frame(ts) {
+  if (gfx.skipFrame(ts)) return; // [render-souls] FPS limit
   timer.update(ts);
   step(Math.min(timer.getDelta(), 0.1), performance.now());
 }
@@ -520,7 +530,7 @@ function step(dt, now) {
     fps = Math.round(fpsFrames / fpsAcc);
     fpsFrames = 0;
     fpsAcc = 0;
-    if (fps < 30 && renderer.getPixelRatio() > 1) {
+    if (fps < 30 && renderer.getPixelRatio() > 1 && !gfx.settings.dynres) { // [render-souls] dynres handles it
       slowAcc += 0.5;
       if (slowAcc > 4) {
         renderer.setPixelRatio(1);
@@ -550,11 +560,10 @@ function step(dt, now) {
   entities.update(dt, now, camera, time);
   if (state.inGame) targeting.syncUi();
   effects.update(dt, time, camera);
-  env.update(state.tod, focus, camera, time);
+  gfx.update(dt, time, state.tod, focus, state.entities); // [render-souls] env, wind, terrain LOD, grass, water
   effects.setAmbient(1 - env.night * 0.72);
-  water.update(time, env);
   world.update(dt, time, focus, env.night, camera.position);
-  renderer.render(scene, camera);
+  gfx.render(time); // [render-souls] HDR post-processing pipeline (or direct rendering)
   labels.update(camera, dt);
 
   // periodic UI feeds
@@ -644,8 +653,9 @@ function exposeDebug() {
     },
     stats() {
       const info = renderer.info;
-      return { fps, calls: info.render.calls, triangles: info.render.triangles, geometries: info.memory.geometries, textures: info.memory.textures, programs: info.programs?.length, entities: state.entities.size };
+      return { fps, calls: info.render.calls, triangles: info.render.triangles, geometries: info.memory.geometries, textures: info.memory.textures, programs: info.programs?.length, entities: state.entities.size, ...gfx.stats() };
     },
+    gfx, // [render-souls]
     offline: null,
   };
 }

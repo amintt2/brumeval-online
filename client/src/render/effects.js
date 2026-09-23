@@ -44,7 +44,8 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 const decalFrag = /* glsl */ `
-vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
+// [render-souls] linear inside the HDR pipeline, sRGB when drawn straight to the screen
+vec3 toSRGB(vec3 c) { return linearToOutputTexel(vec4(max(c, vec3(0.0)), 1.0)).rgb; }
 uniform vec3 uColor;
 uniform float uP;
 uniform float uFade;
@@ -91,7 +92,8 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 const arcFrag = /* glsl */ `
-vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
+// [render-souls] linear inside the HDR pipeline, sRGB when drawn straight to the screen
+vec3 toSRGB(vec3 c) { return linearToOutputTexel(vec4(max(c, vec3(0.0)), 1.0)).rgb; }
 uniform vec3 uColor;
 uniform float uP;
 uniform float uFade;
@@ -113,7 +115,8 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 const pillarFrag = /* glsl */ `
-vec3 toSRGB(vec3 c) { c = max(c, vec3(0.0)); return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c)); }
+// [render-souls] linear inside the HDR pipeline, sRGB when drawn straight to the screen
+vec3 toSRGB(vec3 c) { return linearToOutputTexel(vec4(max(c, vec3(0.0)), 1.0)).rgb; }
 uniform vec3 uColor;
 uniform float uFade;
 uniform float uTime;
