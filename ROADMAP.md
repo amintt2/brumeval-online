@@ -1,8 +1,8 @@
 # Feuille de route — Brumeval Online
 
 > **Vision** : un MMO *soulslike* dans le navigateur et sur ordinateur. Des combats exigeants et lisibles (attaques
-> télégraphiées, esquive, endurance), des boss mémorables, une IA imprévisible, un monde vaste au style inspiré de
-> *Zelda : Breath of the Wild* (couleurs douces, herbe qui ondule au vent), et tout ce qu'on attend d'un MMO :
+> télégraphiées, esquive, endurance), des boss mémorables, une IA imprévisible, un monde vaste en *dark fantasy*
+> inspiré d'*Elden Ring* (matériaux détaillés, lumière dramatique, brume dorée) avec une végétation animée par le vent, et tout ce qu'on attend d'un MMO :
 > groupes, guildes, PvP, artisanat, donjons.
 >
 > Jeu en ligne : **https://brumel.mciut.fr/** — chaque version validée (tests + partie à deux) est poussée sur `main`.
@@ -15,7 +15,7 @@
 | **P0** | **IA plus variée** (jamais deux fois le même comportement), **mobs qui foncent**, **mobs à distance**, **mage et archer trop forts** → rééquilibrage | Cœur du plaisir de jeu, retour direct des joueurs | v0.2 |
 | **P0** | **Combat soulslike** : endurance, roulade d'esquive, attaques ennemies télégraphiées, boss à phases, pénalité de mort récupérable | C'est l'identité du jeu | v0.2 |
 | **P0** | **Optimisation** serveur, réseau et rendu | Prérequis d'une carte plus grande et de plus de joueurs | v0.2 |
-| **P1** | **Style Zelda** : herbe au vent, arbres qui ondulent, ciel/eau/lumière stylisés, **assets plus détaillés** | L'image du jeu | v0.2 (rendu + modèles) |
+| **P1** | **Style dark fantasy à la Elden Ring** : modèles Blender bien plus détaillés (textures PBR, Geometry Nodes), lumière dramatique ; herbe et arbres au vent ; effets visuels rendus dans Blender ; contrôle visuel de chaque modèle (plus de robe qui traverse le corps) | L'image du jeu | v0.2 (rendu + modèles) |
 | **P1** | **Launcher avec mise à jour automatique**, applications **.exe / .dmg / AppImage** (multi-plateforme) + application web installable (PWA) | Diffusion du jeu | v0.2 |
 | **P1** | **Carte plus grande avec plus de contenu** | Durée de vie | v0.3 |
 | **P1** | **Groupes** (partage d'XP et de butin), **guildes**, **PvP** | Le « M » de MMO | v0.3 |
@@ -52,7 +52,7 @@
 
 ## 3. Organisation du travail
 
-Chaque vague est lancée en parallèle par une équipe d'agents IA. Chaque agent a sa **propre copie git** (worktree) et sa **branche** `waveN/<agent>`. Un agent de fusion rassemble les branches, puis une équipe de revue (sécurité, gameplay, performances) teste et corrige. Si tout passe, la version est publiée sur `main` (déploiement automatique).
+Chaque vague est lancée en parallèle par une équipe d'agents IA. Chaque groupe de modèles passe par : création → contrôle visuel par un agent « directeur artistique » → corrections. Chaque agent a sa **propre copie git** (worktree) et sa **branche** `waveN/<agent>`. Un agent de fusion rassemble les branches, puis une équipe de revue (sécurité, gameplay, performances) teste et corrige. Si tout passe, la version est publiée sur `main` (déploiement automatique).
 
 ### Vague 1 → v0.2 « Fondations & Âme »
 | Agent | Mission |
@@ -60,7 +60,9 @@ Chaque vague est lancée en parallèle par une équipe d'agents IA. Chaque agent
 | `anticheat` | Anti-triche et sécurité serveur, outils MJ, bannissements, journaux de sécurité |
 | `combat-souls` | Endurance, roulade, sprint, attaques télégraphiées, IA variée et archétypes, boss Golem à phases, équilibrage, échos de mort |
 | `netcode-perf` | Optimisation serveur et réseau, compression, sauvegarde par compte, `/health`, Docker, test de charge |
-| `render-zelda` | Rendu style Zelda (herbe au vent, arbres qui ondulent, ciel, eau, post-traitement), terrain en tuiles, réglages graphiques |
+| `render-souls` | Rendu dark fantasy (éclairage PBR + IBL, ombres en cascade, occlusion ambiante, brouillard volumétrique, rayons de lumière), herbe et arbres au vent, terrain texturé en tuiles, niveaux de détail, effets visuels Blender, réglages graphiques |
+| `blender-kit` | Boîte à outils Blender partagée : matériaux procéduraux en nœuds, Geometry Nodes, cuisson des textures sur GPU, LOD, contrôles qualité automatiques |
+| `lookdev` | Ciels HDR pour l'éclairage, textures de sol, effets visuels (feu, fumée, magie, entailles…) rendus dans Blender |
 | `launcher` | Launcher Electron avec mise à jour automatique, builds .exe/.dmg/AppImage via GitHub Actions, PWA |
 | `assets-nature` | Végétation et roches détaillées, variantes par biome |
 | `assets-town` | Bâtiments détaillés, taverne, forge, alchimie, moulin, pierre de téléportation, porte de donjon… |
@@ -79,8 +81,10 @@ Chaque vague est lancée en parallèle par une équipe d'agents IA. Chaque agent
 *(section en anglais : c'est la spécification que lisent les agents)*
 
 ### 4.1 Git & collaboration
-- You work in your own git worktree. First command: `git switch -c wave1/<your-key>`. Commit often on that branch
-  (`git add -A && git commit -m "..."`); your final state MUST be committed. Never push, never merge, never touch `main`.
+- **Code agents** work in their own git worktree. First command: `git switch -c wave1/<your-key>`. Commit often on that
+  branch (`git add -A && git commit -m "..."`); your final state MUST be committed. Never push, never merge, never touch `main`.
+- **Blender agents** (`blender-kit`, `lookdev`, `assets-*`) work directly in the main checkout, each in its own folder
+  (`assets/blender/<group>/`) and on its own output keys, **without committing** (the merge agent commits the assets).
 - Run `npm install` once at the worktree root (node_modules is not shared between worktrees).
 - Other agents change other parts of the same codebase in parallel. Minimise merge conflicts: put new logic in **new
   files**; in shared hot files (`shared/protocol.js`, `shared/data.js`, `server/src/game.js`, `server/src/net.js`,
@@ -120,13 +124,37 @@ Chaque vague est lancée en parallèle par une équipe d'agents IA. Chaque agent
 - **Security** (`anticheat`): `game.security.flag(player, code, weight, detail)` records a suspicion (other agents may
   call it through optional chaining `game.security?.flag?.(...)`). S2C `kick` `{ msg }` reused for bans.
 
-### 4.4 Rendering conventions (`render-zelda` ↔ asset agents)
+### 4.4 Art direction & rendering conventions (`render-souls` ↔ asset agents)
+**Art direction (updated by the user): dark fantasy inspired by *Elden Ring*** — detailed, believable PBR materials
+(worn stone, weathered wood, rusted/engraved metal, leather, cloth, fur, moss), dramatic atmospheric lighting
+(golden-hour haze, god rays, volumetric fog, deep shadows, bloom on magic), plus the wind-animated grass and trees the
+players asked for. **Not low-poly anymore.** This is still a browser game: detail comes from baked textures (normal,
+roughness, AO) and good shapes, within budgets, with LODs.
 - Materials whose name starts with `Leaf`, `Foliage`, `Grass`, `Cloth` or `Banner` sway in the wind in the client
   (amplitude ∝ height above the model origin). Trunks, stone and metal never sway. Keep foliage in its own material.
-- Zelda-like look: clean silhouettes, soft saturated palette, larger readable shapes, vertex colours allowed (the
-  characters kit uses them), low roughness only for wet/metal surfaces. The client adds toon shading + rim light.
-- Budgets (triangles): instanced vegetation ≤ 1500 (grass tufts are generated by the client, not by Blender); rocks ≤
-  800; buildings ≤ 8000; heroes ≤ 6000; monsters ≤ 5000; bosses ≤ 12000. GLB ≤ 1.5 MB each.
+- glTF PBR only: baseColor + normal + ORM (occlusion/roughness/metallic) + emissive, textures exported as WebP.
+  Leaves/grass/hair cards use alpha MASK. Procedural shader nodes are **baked** to these textures (glTF cannot carry
+  node graphs).
+- Budgets (LOD0 triangles / texture size / GLB size): heroes & humanoid monsters 8–15 k / 2048 / ≤ 4 MB; beasts 6–15 k /
+  2048 / ≤ 4 MB; bosses 20–40 k / 2048 / ≤ 8 MB; buildings 5–20 k / 1024–2048 / ≤ 5 MB; rocks & props 1–5 k / 1024 /
+  ≤ 2 MB; instanced vegetation 2–6 k / 1024 atlas / ≤ 2 MB. Static environment models also export
+  `<key>_lod1.glb` (~30 %) and `<key>_lod2.glb` (~8 %, or an impostor card for trees) next to `<key>.glb`.
+- Shared look-dev outputs: `client/public/env/` (sky HDRIs for image-based lighting), `client/public/textures/terrain/`
+  (tileable PBR ground sets), `client/public/vfx/` (flipbook atlases + `manifest.json`).
+
+### 4.6 Blender pipeline rules (all asset agents — see docs/PIPELINE_BLENDER.md)
+- Use the shared kit `assets/blender/kit/` (procedural shader-node materials, Geometry Nodes builders, baking, LODs,
+  QA renders). **Use nodes as much as possible**: Geometry Nodes for scattering (leaves, moss, pebbles, rivets, bricks,
+  roof tiles, planks, fur cards), curves (branches, roots, ropes, chains, tails), displacement and wear; shader nodes
+  for every material, then bake.
+- **Continuous, clean meshes**: no loose floating triangles, no holes, no inverted normals, no z-fighting, no
+  interpenetrating shells visible from outside, manifold where it matters. Characters: one continuous body mesh +
+  clothing meshes with **smooth skin weights** (automatic/proximity weights, not rigid per part); body geometry hidden
+  under clothing is deleted or shrunk so **nothing pokes through in any animation frame** (e.g. the v0.1 mage robe
+  was made of separate triangles and the legs went through it — never again).
+- Mandatory QA before finishing a model: turntable sheet (8 angles), wireframe overlay, face-orientation (normals)
+  check, UV checker, and pose sheets of every clip at several frames; automated checks from the kit (loose parts,
+  non-manifold edges, flipped normals, body-through-cloth penetration per frame, bbox, texture sizes, GLB size).
 
 ### 4.5 Asset keys produced in wave 1 (wired into the game in wave 2 unless noted)
 Clips: heroes `Idle Walk Attack Cast Hit Death` + **`Roll`** (0.55 s forward roll, ends standing) — used in v0.2.
