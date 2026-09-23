@@ -1,5 +1,6 @@
 """Build a local, dependency-free gallery of the inspected angles and critiques."""
-import json
+import json, hashlib
+from PIL import Image
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 OUT=HERE/'previews'
@@ -18,3 +19,14 @@ function move(n){i=(i+n+groups[g].images.length)%groups[g].images.length;before=
 (OUT/'review.html').write_text(html,encoding='utf-8')
 assert sum(len(g['images']) for g in data)==23
 print('Gallery: 23 views, six scenes, before/after links verified')
+
+checks=[]
+for path in sorted((OUT/'angles').glob('*.webp')):
+    im=Image.open(path);im.load()
+    assert im.size==(960,640),(path.name,im.size)
+    extrema=im.convert('RGB').getextrema()
+    assert max(v[1] for v in extrema)>0,path.name
+    checks.append(dict(file=path.name,size=im.size,extrema=extrema,sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
+assert len(checks)==23
+(OUT/'angles/capture-check.json').write_text(json.dumps(checks,indent=2)+'\n',encoding='utf-8')
+print('PASS: 23 decoded 960x640 nonblank captures with SHA-256')
