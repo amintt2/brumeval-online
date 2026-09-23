@@ -1,0 +1,445 @@
+{
+ "errors": [
+  "songes : boss « La Tisseuse des Saules » posé dans sable_rouge",
+  "avant-poste poste_cendres : pente moyenne 38° sur 15 m (> 12°) → proposé (1010, -1530)",
+  "camp pilotis_brumenoire « Pilotis de Brumenoire » dans l'eau (prof. 0.7 m) → proposé (1128, -842)",
+  "pierre wp_entaille « Pont de l'Entaille » dans l'eau (prof. 1.6 m) → proposé (-1420, -760)",
+  "pierre wp_delta « Delta de la Brumeuse » dans l'eau (prof. 0.5 m) → proposé (1627, -293)",
+  "donjon tombeau_sables « Tombeau des Sables » dans l'eau (prof. 0.8 m) → proposé (-1693, 1067)",
+  "donjon temple_englouti « Temple englouti » dans l'eau (prof. 4.1 m) → proposé (-658, 843)",
+  "lieu:grotte so_temple « Temple englouti » dans l'eau (prof. 4.1 m) → proposé (-658, 843)",
+  "lieu:belvedere so_ponton « Ponton des Brumes » dans l'eau (prof. 1.6 m) → proposé (-400, 700)",
+  "lieu:arene so_saules : région déclarée songes, carte = sable_rouge",
+  "lieu:belvedere sy_aiguille : région déclarée sylve, carte = givreval",
+  "lieu:source ca_bassin : région déclarée coeur_aldmar, carte = aldmar",
+  "lieu:repere rc_gorge : région déclarée rougecrete, carte = entaille",
+  "lieu:arene en_gardien « Seuil du Gardien » dans l'eau (prof. 1.3 m) → proposé (-1471, -1146)",
+  "lieu:repere az_palmes : région déclarée azurine, carte = port_salin",
+  "lieu:arene gi_cirque « Cirque du Géant » dans l'eau (prof. 3.7 m) → proposé (-1562, -1922)",
+  "donjon temple_englouti « Temple englouti » inaccessible à pied depuis Brumeval",
+  "lieu:grotte so_temple « Temple englouti » inaccessible à pied depuis Brumeval",
+  "lieu:source sr_mirages « Oasis des Mirages » inaccessible à pied depuis Brumeval",
+  "lieu:belvedere sr_enclumes « Les Trois Enclumes » inaccessible à pied depuis Brumeval",
+  "lieu:belvedere sr_sentinelle « Sentinelle Rouge » inaccessible à pied depuis Brumeval",
+  "lieu:source sr_palmes « Puits des Palmes » inaccessible à pied depuis Brumeval",
+  "lieu:epave ep_epave « Épave géante » inaccessible à pied depuis Brumeval",
+  "lieu:repere gi_lac « Lac Glacé » inaccessible à pied depuis Brumeval"
+ ],
+ "warnings": [
+  "id partagé brumeval (region / town)",
+  "id partagé port_salin (region / town)",
+  "camp sanctuaire_veilleuse : pente moyenne 25° sur 15 m (> 12°) → proposé (-95, -1135)",
+  "camp fort_couchant : pente moyenne 12° sur 15 m (> 12°) → proposé (-1567, -707)",
+  "camp camp_grandes_portes : pente moyenne 21° sur 15 m (> 12°) → proposé (0, -1250)",
+  "lieu:arene so_saules : pente moyenne 12° sur 15 m (> 12°) → proposé (-880, 710)",
+  "lieu:arene sr_creux : pente moyenne 16° sur 15 m (> 12°) → proposé (-1479, 1001)",
+  "lieu:arene em_aire : pente moyenne 35° sur 15 m (> 12°) → proposé (1988, -1361)",
+  "lieu:arene az_corail : pente moyenne 13° sur 15 m (> 12°) → proposé (1272, 1391)",
+  "lieu:arene gi_cirque : pente moyenne 24° sur 15 m (> 12°) → proposé (-1562, -1922)",
+  "lieu:arene cb_cratere : pente moyenne 57° sur 15 m (> 12°)",
+  "4.9 % des terres à plus de 700 m d'une pierre (pire : 1126 m)"
+ ],
+ "info": {
+  "brumillons": 240,
+  "hubTimes": {
+   "brumeval": {
+    "brumeval": 0,
+    "port_salin": 3.2,
+    "ambresable": 3.9,
+    "rochegivre": 6.7,
+    "clairsaule": 6.3
+   },
+   "port_salin": {
+    "brumeval": 3.3,
+    "port_salin": 0,
+    "ambresable": 6.1,
+    "rochegivre": 10,
+    "clairsaule": 8.3
+   },
+   "ambresable": {
+    "brumeval": 3.9,
+    "port_salin": 6,
+    "ambresable": 0,
+    "rochegivre": 6.9,
+    "clairsaule": 9.1
+   },
+   "rochegivre": {
+    "brumeval": 6.2,
+    "port_salin": 9.3,
+    "ambresable": 6.3,
+    "rochegivre": 0,
+    "clairsaule": 5.6
+   },
+   "clairsaule": {
+    "brumeval": 6.2,
+    "port_salin": 8,
+    "ambresable": 8.9,
+    "rochegivre": 5.9,
+    "clairsaule": 0
+   }
+  },
+  "waypointCoverage": {
+   "landFartherThan700mPct": 4.9,
+   "worstDistanceM": 1126
+  },
+  "levelCurve": [
+   {
+    "id": "brumeval",
+    "levels": [
+     1,
+     10
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 1.1
+   },
+   {
+    "id": "mordore",
+    "levels": [
+     5,
+     12
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 3.3
+   },
+   {
+    "id": "songes",
+    "levels": [
+     6,
+     12
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 2.9
+   },
+   {
+    "id": "ventfauve",
+    "levels": [
+     8,
+     14
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 2.7
+   },
+   {
+    "id": "port_salin",
+    "levels": [
+     8,
+     14
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 2.8
+   },
+   {
+    "id": "sylve",
+    "levels": [
+     10,
+     16
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 6.3
+   },
+   {
+    "id": "arbre",
+    "levels": [
+     12,
+     18
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 3.6
+   },
+   {
+    "id": "azurine",
+    "levels": [
+     12,
+     18
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 4.7
+   },
+   {
+    "id": "egares",
+    "levels": [
+     14,
+     18
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 6.2
+   },
+   {
+    "id": "brumenoire",
+    "levels": [
+     15,
+     20
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 4.7
+   },
+   {
+    "id": "sable_rouge",
+    "levels": [
+     15,
+     22
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 5.1
+   },
+   {
+    "id": "rougecrete",
+    "levels": [
+     16,
+     22
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 6.9
+   },
+   {
+    "id": "entaille",
+    "levels": [
+     18,
+     22
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 6
+   },
+   {
+    "id": "embruns",
+    "levels": [
+     18,
+     24
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 7.9
+   },
+   {
+    "id": "epave",
+    "levels": [
+     19,
+     24
+    ],
+    "danger": "rouge",
+    "walkMinFromBrumeval": 7.3
+   },
+   {
+    "id": "givreval",
+    "levels": [
+     20,
+     25
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 8.1
+   },
+   {
+    "id": "mer_dunes",
+    "levels": [
+     22,
+     28
+    ],
+    "danger": "rouge",
+    "walkMinFromBrumeval": 6.5
+   },
+   {
+    "id": "cendres",
+    "levels": [
+     22,
+     26
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 8.3
+   },
+   {
+    "id": "aldmar",
+    "levels": [
+     24,
+     28
+    ],
+    "danger": "jaune",
+    "walkMinFromBrumeval": 3.6
+   },
+   {
+    "id": "couronne",
+    "levels": [
+     25,
+     30
+    ],
+    "danger": "rouge",
+    "walkMinFromBrumeval": 10
+   },
+   {
+    "id": "coeur_brasier",
+    "levels": [
+     26,
+     30
+    ],
+    "danger": "rouge",
+    "walkMinFromBrumeval": 9
+   },
+   {
+    "id": "coeur_aldmar",
+    "levels": [
+     27,
+     30
+    ],
+    "danger": "rouge",
+    "walkMinFromBrumeval": 4.1
+   }
+  ],
+  "levelDistanceSpearman": 0.77,
+  "levelJumps": [
+   "sylve (10–16) ↔ givreval (20–25) : +10",
+   "sylve (10–16) ↔ cendres (22–26) : +12",
+   "coeur_aldmar (27–30) ↔ sylve (10–16) : +17",
+   "aldmar (24–28) ↔ sylve (10–16) : +14",
+   "mordore (5–12) ↔ givreval (20–25) : +15",
+   "arbre (12–18) ↔ aldmar (24–28) : +12",
+   "mordore (5–12) ↔ rougecrete (16–22) : +11",
+   "aldmar (24–28) ↔ mordore (5–12) : +19",
+   "coeur_aldmar (27–30) ↔ ventfauve (8–14) : +19",
+   "aldmar (24–28) ↔ ventfauve (8–14) : +16",
+   "aldmar (24–28) ↔ brumeval (1–10) : +23",
+   "arbre (12–18) ↔ brumeval (1–10) : +11",
+   "mordore (5–12) ↔ sable_rouge (15–22) : +10",
+   "sable_rouge (15–22) ↔ songes (6–12) : +9"
+  ]
+ },
+ "reachFromBrumevalMin": {
+  "brumeval": 0,
+  "port_salin": 3.2,
+  "ambresable": 3.9,
+  "rochegivre": 6.7,
+  "clairsaule": 6.3,
+  "relais_mordore": 2.7,
+  "poste_cendres": 6,
+  "phare": 8,
+  "sanctuaire_veilleuse": 3.3,
+  "hameau_saules": 2,
+  "pilotis_brumenoire": 4.5,
+  "fort_couchant": 5.7,
+  "camp_grandes_portes": 3.7,
+  "wp_brumeval": 0,
+  "wp_mordore": 2.6,
+  "wp_gue_argentine": 3.9,
+  "wp_porte_aldmar": 2.3,
+  "wp_arbre": 3.3,
+  "wp_lisiere": 5.1,
+  "wp_clairsaule": 6.3,
+  "wp_col_loup": 5.7,
+  "wp_rochegivre": 6.6,
+  "wp_lac_glace": 8.3,
+  "wp_blanchecorne": 8.5,
+  "wp_table": 6.8,
+  "wp_entaille": 5.4,
+  "wp_ambresable": 3.9,
+  "wp_mirages": 5.5,
+  "wp_songes": 1.8,
+  "wp_anse": 3.7,
+  "wp_port_salin": 3.2,
+  "wp_palmes": 4.3,
+  "wp_azurine": 6.4,
+  "wp_ventfauve": 2.7,
+  "wp_brumenoire": 4.6,
+  "wp_delta": 4.9,
+  "wp_phare": 7.8,
+  "wp_cendres": 5.8,
+  "wp_brasier": 7.3,
+  "crypte_aldmar": 4,
+  "grotte_gelee": 8.4,
+  "forge_brasier": 8.9,
+  "tombeau_sables": 6.1,
+  "antre_sorciere": 5.2,
+  "grotte_marees": 7.5,
+  "mines_rougecrete": 6.4,
+  "antre_golem": 0.5,
+  "mine_cuivrefond": 2,
+  "temple_englouti": null,
+  "racines_arbre": 4,
+  "vb_village": 0,
+  "vb_camp_gobelin": 0.3,
+  "vb_cimetiere": 0.3,
+  "vb_foret_murmures": 0.2,
+  "vb_moulin": 0.9,
+  "vb_tour_guet": 1.2,
+  "vb_stele": 1.3,
+  "vb_mine": 2,
+  "mo_menhirs": 3.2,
+  "mo_meules": 2.7,
+  "mo_digue": 3,
+  "mo_hure": 1.8,
+  "mo_guet": 5.3,
+  "so_temple": null,
+  "so_anse": 3.7,
+  "so_ponton": 2.4,
+  "so_saules": 3.5,
+  "ps_port": 3.2,
+  "ps_falaises": 3.2,
+  "ps_crique": 3.5,
+  "ps_embouchure": 3.5,
+  "ps_tour": 2.1,
+  "ve_grande_stele": 2.3,
+  "ve_colosse": 2.7,
+  "ve_caveau": 3.2,
+  "ve_rampe": 2.1,
+  "sy_souche": 5,
+  "sy_lucioles": 5.4,
+  "sy_croc": 5.6,
+  "sy_tisseuse": 7.4,
+  "sy_aiguille": 9.1,
+  "ar_arbre": 3.7,
+  "ar_escalier": 2.5,
+  "ar_racines": 4,
+  "al_remparts": 3.9,
+  "al_tour": 4.3,
+  "al_porte_est": 3.2,
+  "ca_portes": 3.8,
+  "ca_bassin": 3.6,
+  "ca_arene": 4.2,
+  "eg_lanternes": 5.5,
+  "eg_coeur": 6,
+  "eg_dame": 6.1,
+  "br_antre": 5.2,
+  "br_mares": 4.2,
+  "br_passerelles": 5.5,
+  "br_noyeur": 4.1,
+  "br_delta": 4.9,
+  "sr_ville": 3.9,
+  "sr_mirages": null,
+  "sr_enclumes": null,
+  "sr_colonne": 5.1,
+  "sr_sentinelle": null,
+  "sr_miroirs": 4.7,
+  "sr_palmes": null,
+  "sr_creux": 5.5,
+  "sr_palais": 5.5,
+  "md_squelette": 6.7,
+  "md_tour_sel": 6,
+  "rc_table": 6.7,
+  "rc_tour": 7.8,
+  "rc_repaire": 6.7,
+  "rc_gorge": 4.9,
+  "en_pont": 5.4,
+  "en_chutes": 5,
+  "en_fresques": 6,
+  "en_gardien": 6.1,
+  "em_phare": 8,
+  "em_ecumeur": 8.8,
+  "em_breche": 6.9,
+  "em_aire": 8.1,
+  "az_palmes": 4.3,
+  "az_chaussee": 5.4,
+  "az_ile": 6.5,
+  "az_corail": 7.2,
+  "az_ilot": 7.1,
+  "ep_epave": null,
+  "ep_passe": 7.5,
+  "gi_col": 5.8,
+  "gi_lac": null,
+  "gi_cirque": 7.8,
+  "gi_blanchecorne": 8.5,
+  "gi_dent": 8.3,
+  "co_givrecime": 9.7,
+  "co_glacier": 10.2,
+  "ce_col": 6.9,
+  "ce_fumerolles": 5.9,
+  "ce_plage": 9.3,
+  "ce_suie": 8.8,
+  "cb_cratere": 8.9
+ }
+}

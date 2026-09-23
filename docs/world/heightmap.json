@@ -1,0 +1,35 @@
+{
+  "format": "PNG 16-bit grayscale, row-major, row 0 = north (z0)",
+  "width": 1025,
+  "height": 1025,
+  "metresPerSample": 4.5,
+  "x0": -2304,
+  "z0": -2808,
+  "x1": 2304,
+  "z1": 1800,
+  "decode": "height_m = value * 0.01 - 60",
+  "seaLevel": 0,
+  "minHeight": -45,
+  "maxHeight": 574.08,
+  "playable": {
+    "x0": -2048,
+    "x1": 2048,
+    "z0": -2560,
+    "z1": 1536
+  },
+  "brumevalSample": [
+    512,
+    624
+  ],
+  "legacy": {
+    "square": [
+      -180,
+      180
+    ],
+    "keepExact": 170,
+    "blendTo": 450,
+    "lift": 45,
+    "rule": "w = 1 - smoothstep(170, 450, max(|x|, |z|, 0.8*hypot(x,z))); height = lerp(heightmap, legacyHeight(x,z) + 45, w). Inside |x|,|z| <= 160 (the old WORLD_LIMIT) w >= 0.99."
+  },
+  "generator": "docs/world/tools/gen_world.mjs (deterministic, seed 7331)"
+}
