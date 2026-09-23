@@ -87,7 +87,10 @@ test('max 5 connections per IP (behind a trusted proxy); loopback exempt; IP ban
     again.sendJson({ t: 'ping', c: 2 });
     await again.waitFor((m) => m.t === 'pong');
     for (let i = 0; i < 8; i++) await c({});   // no X-Forwarded-For: 127.0.0.1, exempt
+    const early = await c({ ip: '198.51.100.66' }); // connected before the ban
     srv.security.bans.banIp('198.51.100.66', { durationMs: 3_600_000, reason: 'robot', author: 'test' });
+    const late = await early.auth({ t: 'register', name: 'Robot', password: 'motdepasse', cls: 'mage' });
+    assert.equal(late.code, 'banned');
     const banned = await c({ ip: '198.51.100.66' });
     assert.equal(await banned.closed, 4000);
     assert.match(banned.msgs[0].msg, /Votre adresse est bannie encore 1 h\. Raison : robot\./);

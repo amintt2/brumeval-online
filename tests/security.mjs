@@ -236,8 +236,15 @@ async function main() {
   const refused = await C3.login('Tricheur', PASSWORD);
   ok(refused.code === 'banned' && /encore/.test(refused.msg), `connexion refusée pendant le bannissement (« ${refused.msg} »)`);
 
-  const A = await newBot('Admin');
-  ok((await A.register('Gardien', PASSWORD, 'warrior')).t === 'auth_ok', 'administrateur (ADMIN_NAMES) connecté');
+  const A0 = await newBot('Admin');
+  ok((await A0.register('Gardien', PASSWORD, 'warrior')).code === 'bad_name', 'un nom de ADMIN_NAMES encore libre ne peut pas être créé');
+  sec().cfg.adminNames.length = 0; // the owner creates the account first, then lists it in ADMIN_NAMES
+  ok((await A0.register('Gardien', PASSWORD, 'warrior')).t === 'auth_ok', "compte de l'administrateur créé");
+  sec().cfg.adminNames.push('gardien');
+  await A0.close();
+  await sleep(200);
+  const A = await newBot('Admin 2');
+  ok((await A.login('Gardien', PASSWORD)).t === 'auth_ok', 'administrateur (ADMIN_NAMES) connecté');
   from = A.mark();
   A.send({ t: 'chat', text: '/inspect Tricheur' });
   const insp = await A.waitType('chat', (m) => m.ch === 'system' && m.text.startsWith('Suspicion'), { from });

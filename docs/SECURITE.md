@@ -164,7 +164,9 @@ s'applique. **Tout module qui déplace un joueur côté serveur doit appeler `p.
 
 **Rôles** :
 - **administrateur** : noms listés dans `ADMIN_NAMES` (séparés par des virgules, insensibles à la casse), ou
-  rôle `admin` enregistré sur le compte ;
+  rôle `admin` enregistré sur le compte. **Créez d'abord le compte, puis ajoutez son nom à `ADMIN_NAMES`** :
+  un nom listé qui n'existe pas encore ne peut pas être créé (personne ne peut « réserver » un nom
+  d'administrateur libre) ;
 - **maître du jeu (MJ)** : rôle `gm` enregistré sur le compte, donné par un administrateur avec `/role`.
 
 Un joueur sans rôle qui tape une commande de modération reçoit exactement « Commande inconnue », comme pour une

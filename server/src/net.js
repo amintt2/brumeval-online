@@ -168,8 +168,11 @@ class Session {
     const { store, game } = this.ctx;
     const sec = this.security;
     const { name, password, cls } = msg;
+    const ipBan = sec.ipBan(this.ip); // banned while this connection was already open
+    if (ipBan) return this.authErr('banned', sec.banMessage(ipBan));
     if (!validName(name)) return this.authErr('bad_name');
-    const problem = nameProblem(name);
+    // names listed in ADMIN_NAMES can only be created before being listed (nobody can grab a free admin name)
+    const problem = sec.cfg.adminNames.includes(nameKey(name)) ? 'reserved' : nameProblem(name);
     if (problem) {
       sec.seclog.write({ type: 'auth', result: 'name_refused', name, why: problem, ip: this.ip });
       return this.authErr('bad_name', NAME_PROBLEM_MESSAGES[problem]);
@@ -201,6 +204,8 @@ class Session {
     if (typeof name !== 'string' || typeof password !== 'string' || name.length > 64 || password.length > 256) {
       return this.authErr('bad_request');
     }
+    const ipBan = sec.ipBan(this.ip); // banned while this connection was already open
+    if (ipBan) return this.authErr('banned', sec.banMessage(ipBan));
     const wait = sec.loginBlockedFor(this.ip, name);
     if (wait > 0) {
       sec.loginRefusedWhileBlocked(this, name);
@@ -234,7 +239,7 @@ class Session {
     this.send({ t: S2C.AUTH_OK, id: p.id, self: p.selfState(), tod: game.tod(), online: game.players.size, motd: MOTD });
     log.info(`+ ${p.name} (${CLASSES[p.cls].name} niv. ${p.level}) connecté — ${game.players.size} en ligne`);
     const role = this.security.roleOf(p);
-    if (role !== 'player') game.systemChat(`Vous êtes connecté en tant que ${role === 'admin' ? 'administrateur' : 'maître du jeu'}. Tapez /mj pour les commandes.`, { to: p });
+    if (role !== 'player') game.systemChat(`Vous êtes connecté en tant ${role === 'admin' ? 'qu\'administrateur' : 'que maître du jeu'}. Tapez /mj pour les commandes.`, { to: p });
   }
 
   onClose() {
