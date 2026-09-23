@@ -254,6 +254,9 @@ export class Graphics {
   /** Per frame, before render(): environment, wind, terrain LODs, grass, water, post parameters. */
   update(dt, time, tod, focus, entities) {
     const env = this.env;
+    // a page opened in a 0 × 0 viewport (background / hidden tab) may never get a resize event once it has a size:
+    // re-run the app's resize handler so the camera, labels and post targets pick up the real size
+    if (!(this.camera.aspect > 0) && window.innerWidth > 0 && window.innerHeight > 0) window.dispatchEvent(new Event('resize'));
     env.update(tod, focus, this.camera, time, dt);
     updateWind(dt, time, this._collectBenders(focus, entities));
     const cam = this.camera.position;

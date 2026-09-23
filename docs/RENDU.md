@@ -182,6 +182,11 @@ directions de caméra, résolution dynamique désactivée, décor v0.1. Temps GP
 - Objectif « < 300 appels de dessin dans le village » : tenu dans tous les préréglages (passes d'ombres et de
   post-traitement comprises). Leviers : tuiles d'herbe de 24 m, tuiles de décor de 96 m, fusion des matériaux,
   petits objets hors des cascades lointaines, cascades lointaines rafraîchies moins souvent.
+  Les cascades lointaines sont déphasées : jamais deux d'entre elles ne sont redessinées dans la même image, donc
+  l'image la plus chère reste proche de la moyenne (contrôle en mode hors ligne au village, 1536 × 864, 4 directions,
+  pire image : Bas 78, Moyen 241, Élevé 251 appels ; Ultra 278 en ligne avec 27 personnages).
+- Page ouverte dans un onglet de taille 0 × 0 (onglet en arrière-plan) : le rendu reprend la vraie taille dès qu'elle
+  existe (sinon le rapport largeur/hauteur NaN désactivait l'élimination des ombres : plus de 480 appels).
 - Mémoire : 40 à 75 textures GPU selon le préréglage, stable après des centaines d'effets (aucune fuite de
   géométrie, de texture ou de programme ; pools de taille fixe) ; la copie CPU des tableaux de textures du terrain
   est libérée après l'envoi au GPU.

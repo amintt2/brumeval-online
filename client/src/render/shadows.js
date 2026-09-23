@@ -89,11 +89,15 @@ export function installCascadeChunk() {
   return true;
 }
 
-/** Cascade layouts per shadow quality: [split distances (fraction of maxDist)], map size, update periods. */
+/**
+ * Cascade layouts per shadow quality: [split distances (fraction of maxDist)], map size, update periods and phases.
+ * Phases are chosen so that at most one staggered (far) cascade is re-rendered in any frame: this keeps the worst
+ * frame's draw-call count close to the average one.
+ */
 const LAYOUTS = {
-  1: { splits: [0.2, 1], size: 1024, every: [1, 2] },
-  2: { splits: [0.1, 0.34, 1], size: 2048, every: [1, 2, 3] },
-  3: { splits: [0.06, 0.18, 0.45, 1], size: 2048, every: [1, 1, 2, 4] },
+  1: { splits: [0.2, 1], size: 1024, every: [1, 2], phase: [0, 1] },
+  2: { splits: [0.1, 0.34, 1], size: 2048, every: [1, 2, 2], phase: [0, 1, 0] },
+  3: { splits: [0.06, 0.18, 0.45, 1], size: 2048, every: [1, 2, 4, 4], phase: [0, 1, 0, 2] },
 };
 
 const _fwd = new THREE.Vector3();
@@ -154,7 +158,7 @@ export class CascadedShadows {
       }
       this.scene.add(L, L.target);
       this.lights.push(L);
-      this.cascades.push({ near: 0, far: 0, center: 0, radius: 1, every: layout ? layout.every[i] : 1 });
+      this.cascades.push({ near: 0, far: 0, center: 0, radius: 1, every: layout ? layout.every[i] : 1, phase: layout ? layout.phase[i] : 0 });
     }
     this.renderer.shadowMap.enabled = !!layout;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -166,7 +170,10 @@ export class CascadedShadows {
     const layout = LAYOUTS[this.level];
     if (!layout) return;
     const tanY = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
-    const tanX = tanY * camera.aspect;
+    // a page opened in a 0 × 0 (hidden) viewport has a NaN aspect until the first resize: NaN cascades would disable
+    // shadow-camera culling (every caster drawn into every cascade)
+    const aspect = Number.isFinite(camera.aspect) && camera.aspect > 0 ? camera.aspect : 16 / 9;
+    const tanX = tanY * aspect;
     const k2 = tanX * tanX + tanY * tanY;
     let near = camera.near;
     layout.splits.forEach((f, i) => {
@@ -214,7 +221,7 @@ export class CascadedShadows {
       L.target.updateMatrixWorld();
       return;
     }
-    if (camera.aspect !== this._aspect || camera.fov !== this._fov) this._splits(camera);
+    if (!Object.is(camera.aspect, this._aspect) || camera.fov !== this._fov) this._splits(camera);
     camera.getWorldDirection(_fwd);
     // light basis for texel snapping
     const dir = this.direction;
@@ -226,7 +233,7 @@ export class CascadedShadows {
     for (let i = 0; i < this.lights.length; i++) {
       const cs = this.cascades[i];
       const L = this.lights[i];
-      const due = (this.frame + i) % cs.every === 0 || this._lastDir === undefined || !L.shadow.map;
+      const due = (this.frame + cs.phase) % cs.every === 0 || this._lastDir === undefined || !L.shadow.map;
       if (!due || !enabled) { L.shadow.needsUpdate = false; continue; }
       _c.copy(camera.position).addScaledVector(_fwd, cs.center);
       const t = cs.texel;
