@@ -4,7 +4,9 @@
 // zone (le pire cas : chaque client voit tous les autres).
 //
 //   node tests/load.mjs [--bots 100] [--seconds 60] [--spread 22] [--json resultat.json] [--no-batch]
-//                       [--check]   (code de sortie 1 si les objectifs ne sont pas atteints)
+//                       [--monsters 0]  (monstres supplémentaires dispersés sur toute la carte : monde plus peuplé)
+//                       [--root DIR]    (serveur d'une autre copie du dépôt, pour comparer avant / après)
+//                       [--check]       (code de sortie 1 si les objectifs ne sont pas atteints)
 //
 // Rapport : durée du tick p50/p95/p99/max, CPU du processus serveur, RSS, octets/s reçus par client
 // (sur le fil, donc après compression permessage-deflate, et avant compression), messages/s par client.
@@ -13,7 +15,7 @@ import { fork } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Bot, sleep } from './lib/botClient.mjs';
 
 const argv = process.argv.slice(2);
@@ -32,11 +34,23 @@ const TARGET_KBPS = 20;
 if (flag('server')) {
   const maxPlayers = arg('max', 100);
   process.env.MAX_PLAYERS = String(maxPlayers);
-  const { startServer } = await import('../server/src/index.js');
+  const root = arg('root', null);
+  const fromRoot = (rel) => (root ? pathToFileURL(path.resolve(root, rel)).href : new URL(`../${rel}`, import.meta.url).href);
+  const { startServer } = await import(fromRoot('server/src/index.js'));
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'brumeval-load-'));
-  const srv = await startServer({ port: arg('port', 0), dataDir, staticDir: path.join(dataDir, 'none'), quiet: true });
+  const srv = await startServer({ port: arg('port', 0), dataDir, staticDir: path.join(dataDir, 'none'), quiet: !flag('verbose') });
   // Tick durations measured here (works with any server version): wrap game.tick.
   const game = srv.game;
+  // extra monsters scattered over the whole map, each with a small home zone of its own (a denser world)
+  const { isWalkable, inVillage, WORLD_LIMIT } = await import(fromRoot('shared/world.js'));
+  const types = ['slime', 'wolf', 'goblin', 'skeleton'];
+  let rs = 42;
+  const rnd01 = () => ((rs = (rs * 1103515245 + 12345) % 2147483648) / 2147483648);
+  for (let i = 0; i < arg('monsters', 0); i++) {
+    let x, z;
+    do { x = (rnd01() * 2 - 1) * (WORLD_LIMIT - 10); z = (rnd01() * 2 - 1) * (WORLD_LIMIT - 10); } while (!isWalkable(x, z) || inVillage(x, z) || Math.hypot(x, z) < 45);
+    game.spawnMonster({ id: `charge_${i}`, monster: types[i % types.length], x, z, r: 10, count: 1 });
+  }
   const durations = [];
   const origTick = game.tick.bind(game);
   game.tick = () => {
@@ -81,7 +95,9 @@ if (flag('server')) {
 async function parent() {
   const N = arg('bots', 100), SECONDS = arg('seconds', 60), SPREAD = arg('spread', 22);
   const CENTER = [48, 24]; // Plaines d'Émeraude, en bordure de la zone des gluants
-  const child = fork(fileURLToPath(import.meta.url), ['--server', '--port', String(arg('port', 0)), '--max', String(Math.max(100, N))], {
+  const childArgs = ['--server', '--port', String(arg('port', 0)), '--max', String(Math.max(100, N)), '--monsters', String(arg('monsters', 0))];
+  if (arg('root', null)) childArgs.push('--root', arg('root', null));
+  const child = fork(fileURLToPath(import.meta.url), childArgs, {
     stdio: ['ignore', 'inherit', 'pipe', 'ipc'],
   });
   let stderr = '';
@@ -90,7 +106,7 @@ async function parent() {
   const { port } = await next('ready');
   const url = `ws://127.0.0.1:${port}/ws`;
   const log = (s) => console.log(`[charge] ${s}`);
-  log(`serveur sur le port ${port}, ${N} bots, ${SECONDS} s, foule de rayon ${SPREAD} m autour de (${CENTER})`);
+  log(`serveur sur le port ${port}${arg('root', null) ? ` (copie ${arg('root', null)})` : ''}, ${N} bots, ${SECONDS} s, foule de rayon ${SPREAD} m autour de (${CENTER}), ${arg('monsters', 0)} monstres ajoutés`);
 
   // ---- connect & register (in parallel batches: scrypt is the bottleneck)
   const classes = ['warrior', 'mage', 'ranger'];
@@ -129,11 +145,21 @@ async function parent() {
   const frames0 = bots.map((b) => b.frames);
   const tStart = performance.now();
   const until = tStart + SECONDS * 1000;
-  let stuck = 0, chats = 0, attacks = 0;
+  let stuck = 0, chats = 0, attacks = 0, respawns = 0;
   const run = async (b, i) => {
     await sleep((i * 37) % 1000);
     let lastChat = performance.now() - Math.random() * 10000;
     while (performance.now() < until) {
+      if (b.self?.dead) { // killed by the crowd's monsters: back to the village, then to the crowd again
+        b.send({ t: 'respawn' });
+        await b.waitFor((m) => m.t === 'self' && m.dead === false, { timeout: 3000 }).catch(() => {});
+        respawns++;
+        if (!b.self?.dead) {
+          b.x = b.self.x; b.z = b.self.z;
+          try { await b.walkPath(route, { maxMs: Math.max(100, Math.min(20000, until - performance.now())) }); } catch { /* stuck */ }
+        }
+        continue;
+      }
       const [x, z] = spot();
       try {
         await b.walkTo(x, z, { maxMs: Math.max(100, Math.min(6000, until - performance.now())) });
@@ -175,13 +201,19 @@ async function parent() {
     tick: { n: s.ticks, p50: +s.p50.toFixed(3), p95: +s.p95.toFixed(3), p99: +s.p99.toFixed(3), max: +s.max.toFixed(2), avg: +s.avg.toFixed(3) },
     cpuPct: +s.cpuPct.toFixed(1), rssMB: +(s.rss / 1e6).toFixed(0), heapMB: +(s.heap / 1e6).toFixed(0),
     perClient: { wireKBps: +(wireBps / 1024).toFixed(2), rawKBps: +(rawBps / 1024).toFixed(2), msgPerS: +msgps.toFixed(1), framesPerS: +framesps.toFixed(1) },
-    chats, attacks, corrections, stuck, disconnected: N - alive, serverErrors: s.errors, phases: s.phases,
+    chats, attacks, respawns, corrections, stuck, disconnected: N - alive, serverErrors: s.errors, phases: s.phases,
   };
   log(`joueurs connectés : ${s.players}/${N}, monstres : ${s.monsters}, déconnectés : ${N - alive}`);
+  if (alive < N) {
+    const codes = {};
+    for (const b of bots) if (b.closed) codes[b.closeCode] = (codes[b.closeCode] || 0) + 1;
+    const kicks = new Set(bots.map((b) => b.kickMsg || b.lastError).filter(Boolean));
+    log(`codes de fermeture : ${JSON.stringify(codes)}${kicks.size ? ` — ${[...kicks].join(' | ')}` : ''}`);
+  }
   log(`tick (${s.ticks} mesurés) : p50 ${s.p50.toFixed(2)} ms · p95 ${s.p95.toFixed(2)} ms · p99 ${s.p99.toFixed(2)} ms · max ${s.max.toFixed(1)} ms · moyenne ${s.avg.toFixed(2)} ms`);
   log(`CPU serveur : ${s.cpuPct.toFixed(1)} % d'un cœur · RSS ${(s.rss / 1e6).toFixed(0)} Mo · tas ${(s.heap / 1e6).toFixed(0)} Mo`);
   log(`par client : ${(wireBps / 1024).toFixed(2)} Ko/s sur le fil (${(rawBps / 1024).toFixed(2)} Ko/s avant compression), ${msgps.toFixed(1)} messages/s en ${framesps.toFixed(1)} trames/s`);
-  log(`activité : ${chats} messages de discussion, ${attacks} attaques, ${corrections} corrections, ${stuck} trajets bloqués, ${s.errors} erreurs serveur`);
+  log(`activité : ${chats} messages de discussion, ${attacks} attaques, ${respawns} résurrections, ${corrections} corrections, ${stuck} trajets bloqués, ${s.errors} erreurs serveur`);
   if (s.phases) log(`phases du tick (ms par tick) : ${Object.entries(s.phases).map(([k, v]) => `${k} ${v.msPerTick.toFixed(3)}`).join(' · ')}`);
   const out = arg('json', null);
   if (out) fs.writeFileSync(out, JSON.stringify(result, null, 2));

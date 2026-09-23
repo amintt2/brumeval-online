@@ -33,7 +33,10 @@ export class Bot {
       const ws = new WebSocket(this.url);
       this.ws = ws;
       ws.on('open', () => resolve(this));
-      ws.on('error', (err) => { if (ws.readyState !== WebSocket.OPEN) reject(err); });
+      ws.on('error', (err) => {
+        this.lastError = err.message;
+        if (ws.readyState !== WebSocket.OPEN) reject(err);
+      });
       ws.on('message', (data) => this.onMessage(data));
       ws.on('close', (code) => {
         this.closed = true;
@@ -100,6 +103,9 @@ export class Bot {
         break;
       case 'err':
         this.errors.push(msg);
+        break;
+      case 'kick':
+        this.kickMsg = msg.msg;
         break;
       default:
         break;

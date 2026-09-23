@@ -65,7 +65,13 @@ test('permessage-deflate is negotiated; batch frames only for clients that ask; 
     assert.equal(okP.ver, VERSION);
     assert.equal(okB.build, 'dev', 'no built client in this test');
     await batched.waitFor((m) => m.t === 'snap');
-    await sleep(400);
+    // /help answers with several system lines from one handler: one frame for the batched client
+    batched.send(JSON.stringify({ t: 'chat', text: '/help' }));
+    plain.send(JSON.stringify({ t: 'chat', text: '/help' }));
+    await batched.waitFor((m) => m.t === 'chat' && /Déplacement/.test(m.text));
+    await plain.waitFor((m) => m.t === 'chat' && /Déplacement/.test(m.text));
+    await sleep(300);
+    assert.ok(batched.frames.some((f) => f.t === 'batch' && f.m.filter((m) => m.t === 'chat').length >= 5), 'the 5 help lines share a frame');
     assert.ok(!plain.frames.some((f) => f.t === 'batch'), 'unbatched client never sees batch frames');
     const batches = batched.frames.filter((f) => f.t === 'batch');
     assert.ok(batches.length > 0, 'several messages in one tick are coalesced');
