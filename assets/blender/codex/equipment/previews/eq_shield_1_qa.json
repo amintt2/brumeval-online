@@ -1,0 +1,887 @@
+{
+ "key": "eq_shield_1",
+ "fails": [],
+ "warns": [
+  "eq_shield_1: fragmented UVs (104 islands, 0 of 1-2 faces for 2352 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+  "eq_shield_1: UV coverage only 35% of the texture",
+  "eq_shield_1: UV island border close to a visible offset (score 0.89)",
+  "eq_shield_1: normal(deg) texture SEAM across UV islands p50=2.119 p95=18.873 (same-island edges p50=1.364 p95=9.380); worst near [[0.31, -0.13, -0.0], [0.16, -0.12, 0.28], [0.16, -0.13, 0.28]]"
+ ],
+ "info": {
+  "objects": {
+   "eq_shield_1": {
+    "faces": 2352,
+    "islands": 16,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "uv": {
+   "eq_shield_1": {
+    "islands": 104,
+    "splinter_islands": 0,
+    "coverage": 0.349,
+    "overlap": 0.0,
+    "flipped_tris": 0
+   }
+  },
+  "seams": {
+   "eq_shield_1": {
+    "seam_edges": 714,
+    "worst_at": [
+     [
+      0.31,
+      -0.13,
+      -0.0
+     ],
+     [
+      0.16,
+      -0.12,
+      0.28
+     ],
+     [
+      0.16,
+      -0.13,
+      0.28
+     ],
+     [
+      -0.27,
+      -0.12,
+      -0.15
+     ],
+     [
+      -0.27,
+      -0.12,
+      0.16
+     ],
+     [
+      -0.16,
+      -0.12,
+      -0.26
+     ]
+    ],
+    "island_pairs": 29,
+    "island_offset_worst": [
+     {
+      "lum": 0.0313,
+      "ao": 0.0,
+      "normal_deg": 0.75,
+      "edges": 13,
+      "at": [
+       -0.27,
+       -0.12,
+       -0.23
+      ]
+     },
+     {
+      "lum": 0.024,
+      "ao": 0.0,
+      "normal_deg": 0.0,
+      "edges": 11,
+      "at": [
+       0.3,
+       -0.1,
+       0.16
+      ]
+     },
+     {
+      "lum": 0.0157,
+      "ao": 0.0003,
+      "normal_deg": 0.61,
+      "edges": 8,
+      "at": [
+       -0.05,
+       -0.15,
+       -0.07
+      ]
+     },
+     {
+      "lum": 0.0149,
+      "ao": 0.0,
+      "normal_deg": 0.94,
+      "edges": 11,
+      "at": [
+       0.25,
+       -0.1,
+       -0.21
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0173,
+     "seam_p95": 0.0853,
+     "ref_p50": 0.0116,
+     "ref_p95": 0.0873
+    },
+    "AO": {
+     "seam_p50": 0.0029,
+     "seam_p95": 0.0209,
+     "ref_p50": 0.0022,
+     "ref_p95": 0.0226
+    },
+    "roughness": {
+     "seam_p50": 0.011,
+     "seam_p95": 0.108,
+     "ref_p50": 0.0077,
+     "ref_p95": 0.0829
+    },
+    "metallic": {
+     "seam_p50": 0.0048,
+     "seam_p95": 0.1675,
+     "ref_p50": 0.0013,
+     "ref_p95": 0.1166
+    },
+    "normal(deg)": {
+     "seam_p50": 2.1187,
+     "seam_p95": 18.8732,
+     "ref_p50": 1.3638,
+     "ref_p95": 9.3797
+    }
+   }
+  },
+  "bbox_min": [
+   -0.359,
+   -0.177,
+   -0.359
+  ],
+  "bbox_max": [
+   0.359,
+   0.019,
+   0.359
+  ],
+  "dims": [
+   0.718,
+   0.196,
+   0.718
+  ],
+  "tris": 2352,
+  "textures": {
+   "eq_shield_1_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "eq_shield_1_Main_orm": [
+    1024,
+    1024
+   ],
+   "eq_shield_1_Main_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 323340,
+  "attachment": {
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "long_axis": "Blender +Z / glTF +Y",
+   "front": "Blender -Y / glTF +Z"
+  },
+  "lods": [
+   {
+    "path": "C:\\Users\\amin2\\mmorpg-codex-cx3\\client\\public\\models\\eq_shield_1_lod1.glb",
+    "bytes": 124892,
+    "tris": 750,
+    "textures": {
+     "eq_shield_1_Main_basecolor_lod1": [
+      512,
+      512
+     ],
+     "eq_shield_1_Main_orm_lod1": [
+      512,
+      512
+     ],
+     "eq_shield_1_Main_normal_lod1": [
+      512,
+      512
+     ]
+    },
+    "warnings": [],
+    "ratio": 0.3,
+    "requestedRatio": 0.3,
+    "actualRatio": 0.318878,
+    "sourceTris": 2352,
+    "connectedComponents": 16,
+    "components": [
+     {
+      "sourceTris": 572,
+      "minimumTris": 48,
+      "targetTris": 172,
+      "extent": [
+       0.68,
+       0.045,
+       0.68
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 0,
+      "actualTris": 172,
+      "attempts": [
+       {
+        "ratio": 0.3007,
+        "tris": 172,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.03282
+     },
+     {
+      "sourceTris": 768,
+      "minimumTris": 48,
+      "targetTris": 230,
+      "extent": [
+       0.718,
+       0.038,
+       0.718
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 1,
+      "actualTris": 230,
+      "attempts": [
+       {
+        "ratio": 0.2995,
+        "tris": 230,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.00387
+     },
+     {
+      "sourceTris": 360,
+      "minimumTris": 48,
+      "targetTris": 108,
+      "extent": [
+       0.2,
+       0.12,
+       0.2
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 2,
+      "actualTris": 108,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 108,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.0087
+     },
+     {
+      "sourceTris": 76,
+      "minimumTris": 48,
+      "targetTris": 48,
+      "extent": [
+       0.044,
+       0.102373,
+       0.257829
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 3,
+      "actualTris": 48,
+      "attempts": [
+       {
+        "ratio": 0.6316,
+        "tris": 48,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.01682
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 4,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.07165
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 5,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06954
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 6,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.07165
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 7,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.04842
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 8,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.07165
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 9,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06954
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 10,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.11205
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 11,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06954
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 12,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06267
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 13,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.11283
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 14,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.11791
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 16,
+      "targetTris": 16,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 15,
+      "actualTris": 16,
+      "attempts": [
+       {
+        "ratio": 0.3333,
+        "tris": 16,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06954
+     }
+    ],
+    "policy": "component quotas + 26-direction support checks",
+    "seamWeldDistance": 1e-07
+   },
+   {
+    "path": "C:\\Users\\amin2\\mmorpg-codex-cx3\\client\\public\\models\\eq_shield_1_lod2.glb",
+    "bytes": 38436,
+    "tris": 158,
+    "textures": {
+     "eq_shield_1_Main_basecolor_lod2": [
+      256,
+      256
+     ],
+     "eq_shield_1_Main_orm_lod2": [
+      256,
+      256
+     ],
+     "eq_shield_1_Main_normal_lod2": [
+      256,
+      256
+     ]
+    },
+    "warnings": [],
+    "ratio": 0.08,
+    "requestedRatio": 0.08,
+    "actualRatio": 0.067177,
+    "sourceTris": 2352,
+    "connectedComponents": 16,
+    "components": [
+     {
+      "sourceTris": 572,
+      "minimumTris": 24,
+      "targetTris": 46,
+      "extent": [
+       0.68,
+       0.045,
+       0.68
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 0,
+      "actualTris": 46,
+      "attempts": [
+       {
+        "ratio": 0.0804,
+        "tris": 46,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.0389
+     },
+     {
+      "sourceTris": 768,
+      "minimumTris": 24,
+      "targetTris": 61,
+      "extent": [
+       0.718,
+       0.038,
+       0.718
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 1,
+      "actualTris": 60,
+      "attempts": [
+       {
+        "ratio": 0.0794,
+        "tris": 60,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.03175
+     },
+     {
+      "sourceTris": 360,
+      "minimumTris": 24,
+      "targetTris": 29,
+      "extent": [
+       0.2,
+       0.12,
+       0.2
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 2,
+      "actualTris": 28,
+      "attempts": [
+       {
+        "ratio": 0.0806,
+        "tris": 28,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.04265
+     },
+     {
+      "sourceTris": 76,
+      "minimumTris": 24,
+      "targetTris": 24,
+      "extent": [
+       0.044,
+       0.102373,
+       0.257829
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 3,
+      "actualTris": 24,
+      "attempts": [
+       {
+        "ratio": 0.3158,
+        "tris": 24,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.0568
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 4,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 5,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 6,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 7,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 8,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 9,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 10,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 11,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 12,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 13,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 14,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     },
+     {
+      "sourceTris": 48,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.018,
+       0.0108,
+       0.018
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 15,
+      "actualTris": 0,
+      "removedDecoration": {
+       "reason": "small shield surface decoration below 4% of overall diagonal"
+      }
+     }
+    ],
+    "policy": "component quotas + 26-direction support checks",
+    "seamWeldDistance": 1e-07
+   }
+  ]
+ }
+}
