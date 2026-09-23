@@ -1,0 +1,86 @@
+# electron-builder — Brumeval Launcher (see docs/LAUNCHER.md)
+appId: fr.mciut.brumeval.launcher
+productName: Brumeval Launcher
+copyright: Copyright © 2026 Brumeval Online
+artifactName: Brumeval-Launcher-${version}-${os}-${arch}.${ext}
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - package.json
+  - src/**/*
+  - build/icon.png
+  - "!**/*.map"
+  - "!**/{test,tests,__tests__}/**"
+
+asar: true
+# French UI; en-US is kept as the Chromium fallback locale.
+electronLanguages: [fr, en-US]
+
+publish:
+  - provider: github
+    owner: amintt2
+    repo: brumeval-online
+    # Tags are "launcher-v1.2.3" so they never collide with game releases.
+    tagNamePrefix: launcher-v
+    # CI uploads the three platforms into one draft, then publishes it once every build succeeded.
+    releaseType: draft
+
+win:
+  icon: build/icon.png
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+
+nsis:
+  artifactName: Brumeval-Launcher-Setup-${version}.${ext}
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Brumeval Online
+  uninstallDisplayName: Brumeval Online
+  installerLanguages: [fr_FR]
+  language: "1036"
+  deleteAppDataOnUninstall: false
+
+portable:
+  artifactName: Brumeval-Launcher-Portable-${version}.${ext}
+
+mac:
+  icon: build/icon.png
+  category: public.app-category.role-playing-games
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+    # The zip is what electron-updater downloads on macOS (only installable once the app is signed).
+    - target: zip
+      arch: [x64, arm64]
+
+dmg:
+  artifactName: Brumeval-Launcher-${version}-mac-${arch}.${ext}
+  title: Brumeval Launcher ${version}
+
+linux:
+  icon: build/icon.png
+  category: Game
+  executableName: brumeval-launcher
+  synopsis: Launcher de Brumeval Online, MMORPG multijoueur
+  description: Launcher de Brumeval Online — MMORPG multijoueur (Three.js). Nouvelles, état du serveur et mises à jour automatiques.
+  maintainer: Brumeval Online <noreply@github.com>
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+
+appImage:
+  artifactName: Brumeval-Launcher-${version}-linux-${arch}.${ext}
+
+deb:
+  artifactName: brumeval-launcher_${version}_${arch}.${ext}
