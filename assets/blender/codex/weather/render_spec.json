@@ -27,7 +27,11 @@
     "file": "vfx/weather/rain_splash.webp",
     "renderSeconds": 5.109,
     "samples": 16,
-    "supersample": 2
+    "supersample": 2,
+    "anchorUV": [
+      0.5,
+      0.6125
+    ]
   },
   "snowflakes": {
     "frames": 24,

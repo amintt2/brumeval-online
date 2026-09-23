@@ -27,7 +27,7 @@ Le kit et `common.py` sont lus depuis `assets/blender/`. Si le kit n'est pas enc
 - Pour Three.js avec `Texture.flipY=true`, la cellule `(c,r)` utilise `repeat=(1/cols,1/rows)` et `offset=(c/cols,1-(r+1)/rows)`.
 - Désactiver les mipmaps de la planche et utiliser un filtrage linéaire pour éviter les mélanges entre cellules. Chaque cellule possède au moins trois pixels de transparence de sécurité.
 - Les cinq effets continus sont périodiques. Les séquences ponctuelles commencent et finissent transparentes ; il faut les supprimer après la dernière image, sans boucler.
-- `rain_splash` est une éclaboussure en vue oblique à placer sur un panneau orienté vers la caméra ; son plan d'eau se trouve environ à 61 % de la hauteur de l'image. Ce n'est pas un décal horizontal prêt à projeter sur le sol.
+- `rain_splash` est une éclaboussure en vue oblique à placer sur un panneau orienté vers la caméra. Son `anchorUV=[0.5,0.6125]` donne le point d'impact, dans la cellule, avec origine en haut à gauche, U vers la droite et V vers le bas. Cet ancrage numérique prime sur `anchor="center"`, conservé pour les lecteurs anciens. Avec un `THREE.Sprite`, utiliser `sprite.center.set(u,1-v)` : la position du sprite correspond alors à l'impact. Avec un panneau centré, relever son centre de `(v-0.5)*size`, soit **0,135 m** à la taille de 1,2 m. L'aperçu HTML aligne ce point avec le repère au sol. Ce n'est pas un décal horizontal prêt à projeter sur le sol.
 
 ## Construction visuelle
 
@@ -45,6 +45,6 @@ Le kit et `common.py` sont lus depuis `assets/blender/`. Si le kit n'est pas enc
 
 Ouvrir `previews/animation.html` : les sept animations utilisent les véritables planches livrées et leur manifeste. Les effets ponctuels y sont rejoués avec une pause uniquement pour faciliter la relecture. Les fichiers `previews/*-frames.jpg` montrent toutes les images ; les WebP animés montrent leur composition sur un damier sombre.
 
-`qa.json` contient les dimensions, sommes SHA-256, poids, temps de rendu et d'assemblage, énergie alpha par image, absence de coupure sur les bords et comparaison du raccord de boucle aux différences entre images adjacentes. Le chargement après compression vérifie l'identité pixel à pixel du WebP sans perte.
+`qa.json` contient les dimensions, sommes SHA-256, poids, temps de rendu et d'assemblage, énergie alpha par image, absence de coupure sur les bords et comparaison du raccord de boucle aux différences entre images adjacentes. L'alpha reste sans perte pour les sept effets. La brume et le sable utilisent un RGB WebP qualité 90, avec erreur moyenne RGB pondérée par l'alpha inférieure à 0,0015 ; les cinq autres effets sont intégralement sans perte. Les aperçus et mesures relisent les fichiers WebP réellement livrés.
 
 L'intégration client demeure à faire par Claude : aucun consommateur de planches météo n'est présent sur cette branche. Il faudra gérer le placement, la densité, l'occultation et le déclenchement des impacts. Ce sont des panneaux animés, pas une simulation volumétrique dans le navigateur. Les tests de fichiers ne remplacent pas la relecture en situation dans le jeu.

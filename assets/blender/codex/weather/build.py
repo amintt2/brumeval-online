@@ -21,7 +21,7 @@ OUT=ROOT/'client/public/vfx/weather'
 TAU=math.tau
 SPECS={
  'rain_streaks':dict(frames=16,fps=20,loop=True,blending='normal',size=4.,anchor='center'),
- 'rain_splash':dict(frames=16,fps=24,loop=False,blending='normal',size=1.2,anchor='center'),
+ 'rain_splash':dict(frames=16,fps=24,loop=False,blending='normal',size=1.2,anchor='center',anchorUV=[.5,.6125]),
  'snowflakes':dict(frames=24,fps=12,loop=True,blending='normal',size=4.,anchor='center'),
  'sandstorm':dict(frames=24,fps=12,loop=True,blending='normal',size=6.,anchor='center'),
  'fog_wisps':dict(frames=24,fps=12,loop=True,blending='normal',size=8.,anchor='center'),

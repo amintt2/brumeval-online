@@ -27,7 +27,7 @@ def html(manifest):
 <button id="pause">Pause</button><label>Vitesse <input id="speed" type="range" min="0.25" max="2" step="0.25" value="1"></label><main id="grid"></main>
 <script>const manifest=__DATA__;let paused=false,t=0,last=performance.now();const cards=[];document.querySelector('#pause').onclick=e=>{paused=!paused;e.target.textContent=paused?'Reprendre':'Pause'};
 for(const [key,m] of Object.entries(manifest)){const article=document.createElement('article');article.innerHTML=`<h2>${key}</h2><canvas width="512" height="512"></canvas><small>${m.frames} images · ${m.fps} i/s · ${m.loop?'boucle':'ponctuel'} · ${m.blending}</small><p class="frame"></p>`;document.querySelector('#grid').append(article);const img=new Image();img.src='../../../../../client/public/'+m.file;cards.push({m,img,c:article.querySelector('canvas'),label:article.querySelector('.frame')});}
-function draw(now){if(!paused)t+=(now-last)/1000*+document.querySelector('#speed').value;last=now;for(const {m,img,c,label} of cards){const ctx=c.getContext('2d');const g=ctx.createLinearGradient(0,0,0,512);g.addColorStop(0,'#263742');g.addColorStop(.64,'#141f25');g.addColorStop(1,'#343932');ctx.fillStyle=g;ctx.fillRect(0,0,512,512);ctx.fillStyle='#10191b';for(let j=0;j<6;j++)ctx.fillRect(j*102+20,180+j%3*22,16,332);const duration=m.frames/m.fps,phase=t%(duration+(m.loop?0:.65));let f=Math.min(m.frames-1,Math.floor(phase*m.fps));ctx.globalCompositeOperation=m.blending==='additive'?'lighter':'source-over';if(img.complete&&img.naturalWidth)ctx.drawImage(img,(f%m.cols)*m.frameSize,Math.floor(f/m.cols)*m.frameSize,m.frameSize,m.frameSize,0,0,512,512);ctx.globalCompositeOperation='source-over';label.textContent=`Image ${f+1} / ${m.frames}`;}requestAnimationFrame(draw)}requestAnimationFrame(draw);</script></html>'''
+function draw(now){if(!paused)t+=(now-last)/1000*+document.querySelector('#speed').value;last=now;for(const {m,img,c,label} of cards){const ctx=c.getContext('2d');const g=ctx.createLinearGradient(0,0,0,512);g.addColorStop(0,'#263742');g.addColorStop(.64,'#141f25');g.addColorStop(1,'#343932');ctx.fillStyle=g;ctx.fillRect(0,0,512,512);ctx.fillStyle='#10191b';for(let j=0;j<6;j++)ctx.fillRect(j*102+20,180+j%3*22,16,332);const duration=m.frames/m.fps,phase=t%(duration+(m.loop?0:.65));let f=Math.min(m.frames-1,Math.floor(phase*m.fps));const u=m.anchorUV?.[0]??.5,v=m.anchorUV?.[1]??.5,impactY=m.anchorUV?400:256;const dx=256-u*512,dy=impactY-v*512;if(m.anchorUV){ctx.strokeStyle='#7d8065';ctx.beginPath();ctx.moveTo(216,impactY);ctx.lineTo(296,impactY);ctx.stroke();ctx.fillStyle='#bdbea5';ctx.fillText('Point d’impact au sol',304,impactY+4);}ctx.globalCompositeOperation=m.blending==='additive'?'lighter':'source-over';if(img.complete&&img.naturalWidth)ctx.drawImage(img,(f%m.cols)*m.frameSize,Math.floor(f/m.cols)*m.frameSize,m.frameSize,m.frameSize,dx,dy,512,512);ctx.globalCompositeOperation='source-over';label.textContent=`Image ${f+1} / ${m.frames}`;}requestAnimationFrame(draw)}requestAnimationFrame(draw);</script></html>'''
     (PREVIEW/'animation.html').write_text(content.replace('__DATA__',data),encoding='utf-8')
 
 
@@ -45,9 +45,17 @@ def main():
             arr=np.array(image);arr[arr[:,:,3]<=1]=0;frames.append(Image.fromarray(arr))
         atlas=Image.new('RGBA',(spec['cols']*size,spec['rows']*size))
         for i,frame in enumerate(frames):atlas.paste(frame,((i%spec['cols'])*size,(i//spec['cols'])*size))
-        path=OUT/f'{key}.webp';atlas.save(path,'WEBP',lossless=True,method=6,exact=True)
+        path=OUT/f'{key}.webp';lossless=key not in ['fog_wisps','sandstorm']
+        atlas.save(path,'WEBP',lossless=lossless,quality=90,alpha_quality=100,method=6,exact=True)
         reopened=Image.open(path).convert('RGBA');assert reopened.size==atlas.size
-        assert np.array_equal(np.array(reopened),np.array(atlas)),f'{key}: lossless round-trip changed pixels'
+        original=np.array(atlas);decoded=np.array(reopened)
+        alpha_exact=np.array_equal(original[:,:,3],decoded[:,:,3]);assert alpha_exact,f'{key}: alpha changed during compression'
+        pixel_exact=np.array_equal(original,decoded)
+        if lossless:assert pixel_exact,f'{key}: lossless round-trip changed pixels'
+        weighted_error=float(np.abs((original[:,:,:3].astype(float)-decoded[:,:,:3].astype(float))/255*original[:,:,3:4]/255).mean())
+        assert weighted_error<.0015,f'{key}: compression changed visible colour too much'
+        # Review and all remaining measurements use the decoded delivered atlas.
+        frames=[reopened.crop(((i%spec['cols'])*size,(i//spec['cols'])*size,(i%spec['cols']+1)*size,(i//spec['cols']+1)*size)) for i in range(spec['frames'])]
         arrays=[np.array(im) for im in frames];alphas=[ar[:,:,3].astype(float)/255 for ar in arrays]
         edges=[float(np.concatenate([al[:3,:].ravel(),al[-3:,:].ravel(),al[:, :3].ravel(),al[:,-3:].ravel()]).max()) for al in alphas]
         assert max(edges)==0,f'{key}: clipped sprite edge'
@@ -60,6 +68,7 @@ def main():
         seam=float(np.abs(premul[0]-premul[-1]).mean());median=float(np.median(differences))
         if spec['loop']:assert seam<max(.004,median*2.7),f'{key}: loop discontinuity'
         entry={k:spec[k] for k in ['file','cols','rows','frames','fps','loop','blending','size','frameSize','anchor']};entry['bytes']=path.stat().st_size
+        if 'anchorUV' in spec:entry['anchorUV']=spec['anchorUV']
         manifest[key]=entry
         displays=[over(im,spec['blending']) for im in frames]
         displays[0].save(PREVIEW/f'{key}.webp',save_all=True,append_images=displays[1:],duration=round(1000/spec['fps']),loop=0,quality=90,method=5)
@@ -71,7 +80,8 @@ def main():
           'dimensions':list(atlas.size),'frames':len(frames),'renderSeconds':spec.get('renderSeconds'),
           'packSeconds':round(time.monotonic()-started,3),'samples':spec.get('samples'),'supersample':spec.get('supersample'),
           'maxAlphaAt3PixelBorder':max(edges),'alphaMean':energy,'loopSeamDifference':seam,'medianAdjacentDifference':median,
-          'losslessRoundTrip':True,'nonEmptyFrames':sum(e>.00001 for e in energy)}
+          'losslessRoundTrip':pixel_exact,'alphaLossless':alpha_exact,'rgbEncoding':'lossless' if lossless else 'quality90',
+          'alphaWeightedRgbMeanAbsoluteError':weighted_error,'nonEmptyFrames':sum(e>.00001 for e in energy)}
         print('WEATHER_PACKED',key,reports[key]['bytes'],flush=True)
     manifest={k:manifest[k] for k in sorted(manifest)}
     (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')

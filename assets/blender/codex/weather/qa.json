@@ -4,15 +4,15 @@
   "effects": {
     "rain_streaks": {
       "pass": true,
-      "bytes": 75844,
-      "sha256": "e2c3d65377934a4e1d80c1d29771a113d14f2afbbb7b15b50a0e51c208f1cf15",
+      "bytes": 75940,
+      "sha256": "087ba76642c15dd1281dd134799b376ecd85b5c0cf3f1f4c2a0f07c0595e3077",
       "dimensions": [
         1024,
         1024
       ],
       "frames": 16,
       "renderSeconds": 6.079,
-      "packSeconds": 0.734,
+      "packSeconds": 1.812,
       "samples": 16,
       "supersample": 2,
       "maxAlphaAt3PixelBorder": 0.0,
@@ -37,6 +37,9 @@
       "loopSeamDifference": 0.0036915443085041417,
       "medianAdjacentDifference": 0.003984197831438029,
       "losslessRoundTrip": true,
+      "alphaLossless": true,
+      "rgbEncoding": "lossless",
+      "alphaWeightedRgbMeanAbsoluteError": 0.0,
       "nonEmptyFrames": 16
     },
     "rain_splash": {
@@ -49,7 +52,7 @@
       ],
       "frames": 16,
       "renderSeconds": 5.109,
-      "packSeconds": 0.422,
+      "packSeconds": 0.61,
       "samples": 16,
       "supersample": 2,
       "maxAlphaAt3PixelBorder": 0.0,
@@ -74,6 +77,9 @@
       "loopSeamDifference": 0.0,
       "medianAdjacentDifference": 0.0015642831057566002,
       "losslessRoundTrip": true,
+      "alphaLossless": true,
+      "rgbEncoding": "lossless",
+      "alphaWeightedRgbMeanAbsoluteError": 0.0,
       "nonEmptyFrames": 14
     },
     "snowflakes": {
@@ -86,7 +92,7 @@
       ],
       "frames": 24,
       "renderSeconds": 7.703,
-      "packSeconds": 0.781,
+      "packSeconds": 1.062,
       "samples": 16,
       "supersample": 2,
       "maxAlphaAt3PixelBorder": 0.0,
@@ -119,19 +125,22 @@
       "loopSeamDifference": 0.0010959010531806678,
       "medianAdjacentDifference": 0.0009411444316288608,
       "losslessRoundTrip": true,
+      "alphaLossless": true,
+      "rgbEncoding": "lossless",
+      "alphaWeightedRgbMeanAbsoluteError": 0.0,
       "nonEmptyFrames": 24
     },
     "sandstorm": {
       "pass": true,
-      "bytes": 2082952,
-      "sha256": "69c52f769a944a0b46c24d6ba8ddd2cfd83a7323b94fe2848ea92b69b8e690f6",
+      "bytes": 755522,
+      "sha256": "41ab8aa494d44ae51a263d7ce40e07305a01b1535a2294a477b9d33a0d6c233b",
       "dimensions": [
         1024,
         1536
       ],
       "frames": 24,
       "renderSeconds": 61.016,
-      "packSeconds": 2.36,
+      "packSeconds": 26.844,
       "samples": 16,
       "supersample": 2,
       "maxAlphaAt3PixelBorder": 0.0,
@@ -161,22 +170,25 @@
         0.09639419854856006,
         0.10066839479932599
       ],
-      "loopSeamDifference": 0.013191159434247044,
-      "medianAdjacentDifference": 0.01308543024254994,
-      "losslessRoundTrip": true,
+      "loopSeamDifference": 0.013212450871509756,
+      "medianAdjacentDifference": 0.013114607206112634,
+      "losslessRoundTrip": false,
+      "alphaLossless": true,
+      "rgbEncoding": "quality90",
+      "alphaWeightedRgbMeanAbsoluteError": 0.0008966982170631988,
       "nonEmptyFrames": 24
     },
     "fog_wisps": {
       "pass": true,
-      "bytes": 1706428,
-      "sha256": "2f896cc9fb8d3d32a53078396c0a2f1949e25349ee48522e110d546269eb9286",
+      "bytes": 786204,
+      "sha256": "2d7cb371b43d3bd625dbdff715ade2bc9e0feea717acec565f8ee0f85939f307",
       "dimensions": [
         1024,
         1536
       ],
       "frames": 24,
       "renderSeconds": 43.547,
-      "packSeconds": 2.453,
+      "packSeconds": 27.453,
       "samples": 16,
       "supersample": 2,
       "maxAlphaAt3PixelBorder": 0.0,
@@ -206,22 +218,25 @@
         0.07770559273514094,
         0.07976941875382965
       ],
-      "loopSeamDifference": 0.014512594111314359,
-      "medianAdjacentDifference": 0.014068483682407809,
-      "losslessRoundTrip": true,
+      "loopSeamDifference": 0.014520439667135237,
+      "medianAdjacentDifference": 0.014077635983480913,
+      "losslessRoundTrip": false,
+      "alphaLossless": true,
+      "rgbEncoding": "quality90",
+      "alphaWeightedRgbMeanAbsoluteError": 0.0009003474201191149,
       "nonEmptyFrames": 24
     },
     "lightning_flash": {
       "pass": true,
-      "bytes": 27354,
-      "sha256": "a2fa24534260acf765e40e08772aa8e3f443c32fe694db64712b9a91a19be269",
+      "bytes": 27392,
+      "sha256": "5cfcb521cff02e2977d8b7527cae6d8d4bb545dcf18a91f9aabb0becf41718cc",
       "dimensions": [
         1024,
         1024
       ],
       "frames": 16,
       "renderSeconds": 4.531,
-      "packSeconds": 0.422,
+      "packSeconds": 0.641,
       "samples": 16,
       "supersample": 2,
       "maxAlphaAt3PixelBorder": 0.0,
@@ -246,6 +261,9 @@
       "loopSeamDifference": 0.0,
       "medianAdjacentDifference": 0.0,
       "losslessRoundTrip": true,
+      "alphaLossless": true,
+      "rgbEncoding": "lossless",
+      "alphaWeightedRgbMeanAbsoluteError": 0.0,
       "nonEmptyFrames": 5
     },
     "embers": {
@@ -258,7 +276,7 @@
       ],
       "frames": 24,
       "renderSeconds": 5.109,
-      "packSeconds": 0.797,
+      "packSeconds": 1.172,
       "samples": 16,
       "supersample": 2,
       "maxAlphaAt3PixelBorder": 0.0,
@@ -291,10 +309,13 @@
       "loopSeamDifference": 0.0023308126275300768,
       "medianAdjacentDifference": 0.0021715192392699526,
       "losslessRoundTrip": true,
+      "alphaLossless": true,
+      "rgbEncoding": "lossless",
+      "alphaWeightedRgbMeanAbsoluteError": 0.0,
       "nonEmptyFrames": 24
     }
   },
-  "totalBytes": 4027176,
+  "totalBytes": 1779656,
   "limitations": [
     "Billboard flipbooks, not volumetric simulation in the client.",
     "Client integration and depth/collision behaviour must be implemented by Claude.",

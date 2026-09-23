@@ -23,7 +23,7 @@
     "size": 8.0,
     "frameSize": 256,
     "anchor": "center",
-    "bytes": 1706428
+    "bytes": 786204
   },
   "lightning_flash": {
     "file": "vfx/weather/lightning_flash.webp",
@@ -36,7 +36,7 @@
     "size": 8.0,
     "frameSize": 256,
     "anchor": "center",
-    "bytes": 27354
+    "bytes": 27392
   },
   "rain_splash": {
     "file": "vfx/weather/rain_splash.webp",
@@ -49,7 +49,11 @@
     "size": 1.2,
     "frameSize": 256,
     "anchor": "center",
-    "bytes": 21176
+    "bytes": 21176,
+    "anchorUV": [
+      0.5,
+      0.6125
+    ]
   },
   "rain_streaks": {
     "file": "vfx/weather/rain_streaks.webp",
@@ -62,7 +66,7 @@
     "size": 4.0,
     "frameSize": 256,
     "anchor": "center",
-    "bytes": 75844
+    "bytes": 75940
   },
   "sandstorm": {
     "file": "vfx/weather/sandstorm.webp",
@@ -75,7 +79,7 @@
     "size": 6.0,
     "frameSize": 256,
     "anchor": "center",
-    "bytes": 2082952
+    "bytes": 755522
   },
   "snowflakes": {
     "file": "vfx/weather/snowflakes.webp",
