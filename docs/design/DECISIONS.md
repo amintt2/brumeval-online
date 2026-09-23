@@ -26,5 +26,9 @@ La réinitialisation contre de l'or chez le Maître des arts est **supprimée**,
   - Un **titre** et une **aura visuelle** (brume spectrale) qui montrent le nombre de Renaissances.
 - Les personnages existants (v0.2) n'ont pas besoin de réinitialisation : ils reçoivent leurs points pour leur niveau actuel et la migration place d'office les Fondamentaux qu'ils utilisaient déjà (roulade, sprint).
 
-## 4. Touches (en attente de confirmation)
-Par défaut : Saut sur C, Garde sur E (maintenue). Toutes les touches restent réassignables dans les Options.
+## 4. Touches par défaut (décidé le 23/09)
+- **Espace = Saut** (plus naturel).
+- **Maj : appui court = Roulade, maintien = Sprint** (comme Elden Ring). Cette disposition s'applique **dès la v0.2**, qui n'a pas encore le saut : Espace n'y fait rien, ou sert provisoirement de roulade pendant une période de transition si les joueurs le demandent.
+- **Garde = E maintenue** par défaut.
+- Clic gauche = attaque de base / sélection, clic droit = cibler et attaquer, 1 à 8 = barre d'action.
+- **Toutes les touches sont réassignables** dans Options > Commandes (clavier et boutons de souris). Chaque touche du menu d'aide et de l'interface affiche la touche réellement assignée.
