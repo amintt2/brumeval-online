@@ -9,7 +9,7 @@ import argparse, os, math, json, random
 from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
-sys.path[:0] = [str(ROOT / 'assets/blender'), str(ROOT / 'assets/blender/icons')]
+sys.path[:0] = [str(HERE), str(ROOT / 'assets/blender'), str(ROOT / 'assets/blender/icons')]
 KIT_ROOT = Path(os.environ.get('BRUMEVAL_KIT_ROOT', str(ROOT / 'assets/blender')))
 if not (KIT_ROOT / 'kit').is_dir():
     KIT_ROOT = Path('C:/Users/amin2/mmorpg/assets/blender')
@@ -21,6 +21,8 @@ import common as C
 import geo as G
 import iconlib as L
 import items, abilities
+import second_pass
+import garments
 from kit import materials as M, gpu
 
 EXTRA = 'ore_copper ore_iron ore_mithril crystal_shard herb_brume herb_givre herb_braise ingot_copper ingot_iron ingot_mithril leather_strip cloth_bolt potion_hp_m potion_stamina helm_iron gloves_leather boots_leather ring_silver amulet_bone'.split()
@@ -180,33 +182,41 @@ def render(key,opts,samples):
     objs=[o for o in scene.objects if o.type=='MESH']
     cam=L._camera(opts.get('yaw',0),opts.get('pitch',0))
     extent=L._frame(cam,objs,min(opts.get('fill',.84),.86))
-    L._world(.32); L._lights(cam,key=2.8,fill=.65,rim=2.0,key_col=(1,.85,.65),rim_col=(.65,.78,1))
-    if key.startswith('ab_'):
-        # A genuine rough stone surface behind the emblem, aligned with the camera.
-        p=cam.location - cam.rotation_euler.to_quaternion() @ Vector((0,0,extent*4+3))
-        bg=G.box('Backdrop',(extent*5,extent*5,.05),M.rock('Backdrop',color='#292b30',color2='#11151a',scale=3,moss=0,dirt=.1))
-        bg.location=p; bg.rotation_euler=cam.rotation_euler
-        cam.data.clip_end=max(cam.data.clip_end,extent*8+20)
-    scene.render.resolution_x=scene.render.resolution_y=256
+    L._world(.22)
+    q=cam.rotation_euler.to_quaternion()
+    pts=L._world_points(objs)
+    center=Vector(((pts.min(0)+pts.max(0))*.5).tolist())
+    for name,offset,power,color,size in [('Key',(-3,4,4),650,(1,.88,.72),4),('Fill',(3,0,3),100,(.68,.79,1),3),('Rim',(2,3,-3),850,(.75,.85,1),2)]:
+        data=bpy.data.lights.new(name,'AREA');data.energy=power;data.color=color;data.shape='DISK';data.size=size
+        ob=bpy.data.objects.new(name,data);scene.collection.objects.link(ob);ob.location=center+q@Vector(offset)
+        ob.rotation_euler=(center-ob.location).to_track_quat('-Z','Y').to_euler()
+    scene.render.resolution_x=scene.render.resolution_y=512
     scene.render.resolution_percentage=100
-    scene.render.film_transparent=not key.startswith('ab_')
+    scene.render.film_transparent=True
     scene.render.image_settings.file_format='PNG'; scene.render.image_settings.color_mode='RGBA'
     scene.view_settings.view_transform='AgX'
     scene.render.filepath=str(OUT/f'{key}.png')
     with gpu.device(scene,samples=samples,wait=30):
         scene.cycles.use_denoising=True
         bpy.ops.render.render(write_still=True)
+    import subprocess,shutil
+    subprocess.run([os.environ.get('BRUMEVAL_IMAGE_PYTHON') or shutil.which('python'),str(HERE/'finish.py'),scene.render.filepath,key],check=True)
     print('CX2 DONE',key,flush=True)
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--only',default=''); p.add_argument('--samples',type=int,default=48); p.add_argument('--no-preview',action='store_true')
+    global OUT
+    p=argparse.ArgumentParser(); p.add_argument('--draft',action='store_true'); p.add_argument('--only',default=''); p.add_argument('--samples',type=int,default=48); p.add_argument('--no-preview',action='store_true')
     args=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     builders={**items.BUILDERS,**abilities.BUILDERS,**{k:(lambda k=k:extra(k)) for k in EXTRA}}
     keys=args.only.split(',') if args.only else list(builders)
     if set(keys)-builders.keys(): raise ValueError('Unknown keys: '+str(set(keys)-builders.keys()))
+    if args.draft: OUT=QA/'drafts'
     OUT.mkdir(parents=True,exist_ok=True); QA.mkdir(parents=True,exist_ok=True)
     for key in keys:
-        C.reset(); opts=builders[key]() or {}; upgrade_materials(); finish_geometry(); render(key,opts,args.samples)
-    (HERE/'manifest.json').write_text(json.dumps({'size':[256,256],'engine':'Cycles','keys':list(builders),'kit_root':str(KIT_ROOT),'samples':args.samples},indent=2)+'\n')
+        C.reset(); opts=garments.build(key)
+        if opts is None: opts=second_pass.build(key)
+        if opts is None: opts=builders[key]() or {}
+        upgrade_materials(); second_pass.mute_materials(); finish_geometry(); render(key,opts,args.samples)
+    if not args.draft: (HERE/'manifest.json').write_text(json.dumps({'size':[256,256],'engine':'Cycles','pass':2,'render_size':[512,512],'postprocess':'Pillow supersampling, vignette and restrained bloom','keys':list(builders),'kit_root':str(KIT_ROOT),'samples':args.samples},indent=2)+'\n')
 
 if __name__=='__main__': main()
