@@ -28,7 +28,7 @@ export const ROLL_SPEED = ROLL.dist / (ROLL.ms / 1000);
 export const COMMIT = {
   rec: 0.3,            // seconds of recovery after using an ability
   recSlow: 0.3,        // fraction of the normal speed allowed during recovery
-  rangedMoveMax: 0.6,  // ranged auto-attacks only fire while moving slower than this fraction of the base speed
+  rangedMoveMax: 0.4,  // ranged auto-attacks only fire while moving slower than this fraction of the base speed
 };
 
 /** Poise: damage over this window staggers a monster when it exceeds its poise. */

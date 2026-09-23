@@ -16,21 +16,21 @@ export const CLASSES = {
   warrior: {
     name: 'Guerrier', model: 'warrior', color: '#c0392b',
     desc: 'Combattant au corps à corps, robuste et redoutable.',
-    hp: 130, hpLvl: 18, mp: 40, mpLvl: 4, atk: 10, atkLvl: 2.2, def: 4, defLvl: 1.2, crit: 0.08, speed: 6.5,
+    hp: 130, hpLvl: 18, mp: 40, mpLvl: 4, atk: 11, atkLvl: 2.2, def: 4, defLvl: 1.2, crit: 0.08, speed: 6.5,
     abilities: ['strike', 'heavy_blow', 'whirlwind', 'war_cry'],
     start: { weapon: 'rusty_sword', armor: 'leather_tunic', items: [['potion_hp_s', 3]] },
   },
   mage: {
     name: 'Mage', model: 'mage', color: '#2e6fd8',
     desc: 'Maître des arcanes : sorts puissants à distance, mais fragile.',
-    hp: 85, hpLvl: 11, mp: 120, mpLvl: 12, atk: 11, atkLvl: 2.5, def: 2, defLvl: 0.7, crit: 0.1, speed: 6.3,
+    hp: 85, hpLvl: 11, mp: 95, mpLvl: 12, atk: 9, atkLvl: 2.7, def: 2, defLvl: 0.7, crit: 0.1, speed: 6.3,
     abilities: ['firebolt', 'fireball', 'frost_nova', 'heal'],
     start: { weapon: 'apprentice_staff', armor: 'leather_tunic', items: [['potion_hp_s', 2], ['potion_mp_s', 2]] },
   },
   ranger: {
     name: 'Rôdeur', model: 'ranger', color: '#2e9e4f',
     desc: 'Archer agile qui frappe de loin avec précision.',
-    hp: 100, hpLvl: 14, mp: 70, mpLvl: 7, atk: 10, atkLvl: 2.3, def: 3, defLvl: 0.9, crit: 0.15, speed: 6.8,
+    hp: 100, hpLvl: 14, mp: 80, mpLvl: 7, atk: 10, atkLvl: 2.3, def: 3, defLvl: 0.9, crit: 0.15, speed: 6.8,
     abilities: ['shot', 'piercing_shot', 'arrow_rain', 'rapid_fire'],
     start: { weapon: 'short_bow', armor: 'leather_tunic', items: [['potion_hp_s', 3]] },
   },
@@ -41,18 +41,18 @@ export const CLASSES = {
 // slot 0 of every class is the auto-attack (auto: true).
 // power = multiplier on attacker atk. range/radius in metres. cd in seconds.
 export const ABILITIES = {
-  strike: { name: 'Frappe', kind: 'melee', auto: true, range: 2.8, cd: 1.4, mp: 0, power: 1.0, desc: 'Attaque de base au corps à corps.' },
-  heavy_blow: { name: 'Coup puissant', kind: 'melee', range: 2.8, cd: 6, mp: 12, power: 2.3, desc: 'Un coup dévastateur infligeant de lourds dégâts.' },
-  whirlwind: { name: 'Tourbillon', kind: 'aoe_self', radius: 4.5, cd: 10, mp: 20, power: 1.4, desc: 'Frappe tous les ennemis proches.' },
+  strike: { name: 'Frappe', kind: 'melee', auto: true, range: 2.8, cd: 1.3, mp: 0, power: 1.2, desc: 'Attaque de base au corps à corps.' },
+  heavy_blow: { name: 'Coup puissant', kind: 'melee', range: 2.8, cd: 6, mp: 12, power: 2.8, desc: 'Un coup dévastateur infligeant de lourds dégâts.' },
+  whirlwind: { name: 'Tourbillon', kind: 'aoe_self', radius: 4.5, cd: 10, mp: 20, power: 1.7, desc: 'Frappe tous les ennemis proches.' },
   war_cry: { name: 'Cri de guerre', kind: 'self_heal', cd: 25, mp: 15, heal: 0.3, desc: 'Récupère 30 % de vos points de vie.' },
 
-  firebolt: { name: 'Trait de feu', kind: 'projectile', auto: true, range: 18, cd: 1.6, mp: 0, power: 0.95, speed: 22, desc: 'Projectile de feu de base.' },
-  fireball: { name: 'Boule de feu', kind: 'projectile', range: 18, cd: 5, mp: 18, power: 2.5, speed: 16, desc: 'Une boule de feu explosive.' },
+  firebolt: { name: 'Trait de feu', kind: 'projectile', auto: true, range: 18, cd: 1.6, mp: 0, power: 0.8, speed: 22, desc: 'Projectile de feu de base.' },
+  fireball: { name: 'Boule de feu', kind: 'projectile', range: 18, cd: 6, mp: 20, power: 2.0, speed: 16, desc: 'Une boule de feu explosive.' },
   frost_nova: { name: 'Nova de givre', kind: 'aoe_self', radius: 6, cd: 12, mp: 25, power: 1.1, slow: { pct: 0.5, dur: 3 }, desc: 'Gèle les ennemis proches et les ralentit de 50 %.' },
   heal: { name: 'Soin', kind: 'self_heal', cd: 8, mp: 20, heal: 0.35, desc: 'Restaure 35 % de vos points de vie.' },
 
-  shot: { name: 'Tir', kind: 'projectile', auto: true, range: 20, cd: 1.3, mp: 0, power: 0.95, speed: 34, desc: 'Tir à l\'arc de base.' },
-  piercing_shot: { name: 'Tir perçant', kind: 'projectile', range: 22, cd: 6, mp: 12, power: 2.1, speed: 40, desc: 'Une flèche qui transperce les armures.' },
+  shot: { name: 'Tir', kind: 'projectile', auto: true, range: 20, cd: 1.3, mp: 0, power: 0.85, speed: 34, desc: 'Tir à l\'arc de base.' },
+  piercing_shot: { name: 'Tir perçant', kind: 'projectile', range: 22, cd: 6, mp: 12, power: 1.9, speed: 40, desc: 'Une flèche qui transperce les armures.' },
   arrow_rain: { name: 'Pluie de flèches', kind: 'aoe_target', range: 20, radius: 5, cd: 12, mp: 22, power: 1.25, desc: 'Une pluie de flèches sur la zone ciblée.' },
   rapid_fire: { name: 'Tir rapide', kind: 'projectile', range: 20, cd: 9, mp: 15, power: 0.8, hits: 3, speed: 34, desc: 'Trois flèches en succession rapide.' },
 };
@@ -68,14 +68,14 @@ const ABILITY_SOULS = {
   heavy_blow: { st: 16, rec: 0.5, recSlow: 0.3, poise: 42 },
   whirlwind: { st: 18, rec: 0.55, recSlow: 0.35, poise: 24 },
   war_cry: { st: 0, rec: 0.4, recSlow: 0.5, poise: 0 },
-  firebolt: { st: 7, rec: 0.35, recSlow: 0.3, poise: 5 },
-  fireball: { st: 14, rec: 0.6, recSlow: 0.25, poise: 26 },
-  frost_nova: { st: 16, rec: 0.45, recSlow: 0.3, poise: 14 },
+  firebolt: { st: 7, rec: 0.35, recSlow: 0.3, poise: 3 },
+  fireball: { st: 14, rec: 0.6, recSlow: 0.25, poise: 16 },
+  frost_nova: { st: 16, rec: 0.45, recSlow: 0.3, poise: 10 },
   heal: { st: 0, rec: 0.6, recSlow: 0.3, poise: 0 },
-  shot: { st: 7, rec: 0.35, recSlow: 0.3, poise: 5 },
-  piercing_shot: { st: 14, rec: 0.55, recSlow: 0.25, poise: 20 },
+  shot: { st: 7, rec: 0.35, recSlow: 0.3, poise: 3 },
+  piercing_shot: { st: 14, rec: 0.55, recSlow: 0.25, poise: 14 },
   arrow_rain: { st: 16, rec: 0.5, recSlow: 0.3, poise: 8 },
-  rapid_fire: { st: 14, rec: 0.6, recSlow: 0.3, poise: 4 },
+  rapid_fire: { st: 14, rec: 0.6, recSlow: 0.3, poise: 3 },
 };
 for (const [id, v] of Object.entries(ABILITY_SOULS)) Object.assign(ABILITIES[id], v);
 
@@ -109,7 +109,7 @@ export const MONSTERS = {
   },
   golem: {
     name: 'Golem ancien', model: 'golem', level: [14, 14], radius: 1.4, scale: 1, boss: true,
-    hp: 2600, hpLvl: 0, atk: 42, atkLvl: 0, def: 20, defLvl: 0, speed: 3.6,
+    hp: 3000, hpLvl: 0, atk: 46, atkLvl: 0, def: 20, defLvl: 0, speed: 3.6,
     aggro: 14, range: 3.4, atkCd: 2.2, leash: 30, xp: 1500, xpLvl: 0, respawn: 180, gold: [120, 220],
     drops: [{ id: 'golem_core', ch: 1 }, { id: 'runeblade', ch: 0.25 }, { id: 'ember_staff', ch: 0.25 }, { id: 'elven_bow', ch: 0.25 }, { id: 'golem_plate', ch: 0.2 }],
   },

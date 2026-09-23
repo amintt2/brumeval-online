@@ -125,6 +125,10 @@ export function tickAttack(game, m, target, dt, now) {
   if (act.phase === 'windup') {
     // light swings and projectiles track the target; telegraphed attacks are committed
     if (target && atk.kind !== 'tele') m.ry = angleTo(m, target.x, target.z);
+    // light swings keep closing in on a retreating target (no free kiting by walking backwards)
+    if (target && atk.kind === 'melee' && dist(m.x, m.z, target.x, target.z) > (atk.max || 2) * 0.8) {
+      stepToward(game, m, target.x, target.z, m.speed * (m.brain.run || 1) * (m.isSlowed(now) ? 0.5 : 1), dt, (atk.max || 2) * 0.7, now);
+    }
     if (now < act.impactAt) return true;
     act.phase = 'recover';
     resolveAttack(game, m, act, target, now);
