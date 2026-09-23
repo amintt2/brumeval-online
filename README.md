@@ -98,6 +98,23 @@ cimetière. Tout le texte du jeu est en français.
 - Notifications, bannières de zone et de niveau, écran de mort, textes de combat flottants.
 - Effets sonores synthétisés en direct (WebAudio), désactivables avec **M**.
 
+**Graphismes**
+- Ciel et éclairage d'ambiance qui suivent le soleil, ombres en cascade, occlusion ambiante, brume au sol et
+  rayons de lumière, bloom, tonalité filmique ; terrain par couches, herbe dense agitée par le vent, eau réaliste.
+- Réglages graphiques (touche **O**) : Bas / Moyen / Élevé / Ultra, détection automatique au premier lancement.
+  Détails et mesures : [docs/RENDU.md](docs/RENDU.md).
+
+**Launcher et application**
+- Launcher pour Windows, macOS et Linux (actualités, état du serveur, mises à jour automatiques) :
+  voir [docs/LAUNCHER.md](docs/LAUNCHER.md). Le jeu s'installe aussi comme une application depuis le
+  navigateur (manifeste + service worker ; `?sw=0` le désactive et vide son cache).
+
+**Documentation**
+- [CHANGELOG.md](CHANGELOG.md) (nouveautés de chaque version), [ROADMAP.md](ROADMAP.md), [SPEC.md](SPEC.md)
+- [docs/EQUILIBRAGE.md](docs/EQUILIBRAGE.md) (combat et équilibrage), [docs/RENDU.md](docs/RENDU.md) (rendu),
+  [docs/SECURITE.md](docs/SECURITE.md) (anti-triche, modération), [docs/DEPLOIEMENT.md](docs/DEPLOIEMENT.md)
+  (mise en production), [docs/PERFORMANCES.md](docs/PERFORMANCES.md) (charge), [docs/LAUNCHER.md](docs/LAUNCHER.md)
+
 ## Démarrage rapide
 
 ### Prérequis

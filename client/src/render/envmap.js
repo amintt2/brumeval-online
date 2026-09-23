@@ -5,6 +5,7 @@
 //    Refreshed a couple of times per second at most (the day lasts 20 minutes), reusing every render target.
 import * as THREE from 'three';
 import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
+import { assetExists } from './assetManifest.js';
 
 export const HDR_NAMES = ['day', 'golden', 'night', 'overcast'];
 /** Target mean luminance of the upper hemisphere of each HDRI (keeps them consistent with the sun). */
@@ -54,7 +55,9 @@ export class EnvironmentLighting {
     const loaded = [];
     await Promise.all(HDR_NAMES.map(async (name) => {
       try {
-        const tex = await loader.loadAsync(`/env/sky_${name}.hdr`);
+        const url = `/env/sky_${name}.hdr`;
+        if ((await assetExists(url)) === false) return; // not shipped (manifest): no 404 request
+        const tex = await loader.loadAsync(url);
         if (!tex?.image?.width) throw new Error('vide');
         const mean = upperMeanLuminance(tex);
         tex.mapping = THREE.EquirectangularReflectionMapping;
