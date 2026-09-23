@@ -1,0 +1,232 @@
+{
+  "node_group": "CastleFoundationContact",
+  "modifier": "FoundationContactSkin",
+  "proxy": "FoundationContactProxy",
+  "support_count": 43,
+  "proxy_vertices": 472,
+  "proxy_faces": 43,
+  "transition_m": [
+    1.5,
+    2.0
+  ],
+  "contact_overlap_m": 0.06,
+  "fill_only": true,
+  "supports": [
+    {
+      "name": "Beffroi",
+      "base_z": 13.060001,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort.001",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort.002",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort.003",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort.004",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort.005",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort.006",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Contrefort.007",
+      "base_z": 13.025,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.001",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.002",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.003",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.004",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.005",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.006",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.007",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.008",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.009",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.010",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.011",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.012",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.013",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.014",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.015",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.016",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.017",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.018",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.019",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.020",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.021",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.022",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "ContrefortTour.023",
+      "base_z": 12.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "CourtineDroite",
+      "base_z": 11.56,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "CourtineGauche",
+      "base_z": 11.56,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "FondationChapelle",
+      "base_z": 4.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "FondationChapelle.001",
+      "base_z": 4.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Nef",
+      "base_z": 13.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "TerrasseChapelle",
+      "base_z": 9.06,
+      "footprint_vertices": 8
+    },
+    {
+      "name": "Tour",
+      "base_z": 12.06,
+      "footprint_vertices": 40
+    },
+    {
+      "name": "Tour.001",
+      "base_z": 12.06,
+      "footprint_vertices": 40
+    },
+    {
+      "name": "Tour.002",
+      "base_z": 12.06,
+      "footprint_vertices": 40
+    },
+    {
+      "name": "Tour.003",
+      "base_z": 12.06,
+      "footprint_vertices": 40
+    }
+  ],
+  "overlap_resolution": "highest_vertical_raycast"
+}

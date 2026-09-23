@@ -1,0 +1,326 @@
+{
+  "scope": "Evaluated mesh vertices, including bevel and G.pose world transforms; no render or collision simulation",
+  "houses": [
+    {
+      "house": 0,
+      "parent_scale": 1.0499999523162842,
+      "landing_world_z": [
+        -0.06499999761581421,
+        1.2274999618530273
+      ],
+      "door_world_z": [
+        1.2274999618530273,
+        3.2224998474121094
+      ],
+      "landing_to_threshold_delta_m": 0.0,
+      "landing_door_overlap_m": 0.07350092792506757,
+      "first_rise_above_earth_m": 0.14656252712011336,
+      "step_count": 8,
+      "steps": [
+        {
+          "name": "EscalierMaison0",
+          "world_z": [
+            -0.06499996036291122,
+            0.09656252712011337
+          ],
+          "next_gap_m": -0.01049923849109291,
+          "next_rise_m": 0.161562480032444,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison0.001",
+          "world_z": [
+            -0.06499998271465302,
+            0.2581250071525574
+          ],
+          "next_gap_m": -0.010501241207066414,
+          "next_rise_m": 0.16156244277954102,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison0.002",
+          "world_z": [
+            -0.0650000125169754,
+            0.4196874499320984
+          ],
+          "next_gap_m": -0.010500740528073038,
+          "next_rise_m": 0.1615625023841858,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison0.003",
+          "world_z": [
+            -0.06499996781349182,
+            0.5812499523162842
+          ],
+          "next_gap_m": -0.010500239849079662,
+          "next_rise_m": 0.16156256198883057,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison0.004",
+          "world_z": [
+            -0.06499996781349182,
+            0.7428125143051147
+          ],
+          "next_gap_m": -0.010499739170086286,
+          "next_rise_m": 0.16156244277954102,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison0.005",
+          "world_z": [
+            -0.06499999761581421,
+            0.9043749570846558
+          ],
+          "next_gap_m": -0.010501241207066414,
+          "next_rise_m": 0.16156256198883057,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison0.006",
+          "world_z": [
+            -0.06499999761581421,
+            1.0659375190734863
+          ],
+          "next_gap_m": -0.010501241207066414,
+          "next_rise_m": 0.16156244277954102,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison0.007",
+          "world_z": [
+            -0.06499999761581421,
+            1.2274999618530273
+          ],
+          "next_gap_m": -0.005250620603533207,
+          "next_rise_m": 0.0,
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    {
+      "house": 1,
+      "parent_scale": 0.8299999833106995,
+      "landing_world_z": [
+        -0.06499999761581421,
+        0.45649999380111694
+      ],
+      "door_world_z": [
+        0.4565000534057617,
+        2.0334999561309814
+      ],
+      "landing_to_threshold_delta_m": -5.960464477539063e-08,
+      "landing_door_overlap_m": 0.05809994342327229,
+      "first_rise_above_earth_m": 0.11537500023841858,
+      "step_count": 4,
+      "steps": [
+        {
+          "name": "EscalierMaison1",
+          "world_z": [
+            -0.06499999761581421,
+            0.06537500023841858
+          ],
+          "next_gap_m": -0.008300189805027003,
+          "next_rise_m": 0.1303749978542328,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison1.001",
+          "world_z": [
+            -0.0650000050663948,
+            0.19574999809265137
+          ],
+          "next_gap_m": -0.008297023606360199,
+          "next_rise_m": 0.1303749978542328,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison1.002",
+          "world_z": [
+            -0.06499999761581421,
+            0.32612499594688416
+          ],
+          "next_gap_m": -0.008300189805027003,
+          "next_rise_m": 0.1303749978542328,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison1.003",
+          "world_z": [
+            -0.06499999761581421,
+            0.45649999380111694
+          ],
+          "next_gap_m": -0.004151875889263579,
+          "next_rise_m": 0.0,
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    {
+      "house": 2,
+      "parent_scale": 0.7799999713897705,
+      "landing_world_z": [
+        -0.06499999761581421,
+        0.42899999022483826
+      ],
+      "door_world_z": [
+        0.42900002002716064,
+        1.9109998941421509
+      ],
+      "landing_to_threshold_delta_m": -2.9802322387695312e-08,
+      "landing_door_overlap_m": 0.05460273542394134,
+      "first_rise_above_earth_m": 0.14966666996479033,
+      "step_count": 3,
+      "steps": [
+        {
+          "name": "EscalierMaison2",
+          "world_z": [
+            -0.06499999761581421,
+            0.09966666996479034
+          ],
+          "next_gap_m": -0.007801294040632456,
+          "next_rise_m": 0.16466666758060455,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison2.001",
+          "world_z": [
+            -0.06499999761581421,
+            0.2643333375453949
+          ],
+          "next_gap_m": -0.007799434375783676,
+          "next_rise_m": 0.16466665267944336,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison2.002",
+          "world_z": [
+            -0.06499999761581421,
+            0.42899999022483826
+          ],
+          "next_gap_m": -0.003902692651649886,
+          "next_rise_m": 0.0,
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    {
+      "house": 3,
+      "parent_scale": 0.7300000190734863,
+      "landing_world_z": [
+        -0.06499998271465302,
+        0.40149998664855957
+      ],
+      "door_world_z": [
+        0.40150004625320435,
+        1.7885000705718994
+      ],
+      "landing_to_threshold_delta_m": -5.960464477539063e-08,
+      "landing_door_overlap_m": 0.051102563285894576,
+      "first_rise_above_earth_m": 0.14049999713897704,
+      "step_count": 3,
+      "steps": [
+        {
+          "name": "EscalierMaison3",
+          "world_z": [
+            -0.06499999761581421,
+            0.09049999713897705
+          ],
+          "next_gap_m": -0.00729877490994113,
+          "next_rise_m": 0.15549999475479126,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison3.001",
+          "world_z": [
+            -0.06499999016523361,
+            0.2459999918937683
+          ],
+          "next_gap_m": -0.007304344368094462,
+          "next_rise_m": 0.15549999475479126,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison3.002",
+          "world_z": [
+            -0.06499998271465302,
+            0.40149998664855957
+          ],
+          "next_gap_m": -0.0036495615005378568,
+          "next_rise_m": 0.0,
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    {
+      "house": 4,
+      "parent_scale": 0.8999999761581421,
+      "landing_world_z": [
+        -0.0650000125169754,
+        0.4950000047683716
+      ],
+      "door_world_z": [
+        0.4949999451637268,
+        2.2049999237060547
+      ],
+      "landing_to_threshold_delta_m": 5.960464477539063e-08,
+      "landing_door_overlap_m": 0.06300251317017569,
+      "first_rise_above_earth_m": 0.12500000298023223,
+      "step_count": 4,
+      "steps": [
+        {
+          "name": "EscalierMaison4",
+          "world_z": [
+            -0.06499999761581421,
+            0.07500000298023224
+          ],
+          "next_gap_m": -0.008997201681211209,
+          "next_rise_m": 0.14000000059604645,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison4.001",
+          "world_z": [
+            -0.06499999761581421,
+            0.2150000035762787
+          ],
+          "next_gap_m": -0.009001064062090336,
+          "next_rise_m": 0.13999998569488525,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison4.002",
+          "world_z": [
+            -0.06499999761581421,
+            0.35499998927116394
+          ],
+          "next_gap_m": -0.008997201681211209,
+          "next_rise_m": 0.14000001549720764,
+          "pass": true
+        },
+        {
+          "name": "EscalierMaison4.003",
+          "world_z": [
+            -0.0650000125169754,
+            0.4950000047683716
+          ],
+          "next_gap_m": -0.0045022486447692245,
+          "next_rise_m": 0.0,
+          "pass": true
+        }
+      ],
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "limitations": [
+    "Checks visual access solids only; houses are closed facade meshes, not traversable interiors.",
+    "Terrain reference is Earth top z=-0.05; local gravel and vegetation are not clearance-tested.",
+    "No handrails; headroom and gameplay collision meshes are outside this audit."
+  ]
+}

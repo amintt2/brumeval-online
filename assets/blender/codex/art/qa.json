@@ -1,0 +1,68 @@
+{
+  "files": [
+    {
+      "key": "logo",
+      "size": [
+        2048,
+        2048
+      ],
+      "bytes": 1888967,
+      "sha256": "59da850916c41520a427efd56c837f565f76b7ae5c69bce2d1e170f87c770fd0"
+    },
+    {
+      "key": "logo_512",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 142102,
+      "sha256": "4e7060f2f80d5464dafd1cc97bf3ed43f74570384a68cbd32cc66e6f871e0b52"
+    },
+    {
+      "key": "bg_login",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 287238,
+      "sha256": "93ac2283a0c5a9889da469072d90e9a80238ed6950ed13fde1c17ac0683e0308"
+    },
+    {
+      "key": "bg_loading_1",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 149256,
+      "sha256": "178153af376448d6f5d09ab5a43491e0ebc1f7fd685efd651de106b5a0845ba1"
+    },
+    {
+      "key": "bg_loading_2",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 233764,
+      "sha256": "b40c744d425f2244107b84a321d086d045ffb117d419bda694cdf79cd145f3c5"
+    },
+    {
+      "key": "bg_loading_3",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 354436,
+      "sha256": "fb39f67fd656244f9db7fee6c3ec530fff2946f7596f052409471a4be5f79c32"
+    },
+    {
+      "key": "launcher_banner",
+      "size": [
+        1600,
+        600
+      ],
+      "bytes": 88168,
+      "sha256": "d8221cc3300a85b2cf3220911008fe0a1248d63c22fd9db76485342529299ba8"
+    }
+  ],
+  "checks": "dimensions, image decoding, logo transparency, SHA-256"
+}

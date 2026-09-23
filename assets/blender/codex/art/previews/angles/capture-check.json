@@ -1,0 +1,508 @@
+[
+  {
+    "file": "cemetery-01-frontal.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ]
+    ],
+    "sha256": "a193649c6c0bb772e0575e0f3623332e598ac2ed86b8c88c481bf9ba973d3dd4"
+  },
+  {
+    "file": "cemetery-02-tombes.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ]
+    ],
+    "sha256": "9fa0e159ea4a3ae249b178175f060d5659c78c76ee9b7333e7064094abacd86b"
+  },
+  {
+    "file": "cemetery-03-chapelle.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        128
+      ],
+      [
+        0,
+        151
+      ],
+      [
+        0,
+        175
+      ]
+    ],
+    "sha256": "5335459095e4658f7ba8e5885300f5690f1b30fd0742ee56ea14a3b48cbf4c1a"
+  },
+  {
+    "file": "cliff-01-village.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ]
+    ],
+    "sha256": "8795f482df61568a69f95bf3e4a1f2f250f3192df3489aeedf0d3734b960de55"
+  },
+  {
+    "file": "cliff-02-front-bas.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        225
+      ],
+      [
+        0,
+        197
+      ]
+    ],
+    "sha256": "3e5cb37ba1a6865bb57fe0b2a6e7a58cd26981eaac59f9e9150c56bfce392e5b"
+  },
+  {
+    "file": "cliff-03-gauche.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        8,
+        186
+      ],
+      [
+        8,
+        171
+      ],
+      [
+        1,
+        161
+      ]
+    ],
+    "sha256": "9547faa705905427485bbeb55bcb6d488275b69ddd4673890ac69c4881de2cb2"
+  },
+  {
+    "file": "cliff-04-droite.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        12,
+        186
+      ],
+      [
+        14,
+        180
+      ],
+      [
+        2,
+        167
+      ]
+    ],
+    "sha256": "862283c6ba56cbe285131762192610e1815dcb5df04bca6374a2a965fe08a4c4"
+  },
+  {
+    "file": "cliff-05-strates.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        7,
+        161
+      ],
+      [
+        6,
+        167
+      ],
+      [
+        0,
+        159
+      ]
+    ],
+    "sha256": "aca761836953030950633e8ee04f2efb6261a9cbaeb1f116b75920d48ec5d54b"
+  },
+  {
+    "file": "cliff-06-remparts.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        6,
+        184
+      ],
+      [
+        6,
+        178
+      ],
+      [
+        0,
+        169
+      ]
+    ],
+    "sha256": "32a3dc1ead0fe03674dae5ce8b5cf1d1b8d9cefa276bd5d91f9300fcb6e041b6"
+  },
+  {
+    "file": "cliff-07-silhouette.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        8,
+        218
+      ],
+      [
+        8,
+        192
+      ],
+      [
+        0,
+        174
+      ]
+    ],
+    "sha256": "c7a9b8eaa3d8eee5943c427414fcf5e2b3b82279d7185b53ea672c4e112efa91"
+  },
+  {
+    "file": "cliff-08-ensemble.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        17,
+        169
+      ],
+      [
+        14,
+        167
+      ],
+      [
+        0,
+        163
+      ]
+    ],
+    "sha256": "72fdf6a5df60e277d2dd07dcb31b24ca37a7ad0f1cf3cd72de3545e3191eb139"
+  },
+  {
+    "file": "cliff_back-09-arriere-gauche.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        1,
+        255
+      ],
+      [
+        4,
+        234
+      ],
+      [
+        0,
+        217
+      ]
+    ],
+    "sha256": "5d38ec037d996affbcf4b98828d8854a84f54bac41004edb7b9bcf35cedf5760"
+  },
+  {
+    "file": "cliff_back-10-arriere.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        12,
+        255
+      ],
+      [
+        8,
+        236
+      ],
+      [
+        0,
+        216
+      ]
+    ],
+    "sha256": "7dbc560f86ba17decb6a78cbf3bfbe60bb1e12333348430072c52c3852c4ae98"
+  },
+  {
+    "file": "cliff_back-11-arriere-droite.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        5,
+        193
+      ],
+      [
+        6,
+        186
+      ],
+      [
+        2,
+        174
+      ]
+    ],
+    "sha256": "863512c30ed8dc88dacd4840c03b2e8e1ae3db003f1dc471eb496b13425b773a"
+  },
+  {
+    "file": "forest-01-sentier.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        213
+      ],
+      [
+        0,
+        229
+      ],
+      [
+        0,
+        212
+      ]
+    ],
+    "sha256": "4043af8c293c47ac29cc50ede3676675b4e325fd528c5dcd8d7b0e02ac856dd2"
+  },
+  {
+    "file": "forest-02-racines.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        233
+      ],
+      [
+        0,
+        240
+      ],
+      [
+        0,
+        238
+      ]
+    ],
+    "sha256": "3f428fb9559c4a78741406a80a5fc0bc67d1c289fe9852885660787fa0136d9e"
+  },
+  {
+    "file": "forest-03-stele.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        229
+      ],
+      [
+        0,
+        240
+      ],
+      [
+        0,
+        225
+      ]
+    ],
+    "sha256": "ecf547cb60b23e7d757ad8f7e784bc8c86c0bab653cbcaf2d22b9935a0166a75"
+  },
+  {
+    "file": "house-01-entree.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        225
+      ],
+      [
+        0,
+        202
+      ]
+    ],
+    "sha256": "3bca8cd763da455222247e112e78eda393b7e20eacdd8de2cf641ab28951b502"
+  },
+  {
+    "file": "house-02-profil.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        214
+      ],
+      [
+        0,
+        183
+      ]
+    ],
+    "sha256": "d1359b48864229f26b5c6f68de14cc15b28780b3efd4e797b626e3b632f055a8"
+  },
+  {
+    "file": "house-03-sol.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        224
+      ],
+      [
+        0,
+        196
+      ]
+    ],
+    "sha256": "684c06fdb2869852511fc250153641ccfa371fecc4c1464736118b9323b6924e"
+  },
+  {
+    "file": "lair-01-entree.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ]
+    ],
+    "sha256": "5906718259f1d9967ea7bf5eca92a5c0c26110d8d3afdb77523ab3bb4f3169a5"
+  },
+  {
+    "file": "lair-02-gauche.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ],
+      [
+        0,
+        255
+      ]
+    ],
+    "sha256": "d2eded33d4828d409ee4c2feed848b1c35ded1d79e7582b242bdc7dcc9a057b8"
+  },
+  {
+    "file": "lair-03-colonnes.webp",
+    "size": [
+      960,
+      640
+    ],
+    "extrema": [
+      [
+        0,
+        255
+      ],
+      [
+        5,
+        255
+      ],
+      [
+        0,
+        255
+      ]
+    ],
+    "sha256": "e5e175338f34e2f6c413eb75b4881ae0d6f7dba9c54deeb032a2f3cc429c0578"
+  }
+]

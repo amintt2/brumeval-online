@@ -1,0 +1,47 @@
+{
+  "terrain": [
+    {
+      "name": "ErodedCastleTerrain",
+      "vertices": 132108,
+      "quads": 131378,
+      "bounds": [
+        [
+          -62.0,
+          79.0
+        ],
+        [
+          37.0,
+          151.0
+        ],
+        [
+          -0.14,
+          15.816624764276737
+        ]
+      ]
+    },
+    {
+      "name": "ErodedMountainRanges",
+      "vertices": 124749,
+      "quads": 124000,
+      "bounds": [
+        [
+          -200.0,
+          200.0
+        ],
+        [
+          132.0,
+          330.0
+        ],
+        [
+          -0.076898756945188,
+          63.638238936741594
+        ]
+      ]
+    }
+  ],
+  "foundation_height_m": 11.96,
+  "foundation_max_error_m": 0.0,
+  "finite_heights": true,
+  "simulation": "simplified hydraulic transport + talus",
+  "scope": "Blender illustration geometry; no in-game collision validation"
+}
