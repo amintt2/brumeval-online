@@ -26,8 +26,11 @@ for (let i = 0; i < argv.length; i++) {
   else groups.push(argv[i]);
 }
 
+// Opt-in groups: only built when named (`npm run assets -- codex`). The Codex renders are long Cycles jobs
+// whose validated outputs are already committed; a plain `npm run assets` must not redo them.
+const OPT_IN = new Set(['codex']);
 let failed = 0;
-for (const g of groups.length ? groups : GROUPS) {
+for (const g of groups.length ? groups : GROUPS.filter((name) => !OPT_IN.has(name))) {
   const script = path.join(ROOT, 'assets', 'blender', g, 'build.py');
   if (!fs.existsSync(script)) { console.warn(`! ${g}: ${script} not found, skipped`); continue; }
   console.log(`\n=== ${g} ===`);
