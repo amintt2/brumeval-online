@@ -1,0 +1,420 @@
+{
+  "asset_count": 27,
+  "total_bytes": 725066,
+  "checks": [
+    "expected dimensions",
+    "RGBA transparency",
+    "transparent frame apertures",
+    "opaque panel centers",
+    "valid nine-slice margins",
+    "nine-slice corner pixels unchanged",
+    "valid cursor hotspots"
+  ],
+  "assets": [
+    {
+      "key": "panel_leather",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 210738,
+      "sha256": "bf3ec2715107aa9f1d2575c60996236188bdf7264e9f722ea598f01e4ef3954c",
+      "alpha_bbox": [
+        0,
+        0,
+        512,
+        512
+      ]
+    },
+    {
+      "key": "panel_stone",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 208048,
+      "sha256": "034d1f9786d31fdfc58e2b7071c2439effd4a6b165096f9ba0b95d9055628530",
+      "alpha_bbox": [
+        0,
+        0,
+        512,
+        512
+      ]
+    },
+    {
+      "key": "corner",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 5071,
+      "sha256": "0a2c65591699ec4fa96492fa6efe8291d6d7d83482519b29903caf7d644c4121",
+      "alpha_bbox": [
+        11,
+        11,
+        106,
+        106
+      ]
+    },
+    {
+      "key": "border_h",
+      "size": [
+        256,
+        24
+      ],
+      "bytes": 4478,
+      "sha256": "0f6edb0b5c8cd507530e9475ecd27d7056b9229fccd33252aeca3d21f9257ad2",
+      "alpha_bbox": [
+        1,
+        5,
+        256,
+        19
+      ]
+    },
+    {
+      "key": "border_v",
+      "size": [
+        24,
+        256
+      ],
+      "bytes": 5133,
+      "sha256": "2531ee2f7efd77ac8e2ef7fb612108942e51c189c24bdccce0910e3513bb3c87",
+      "alpha_bbox": [
+        5,
+        0,
+        19,
+        255
+      ]
+    },
+    {
+      "key": "button_normal",
+      "size": [
+        320,
+        64
+      ],
+      "bytes": 21525,
+      "sha256": "c49904b82bf5b1a9e508d4aaa7bbe3e10f8cc7dad35c255ee4adfc9309b91597",
+      "alpha_bbox": [
+        0,
+        0,
+        320,
+        64
+      ]
+    },
+    {
+      "key": "button_hover",
+      "size": [
+        320,
+        64
+      ],
+      "bytes": 22861,
+      "sha256": "996ecca911edc2c86bebcc5a0507e0a5811300faca307ce603e748418499d9b9",
+      "alpha_bbox": [
+        0,
+        0,
+        320,
+        64
+      ]
+    },
+    {
+      "key": "button_pressed",
+      "size": [
+        320,
+        64
+      ],
+      "bytes": 18367,
+      "sha256": "0e08bb200242f49e3de2b0f5d7ed1eb028c09e058450e5d457279c083d191e4c",
+      "alpha_bbox": [
+        0,
+        0,
+        320,
+        64
+      ]
+    },
+    {
+      "key": "bar_frame_hp",
+      "size": [
+        320,
+        32
+      ],
+      "bytes": 10155,
+      "sha256": "10a319f0687d09d056d5543a80b61fce64f5fd4002c5dac689124064bf75fa07",
+      "alpha_bbox": [
+        0,
+        0,
+        320,
+        32
+      ]
+    },
+    {
+      "key": "bar_fill_hp",
+      "size": [
+        256,
+        16
+      ],
+      "bytes": 6066,
+      "sha256": "f3d2b573268bcfd7e9d386c96be9edda6e36208d6ed6e531108307e378175586",
+      "alpha_bbox": [
+        0,
+        0,
+        256,
+        16
+      ]
+    },
+    {
+      "key": "bar_frame_mana",
+      "size": [
+        320,
+        32
+      ],
+      "bytes": 10156,
+      "sha256": "bbbb86db961d6dde451f9b05760266e1e68984d3188b76c0df49f1b9b77d4ee2",
+      "alpha_bbox": [
+        0,
+        0,
+        320,
+        32
+      ]
+    },
+    {
+      "key": "bar_fill_mana",
+      "size": [
+        256,
+        16
+      ],
+      "bytes": 6045,
+      "sha256": "cfce2079ddeebceacc19e2a95aa2f8b96b2724ac37ce29064d38c5f7730a7b1a",
+      "alpha_bbox": [
+        0,
+        0,
+        256,
+        16
+      ]
+    },
+    {
+      "key": "bar_frame_stamina",
+      "size": [
+        320,
+        32
+      ],
+      "bytes": 10149,
+      "sha256": "ab6dee0095e1718c3b8ec57cc492d9b28dccfe92dfc8f53d919bbfe2e9c8d284",
+      "alpha_bbox": [
+        0,
+        0,
+        320,
+        32
+      ]
+    },
+    {
+      "key": "bar_fill_stamina",
+      "size": [
+        256,
+        16
+      ],
+      "bytes": 5802,
+      "sha256": "c57aced57d8d9f639762f3cb4f570092a1f40fdf6d270b15d1c2ca6807df2c58",
+      "alpha_bbox": [
+        0,
+        0,
+        256,
+        16
+      ]
+    },
+    {
+      "key": "slot_item",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13003,
+      "sha256": "bb797207aca9453104404c2ccf486d8a2b4b0aa091f2e28423c07b780b230547",
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        128
+      ]
+    },
+    {
+      "key": "slot_skill",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13356,
+      "sha256": "6ad6d928cc2c6c87571039a699db84524eb36d7f2de53f100c5d275d9d06a0c0",
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        128
+      ]
+    },
+    {
+      "key": "minimap_ring",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 92624,
+      "sha256": "355d63c7ea944a4e7621ca7d29612954ecca9140eb6d20c07c24d1c3229458ce",
+      "alpha_bbox": [
+        1,
+        1,
+        511,
+        511
+      ]
+    },
+    {
+      "key": "tooltip",
+      "size": [
+        256,
+        128
+      ],
+      "bytes": 30909,
+      "sha256": "e7b401e58224f2ecd0d50c35b3567d5ff8a31892bfaf70af336fca7808f6990b",
+      "alpha_bbox": [
+        0,
+        0,
+        256,
+        128
+      ]
+    },
+    {
+      "key": "separator",
+      "size": [
+        512,
+        32
+      ],
+      "bytes": 4750,
+      "sha256": "329ba89aa8182141fce44f915a0ff804311431daab88dc09c750634295463bb7",
+      "alpha_bbox": [
+        7,
+        5,
+        505,
+        27
+      ]
+    },
+    {
+      "key": "cursor_normal_32",
+      "size": [
+        32,
+        32
+      ],
+      "bytes": 1475,
+      "sha256": "781f1800c46f90e672453a9b83867548cd073bc6dc7adb7905e2e714bf39a834",
+      "alpha_bbox": [
+        1,
+        1,
+        24,
+        31
+      ]
+    },
+    {
+      "key": "cursor_normal_64",
+      "size": [
+        64,
+        64
+      ],
+      "bytes": 3636,
+      "sha256": "b1b28f9f3adef3e5c8911f2785fbf16e67b5c60bf244a756e063a31af1bfb3fa",
+      "alpha_bbox": [
+        4,
+        3,
+        47,
+        60
+      ]
+    },
+    {
+      "key": "cursor_attack_32",
+      "size": [
+        32,
+        32
+      ],
+      "bytes": 1671,
+      "sha256": "4f4693fb46916ff085688c9ff7989121d6ad319b23fa97f257544548319c037c",
+      "alpha_bbox": [
+        0,
+        0,
+        31,
+        32
+      ]
+    },
+    {
+      "key": "cursor_attack_64",
+      "size": [
+        64,
+        64
+      ],
+      "bytes": 4437,
+      "sha256": "fb6a4d1235365456c7dc734e43d3870d0de23428717a7ecf2ef04403e6f880bd",
+      "alpha_bbox": [
+        4,
+        4,
+        60,
+        62
+      ]
+    },
+    {
+      "key": "cursor_talk_32",
+      "size": [
+        32,
+        32
+      ],
+      "bytes": 1964,
+      "sha256": "c93db1c6922d892661aec760250f258b86ebef06f143199bcb7590fbad1af426",
+      "alpha_bbox": [
+        0,
+        0,
+        32,
+        31
+      ]
+    },
+    {
+      "key": "cursor_talk_64",
+      "size": [
+        64,
+        64
+      ],
+      "bytes": 5726,
+      "sha256": "8914a893e1260d9f9b2d00af9fc396622cb582b4db098fb184c6d902b1a98232",
+      "alpha_bbox": [
+        0,
+        3,
+        62,
+        60
+      ]
+    },
+    {
+      "key": "cursor_grab_32",
+      "size": [
+        32,
+        32
+      ],
+      "bytes": 1834,
+      "sha256": "715792c15c12606ad87b001d10fc88f26cc64b59200a392f48dc2ce276d81f80",
+      "alpha_bbox": [
+        0,
+        0,
+        26,
+        32
+      ]
+    },
+    {
+      "key": "cursor_grab_64",
+      "size": [
+        64,
+        64
+      ],
+      "bytes": 5087,
+      "sha256": "d59e82c392914e8032a9390b316cb43d85315bcb55a865476f70abb9e8b75dd3",
+      "alpha_bbox": [
+        0,
+        3,
+        49,
+        61
+      ]
+    }
+  ]
+}

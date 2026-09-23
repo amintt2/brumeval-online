@@ -1,0 +1,443 @@
+{
+  "version": 1,
+  "generator": "Blender Cycles orthographic physical relief",
+  "color_space": "sRGB",
+  "slice_units": "source pixels",
+  "slice_order": [
+    "top",
+    "right",
+    "bottom",
+    "left"
+  ],
+  "assets": {
+    "panel_leather": {
+      "file": "panel_leather.png",
+      "size": [
+        512,
+        512
+      ],
+      "alpha": true,
+      "content_inset": [
+        68,
+        68,
+        68,
+        68
+      ],
+      "slice": {
+        "top": 64,
+        "right": 64,
+        "bottom": 64,
+        "left": 64
+      }
+    },
+    "panel_stone": {
+      "file": "panel_stone.png",
+      "size": [
+        512,
+        512
+      ],
+      "alpha": true,
+      "content_inset": [
+        68,
+        68,
+        68,
+        68
+      ],
+      "slice": {
+        "top": 64,
+        "right": 64,
+        "bottom": 64,
+        "left": 64
+      }
+    },
+    "corner": {
+      "file": "corner.png",
+      "size": [
+        128,
+        128
+      ],
+      "alpha": true,
+      "orientation": "top_left",
+      "usage": "Rotate 0/90/180/270 degrees; native ornament size 64 px."
+    },
+    "border_h": {
+      "file": "border_h.png",
+      "size": [
+        256,
+        24
+      ],
+      "alpha": true,
+      "slice": {
+        "top": 0,
+        "right": 12,
+        "bottom": 0,
+        "left": 12
+      }
+    },
+    "border_v": {
+      "file": "border_v.png",
+      "size": [
+        24,
+        256
+      ],
+      "alpha": true,
+      "slice": {
+        "top": 12,
+        "right": 0,
+        "bottom": 12,
+        "left": 0
+      }
+    },
+    "button_normal": {
+      "file": "button_normal.png",
+      "size": [
+        320,
+        64
+      ],
+      "alpha": true,
+      "content_inset": [
+        14,
+        50,
+        14,
+        50
+      ],
+      "slice": {
+        "top": 20,
+        "right": 48,
+        "bottom": 20,
+        "left": 48
+      }
+    },
+    "button_hover": {
+      "file": "button_hover.png",
+      "size": [
+        320,
+        64
+      ],
+      "alpha": true,
+      "content_inset": [
+        14,
+        50,
+        14,
+        50
+      ],
+      "slice": {
+        "top": 20,
+        "right": 48,
+        "bottom": 20,
+        "left": 48
+      }
+    },
+    "button_pressed": {
+      "file": "button_pressed.png",
+      "size": [
+        320,
+        64
+      ],
+      "alpha": true,
+      "content_inset": [
+        14,
+        50,
+        14,
+        50
+      ],
+      "slice": {
+        "top": 20,
+        "right": 48,
+        "bottom": 20,
+        "left": 48
+      }
+    },
+    "bar_frame_hp": {
+      "file": "bar_frame_hp.png",
+      "size": [
+        320,
+        32
+      ],
+      "alpha": true,
+      "aperture": [
+        16,
+        9,
+        288,
+        14
+      ],
+      "slice": {
+        "top": 12,
+        "right": 24,
+        "bottom": 12,
+        "left": 24
+      }
+    },
+    "bar_fill_hp": {
+      "file": "bar_fill_hp.png",
+      "size": [
+        256,
+        16
+      ],
+      "alpha": true,
+      "usage": "Clip width by resource percentage; do not stretch brightness by value.",
+      "slice": {
+        "top": 3,
+        "right": 5,
+        "bottom": 3,
+        "left": 5
+      }
+    },
+    "bar_frame_mana": {
+      "file": "bar_frame_mana.png",
+      "size": [
+        320,
+        32
+      ],
+      "alpha": true,
+      "aperture": [
+        16,
+        9,
+        288,
+        14
+      ],
+      "slice": {
+        "top": 12,
+        "right": 24,
+        "bottom": 12,
+        "left": 24
+      }
+    },
+    "bar_fill_mana": {
+      "file": "bar_fill_mana.png",
+      "size": [
+        256,
+        16
+      ],
+      "alpha": true,
+      "usage": "Clip width by resource percentage; do not stretch brightness by value.",
+      "slice": {
+        "top": 3,
+        "right": 5,
+        "bottom": 3,
+        "left": 5
+      }
+    },
+    "bar_frame_stamina": {
+      "file": "bar_frame_stamina.png",
+      "size": [
+        320,
+        32
+      ],
+      "alpha": true,
+      "aperture": [
+        16,
+        9,
+        288,
+        14
+      ],
+      "slice": {
+        "top": 12,
+        "right": 24,
+        "bottom": 12,
+        "left": 24
+      }
+    },
+    "bar_fill_stamina": {
+      "file": "bar_fill_stamina.png",
+      "size": [
+        256,
+        16
+      ],
+      "alpha": true,
+      "usage": "Clip width by resource percentage; do not stretch brightness by value.",
+      "slice": {
+        "top": 3,
+        "right": 5,
+        "bottom": 3,
+        "left": 5
+      }
+    },
+    "slot_item": {
+      "file": "slot_item.png",
+      "size": [
+        128,
+        128
+      ],
+      "alpha": true,
+      "aperture": [
+        15,
+        15,
+        98,
+        98
+      ],
+      "slice": {
+        "top": 28,
+        "right": 28,
+        "bottom": 28,
+        "left": 28
+      }
+    },
+    "slot_skill": {
+      "file": "slot_skill.png",
+      "size": [
+        128,
+        128
+      ],
+      "alpha": true,
+      "aperture": [
+        15,
+        15,
+        98,
+        98
+      ],
+      "slice": {
+        "top": 28,
+        "right": 28,
+        "bottom": 28,
+        "left": 28
+      }
+    },
+    "minimap_ring": {
+      "file": "minimap_ring.png",
+      "size": [
+        512,
+        512
+      ],
+      "alpha": true,
+      "aperture": {
+        "shape": "circle",
+        "center": [
+          256,
+          256
+        ],
+        "radius": 223
+      }
+    },
+    "tooltip": {
+      "file": "tooltip.png",
+      "size": [
+        256,
+        128
+      ],
+      "alpha": true,
+      "content_inset": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "slice": {
+        "top": 20,
+        "right": 20,
+        "bottom": 20,
+        "left": 20
+      }
+    },
+    "separator": {
+      "file": "separator.png",
+      "size": [
+        512,
+        32
+      ],
+      "alpha": true,
+      "slice": {
+        "top": 0,
+        "right": 32,
+        "bottom": 0,
+        "left": 32
+      }
+    },
+    "cursor_normal_32": {
+      "file": "cursor_normal_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "alpha": true,
+      "hotspot": [
+        4,
+        4
+      ]
+    },
+    "cursor_normal_64": {
+      "file": "cursor_normal_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "alpha": true,
+      "hotspot": [
+        8,
+        8
+      ]
+    },
+    "cursor_attack_32": {
+      "file": "cursor_attack_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "alpha": true,
+      "hotspot": [
+        4,
+        4
+      ]
+    },
+    "cursor_attack_64": {
+      "file": "cursor_attack_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "alpha": true,
+      "hotspot": [
+        8,
+        8
+      ]
+    },
+    "cursor_talk_32": {
+      "file": "cursor_talk_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "alpha": true,
+      "hotspot": [
+        4,
+        4
+      ]
+    },
+    "cursor_talk_64": {
+      "file": "cursor_talk_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "alpha": true,
+      "hotspot": [
+        8,
+        8
+      ]
+    },
+    "cursor_grab_32": {
+      "file": "cursor_grab_32.png",
+      "size": [
+        32,
+        32
+      ],
+      "alpha": true,
+      "hotspot": [
+        4,
+        4
+      ]
+    },
+    "cursor_grab_64": {
+      "file": "cursor_grab_64.png",
+      "size": [
+        64,
+        64
+      ],
+      "alpha": true,
+      "hotspot": [
+        8,
+        8
+      ]
+    }
+  }
+}
