@@ -44,6 +44,7 @@ export function resetBrainState(m) {
   m.used = {};             // once-per-fight attacks already used
   m.poiseDmg = 0;
   m.poiseAt = 0;
+  m.poiseImmuneUntil = 0;
   m.phase = 1;
   m.enraged = false;
   m.decideAt = 0;

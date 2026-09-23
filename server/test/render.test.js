@@ -16,6 +16,15 @@ const { windKindOf, windParamsFor } = await import('../../client/src/render/wind
 const { parseFlipbookEntry } = await import('../../client/src/render/flipbooks.js');
 const { computeTerrainData, LAYERS } = await import('../../client/src/render/terrainData.js');
 const { WORLD_HALF } = await import('../../shared/world.js');
+const { windupMs } = await import('../../client/src/render/teleTiming.js');
+
+test('telegraph decals fill up one round trip early (a roll timed on the decal reaches the server in time)', () => {
+  assert.equal(windupMs(900, 0), 900);
+  assert.equal(windupMs(900, 100), 800);
+  assert.equal(windupMs(900, 1000), 540, 'never shorter than 60 %');
+  assert.equal(windupMs(900, NaN), 900);
+  assert.equal(windupMs(900, -5), 900);
+});
 
 test('graphics presets: every preset has every option, post off disables AO and volumetric fog', () => {
   for (const id of Q.PRESET_IDS) {

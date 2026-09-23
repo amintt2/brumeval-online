@@ -8,6 +8,8 @@ import { damageMonster } from '../src/systems/combat.js';
 import { telegraphs } from '../src/systems/telegraph.js';
 import { damagePlayer } from '../src/systems/players.js';
 import { decide } from '../src/systems/ai/index.js';
+import { startAttack } from '../src/systems/ai/actions.js';
+import { PLAYER_RADIUS } from '../../shared/protocol.js';
 import { migrateCharacter, newCharacter } from '../src/persistence.js';
 import { makeGame, addPlayer, place, advance, spawnAt, zoneOf } from './helpers.js';
 
@@ -465,4 +467,35 @@ test('death echo: XP dropped at the death spot, owner-only entity, recovered by 
   assert.equal(p2.selfState().echo.xp, 30);
   assert.equal(p2.selfState().mst, STAMINA.max);
   assert.ok(xpToNext(3) > 120);
+});
+
+test('leaps and charges arrive WITH the hit (no ghost hit from 5 m); bodies never overlap the player', () => {
+  for (const [type, ab] of [['slime', 'slime_slam'], ['wolf', 'wolf_lunge']]) {
+    for (let seed = 1; seed <= 4; seed++) {
+      const game = makeGame({ seed });
+      const z = zoneOf(type);
+      const p = addPlayer(game, { cls: 'warrior', level: 30 });
+      place(game, p, z.x, z.z);
+      const m = spawnAt(game, type, z.x + 5, z.z);
+      damageMonster(game, m, p, 1, false);
+      advance(game, 800);
+      m.x = z.x + 5; m.z = z.z; m.act = null;
+      place(game, p, z.x, z.z);
+      const atk = m.brain.attacks.find((a) => a.id === ab);
+      m.brain.attacks = [atk];
+      startAttack(game, m, atk, p, game.now());
+      const contact = m.radius + PLAYER_RADIUS;
+      let hitD = null, minD = Infinity;
+      for (let i = 0; i < 40; i++) {
+        advance(game, 50);
+        p.hp = p.mhp;
+        const d = Math.hypot(m.x - p.x, m.z - p.z);
+        minD = Math.min(minD, d);
+        if (hitD === null && p.session.of('dmg', (x) => x.ab === ab).length) hitD = d;
+      }
+      assert.ok(hitD !== null, `${ab} hit`);
+      assert.ok(hitD <= contact + 0.3, `${ab} seed ${seed}: body at ${hitD.toFixed(2)} m at the hit`);
+      assert.ok(minD >= contact - 0.1, `${ab} seed ${seed}: overlapped the player (${minD.toFixed(2)} m)`);
+    }
+  }
 });

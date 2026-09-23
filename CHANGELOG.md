@@ -1,5 +1,20 @@
 # Journal des versions — Brumeval Online
 
+## v0.2.1 — correctifs
+
+### Sécurité des comptes
+- **Ajouter une clé d'accès redemande le mot de passe** si vous ne l'avez pas tapé dans les 10 dernières minutes (par exemple après une connexion par « Rester connecté ») : un appareil mémorisé ne suffit plus à installer une clé d'accès durable.
+- **Changer de mot de passe** ferme aussi les autres connexions ouvertes, et peut **supprimer toutes les clés d'accès** en même temps (case cochée par défaut quand le compte en a).
+- Des échecs de connexion envoyés depuis d'autres adresses ne bloquent plus votre connexion par mot de passe depuis votre appareil habituel.
+
+### Combat
+- **Zones télégraphiées à l'heure** : la zone se remplit en tenant compte de votre latence, une roulade lancée quand elle est pleine arrive à temps au serveur.
+- **Bonds et charges** : le gluant et le loup partent pendant la fin de leur préparation et arrivent **avec** le coup (plus de coup reçu d'un monstre encore à 5 m). Le gluant atterrit contre vous, plus sur vous.
+- Les monstres ne se tiennent plus **dans** le corps du joueur.
+- **Déséquilibre** : la frappe du guerrier déséquilibre moins (poise 7 au lieu de 12) et un monstre qui vient de tituber est insensible au déséquilibre 2 s : l'attaque de base seule ne tient plus gluants et loups à la merci, il faut aussi esquiver.
+- Le Bond du gluant frappe plus fort (×1,6), la Ruée du loup un peu moins (×1,35).
+- Message de mort : « Vous avez été vaincu (Loup gris). »
+
 ## v0.2.0 — 23/09/2026 · Fondations & Âme
 
 ### Comptes et personnages

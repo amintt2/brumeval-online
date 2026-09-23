@@ -69,7 +69,7 @@ export function createToasts(parent) {
     if (!name) return;
     const region = REGIONS.find((r) => r.name === name);
     zoneName.textContent = String(name);
-    zoneSub.textContent = region?.safe ? 'Zone sûre' : region ? 'Territoire hostile' : 'Contrée sauvage';
+    zoneSub.textContent = region?.safe ? 'Zone sûre' : 'Territoire hostile';
     zone.classList.toggle('safe', !!region?.safe);
     zone.classList.remove('show');
     void zone.offsetWidth;

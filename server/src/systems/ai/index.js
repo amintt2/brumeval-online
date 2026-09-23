@@ -366,6 +366,7 @@ function nearestAlly(game, m, r) {
 /** Poise damage from a player's hit: staggers the monster when its poise breaks. */
 export function applyPoise(game, m, poise, now) {
   if (m.dead || !(poise > 0) || !m.brain) return false;
+  if (now < (m.poiseImmuneUntil || 0)) return false; // hyper-armor right after a stagger
   if (now - m.poiseAt > POISE.windowMs) m.poiseDmg = 0;
   m.poiseAt = now;
   m.poiseDmg += poise;
@@ -376,6 +377,7 @@ export function applyPoise(game, m, poise, now) {
   m.dash = null;
   const ms = m.boss ? POISE.bossStaggerMs : POISE.staggerMs;
   m.act = { kind: 'stagger', until: now + ms };
+  m.poiseImmuneUntil = now + ms + POISE.immuneMs;
   game.broadcastNear(m.x, m.z, { t: S2C.FX, k: FX.STAGGER, src: m.id, ms });
   return true;
 }

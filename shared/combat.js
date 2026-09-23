@@ -32,7 +32,8 @@ export const COMMIT = {
 };
 
 /** Poise: damage over this window staggers a monster when it exceeds its poise. */
-export const POISE = { windowMs: 3500, staggerMs: 900, bossStaggerMs: 1500 };
+// immuneMs: hyper-armor after a stagger ends (poise damage is ignored), so a stagger cannot be chained forever
+export const POISE = { windowMs: 3500, staggerMs: 900, bossStaggerMs: 1500, immuneMs: 2000 };
 
 /** Death echo: the XP of the current level is dropped where the player died. */
 export const ECHO = { pickupR: 1.8 };
@@ -66,7 +67,7 @@ export function inTelegraph(t, px, pz, pr = 0) {
       return d <= t.r + pr && d >= (t.r2 || 0) - pr;
     case 'cone': {
       if (d > t.r + pr) return false;
-      if (d <= pr + 0.3) return true; // standing on the apex
+      if (d <= pr) return true; // the body covers the apex (monsters keep their distance: nobody stands behind it)
       const half = (t.arc || Math.PI / 2) / 2;
       const tol = Math.asin(Math.min(1, pr / d));
       return Math.abs(angDiff(t.a || 0, Math.atan2(dx, dz))) <= half + tol;

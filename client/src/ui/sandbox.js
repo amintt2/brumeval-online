@@ -358,7 +358,7 @@ function die() {
   self.hp = 0;
   push();
   ui.showDeath(true);
-  ui.notify('Vous avez été tué par Golem ancien.', 'error');
+  ui.notify('Vous avez été vaincu (Golem ancien).', 'error');
 }
 function cooldownsDemo() {
   const ab = self.abilities.map((id) => ABILITIES[id]);

@@ -75,7 +75,7 @@ export function killPlayer(game, p, killer) {
   p.autoTarget = 0;
   p.markDirty('dead', 'hp');
   game.broadcastNear(p.x, p.z, { t: S2C.DEATH, id: p.id, by: killer ? killer.id : 0 });
-  game.notify(p, 'error', killer ? `Vous avez été vaincu par ${killer.name}.` : 'Vous êtes mort.');
+  game.notify(p, 'error', killer ? `Vous avez été vaincu (${killer.name}).` : 'Vous êtes mort.');
   dropEcho(game, p); // [combat-souls]
   closeDialog(game, p);
   for (const m of game.monsters.values()) {

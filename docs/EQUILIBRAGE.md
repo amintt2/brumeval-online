@@ -22,7 +22,7 @@
 | Engagement des attaques | après chaque capacité, 0,25 à 0,6 s à 25–50 % de la vitesse (`rec`, `recSlow`) | `ABILITIES[*]` |
 | Coût d'endurance des capacités | 5 à 18 (`st`) — l'auto-attaque aussi | `ABILITIES[*].st` |
 | Tir automatique à distance | seulement en se déplaçant à moins de 40 % de sa vitesse | `COMMIT.rangedMoveMax` |
-| Déséquilibre (poise) | assez de dégâts de « poise » en 3,5 s ⇒ le monstre titube 0,9 s (boss 1,5 s) et son attaque est annulée | `POISE`, `ABILITIES[*].poise`, `MONSTERS[*].ai.poise` |
+| Déséquilibre (poise) | assez de dégâts de « poise » en 3,5 s ⇒ le monstre titube 0,9 s (boss 1,5 s) et son attaque est annulée ; puis 2 s d'insensibilité (pas de titubation en chaîne) | `POISE`, `ABILITIES[*].poise`, `MONSTERS[*].ai.poise` |
 | Écho de mort | l'XP du niveau en cours reste sur place ; la récupérer en marchant dessus, perdue si on meurt avant | `ECHO` |
 
 Les monstres télégraphient leurs attaques lourdes (zones rouges au sol) ; leurs coups légers ont un temps de
@@ -68,6 +68,9 @@ mort. C'est ce que ressent un joueur qui « farme » : tuer vite ne sert à rien
 | Tir / Tir perçant | ×0,95 / ×2,1 | ×0,85 / ×1,9 | |
 | Loup : vitesse | 5,4 | 5,8 (course ×1,3 = 7,5 m/s) | « des monstres qui foncent » : plus rapides qu'un joueur qui ne sprinte pas |
 | Squelette : vitesse | 4,6 | 4,2 | brute lente mais attaque lourde (×2,0) et garde frontale (−40 %) |
+| Frappe (guerrier) : poise | — | 7 (au lieu de 12, v0.2.1) | l'attaque de base seule ne tient plus gluants et loups en titubation : le guerrier doit aussi esquiver |
+| Gluant : Bond (slime_slam) | — | ×1,6 (au lieu de ×1,35, v0.2.1) | une raison lisible d'esquiver dès le niveau 1 |
+| Loup : Ruée (wolf_lunge) | — | ×1,35 (au lieu de ×1,45, v0.2.1) | marche moins haute entre gluants et loups pour les lanceurs de sorts |
 | Golem : PV / attaque | 2600 / 42 | 3000 / 46 | vrai boss à trois phases |
 
 Les monstres de même type ne se ressemblent plus : variantes (gobelin lanceur 40 %, squelette occultiste 20 %),

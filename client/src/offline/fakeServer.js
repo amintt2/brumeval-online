@@ -459,7 +459,7 @@ export class FakeServer {
       p.s = STATE.DEAD;
       p.autoTarget = 0;
       this.send({ t: S2C.DEATH, id: p.id, by: m.id });
-      this.notify('error', `Vous avez été vaincu par ${m.n}.`);
+      this.notify('error', `Vous avez été vaincu (${m.n}).`);
       // [combat-souls] death echo
       if (p.echo) this.notify('error', `Votre écho précédent s'est dissipé à jamais (${p.echo.xp} XP perdus).`);
       p.echo = null;

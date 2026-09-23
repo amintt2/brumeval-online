@@ -5,6 +5,9 @@
 import * as THREE from 'three';
 import { terrainHeight } from '@shared/world.js';
 import './souls.css';
+import { windupMs } from './teleTiming.js';
+
+export { windupMs };
 
 const SHAPE_ID = { circle: 0, ring: 1, cone: 2, line: 3 };
 const LIFT = 0.08;
@@ -133,8 +136,12 @@ export class Telegraphs {
     this.pendingAnims = [];
   }
 
-  /** S2C tele */
-  add(m, now = performance.now()) {
+  /**
+   * S2C tele. `rtt` = smoothed round trip (ms): the server resolves the hit `ms` after it SENT the telegraph, and
+   * a roll / step needs half a round trip to reach it, so the decal is full at the last moment an answer can still
+   * arrive in time (now + ms - rtt, see windupMs). Without it, a roll timed on the decal was always one RTT late.
+   */
+  add(m, now = performance.now(), rtt = 0) {
     if (!m || !Number.isFinite(m.x) || !Number.isFinite(m.z) || !SHAPE_ID.hasOwnProperty(m.shape)) return;
     this.remove(m.id);
     const theme = themeOf(m.ab);
@@ -166,7 +173,7 @@ export class Telegraphs {
     mesh.renderOrder = 4;
     mesh.frustumCulled = false;
     this.ctx.scene.add(mesh);
-    const ms = Math.max(50, m.ms || 800);
+    const ms = windupMs(Math.max(50, m.ms || 800), rtt);
     this.list.set(m.id, { id: m.id, src: m.src, mesh, u, start: now, end: now + ms, state: 'wind', t: 0, x: m.x, z: m.z, shape: m.shape, r: m.r });
     if (m.clip && m.src) this._animate(m.src, m.clip, ms, now);
   }

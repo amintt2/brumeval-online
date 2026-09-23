@@ -82,13 +82,16 @@ export function fight(cls, level, type, mLevel, variant, rng, trace = null) {
     let { amount } = computeDamage(p.atk, power, m.defense, p.crit, rng(), rng());
     if (g && !(m.act && m.act.phase === 'windup') && rng() < 0.7) amount = Math.max(1, Math.round(amount * (1 - g.reduce)));
     m.hp -= amount;
+    if (t < (m.poiseImmuneUntil || 0)) return; // hyper-armor after a stagger
     if (t - m.poiseAt > POISE.windowMs / 1000) m.poise = 0;
     m.poiseAt = t;
     m.poise += ab.poise || 0;
     if (m.poise >= (m.brain.poise || 30)) {
       m.poise = 0;
       m.act = null;
-      m.busyUntil = t + (m.def.boss ? POISE.bossStaggerMs : POISE.staggerMs) / 1000;
+      const st = (m.def.boss ? POISE.bossStaggerMs : POISE.staggerMs) / 1000;
+      m.busyUntil = t + st;
+      m.poiseImmuneUntil = t + st + POISE.immuneMs / 1000;
     }
   };
   const spendSt = (v) => { p.st -= v; p.stAt = t; };
@@ -313,7 +316,8 @@ export function formatReport(res) {
   out.push('| Niv. | Classe | Adversaire | TTK (s) | Dégâts subis (% PV) | Morts | XP/min |');
   out.push('|---|---|---|---:|---:|---:|---:|');
   for (const r of res.rows) {
-    const name = `${MONSTERS[r.type].name}${r.variant && r.variant !== 'skirmisher' && r.variant !== 'brute' ? ` (${r.variant})` : ''} niv. ${r.mLevel}`;
+    const vname = (MONSTERS[r.type].variants || []).find((v) => v.key === r.variant)?.name;
+    const name = `${vname || MONSTERS[r.type].name} niv. ${r.mLevel}`;
     out.push(`| ${r.level} | ${CLASSES[r.cls].name} | ${name} | ${f1(r.ttk)} | ${Math.round(r.dmgPct * 100)} % | ${Math.round(r.deathRate * 100)} % | ${Math.round(r.xpm)} |`);
   }
   out.push('');

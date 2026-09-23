@@ -12,6 +12,9 @@ import { provoke } from './index.js';
 
 const MELEE_ARC = (80 * Math.PI) / 180;     // half-angle in front of the monster where a light swing lands
 const MELEE_SLACK = 0.6;                    // extra reach at impact (server position lag)
+const DASH_SPEED = 26;                      // charge (line + dash) m/s
+const LEAP_SPEED = 20;                      // leap (circle + leap) m/s
+const DASH_EARLY_MS = 25;                   // leave half a tick early (the AI ticks at 20 Hz)
 
 export const angleTo = (m, x, z) => Math.atan2(x - m.x, z - m.z);
 function angDiff(a, b) {
@@ -98,12 +101,43 @@ export function startAttack(game, m, atk, target, now) {
         act.teleIds.push(id);
         m.teleIds.push(id);
       }
+      // charges and leaps travel DURING the end of the wind-up so the body arrives with the hit (no ghost hit
+      // from 5 m away, the monster flying in afterwards)
+      act.dash = dashPlan(m, atk, act.shape, wind);
+      if (act.dash) act.departAt = act.impactAt - act.dash.ms - DASH_EARLY_MS;
       break;
     }
     default:
       break;
   }
   return act;
+}
+
+/**
+ * Destination and speed of a charge / leap so that it ends at the impact: a charge runs to the end of its line,
+ * a leap lands just short of the aimed point (bodies touching, not on top of the player). Faster than the base
+ * speed when the wind-up is too short for the distance.
+ */
+export function dashPlan(m, atk, s, windMs) {
+  if (!s) return null;
+  let x, z, speed;
+  if (atk.dash && s.shape === 'line') {
+    const len = Math.max(0, (s.len || 0) - m.radius);
+    x = s.x + Math.sin(s.a) * len;
+    z = s.z + Math.cos(s.a) * len;
+    speed = DASH_SPEED;
+  } else if (atk.leap && s.shape === 'circle') {
+    const d = dist(m.x, m.z, s.x, s.z);
+    const land = Math.max(0, d - ((m.radius || 0.5) + PLAYER_RADIUS));
+    x = d > 1e-6 ? m.x + ((s.x - m.x) / d) * land : m.x;
+    z = d > 1e-6 ? m.z + ((s.z - m.z) / d) * land : m.z;
+    speed = LEAP_SPEED;
+  } else return null;
+  const d = dist(m.x, m.z, x, z);
+  if (d < 0.05) return null;
+  const maxMs = Math.max(50, windMs * 0.8);
+  if ((d / speed) * 1000 > maxMs) speed = d / (maxMs / 1000);
+  return { x, z, speed, ms: Math.round((d / speed) * 1000) };
 }
 
 function otherTargets(game, m, main) {
@@ -126,6 +160,16 @@ export function cancelTelegraphs(game, m) {
 export function tickAttack(game, m, target, dt, now) {
   const act = m.act;
   const atk = act.atk;
+  // a charge / leap takes off before the impact (dashPlan) and may finish during the recovery
+  if (act.dash && !act.departed && now >= act.departAt) {
+    act.departed = true;
+    m.dash = { x: act.dash.x, z: act.dash.z, speed: act.dash.speed };
+  }
+  if (m.dash) {
+    const d = m.dash;
+    const moved = stepToward(game, m, d.x, d.z, d.speed, dt, 0, now, false);
+    if (moved < 1e-3 || dist(m.x, m.z, d.x, d.z) < 0.15) m.dash = null;
+  }
   if (act.phase === 'windup') {
     // light swings and projectiles track the target; telegraphed attacks are committed
     if (target && atk.kind !== 'tele') m.ry = angleTo(m, target.x, target.z);
@@ -145,12 +189,7 @@ export function tickAttack(game, m, target, dt, now) {
     }
     return true;
   }
-  // recovery (punish window) — a charge travels during it
-  if (m.dash) {
-    const d = m.dash;
-    const moved = stepToward(game, m, d.x, d.z, d.speed, dt, 0, now, false);
-    if (moved < 1e-3 || dist(m.x, m.z, d.x, d.z) < 0.15) m.dash = null;
-  }
+  // recovery (punish window)
   return now < act.until;
 }
 
@@ -167,13 +206,10 @@ function resolveAttack(game, m, act, target, now) {
     }
     case 'tele': {
       m.teleIds = m.teleIds.filter((id) => !act.teleIds?.includes(id));
-      const s = act.shape;
-      if (!s) return;
-      if (atk.dash && s.shape === 'line') {
-        const len = Math.max(0, (s.len || 0) - m.radius);
-        m.dash = { x: s.x + Math.sin(s.a) * len, z: s.z + Math.cos(s.a) * len, speed: 26 };
-      } else if (atk.leap && s.shape === 'circle') {
-        m.dash = { x: s.x, z: s.z, speed: 20 };
+      // a charge / leap that could not take off yet (very short wind-up) leaves now
+      if (act.dash && !act.departed) {
+        act.departed = true;
+        m.dash = { x: act.dash.x, z: act.dash.z, speed: act.dash.speed };
       }
       return;
     }

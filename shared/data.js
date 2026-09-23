@@ -64,7 +64,7 @@ export const ABILITIES = {
 //   recSlow = speed factor during the recovery
 //   poise   = poise damage dealt to monsters (enough of it within POISE.windowMs staggers them)
 const ABILITY_SOULS = {
-  strike: { st: 5, rec: 0.25, recSlow: 0.5, poise: 12 },
+  strike: { st: 5, rec: 0.25, recSlow: 0.5, poise: 7 },
   heavy_blow: { st: 16, rec: 0.5, recSlow: 0.3, poise: 42 },
   whirlwind: { st: 18, rec: 0.55, recSlow: 0.35, poise: 24 },
   war_cry: { st: 0, rec: 0.4, recSlow: 0.5, poise: 0 },
@@ -135,7 +135,7 @@ const MONSTER_AI = {
       arch: 'hopper', poise: 16, notice: [300, 700], run: 1.1, pref: [0, 1.6], flee: 0,
       attacks: [
         { id: 'slime_hit', kind: 'melee', max: 1.8, cd: 1.8, w: 3, power: 1, windup: 420, rec: 350 },
-        { id: 'slime_slam', kind: 'tele', shape: 'circle', at: 'target', r: 2.2, min: 2.2, max: 6, cd: 7, w: 2, power: 1.35, windup: 950, rec: 700, leap: true, clip: 'Attack2' },
+        { id: 'slime_slam', kind: 'tele', shape: 'circle', at: 'target', r: 2.2, min: 2.2, max: 6, cd: 7, w: 2, power: 1.6, windup: 950, rec: 700, leap: true, clip: 'Attack2' },
       ],
     },
   },
@@ -145,7 +145,7 @@ const MONSTER_AI = {
       arch: 'rusher', pack: true, poise: 24, notice: [150, 450], run: 1.3, pref: [0, 2], flee: 0.18,
       attacks: [
         { id: 'wolf_bite', kind: 'melee', max: 2.0, cd: 1.5, w: 3, power: 1, windup: 330, rec: 300 },
-        { id: 'wolf_lunge', kind: 'tele', shape: 'line', at: 'front', len: 7.5, wid: 1.6, min: 3.2, max: 7.5, cd: 5.5, w: 2.2, power: 1.45, windup: 700, rec: 650, dash: true, clip: 'Attack2' },
+        { id: 'wolf_lunge', kind: 'tele', shape: 'line', at: 'front', len: 7.5, wid: 1.6, min: 3.2, max: 7.5, cd: 5.5, w: 2.2, power: 1.35, windup: 700, rec: 650, dash: true, clip: 'Attack2' },
         { id: 'wolf_howl', kind: 'howl', r: 22, min: 0, max: 30, cd: 30, w: 4, windup: 900, once: true, clip: 'Attack2' },
       ],
     },
