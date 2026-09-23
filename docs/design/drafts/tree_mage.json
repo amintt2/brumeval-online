@@ -1,0 +1,3684 @@
+{
+  "meta": {
+    "draft": "tree_mage",
+    "version": "0.3-draft-2",
+    "lang": "fr",
+    "frame": "x vers la droite, y vers le HAUT (repère mathématique, comme tree_rules.md §3), angles en degrés dans le sens trigonométrique depuis +x : Guerrier 90°, Mage 210°, Rôdeur 330°. L'UI affiche (x, −y).",
+    "regions": {
+      "mage": "secteur 166°–254°, r 460–1520 (départ mage_depart en (−433, −250))",
+      "pont_mr": "secteur 258°–282°, r 800–1190"
+    },
+    "links": "liens non orientés, listés des deux côtés entre nœuds de ce brouillon ; les liens vers d'autres brouillons sont listés ici seulement (externalLinks) : le synthétiseur ajoute le retour.",
+    "externalLinks": {
+      "mage_depart": {
+        "to": "sv_seuil_arcanes",
+        "draft": "tree_survie",
+        "note": "Seuil des Arcanes (Survie) — le brouillon Survie liste déjà mage_depart"
+      },
+      "mr_p_oeil_sylvestre": {
+        "to": "v_cueilleur",
+        "draft": "tree_ranger",
+        "note": "Cueilleur de brume (Rôdeur) — son lien « pont_mr:* » se résout ici"
+      },
+      "ma_p_flamme_attisee": {
+        "to": "pg_onde_tranchante",
+        "draft": "tree_warrior",
+        "note": "Onde tranchante (Lame spirituelle) — raccord PROPOSÉ côté Mage, absent du brouillon Guerrier"
+      }
+    },
+    "costs": "nodeCost(node, cls) de tree_rules.md §4.1 : région mage = 1 pour le Mage, 2 sinon (clé de voûte : 3) ; pont_mr = 1 pour Mage et Rôdeur, 2 pour le Guerrier. Rangs : même coût par rang.",
+    "suggestedPath": [
+      "ma_fireball",
+      "ma_v_bolt_feu",
+      "ma_frost_nova",
+      "ma_heal"
+    ],
+    "suggestedPathNote": "Bouton « Reprendre mon style » des mages v0.2 (après 3 Fondamentaux, Roulade et Sprint offerts) : 4 points, retrouve Trait de feu, Boule de feu, Nova de givre et Soin.",
+    "units": "power = multiplicateur d'attaque ; range/radius/len/wid en m ; cd, cast, rec, channel, duration, tick, delay en s ; mp/st en points ; mpPerS/stPerS par seconde ; poise = dégâts de déséquilibre ; stats « …Pct » et op « pct » en points de pourcentage (4 = +4 %) ; crit en fraction (0,03 = +3 points).",
+    "newStats": [
+      "dmgPct.<élément>",
+      "statusDurS.<statut>",
+      "statusMaxStacks.brulure",
+      "stCostPct(.<tag>)",
+      "mpCostPct",
+      "critVsStatus.<statut>",
+      "critTag.projectile",
+      "mpRegenCombatPct",
+      "castTimePct",
+      "recPct",
+      "poisePct.sort",
+      "powerPct.sort",
+      "projSpeedPct.sort",
+      "dmgVsStatusPct.froid",
+      "dmgTakenPct",
+      "potionPct.mana",
+      "bloodMagic",
+      "froidToGel",
+      "bossFroidPoiseTakenPct",
+      "focusFromBow",
+      "meleeFromStaff",
+      "inaptitudeMult.warrior"
+    ]
+  },
+  "abilities": [
+    {
+      "id": "firebolt",
+      "name": "Trait arcanique",
+      "desc": "Projectile d'énergie brute. Ses variantes lui donnent le feu, le givre ou l'éclat des astres.",
+      "kind": "projectile",
+      "home": "mage",
+      "auto": true,
+      "base": true,
+      "mp": 0,
+      "st": 7,
+      "cd": 1.6,
+      "cast": 0,
+      "rec": 0.35,
+      "recSlow": 0.3,
+      "range": 18,
+      "speed": 22,
+      "power": 0.8,
+      "poise": 3,
+      "charged": {
+        "holdS": 1,
+        "power": 2,
+        "poise": 14,
+        "st": 14,
+        "note": "Fondamental « Attaque chargée » : maintenir 1 s, ralenti à 30 % pendant la charge."
+      },
+      "souls": "Tir automatique seulement à < 40 % de la vitesse (COMMIT.rangedMoveMax) ; 0,35 s d'engagement.",
+      "vfx": "Petite sphère blanc-bleu pâle, traînée de brume.",
+      "tags": [
+        "arcane",
+        "projectile",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "fireball",
+      "name": "Boule de feu",
+      "desc": "Une boule de feu qui explose à l'impact et embrase les ennemis proches.",
+      "kind": "projectile",
+      "home": "mage",
+      "legacy": true,
+      "mp": 20,
+      "st": 14,
+      "cd": 6,
+      "cast": 0.35,
+      "rec": 0.6,
+      "recSlow": 0.25,
+      "range": 18,
+      "speed": 16,
+      "power": 2,
+      "splash": {
+        "radius": 2,
+        "pct": 0.5
+      },
+      "poise": 16,
+      "applies": [
+        "brulure"
+      ],
+      "souls": "Temps d'incantation 0,35 s : lancée trop tard, elle part pendant la préparation ennemie et on encaisse le coup.",
+      "vfx": "Sphère orange tourbillonnante, explosion + anneau de braises.",
+      "tags": [
+        "feu",
+        "projectile",
+        "zone",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "fire_wall",
+      "name": "Mur de flammes",
+      "desc": "Dresse une ligne de feu qui brûle tout ce qui la traverse pendant 5 s.",
+      "kind": "aoe_target",
+      "home": "mage",
+      "shape": "line",
+      "mp": 28,
+      "st": 12,
+      "cd": 16,
+      "cast": 0.5,
+      "rec": 0.5,
+      "recSlow": 0.3,
+      "range": 14,
+      "len": 7,
+      "wid": 1.5,
+      "duration": 5,
+      "tick": 0.5,
+      "power": 0.35,
+      "poise": 2,
+      "applies": [
+        "brulure"
+      ],
+      "souls": "Les monstres traversent le mur (ils ne le contournent pas) : c'est une zone de dégâts, pas un rempart. Puissance par tic de 0,5 s.",
+      "vfx": "Rideau de flammes bas, fumée noire, sol calciné (décalque 5 s).",
+      "tags": [
+        "feu",
+        "zone",
+        "controle",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "flame_breath",
+      "name": "Souffle ardent",
+      "desc": "Canalise un cône de flammes devant soi, jusqu'à 2 s.",
+      "kind": "channel",
+      "home": "mage",
+      "shape": "cone",
+      "mp": 10,
+      "mpPerS": 10,
+      "st": 6,
+      "stPerS": 12,
+      "cd": 10,
+      "cast": 0.2,
+      "channel": 2,
+      "tick": 0.25,
+      "power": 0.3,
+      "radius": 6,
+      "arc": 70,
+      "moveWhileChannel": 0.3,
+      "rec": 0.4,
+      "recSlow": 0.3,
+      "poise": 3,
+      "applies": [
+        "brulure"
+      ],
+      "souls": "Vide l'endurance (12/s) : impossible de rouler juste après une canalisation complète. Relâcher la touche arrête le souffle.",
+      "vfx": "Jet de flammes en cône depuis la main, particules d'étincelles.",
+      "tags": [
+        "feu",
+        "zone",
+        "canalisation",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "ignite",
+      "name": "Embrasement",
+      "desc": "Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 150 % de la brûlure restante.",
+      "kind": "aoe_target",
+      "home": "mage",
+      "mp": 22,
+      "st": 10,
+      "cd": 12,
+      "cast": 0.3,
+      "rec": 0.45,
+      "recSlow": 0.3,
+      "range": 16,
+      "radius": 4,
+      "power": 0.6,
+      "detonate": 1.5,
+      "poise": 18,
+      "souls": "Sans brûlure sur la cible, ne fait que ×0,6 : il faut préparer le terrain.",
+      "vfx": "Chaque cible brûlante éclate en gerbe de flammes (flash blanc-orange).",
+      "tags": [
+        "feu",
+        "zone",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "meteor",
+      "name": "Météore",
+      "desc": "Appelle un rocher enflammé du ciel. Il s'écrase 1 s après l'incantation sur la zone marquée.",
+      "kind": "aoe_target",
+      "home": "mage",
+      "ultimate": true,
+      "mp": 50,
+      "st": 20,
+      "cd": 35,
+      "cast": 1.2,
+      "castSlow": 0,
+      "rec": 0.9,
+      "recSlow": 0.25,
+      "range": 20,
+      "radius": 4,
+      "delay": 1,
+      "power": 4.2,
+      "poise": 70,
+      "groundBurn": {
+        "duration": 3,
+        "power": 0.3,
+        "tick": 0.5
+      },
+      "applies": [
+        "brulure"
+      ],
+      "souls": "Le mage est immobile 1,2 s puis la zone est télégraphiée 1 s (cercle orange visible par tous, y compris en JcJ). Idéal pendant la récupération d'un boss.",
+      "vfx": "Cercle orange au sol, rocher incandescent en chute, cratère fumant.",
+      "tags": [
+        "feu",
+        "zone",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "frost_nova",
+      "name": "Nova de givre",
+      "desc": "Une onde de givre autour de soi qui inflige 3 charges de Froid aux ennemis proches.",
+      "kind": "aoe_self",
+      "home": "mage",
+      "legacy": true,
+      "mp": 25,
+      "st": 16,
+      "cd": 12,
+      "cast": 0,
+      "rec": 0.45,
+      "recSlow": 0.3,
+      "radius": 6,
+      "power": 1.1,
+      "poise": 10,
+      "applies": [
+        {
+          "id": "froid",
+          "stacks": 3
+        }
+      ],
+      "souls": "Instantanée : c'est le sort de dégagement du mage. 3 charges de Froid = −45 % de vitesse (v0.2 : −50 %).",
+      "vfx": "Anneau de givre au sol qui s'étend, cristaux, souffle blanc.",
+      "tags": [
+        "givre",
+        "zone",
+        "controle",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "ice_lance",
+      "name": "Lance de glace",
+      "desc": "Une lance de glace. Sur une cible Gelée ou à 2 charges de Froid ou plus : Fracas (×1,6), qui consomme le Froid.",
+      "kind": "projectile",
+      "home": "mage",
+      "mp": 16,
+      "st": 12,
+      "cd": 5,
+      "cast": 0.4,
+      "rec": 0.5,
+      "recSlow": 0.25,
+      "range": 20,
+      "speed": 30,
+      "power": 1.5,
+      "poise": 22,
+      "shatter": {
+        "minStacks": 2,
+        "mult": 1.6
+      },
+      "souls": "Gros dégâts de déséquilibre pour un sort à distance (22) : interrompt les préparations des petits monstres.",
+      "vfx": "Lance de glace translucide, éclats bleus au Fracas.",
+      "tags": [
+        "givre",
+        "projectile",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "ice_wall",
+      "name": "Mur de glace",
+      "desc": "Érige un mur de glace (6 m) qui bloque les monstres et les projectiles pendant 6 s.",
+      "kind": "summon",
+      "home": "mage",
+      "mp": 30,
+      "st": 14,
+      "cd": 24,
+      "cast": 0.4,
+      "rec": 0.5,
+      "recSlow": 0.3,
+      "range": 10,
+      "len": 6,
+      "wid": 1.2,
+      "duration": 6,
+      "wallHp": 0.4,
+      "power": 0,
+      "poise": 0,
+      "souls": "PV du mur = 40 % des PV max du mage. Un boss le brise d'un seul coup, une attaque télégraphiée le traverse. Pas de mur infranchissable.",
+      "vfx": "Blocs de glace qui jaillissent du sol, fissures qui s'étendent quand il est frappé.",
+      "tags": [
+        "givre",
+        "defense",
+        "controle",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "blizzard",
+      "name": "Blizzard",
+      "desc": "Canalise une tempête de neige sur une zone (3 s max) : chaque tic ajoute 1 charge de Froid.",
+      "kind": "channel",
+      "home": "mage",
+      "shape": "circle",
+      "mp": 15,
+      "mpPerS": 12,
+      "st": 10,
+      "cd": 18,
+      "cast": 0.3,
+      "channel": 3,
+      "tick": 0.5,
+      "power": 0.25,
+      "range": 18,
+      "radius": 5,
+      "moveWhileChannel": 0,
+      "rec": 0.4,
+      "recSlow": 0.3,
+      "poise": 2,
+      "applies": [
+        {
+          "id": "froid",
+          "stacks": 1,
+          "perTick": true
+        }
+      ],
+      "souls": "Immobile pendant la canalisation ; rouler l'arrête.",
+      "vfx": "Nuage tourbillonnant, flocons denses, givre qui recouvre le sol.",
+      "tags": [
+        "givre",
+        "zone",
+        "canalisation",
+        "controle",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "frost_armor",
+      "name": "Armure de givre",
+      "desc": "Pendant 8 s : +25 % de défense et chaque ennemi qui vous frappe au corps à corps reçoit 1 charge de Froid.",
+      "kind": "buff",
+      "home": "mage",
+      "mp": 25,
+      "st": 0,
+      "cd": 25,
+      "cast": 0.3,
+      "rec": 0.3,
+      "recSlow": 0.5,
+      "duration": 8,
+      "power": 0,
+      "poise": 0,
+      "buff": {
+        "defPct": 0.25,
+        "meleeAttackerFroid": 1
+      },
+      "souls": "Ne protège pas de la mort en un coup : le mage reste fragile, l'armure achète une erreur, pas deux.",
+      "vfx": "Givre cristallin sur les épaules et les bras, halo bleu froid.",
+      "tags": [
+        "givre",
+        "defense",
+        "buff",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "heal",
+      "name": "Soin",
+      "desc": "Canalise 1 s pour rendre 30 % de vos PV.",
+      "kind": "self_heal",
+      "home": "mage",
+      "legacy": true,
+      "mp": 24,
+      "st": 0,
+      "cd": 12,
+      "cast": 1,
+      "castSlow": 0.3,
+      "rec": 0.3,
+      "recSlow": 0.5,
+      "heal": 0.3,
+      "power": 0,
+      "poise": 0,
+      "souls": "v0.2 : 35 % instantané toutes les 8 s (trop fort). Une roulade annule le soin (la mana n'est pas dépensée) : on se soigne dans les fenêtres de récupération ennemies, comme une fiole.",
+      "vfx": "Glyphe doré sous les pieds, lumière qui monte en spirale.",
+      "tags": [
+        "arcane",
+        "soin",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "blink",
+      "name": "Pas de brume",
+      "desc": "Se téléporte de 7 m dans la direction du mouvement (0,15 s d'invulnérabilité).",
+      "kind": "dash",
+      "home": "mage",
+      "mp": 18,
+      "st": 20,
+      "cd": 7,
+      "cast": 0,
+      "rec": 0.25,
+      "recSlow": 0.5,
+      "range": 7,
+      "iframe": 0.15,
+      "power": 0,
+      "poise": 0,
+      "souls": "Moins d'invulnérabilité que la roulade (0,15 s contre 0,35 s) mais plus de distance ; ne traverse pas les murs ni les murs de glace ; partage 0,6 s de délai avec la roulade.",
+      "vfx": "Silhouette qui se dissout en brume bleue, réapparition avec un souffle d'étincelles.",
+      "tags": [
+        "arcane",
+        "mobilite",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "mana_shield",
+      "name": "Bouclier de mana",
+      "desc": "Pendant 6 s, 40 % des dégâts subis sont prélevés sur la mana (1,5 mana par point) au lieu des PV.",
+      "kind": "buff",
+      "home": "mage",
+      "mp": 10,
+      "st": 0,
+      "cd": 22,
+      "cast": 0,
+      "rec": 0.2,
+      "recSlow": 0.5,
+      "duration": 6,
+      "absorb": 0.4,
+      "manaPerDmg": 1.5,
+      "power": 0,
+      "poise": 0,
+      "souls": "La régénération de mana est coupée pendant le bouclier ; il se brise à 0 mana. Le mage paie sa survie avec ses sorts.",
+      "vfx": "Sphère hexagonale bleu-violet translucide, ondulations aux impacts.",
+      "tags": [
+        "arcane",
+        "defense",
+        "buff",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "arcane_shards",
+      "name": "Salve d'éclats",
+      "desc": "Lance 5 éclats de pierre-astre qui cherchent leur cible (×0,4 chacun).",
+      "kind": "projectile",
+      "home": "mage",
+      "mp": 22,
+      "st": 12,
+      "cd": 8,
+      "cast": 0.5,
+      "rec": 0.45,
+      "recSlow": 0.3,
+      "range": 18,
+      "speed": 20,
+      "power": 0.4,
+      "hits": 5,
+      "homing": 0.6,
+      "poise": 4,
+      "souls": "Les éclats partent en éventail puis convergent : ils touchent les cibles qui bougent mais pas derrière un obstacle.",
+      "vfx": "Cinq pierres bleu-violet lumineuses, traînées de poussière d'étoiles (façon pierre d'éclat).",
+      "tags": [
+        "arcane",
+        "projectile",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "arcane_beam",
+      "name": "Rayon astral",
+      "desc": "Après 0,6 s d'incantation, canalise un rayon de 18 m pendant 2,5 s qui transperce tout.",
+      "kind": "channel",
+      "home": "mage",
+      "shape": "line",
+      "ultimate": true,
+      "mp": 12,
+      "mpPerS": 14,
+      "st": 10,
+      "stPerS": 8,
+      "cd": 20,
+      "cast": 0.6,
+      "castSlow": 0,
+      "channel": 2.5,
+      "tick": 0.25,
+      "power": 0.45,
+      "range": 18,
+      "wid": 1.2,
+      "moveWhileChannel": 0,
+      "rec": 0.7,
+      "recSlow": 0.25,
+      "poise": 5,
+      "souls": "Immobile et orienté : un monstre qui contourne le mage le sort du rayon. Coût total ≈ 47 mana pour 2,5 s.",
+      "vfx": "Rayon bleu-violet épais, anneaux runiques à la source, sol strié de lumière.",
+      "tags": [
+        "arcane",
+        "zone",
+        "canalisation",
+        "sort"
+      ],
+      "weapon": "focus"
+    },
+    {
+      "id": "rune_arrow",
+      "name": "Flèche runique",
+      "desc": "Une flèche gravée d'une rune qui perce la première cible et inflige des dégâts d'arcane.",
+      "kind": "projectile",
+      "home": [
+        "mage",
+        "ranger"
+      ],
+      "mp": 14,
+      "st": 10,
+      "cd": 5,
+      "cast": 0.3,
+      "rec": 0.45,
+      "recSlow": 0.3,
+      "range": 22,
+      "speed": 38,
+      "power": 1.4,
+      "pierce": 1,
+      "poise": 12,
+      "souls": "Demande un arc ou une arbalète (sans arc, la compétence est grisée). Tir engagé comme les tirs du rôdeur.",
+      "vfx": "Flèche entourée d'une rune verte et bleue qui tourne, traînée de feuilles lumineuses.",
+      "tags": [
+        "arcane",
+        "projectile",
+        "arc",
+        "arc"
+      ],
+      "weapon": "arc"
+    },
+    {
+      "id": "frost_brambles",
+      "name": "Ronces givrées",
+      "desc": "Des ronces couvertes de givre jaillissent du sol et enracinent les ennemis 1,5 s (×0,8 sur 3 s).",
+      "kind": "aoe_target",
+      "home": [
+        "mage",
+        "ranger"
+      ],
+      "mp": 20,
+      "st": 10,
+      "cd": 16,
+      "cast": 0.4,
+      "rec": 0.45,
+      "recSlow": 0.3,
+      "range": 16,
+      "radius": 3.5,
+      "power": 0.8,
+      "root": 1.5,
+      "dotDuration": 3,
+      "poise": 6,
+      "souls": "Les boss ne sont pas enracinés : 2 charges de Froid à la place. Un monstre ne peut être enraciné qu'une fois toutes les 8 s.",
+      "vfx": "Ronces noires couvertes de givre qui sortent du sol en spirale, éclats de glace.",
+      "tags": [
+        "nature",
+        "givre",
+        "zone",
+        "controle",
+        "sort"
+      ],
+      "weapon": "focus_ou_arc"
+    },
+    {
+      "id": "wisp",
+      "name": "Feu follet",
+      "desc": "Invoque un feu follet pendant 15 s qui tire un petit trait d'arcane (×0,3) sur votre cible toutes les 1,5 s.",
+      "kind": "summon",
+      "home": [
+        "mage",
+        "ranger"
+      ],
+      "mp": 30,
+      "st": 0,
+      "cd": 30,
+      "cast": 0.5,
+      "rec": 0.4,
+      "recSlow": 0.3,
+      "duration": 15,
+      "range": 16,
+      "power": 0.3,
+      "period": 1.5,
+      "poise": 1,
+      "souls": "Le follet n'attire pas l'aggro et ne peut pas être ciblé ; il suit la cible verrouillée par le joueur.",
+      "vfx": "Petite flamme bleu-vert flottante à l'épaule, trajectoires sinueuses.",
+      "tags": [
+        "arcane",
+        "nature",
+        "invocation"
+      ],
+      "weapon": null
+    }
+  ],
+  "statuses": [
+    {
+      "id": "brulure",
+      "name": "Brûlure",
+      "desc": "Inflige 30 % des dégâts du coup déclencheur en 3 s (tics de 0,5 s). Ne se cumule pas : une nouvelle brûlure remplace la précédente si elle est plus forte.",
+      "tags": [
+        "feu"
+      ]
+    },
+    {
+      "id": "froid",
+      "name": "Froid",
+      "desc": "Charges (max 3), 3 s : −15 % de vitesse de déplacement et d'attaque par charge. Boss : moitié d'effet.",
+      "tags": [
+        "givre"
+      ]
+    },
+    {
+      "id": "gel",
+      "name": "Gel",
+      "desc": "Immobilisé 1 à 1,2 s (attaque en cours annulée), puis immunisé au Gel 8 s. Les boss ne gèlent jamais.",
+      "tags": [
+        "givre"
+      ]
+    },
+    {
+      "id": "aveugle",
+      "name": "Aveuglé",
+      "desc": "−20 % de dégâts infligés pendant 3 s.",
+      "tags": [
+        "feu"
+      ]
+    },
+    {
+      "id": "enracine",
+      "name": "Enraciné",
+      "desc": "Ne peut plus se déplacer (peut encore attaquer à portée), puis immunisé 8 s.",
+      "tags": [
+        "nature"
+      ]
+    },
+    {
+      "id": "marque",
+      "name": "Marqué",
+      "desc": "+12 % de dégâts subis de la part du lanceur et de son groupe.",
+      "tags": [
+        "arcane"
+      ]
+    },
+    {
+      "id": "saignement",
+      "name": "Saignement",
+      "desc": "Statut défini par les arbres Guerrier/Rôdeur ; ici 20 % du coup en 4 s.",
+      "tags": [
+        "saignement"
+      ]
+    }
+  ],
+  "exclusiveGroups": [
+    {
+      "id": "ma_g_bolt_forme",
+      "ability": "firebolt",
+      "nodes": [
+        "ma_v_bolt_jumeaux",
+        "ma_v_bolt_percant"
+      ]
+    },
+    {
+      "id": "ma_g_fireball",
+      "ability": "fireball",
+      "nodes": [
+        "ma_v_fireball_grande",
+        "ma_v_fireball_chapelet",
+        "ma_v_fireball_collante"
+      ]
+    },
+    {
+      "id": "ma_g_bolt_affinite",
+      "ability": "firebolt",
+      "nodes": [
+        "ma_v_bolt_feu",
+        "ma_v_bolt_eclat",
+        "ma_v_bolt_givre"
+      ]
+    },
+    {
+      "id": "ma_g_fire_wall",
+      "ability": "fire_wall",
+      "nodes": [
+        "ma_v_fire_wall_cercle",
+        "ma_v_fire_wall_vague"
+      ]
+    },
+    {
+      "id": "ma_g_flame_breath",
+      "ability": "flame_breath",
+      "nodes": [
+        "ma_v_breath_dragon",
+        "ma_v_breath_cendres"
+      ]
+    },
+    {
+      "id": "ma_g_ignite",
+      "ability": "ignite",
+      "nodes": [
+        "ma_v_ignite_contagion",
+        "ma_v_ignite_detonation"
+      ]
+    },
+    {
+      "id": "ma_g_meteor",
+      "ability": "meteor",
+      "nodes": [
+        "ma_v_meteor_pluie",
+        "ma_v_meteor_astre"
+      ]
+    },
+    {
+      "id": "ma_g_heal",
+      "ability": "heal",
+      "nodes": [
+        "ma_v_heal_remanence",
+        "ma_v_heal_sursaut",
+        "ma_v_heal_cercle"
+      ]
+    },
+    {
+      "id": "ma_g_blink",
+      "ability": "blink",
+      "nodes": [
+        "ma_v_blink_leurre",
+        "ma_v_blink_dechirure",
+        "ma_v_blink_redouble"
+      ]
+    },
+    {
+      "id": "ma_g_mana_shield",
+      "ability": "mana_shield",
+      "nodes": [
+        "ma_v_shield_miroir",
+        "ma_v_shield_rempart"
+      ]
+    },
+    {
+      "id": "ma_g_arcane_shards",
+      "ability": "arcane_shards",
+      "nodes": [
+        "ma_v_shards_orbite",
+        "ma_v_shards_concentree"
+      ]
+    },
+    {
+      "id": "ma_g_arcane_beam",
+      "ability": "arcane_beam",
+      "nodes": [
+        "ma_v_beam_balayage",
+        "ma_v_beam_comete"
+      ]
+    },
+    {
+      "id": "ma_g_frost_nova",
+      "ability": "frost_nova",
+      "nodes": [
+        "ma_v_nova_glaciale",
+        "ma_v_nova_eclats"
+      ]
+    },
+    {
+      "id": "ma_g_ice_lance",
+      "ability": "ice_lance",
+      "nodes": [
+        "ma_v_lance_trio",
+        "ma_v_lance_glacier"
+      ]
+    },
+    {
+      "id": "ma_g_ice_wall",
+      "ability": "ice_wall",
+      "nodes": [
+        "ma_v_wall_prison",
+        "ma_v_wall_herisse"
+      ]
+    },
+    {
+      "id": "ma_g_frost_armor",
+      "ability": "frost_armor",
+      "nodes": [
+        "ma_v_armor_carapace",
+        "ma_v_armor_aurore"
+      ]
+    },
+    {
+      "id": "ma_g_blizzard",
+      "ability": "blizzard",
+      "nodes": [
+        "ma_v_blizzard_errant",
+        "ma_v_blizzard_oeil"
+      ]
+    },
+    {
+      "id": "mr_g_rune_arrow",
+      "ability": "rune_arrow",
+      "nodes": [
+        "mr_v_arrow_eclatee",
+        "mr_v_arrow_marque"
+      ]
+    },
+    {
+      "id": "mr_g_frost_brambles",
+      "ability": "frost_brambles",
+      "nodes": [
+        "mr_v_brambles_epines",
+        "mr_v_brambles_nord"
+      ]
+    },
+    {
+      "id": "mr_g_wisp",
+      "ability": "wisp",
+      "nodes": [
+        "mr_v_wisp_braise",
+        "mr_v_wisp_gardien"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "mage_depart",
+      "region": "mage",
+      "branch": "tronc",
+      "type": "skill",
+      "name": "Éveil du mage",
+      "desc": "Nœud de départ du Mage (gratuit, acquis à la création) : Trait arcanique. Ses voisins s'ouvrent après 3 Fondamentaux.",
+      "x": -433,
+      "y": -250,
+      "links": [
+        "sv_seuil_arcanes",
+        "ma_v_bolt_jumeaux",
+        "ma_v_bolt_percant",
+        "ma_fireball",
+        "ma_heal",
+        "ma_frost_nova"
+      ],
+      "maxRank": 1,
+      "start": true,
+      "class": "mage",
+      "ability": "firebolt",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "firebolt"
+        }
+      ],
+      "externalLinks": [
+        {
+          "id": "sv_seuil_arcanes",
+          "draft": "tree_survie",
+          "note": "Seuil des Arcanes (Survie) — le brouillon Survie liste déjà mage_depart"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_bolt_jumeaux",
+      "region": "mage",
+      "branch": "tronc",
+      "type": "variant",
+      "name": "Traits jumeaux",
+      "desc": "Tire 2 traits à ±5° (×0,5 chacun, ×1,0 si les deux touchent). Endurance 7 → 9.",
+      "x": -447,
+      "y": -125,
+      "links": [
+        "mage_depart"
+      ],
+      "maxRank": 1,
+      "ability": "firebolt",
+      "exclusiveGroup": "ma_g_bolt_forme",
+      "effects": [
+        {
+          "mod": "firebolt.projectiles",
+          "op": "set",
+          "value": 2
+        },
+        {
+          "mod": "firebolt.spreadDeg",
+          "op": "set",
+          "value": 10
+        },
+        {
+          "mod": "firebolt.power",
+          "op": "set",
+          "value": 0.5
+        },
+        {
+          "mod": "firebolt.st",
+          "op": "set",
+          "value": 9
+        }
+      ],
+      "vfx": "Deux traits plus fins qui s'enroulent l'un autour de l'autre."
+    },
+    {
+      "id": "ma_v_bolt_percant",
+      "region": "mage",
+      "branch": "tronc",
+      "type": "variant",
+      "name": "Trait perçant",
+      "desc": "Traverse la première cible (×0,6 sur la seconde). Déséquilibre 3 → 6, recharge 1,6 → 1,8 s.",
+      "x": -332,
+      "y": -325,
+      "links": [
+        "mage_depart"
+      ],
+      "maxRank": 1,
+      "ability": "firebolt",
+      "exclusiveGroup": "ma_g_bolt_forme",
+      "effects": [
+        {
+          "mod": "firebolt.pierce",
+          "op": "set",
+          "value": 1
+        },
+        {
+          "mod": "firebolt.pierceFalloff",
+          "op": "set",
+          "value": 0.6
+        },
+        {
+          "mod": "firebolt.poise",
+          "op": "set",
+          "value": 6
+        },
+        {
+          "mod": "firebolt.cd",
+          "op": "set",
+          "value": 1.8
+        }
+      ],
+      "vfx": "Aiguille d'énergie allongée, onde annulaire au passage."
+    },
+    {
+      "id": "ma_fireball",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "skill",
+      "name": "Boule de feu",
+      "desc": "Une boule de feu qui explose à l'impact et embrase les ennemis proches.",
+      "x": -658,
+      "y": -46,
+      "links": [
+        "mage_depart",
+        "ma_v_fireball_grande",
+        "ma_v_fireball_chapelet",
+        "ma_v_fireball_collante",
+        "ma_v_bolt_feu",
+        "ma_p_flamme_attisee"
+      ],
+      "maxRank": 1,
+      "ability": "fireball",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "fireball"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_fireball_grande",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Grande boule de feu",
+      "desc": "Puissance 2,0 → 2,8, explosion 2 → 3,5 m (60 %), incantation 0,35 → 0,8 s, mana 20 → 30, vitesse 16 → 12 m/s.",
+      "x": -735,
+      "y": 44,
+      "links": [
+        "ma_fireball"
+      ],
+      "maxRank": 1,
+      "ability": "fireball",
+      "exclusiveGroup": "ma_g_fireball",
+      "effects": [
+        {
+          "mod": "fireball.power",
+          "op": "set",
+          "value": 2.8
+        },
+        {
+          "mod": "fireball.splash",
+          "op": "set",
+          "value": {
+            "radius": 3.5,
+            "pct": 0.6
+          }
+        },
+        {
+          "mod": "fireball.cast",
+          "op": "set",
+          "value": 0.8
+        },
+        {
+          "mod": "fireball.mp",
+          "op": "set",
+          "value": 30
+        },
+        {
+          "mod": "fireball.speed",
+          "op": "set",
+          "value": 12
+        }
+      ],
+      "vfx": "Sphère deux fois plus grosse, fumée lourde, explosion en champignon."
+    },
+    {
+      "id": "ma_v_fireball_chapelet",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Chapelet de braises",
+      "desc": "À l'impact (×1,5), se divise en 3 braises qui retombent à 3 m (×0,5 chacune, brûlure).",
+      "x": -722,
+      "y": -146,
+      "links": [
+        "ma_fireball"
+      ],
+      "maxRank": 1,
+      "ability": "fireball",
+      "exclusiveGroup": "ma_g_fireball",
+      "effects": [
+        {
+          "mod": "fireball.power",
+          "op": "set",
+          "value": 1.5
+        },
+        {
+          "mod": "fireball.split",
+          "op": "set",
+          "value": {
+            "count": 3,
+            "radius": 3,
+            "power": 0.5
+          }
+        }
+      ],
+      "vfx": "La boule éclate en trois braises qui décrivent des arcs."
+    },
+    {
+      "id": "ma_v_fireball_collante",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Boule collante",
+      "desc": "Se colle à la cible et explose après 1,5 s : ×2,6, déséquilibre 16 → 34 ; ne touche qu'elle.",
+      "x": -660,
+      "y": 114,
+      "links": [
+        "ma_fireball"
+      ],
+      "maxRank": 1,
+      "ability": "fireball",
+      "exclusiveGroup": "ma_g_fireball",
+      "effects": [
+        {
+          "mod": "fireball.power",
+          "op": "set",
+          "value": 2.6
+        },
+        {
+          "mod": "fireball.poise",
+          "op": "set",
+          "value": 34
+        },
+        {
+          "mod": "fireball.fuse",
+          "op": "set",
+          "value": 1.5
+        },
+        {
+          "mod": "fireball.splash",
+          "op": "set",
+          "value": null
+        }
+      ],
+      "vfx": "Boule qui s'accroche et pulse de plus en plus vite avant d'exploser."
+    },
+    {
+      "id": "ma_v_bolt_feu",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Trait de feu",
+      "desc": "Le Trait devient du feu (tag feu) et inflige Brûlure (30 % du coup en 3 s). Retour de l'identité v0.2.",
+      "x": -574,
+      "y": 35,
+      "links": [
+        "ma_fireball"
+      ],
+      "maxRank": 1,
+      "ability": "firebolt",
+      "exclusiveGroup": "ma_g_bolt_affinite",
+      "effects": [
+        {
+          "mod": "firebolt.element",
+          "op": "set",
+          "value": "feu"
+        },
+        {
+          "mod": "firebolt.applies",
+          "op": "set",
+          "value": [
+            "brulure"
+          ]
+        }
+      ],
+      "vfx": "Braise orange, traînée d'étincelles."
+    },
+    {
+      "id": "ma_p_flamme_attisee",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "passive",
+      "name": "Flamme attisée",
+      "desc": "+4 % de dégâts de feu par rang.",
+      "x": -788,
+      "y": -55,
+      "links": [
+        "ma_fireball",
+        "pg_onde_tranchante",
+        "ma_fire_wall"
+      ],
+      "maxRank": 3,
+      "effects": [
+        {
+          "stat": "dmgPct.feu",
+          "op": "add",
+          "value": 4,
+          "perRank": true
+        }
+      ],
+      "externalLinks": [
+        {
+          "id": "pg_onde_tranchante",
+          "draft": "tree_warrior",
+          "note": "Onde tranchante (Lame spirituelle) — raccord PROPOSÉ côté Mage, absent du brouillon Guerrier"
+        }
+      ]
+    },
+    {
+      "id": "ma_fire_wall",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "skill",
+      "name": "Mur de flammes",
+      "desc": "Dresse une ligne de feu qui brûle tout ce qui la traverse pendant 5 s.",
+      "x": -878,
+      "y": -61,
+      "links": [
+        "ma_p_flamme_attisee",
+        "ma_v_fire_wall_cercle",
+        "ma_v_fire_wall_vague",
+        "ma_p_braises_tenaces"
+      ],
+      "maxRank": 1,
+      "ability": "fire_wall",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "fire_wall"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_fire_wall_cercle",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Cercle de flammes",
+      "desc": "Le mur devient un anneau de 3 m de rayon centré sur vous ; durée 5 → 4 s.",
+      "x": -944,
+      "y": 29,
+      "links": [
+        "ma_fire_wall"
+      ],
+      "maxRank": 1,
+      "ability": "fire_wall",
+      "exclusiveGroup": "ma_g_fire_wall",
+      "effects": [
+        {
+          "mod": "fire_wall.shape",
+          "op": "set",
+          "value": "ring"
+        },
+        {
+          "mod": "fire_wall.radius",
+          "op": "set",
+          "value": 3
+        },
+        {
+          "mod": "fire_wall.at",
+          "op": "set",
+          "value": "self"
+        },
+        {
+          "mod": "fire_wall.duration",
+          "op": "set",
+          "value": 4
+        }
+      ],
+      "vfx": "Anneau de feu autour du mage."
+    },
+    {
+      "id": "ma_v_fire_wall_vague",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Vague de flammes",
+      "desc": "Le mur avance de 10 m à 4 m/s et touche chaque ennemi une fois (×1,2, brûlure) ; ne persiste pas.",
+      "x": -931,
+      "y": -160,
+      "links": [
+        "ma_fire_wall"
+      ],
+      "maxRank": 1,
+      "ability": "fire_wall",
+      "exclusiveGroup": "ma_g_fire_wall",
+      "effects": [
+        {
+          "mod": "fire_wall.travel",
+          "op": "set",
+          "value": {
+            "dist": 10,
+            "speed": 4
+          }
+        },
+        {
+          "mod": "fire_wall.power",
+          "op": "set",
+          "value": 1.2
+        },
+        {
+          "mod": "fire_wall.duration",
+          "op": "set",
+          "value": 2.5
+        },
+        {
+          "mod": "fire_wall.tick",
+          "op": "set",
+          "value": null
+        }
+      ],
+      "vfx": "Mur de feu qui déferle comme une vague."
+    },
+    {
+      "id": "ma_p_braises_tenaces",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "passive",
+      "name": "Braises tenaces",
+      "desc": "Vos brûlures durent 1 s de plus par rang (même total de dégâts par seconde).",
+      "x": -1008,
+      "y": -70,
+      "links": [
+        "ma_fire_wall",
+        "ma_flame_breath",
+        "ma_ignite"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "statusDurS.brulure",
+          "op": "add",
+          "value": 1,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_flame_breath",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "skill",
+      "name": "Souffle ardent",
+      "desc": "Canalise un cône de flammes devant soi, jusqu'à 2 s.",
+      "x": -1105,
+      "y": 33,
+      "links": [
+        "ma_p_braises_tenaces",
+        "ma_v_breath_dragon",
+        "ma_v_breath_cendres",
+        "ma_p_sang_chaud",
+        "ma_p_fournaise"
+      ],
+      "maxRank": 1,
+      "ability": "flame_breath",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "flame_breath"
+        }
+      ]
+    },
+    {
+      "id": "ma_ignite",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "skill",
+      "name": "Embrasement",
+      "desc": "Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 150 % de la brûlure restante.",
+      "x": -1090,
+      "y": -186,
+      "links": [
+        "ma_p_braises_tenaces",
+        "ma_v_ignite_contagion",
+        "ma_v_ignite_detonation",
+        "ma_p_etincelle",
+        "ma_p_fournaise"
+      ],
+      "maxRank": 1,
+      "ability": "ignite",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "ignite"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_breath_dragon",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Souffle du dragon",
+      "desc": "Cône 6 → 9 m mais 70 → 50°, tics +25 %, endurance 12 → 18 par seconde.",
+      "x": -1041,
+      "y": 128,
+      "links": [
+        "ma_flame_breath"
+      ],
+      "maxRank": 1,
+      "ability": "flame_breath",
+      "exclusiveGroup": "ma_g_flame_breath",
+      "effects": [
+        {
+          "mod": "flame_breath.radius",
+          "op": "set",
+          "value": 9
+        },
+        {
+          "mod": "flame_breath.arc",
+          "op": "set",
+          "value": 50
+        },
+        {
+          "mod": "flame_breath.stPerS",
+          "op": "set",
+          "value": 18
+        },
+        {
+          "mod": "flame_breath.power",
+          "op": "mul",
+          "value": 0.25
+        }
+      ],
+      "vfx": "Long jet de flammes, gueule de dragon esquissée dans le feu."
+    },
+    {
+      "id": "ma_v_breath_cendres",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Cendres aveuglantes",
+      "desc": "Tics −30 %, les ennemis touchés sont Aveuglés (−20 % de dégâts, 3 s).",
+      "x": -1172,
+      "y": 129,
+      "links": [
+        "ma_flame_breath"
+      ],
+      "maxRank": 1,
+      "ability": "flame_breath",
+      "exclusiveGroup": "ma_g_flame_breath",
+      "effects": [
+        {
+          "mod": "flame_breath.applies",
+          "op": "set",
+          "value": [
+            "brulure",
+            "aveugle"
+          ]
+        },
+        {
+          "mod": "flame_breath.power",
+          "op": "mul",
+          "value": -0.3
+        }
+      ],
+      "vfx": "Nuage de cendres grises et braises."
+    },
+    {
+      "id": "ma_v_ignite_contagion",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Contagion",
+      "desc": "Les brûlures consommées se propagent (brûlure complète) aux ennemis à 4 m des cibles.",
+      "x": -1014,
+      "y": -271,
+      "links": [
+        "ma_ignite"
+      ],
+      "maxRank": 1,
+      "ability": "ignite",
+      "exclusiveGroup": "ma_g_ignite",
+      "effects": [
+        {
+          "mod": "ignite.spread",
+          "op": "set",
+          "value": {
+            "radius": 4
+          }
+        }
+      ],
+      "vfx": "Filaments de feu qui relient les ennemis."
+    },
+    {
+      "id": "ma_v_ignite_detonation",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Détonation",
+      "desc": "200 % de la brûlure restante au lieu de 150 %, déséquilibre +30, mais rayon 4 → 2,5 m.",
+      "x": -1143,
+      "y": -290,
+      "links": [
+        "ma_ignite"
+      ],
+      "maxRank": 1,
+      "ability": "ignite",
+      "exclusiveGroup": "ma_g_ignite",
+      "effects": [
+        {
+          "mod": "ignite.detonate",
+          "op": "set",
+          "value": 2
+        },
+        {
+          "mod": "ignite.radius",
+          "op": "set",
+          "value": 2.5
+        },
+        {
+          "mod": "ignite.poise",
+          "op": "add",
+          "value": 30
+        }
+      ],
+      "vfx": "Flash blanc puis colonne de feu."
+    },
+    {
+      "id": "ma_p_sang_chaud",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "passive",
+      "name": "Sang chaud",
+      "desc": "Vos sorts de feu coûtent 10 % d'endurance en moins.",
+      "x": -1289,
+      "y": 85,
+      "links": [
+        "ma_flame_breath",
+        "ma_ks_erudit_martial"
+      ],
+      "maxRank": 1,
+      "effects": [
+        {
+          "stat": "stCostPct.feu",
+          "op": "add",
+          "value": -10
+        }
+      ]
+    },
+    {
+      "id": "ma_p_etincelle",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "passive",
+      "name": "Étincelle",
+      "desc": "+3 % de chances de critique contre les cibles qui brûlent, par rang.",
+      "x": -1265,
+      "y": -264,
+      "links": [
+        "ma_ignite",
+        "ma_p_doigts_agiles"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "critVsStatus.brulure",
+          "op": "add",
+          "value": 0.03,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_p_fournaise",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "passive",
+      "name": "Fournaise",
+      "desc": "+5 % de dégâts de feu par rang.",
+      "x": -1257,
+      "y": -88,
+      "links": [
+        "ma_flame_breath",
+        "ma_ignite",
+        "ma_meteor"
+      ],
+      "maxRank": 3,
+      "effects": [
+        {
+          "stat": "dmgPct.feu",
+          "op": "add",
+          "value": 5,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_meteor",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "skill",
+      "name": "Météore",
+      "desc": "Appelle un rocher enflammé du ciel. Il s'écrase 1 s après l'incantation sur la zone marquée.",
+      "x": -1377,
+      "y": -96,
+      "links": [
+        "ma_p_fournaise",
+        "ma_v_meteor_pluie",
+        "ma_v_meteor_astre",
+        "ma_ks_coeur_de_braise"
+      ],
+      "maxRank": 1,
+      "ability": "meteor",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "meteor"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_meteor_pluie",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Pluie de météores",
+      "desc": "3 météores plus petits (×1,6, rayon 2,5 m) tombent au hasard dans 6 m en 1,5 s.",
+      "x": -1443,
+      "y": -1,
+      "links": [
+        "ma_meteor"
+      ],
+      "maxRank": 1,
+      "ability": "meteor",
+      "exclusiveGroup": "ma_g_meteor",
+      "effects": [
+        {
+          "mod": "meteor.count",
+          "op": "set",
+          "value": 3
+        },
+        {
+          "mod": "meteor.power",
+          "op": "set",
+          "value": 1.6
+        },
+        {
+          "mod": "meteor.radius",
+          "op": "set",
+          "value": 2.5
+        },
+        {
+          "mod": "meteor.scatter",
+          "op": "set",
+          "value": 6
+        },
+        {
+          "mod": "meteor.spreadTime",
+          "op": "set",
+          "value": 1.5
+        },
+        {
+          "mod": "meteor.poise",
+          "op": "set",
+          "value": 30
+        }
+      ],
+      "vfx": "Trois rochers en feu en traînées obliques."
+    },
+    {
+      "id": "ma_v_meteor_astre",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "variant",
+      "name": "Astre déchu",
+      "desc": "Puissance 4,2 → 5,5, déséquilibre 70 → 110, incantation 1,2 → 1,8 s, mana 50 → 65.",
+      "x": -1430,
+      "y": -200,
+      "links": [
+        "ma_meteor"
+      ],
+      "maxRank": 1,
+      "ability": "meteor",
+      "exclusiveGroup": "ma_g_meteor",
+      "effects": [
+        {
+          "mod": "meteor.power",
+          "op": "set",
+          "value": 5.5
+        },
+        {
+          "mod": "meteor.poise",
+          "op": "set",
+          "value": 110
+        },
+        {
+          "mod": "meteor.cast",
+          "op": "set",
+          "value": 1.8
+        },
+        {
+          "mod": "meteor.mp",
+          "op": "set",
+          "value": 65
+        }
+      ],
+      "vfx": "Énorme météore à traînée rouge et or, cratère persistant."
+    },
+    {
+      "id": "ma_ks_coeur_de_braise",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "keystone",
+      "name": "Cœur de braise",
+      "desc": "Vos brûlures se cumulent jusqu'à 3 fois (chacune avec sa durée) et vos dégâts de feu augmentent de 15 %. En contrepartie, vous subissez 15 % de dégâts en plus.",
+      "x": -1516,
+      "y": -106,
+      "links": [
+        "ma_meteor"
+      ],
+      "maxRank": 1,
+      "effects": [
+        {
+          "stat": "statusMaxStacks.brulure",
+          "op": "set",
+          "value": 3,
+          "final": true
+        },
+        {
+          "stat": "dmgPct.feu",
+          "op": "add",
+          "value": 15,
+          "final": true
+        },
+        {
+          "stat": "dmgTakenPct",
+          "op": "add",
+          "value": 15,
+          "final": true
+        }
+      ]
+    },
+    {
+      "id": "ma_heal",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "skill",
+      "name": "Soin",
+      "desc": "Canalise 1 s pour rendre 30 % de vos PV.",
+      "x": -572,
+      "y": -330,
+      "links": [
+        "mage_depart",
+        "ma_v_heal_remanence",
+        "ma_v_heal_sursaut",
+        "ma_v_heal_cercle",
+        "ma_v_bolt_eclat",
+        "ma_p_esprit_vif"
+      ],
+      "maxRank": 1,
+      "ability": "heal",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "heal"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_heal_remanence",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Rémanence",
+      "desc": "Soin sur la durée : 35 % en 6 s, sans canalisation (on peut agir). Recharge 12 → 16 s.",
+      "x": -680,
+      "y": -283,
+      "links": [
+        "ma_heal"
+      ],
+      "maxRank": 1,
+      "ability": "heal",
+      "exclusiveGroup": "ma_g_heal",
+      "effects": [
+        {
+          "mod": "heal.hot",
+          "op": "set",
+          "value": {
+            "pct": 0.35,
+            "dur": 6
+          }
+        },
+        {
+          "mod": "heal.cast",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "mod": "heal.cd",
+          "op": "set",
+          "value": 16
+        }
+      ],
+      "vfx": "Lucioles bleu-vert qui montent lentement autour du mage."
+    },
+    {
+      "id": "ma_v_heal_sursaut",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Sursaut",
+      "desc": "Soin instantané de 20 % (pas de canalisation), recharge 12 s.",
+      "x": -585,
+      "y": -447,
+      "links": [
+        "ma_heal"
+      ],
+      "maxRank": 1,
+      "ability": "heal",
+      "exclusiveGroup": "ma_g_heal",
+      "effects": [
+        {
+          "mod": "heal.heal",
+          "op": "set",
+          "value": 0.2
+        },
+        {
+          "mod": "heal.cast",
+          "op": "set",
+          "value": 0
+        }
+      ],
+      "vfx": "Éclair de lumière bref, étincelles dorées."
+    },
+    {
+      "id": "ma_v_heal_cercle",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Cercle de soin",
+      "desc": "Soigne aussi les alliés à 6 m (20 % chacun ; vous 30 %). Canalisation 1 → 1,4 s.",
+      "x": -483,
+      "y": -464,
+      "links": [
+        "ma_heal"
+      ],
+      "maxRank": 1,
+      "ability": "heal",
+      "exclusiveGroup": "ma_g_heal",
+      "effects": [
+        {
+          "mod": "heal.groupHeal",
+          "op": "set",
+          "value": {
+            "radius": 6,
+            "pct": 0.2
+          }
+        },
+        {
+          "mod": "heal.cast",
+          "op": "set",
+          "value": 1.4
+        }
+      ],
+      "vfx": "Grand glyphe circulaire au sol, colonnes de lumière sur les alliés."
+    },
+    {
+      "id": "ma_v_bolt_eclat",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Trait d'éclat",
+      "desc": "Reste arcanique ; vitesse 22 → 32 m/s, portée 18 → 22 m, puissance 0,8 → 0,85.",
+      "x": -531,
+      "y": -220,
+      "links": [
+        "ma_heal"
+      ],
+      "maxRank": 1,
+      "ability": "firebolt",
+      "exclusiveGroup": "ma_g_bolt_affinite",
+      "effects": [
+        {
+          "mod": "firebolt.speed",
+          "op": "set",
+          "value": 32
+        },
+        {
+          "mod": "firebolt.range",
+          "op": "set",
+          "value": 22
+        },
+        {
+          "mod": "firebolt.power",
+          "op": "set",
+          "value": 0.85
+        }
+      ],
+      "vfx": "Éclat de pierre-astre bleu-violet, traînée de poussière d'étoiles."
+    },
+    {
+      "id": "ma_p_esprit_vif",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "passive",
+      "name": "Esprit vif",
+      "desc": "+6 % de mana maximale par rang.",
+      "x": -684,
+      "y": -395,
+      "links": [
+        "ma_heal",
+        "ma_blink"
+      ],
+      "maxRank": 3,
+      "effects": [
+        {
+          "stat": "mmp",
+          "op": "pct",
+          "value": 6,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_blink",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "skill",
+      "name": "Pas de brume",
+      "desc": "Se téléporte de 7 m dans la direction du mouvement (0,15 s d'invulnérabilité).",
+      "x": -762,
+      "y": -440,
+      "links": [
+        "ma_p_esprit_vif",
+        "ma_v_blink_leurre",
+        "ma_v_blink_dechirure",
+        "ma_v_blink_redouble",
+        "ma_p_meditation"
+      ],
+      "maxRank": 1,
+      "ability": "blink",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "blink"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_blink_leurre",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Double spectral",
+      "desc": "Laisse un double 2 s qui attire les monstres non-boss. Recharge 7 → 10 s.",
+      "x": -862,
+      "y": -388,
+      "links": [
+        "ma_blink"
+      ],
+      "maxRank": 1,
+      "ability": "blink",
+      "exclusiveGroup": "ma_g_blink",
+      "effects": [
+        {
+          "mod": "blink.decoy",
+          "op": "set",
+          "value": {
+            "dur": 2,
+            "taunt": "non_boss"
+          }
+        },
+        {
+          "mod": "blink.cd",
+          "op": "set",
+          "value": 10
+        }
+      ],
+      "vfx": "Image rémanente translucide qui s'effrite."
+    },
+    {
+      "id": "ma_v_blink_dechirure",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Déchirure",
+      "desc": "À l'arrivée : ×0,6 d'arcane dans 2,5 m et 12 de déséquilibre.",
+      "x": -767,
+      "y": -552,
+      "links": [
+        "ma_blink"
+      ],
+      "maxRank": 1,
+      "ability": "blink",
+      "exclusiveGroup": "ma_g_blink",
+      "effects": [
+        {
+          "mod": "blink.arrivalBurst",
+          "op": "set",
+          "value": {
+            "radius": 2.5,
+            "power": 0.6,
+            "poise": 12
+          }
+        }
+      ],
+      "vfx": "Faille violette qui se referme d'un coup sec."
+    },
+    {
+      "id": "ma_v_blink_redouble",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Pas redoublé",
+      "desc": "2 charges (9 s chacune) mais 5 m au lieu de 7.",
+      "x": -836,
+      "y": -292,
+      "links": [
+        "ma_blink"
+      ],
+      "maxRank": 1,
+      "ability": "blink",
+      "exclusiveGroup": "ma_g_blink",
+      "effects": [
+        {
+          "mod": "blink.charges",
+          "op": "set",
+          "value": 2
+        },
+        {
+          "mod": "blink.cd",
+          "op": "set",
+          "value": 9
+        },
+        {
+          "mod": "blink.range",
+          "op": "set",
+          "value": 5
+        }
+      ],
+      "vfx": "Deux éclairs bleus successifs plus courts."
+    },
+    {
+      "id": "ma_p_meditation",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "passive",
+      "name": "Méditation",
+      "desc": "+10 % de régénération de mana en combat par rang.",
+      "x": -875,
+      "y": -505,
+      "links": [
+        "ma_blink",
+        "ma_mana_shield",
+        "ma_arcane_shards"
+      ],
+      "maxRank": 3,
+      "effects": [
+        {
+          "stat": "mpRegenCombatPct",
+          "op": "add",
+          "value": 10,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_mana_shield",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "skill",
+      "name": "Bouclier de mana",
+      "desc": "Pendant 6 s, 40 % des dégâts subis sont prélevés sur la mana (1,5 mana par point) au lieu des PV.",
+      "x": -1008,
+      "y": -455,
+      "links": [
+        "ma_p_meditation",
+        "ma_v_shield_miroir",
+        "ma_v_shield_rempart",
+        "ma_p_doigts_agiles",
+        "ma_p_clarte"
+      ],
+      "maxRank": 1,
+      "ability": "mana_shield",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "mana_shield"
+        }
+      ]
+    },
+    {
+      "id": "ma_arcane_shards",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "skill",
+      "name": "Salve d'éclats",
+      "desc": "Lance 5 éclats de pierre-astre qui cherchent leur cible (×0,4 chacun).",
+      "x": -898,
+      "y": -645,
+      "links": [
+        "ma_p_meditation",
+        "ma_v_shards_orbite",
+        "ma_v_shards_concentree",
+        "ma_p_poids_des_astres",
+        "ma_p_clarte"
+      ],
+      "maxRank": 1,
+      "ability": "arcane_shards",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "arcane_shards"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_shield_miroir",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Égide miroir",
+      "desc": "Pendant les 0,6 premières secondes, renvoie les projectiles (60 % des dégâts) ; durée 6 → 3 s.",
+      "x": -992,
+      "y": -342,
+      "links": [
+        "ma_mana_shield"
+      ],
+      "maxRank": 1,
+      "ability": "mana_shield",
+      "exclusiveGroup": "ma_g_mana_shield",
+      "effects": [
+        {
+          "mod": "mana_shield.reflect",
+          "op": "set",
+          "value": {
+            "window": 0.6,
+            "pct": 0.6
+          }
+        },
+        {
+          "mod": "mana_shield.duration",
+          "op": "set",
+          "value": 3
+        }
+      ],
+      "vfx": "Panneau hexagonal miroitant qui flashe au renvoi."
+    },
+    {
+      "id": "ma_v_shield_rempart",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Rempart",
+      "desc": "Absorption 40 → 60 %, mais −30 % de vitesse pendant le bouclier.",
+      "x": -1110,
+      "y": -398,
+      "links": [
+        "ma_mana_shield"
+      ],
+      "maxRank": 1,
+      "ability": "mana_shield",
+      "exclusiveGroup": "ma_g_mana_shield",
+      "effects": [
+        {
+          "mod": "mana_shield.absorb",
+          "op": "set",
+          "value": 0.6
+        },
+        {
+          "mod": "mana_shield.slowSelf",
+          "op": "set",
+          "value": 0.3
+        }
+      ],
+      "vfx": "Dôme épais et opaque, runes qui tournent."
+    },
+    {
+      "id": "ma_v_shards_orbite",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Éclats en orbite",
+      "desc": "Les éclats tournent autour de vous 6 s et partent seuls vers les ennemis à moins de 5 m (1 toutes les 0,6 s).",
+      "x": -792,
+      "y": -688,
+      "links": [
+        "ma_arcane_shards"
+      ],
+      "maxRank": 1,
+      "ability": "arcane_shards",
+      "exclusiveGroup": "ma_g_arcane_shards",
+      "effects": [
+        {
+          "mod": "arcane_shards.orbit",
+          "op": "set",
+          "value": {
+            "dur": 6,
+            "triggerR": 5,
+            "period": 0.6
+          }
+        },
+        {
+          "mod": "arcane_shards.cast",
+          "op": "set",
+          "value": 0.2
+        }
+      ],
+      "vfx": "Cinq pierres lumineuses en orbite."
+    },
+    {
+      "id": "ma_v_shards_concentree",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Salve concentrée",
+      "desc": "Les 5 éclats fusionnent en une seule pointe : ×2,2, déséquilibre 25, sans guidage.",
+      "x": -900,
+      "y": -762,
+      "links": [
+        "ma_arcane_shards"
+      ],
+      "maxRank": 1,
+      "ability": "arcane_shards",
+      "exclusiveGroup": "ma_g_arcane_shards",
+      "effects": [
+        {
+          "mod": "arcane_shards.hits",
+          "op": "set",
+          "value": 1
+        },
+        {
+          "mod": "arcane_shards.power",
+          "op": "set",
+          "value": 2.2
+        },
+        {
+          "mod": "arcane_shards.poise",
+          "op": "set",
+          "value": 25
+        },
+        {
+          "mod": "arcane_shards.homing",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "mod": "arcane_shards.speed",
+          "op": "set",
+          "value": 34
+        }
+      ],
+      "vfx": "Une longue pointe de pierre-astre."
+    },
+    {
+      "id": "ma_p_doigts_agiles",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "passive",
+      "name": "Doigts agiles",
+      "desc": "−6 % de temps d'incantation par rang (pas la récupération).",
+      "x": -1196,
+      "y": -488,
+      "links": [
+        "ma_mana_shield",
+        "ma_p_etincelle",
+        "ma_ks_pacte_sang_lune"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "castTimePct",
+          "op": "add",
+          "value": -6,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_p_poids_des_astres",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "passive",
+      "name": "Poids des astres",
+      "desc": "+15 % de dégâts de déséquilibre des sorts par rang.",
+      "x": -1021,
+      "y": -792,
+      "links": [
+        "ma_arcane_shards",
+        "ma_p_hiver_long",
+        "ma_p_focalisation"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "poisePct.sort",
+          "op": "add",
+          "value": 15,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_p_clarte",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "passive",
+      "name": "Clarté",
+      "desc": "+5 % de dégâts d'arcane par rang.",
+      "x": -1091,
+      "y": -630,
+      "links": [
+        "ma_mana_shield",
+        "ma_arcane_shards",
+        "ma_arcane_beam"
+      ],
+      "maxRank": 3,
+      "effects": [
+        {
+          "stat": "dmgPct.arcane",
+          "op": "add",
+          "value": 5,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_arcane_beam",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "skill",
+      "name": "Rayon astral",
+      "desc": "Après 0,6 s d'incantation, canalise un rayon de 18 m pendant 2,5 s qui transperce tout.",
+      "x": -1195,
+      "y": -690,
+      "links": [
+        "ma_p_clarte",
+        "ma_v_beam_balayage",
+        "ma_v_beam_comete",
+        "ma_ks_grand_rituel"
+      ],
+      "maxRank": 1,
+      "ability": "arcane_beam",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "arcane_beam"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_beam_balayage",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Rayon balayant",
+      "desc": "Vous pouvez pivoter (45°/s) pendant le rayon ; durée 2,5 → 2 s.",
+      "x": -1297,
+      "y": -633,
+      "links": [
+        "ma_arcane_beam"
+      ],
+      "maxRank": 1,
+      "ability": "arcane_beam",
+      "exclusiveGroup": "ma_g_arcane_beam",
+      "effects": [
+        {
+          "mod": "arcane_beam.turnRate",
+          "op": "set",
+          "value": 45
+        },
+        {
+          "mod": "arcane_beam.channel",
+          "op": "set",
+          "value": 2
+        }
+      ],
+      "vfx": "Rayon qui balaie, arc brûlé au sol."
+    },
+    {
+      "id": "ma_v_beam_comete",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "variant",
+      "name": "Grande comète",
+      "desc": "Plus de canalisation : incantation 1,4 s puis un seul tir colossal (×4,0, déséquilibre 90) sur 18 m. Mana 45.",
+      "x": -1197,
+      "y": -807,
+      "links": [
+        "ma_arcane_beam"
+      ],
+      "maxRank": 1,
+      "ability": "arcane_beam",
+      "exclusiveGroup": "ma_g_arcane_beam",
+      "effects": [
+        {
+          "mod": "arcane_beam.kind",
+          "op": "set",
+          "value": "aoe_line"
+        },
+        {
+          "mod": "arcane_beam.cast",
+          "op": "set",
+          "value": 1.4
+        },
+        {
+          "mod": "arcane_beam.channel",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "mod": "arcane_beam.power",
+          "op": "set",
+          "value": 4
+        },
+        {
+          "mod": "arcane_beam.poise",
+          "op": "set",
+          "value": 90
+        },
+        {
+          "mod": "arcane_beam.mp",
+          "op": "set",
+          "value": 45
+        },
+        {
+          "mod": "arcane_beam.mpPerS",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "mod": "arcane_beam.stPerS",
+          "op": "set",
+          "value": 0
+        }
+      ],
+      "vfx": "Comète de pierre-astre avec traînée de ciel étoilé."
+    },
+    {
+      "id": "ma_ks_grand_rituel",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "keystone",
+      "name": "Grand rituel",
+      "desc": "Vos sorts (hors attaque de base) gagnent +35 % de puissance et +50 % de déséquilibre. En contrepartie, leurs incantations durent 50 % plus longtemps (au moins +0,3 s) et leur récupération 30 % de plus.",
+      "x": -1316,
+      "y": -760,
+      "links": [
+        "ma_arcane_beam"
+      ],
+      "maxRank": 1,
+      "effects": [
+        {
+          "stat": "powerPct.sort",
+          "op": "add",
+          "value": 35,
+          "excludeBase": true,
+          "final": true
+        },
+        {
+          "stat": "poisePct.sort",
+          "op": "add",
+          "value": 50,
+          "excludeBase": true,
+          "final": true
+        },
+        {
+          "stat": "castTimePct",
+          "op": "add",
+          "value": 50,
+          "minAddS": 0.3,
+          "final": true
+        },
+        {
+          "stat": "recPct",
+          "op": "add",
+          "value": 30,
+          "final": true
+        }
+      ]
+    },
+    {
+      "id": "ma_ks_pacte_sang_lune",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "keystone",
+      "name": "Pacte de la lune de sang",
+      "desc": "Quand la mana manque, le sort se paie en PV (1 PV par point de mana manquant) ; refusé si cela vous ferait passer sous 10 % de PV. En contrepartie : mana maximale −25 % et potions de mana deux fois moins efficaces.",
+      "x": -1339,
+      "y": -501,
+      "links": [
+        "ma_p_doigts_agiles"
+      ],
+      "maxRank": 1,
+      "effects": [
+        {
+          "stat": "bloodMagic",
+          "op": "set",
+          "value": {
+            "hpPerMana": 1,
+            "floorPct": 10
+          },
+          "final": true
+        },
+        {
+          "stat": "mmp",
+          "op": "pct",
+          "value": -25,
+          "final": true
+        },
+        {
+          "stat": "potionPct.mana",
+          "op": "add",
+          "value": -50,
+          "final": true
+        }
+      ]
+    },
+    {
+      "id": "ma_p_focalisation",
+      "region": "mage",
+      "branch": "arcanes",
+      "type": "passive",
+      "name": "Focalisation",
+      "desc": "−5 % de coût en mana de tous vos sorts par rang.",
+      "x": -1104,
+      "y": -909,
+      "links": [
+        "ma_p_poids_des_astres"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "mpCostPct",
+          "op": "add",
+          "value": -5,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_frost_nova",
+      "region": "mage",
+      "branch": "givre",
+      "type": "skill",
+      "name": "Nova de givre",
+      "desc": "Une onde de givre autour de soi qui inflige 3 charges de Froid aux ennemis proches.",
+      "x": -369,
+      "y": -547,
+      "links": [
+        "mage_depart",
+        "ma_v_nova_glaciale",
+        "ma_v_nova_eclats",
+        "ma_v_bolt_givre",
+        "ma_p_vigueur_erudit"
+      ],
+      "maxRank": 1,
+      "ability": "frost_nova",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "frost_nova"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_nova_glaciale",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Nova glaciale",
+      "desc": "Gèle 1 s les ennemis non-boss qui avaient déjà du Froid ; les autres reçoivent 3 charges. Recharge 12 → 16 s.",
+      "x": -487,
+      "y": -552,
+      "links": [
+        "ma_frost_nova"
+      ],
+      "maxRank": 1,
+      "ability": "frost_nova",
+      "exclusiveGroup": "ma_g_frost_nova",
+      "effects": [
+        {
+          "mod": "frost_nova.freezeIfChilled",
+          "op": "set",
+          "value": 1
+        },
+        {
+          "mod": "frost_nova.cd",
+          "op": "set",
+          "value": 16
+        }
+      ],
+      "vfx": "Les ennemis sont pris dans des blocs de glace."
+    },
+    {
+      "id": "ma_v_nova_eclats",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Nova d'éclats",
+      "desc": "Puissance 1,1 → 1,6, rayon 6 → 4,5 m, n'applique qu'1 charge de Froid.",
+      "x": -329,
+      "y": -658,
+      "links": [
+        "ma_frost_nova"
+      ],
+      "maxRank": 1,
+      "ability": "frost_nova",
+      "exclusiveGroup": "ma_g_frost_nova",
+      "effects": [
+        {
+          "mod": "frost_nova.power",
+          "op": "set",
+          "value": 1.6
+        },
+        {
+          "mod": "frost_nova.radius",
+          "op": "set",
+          "value": 4.5
+        },
+        {
+          "mod": "frost_nova.applies",
+          "op": "set",
+          "value": [
+            {
+              "id": "froid",
+              "stacks": 1
+            }
+          ]
+        }
+      ],
+      "vfx": "Éclats de glace tranchants projetés en étoile."
+    },
+    {
+      "id": "ma_v_bolt_givre",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Trait de givre",
+      "desc": "Le Trait devient du givre : puissance 0,8 → 0,7, inflige 1 charge de Froid (2,5 s).",
+      "x": -257,
+      "y": -514,
+      "links": [
+        "ma_frost_nova"
+      ],
+      "maxRank": 1,
+      "ability": "firebolt",
+      "exclusiveGroup": "ma_g_bolt_affinite",
+      "effects": [
+        {
+          "mod": "firebolt.element",
+          "op": "set",
+          "value": "givre"
+        },
+        {
+          "mod": "firebolt.power",
+          "op": "set",
+          "value": 0.7
+        },
+        {
+          "mod": "firebolt.applies",
+          "op": "set",
+          "value": [
+            {
+              "id": "froid",
+              "stacks": 1,
+              "dur": 2.5
+            }
+          ]
+        }
+      ],
+      "vfx": "Écharde de glace bleu pâle, brume froide."
+    },
+    {
+      "id": "ma_p_vigueur_erudit",
+      "region": "mage",
+      "branch": "givre",
+      "type": "passive",
+      "name": "Vigueur de l'érudit",
+      "desc": "+5 % de PV maximum par rang.",
+      "x": -442,
+      "y": -655,
+      "links": [
+        "ma_frost_nova",
+        "ma_ice_lance",
+        "mr_p_seve_arcanique"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "mhp",
+          "op": "pct",
+          "value": 5,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_ice_lance",
+      "region": "mage",
+      "branch": "givre",
+      "type": "skill",
+      "name": "Lance de glace",
+      "desc": "Une lance de glace. Sur une cible Gelée ou à 2 charges de Froid ou plus : Fracas (×1,6), qui consomme le Froid.",
+      "x": -492,
+      "y": -730,
+      "links": [
+        "ma_p_vigueur_erudit",
+        "ma_v_lance_trio",
+        "ma_v_lance_glacier",
+        "ma_p_morsure_froid"
+      ],
+      "maxRank": 1,
+      "ability": "ice_lance",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "ice_lance"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_lance_trio",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Triple lance",
+      "desc": "3 lances en éventail de 20° (×0,7 chacune) ; le Fracas ne s'applique qu'à la première qui touche.",
+      "x": -604,
+      "y": -726,
+      "links": [
+        "ma_ice_lance"
+      ],
+      "maxRank": 1,
+      "ability": "ice_lance",
+      "exclusiveGroup": "ma_g_ice_lance",
+      "effects": [
+        {
+          "mod": "ice_lance.projectiles",
+          "op": "set",
+          "value": 3
+        },
+        {
+          "mod": "ice_lance.spreadDeg",
+          "op": "set",
+          "value": 20
+        },
+        {
+          "mod": "ice_lance.power",
+          "op": "set",
+          "value": 0.7
+        }
+      ],
+      "vfx": "Trois lances fines en éventail."
+    },
+    {
+      "id": "ma_v_lance_glacier",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Lance-glacier",
+      "desc": "Traverse tous les ennemis sur 20 m ; puissance 1,5 → 1,3, incantation 0,4 → 0,7 s.",
+      "x": -447,
+      "y": -832,
+      "links": [
+        "ma_ice_lance"
+      ],
+      "maxRank": 1,
+      "ability": "ice_lance",
+      "exclusiveGroup": "ma_g_ice_lance",
+      "effects": [
+        {
+          "mod": "ice_lance.pierce",
+          "op": "set",
+          "value": 99
+        },
+        {
+          "mod": "ice_lance.power",
+          "op": "set",
+          "value": 1.3
+        },
+        {
+          "mod": "ice_lance.cast",
+          "op": "set",
+          "value": 0.7
+        }
+      ],
+      "vfx": "Longue stalactite qui laisse une traînée de givre au sol."
+    },
+    {
+      "id": "ma_p_morsure_froid",
+      "region": "mage",
+      "branch": "givre",
+      "type": "passive",
+      "name": "Morsure du froid",
+      "desc": "+4 % de dégâts de givre par rang.",
+      "x": -565,
+      "y": -837,
+      "links": [
+        "ma_ice_lance",
+        "ma_ice_wall",
+        "ma_frost_armor"
+      ],
+      "maxRank": 3,
+      "effects": [
+        {
+          "stat": "dmgPct.givre",
+          "op": "add",
+          "value": 4,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_ice_wall",
+      "region": "mage",
+      "branch": "givre",
+      "type": "skill",
+      "name": "Mur de glace",
+      "desc": "Érige un mur de glace (6 m) qui bloque les monstres et les projectiles pendant 6 s.",
+      "x": -706,
+      "y": -850,
+      "links": [
+        "ma_p_morsure_froid",
+        "ma_v_wall_prison",
+        "ma_v_wall_herisse",
+        "ma_p_hiver_long",
+        "ma_p_coeur_gele"
+      ],
+      "maxRank": 1,
+      "ability": "ice_wall",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "ice_wall"
+        }
+      ]
+    },
+    {
+      "id": "ma_frost_armor",
+      "region": "mage",
+      "branch": "givre",
+      "type": "skill",
+      "name": "Armure de givre",
+      "desc": "Pendant 8 s : +25 % de défense et chaque ennemi qui vous frappe au corps à corps reçoit 1 charge de Froid.",
+      "x": -524,
+      "y": -973,
+      "links": [
+        "ma_p_morsure_froid",
+        "ma_v_armor_carapace",
+        "ma_v_armor_aurore",
+        "ma_p_peau_de_givre",
+        "ma_p_coeur_gele"
+      ],
+      "maxRank": 1,
+      "ability": "frost_armor",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "frost_armor"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_wall_prison",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Prison de glace",
+      "desc": "Au lieu d'un mur, enferme un monstre non-boss 2,5 s (il ne peut ni agir ni subir de dégâts). Recharge 24 → 28 s.",
+      "x": -742,
+      "y": -742,
+      "links": [
+        "ma_ice_wall"
+      ],
+      "maxRank": 1,
+      "ability": "ice_wall",
+      "exclusiveGroup": "ma_g_ice_wall",
+      "effects": [
+        {
+          "mod": "ice_wall.kind",
+          "op": "set",
+          "value": "control"
+        },
+        {
+          "mod": "ice_wall.encase",
+          "op": "set",
+          "value": 2.5
+        },
+        {
+          "mod": "ice_wall.target",
+          "op": "set",
+          "value": "non_boss"
+        },
+        {
+          "mod": "ice_wall.cd",
+          "op": "set",
+          "value": 28
+        }
+      ],
+      "vfx": "Bloc de glace autour du monstre, qui craque avant de céder."
+    },
+    {
+      "id": "ma_v_wall_herisse",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Mur hérissé",
+      "desc": "PV du mur −30 % ; chaque coup de mêlée contre lui renvoie ×0,4 et 1 charge de Froid ; il explose en se brisant (×0,8 dans 3 m).",
+      "x": -823,
+      "y": -844,
+      "links": [
+        "ma_ice_wall"
+      ],
+      "maxRank": 1,
+      "ability": "ice_wall",
+      "exclusiveGroup": "ma_g_ice_wall",
+      "effects": [
+        {
+          "mod": "ice_wall.thorns",
+          "op": "set",
+          "value": {
+            "power": 0.4,
+            "froid": 1
+          }
+        },
+        {
+          "mod": "ice_wall.shatterBurst",
+          "op": "set",
+          "value": {
+            "radius": 3,
+            "power": 0.8
+          }
+        },
+        {
+          "mod": "ice_wall.wallHp",
+          "op": "mul",
+          "value": -0.3
+        }
+      ],
+      "vfx": "Mur couvert de pics de glace."
+    },
+    {
+      "id": "ma_v_armor_carapace",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Carapace",
+      "desc": "Plus de bonus de défense : absorbe entièrement un coup (jusqu'à 25 % des PV max) puis se brise.",
+      "x": -410,
+      "y": -966,
+      "links": [
+        "ma_frost_armor"
+      ],
+      "maxRank": 1,
+      "ability": "frost_armor",
+      "exclusiveGroup": "ma_g_frost_armor",
+      "effects": [
+        {
+          "mod": "frost_armor.buff",
+          "op": "set",
+          "value": {
+            "absorbOneHit": 0.25
+          }
+        }
+      ],
+      "vfx": "Coquille de glace translucide qui éclate."
+    },
+    {
+      "id": "ma_v_armor_aurore",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Aurore boréale",
+      "desc": "Plus de bonus de défense : les ennemis à moins de 3 m reçoivent 1 charge de Froid par seconde.",
+      "x": -475,
+      "y": -1079,
+      "links": [
+        "ma_frost_armor"
+      ],
+      "maxRank": 1,
+      "ability": "frost_armor",
+      "exclusiveGroup": "ma_g_frost_armor",
+      "effects": [
+        {
+          "mod": "frost_armor.buff",
+          "op": "set",
+          "value": {
+            "aura": {
+              "radius": 3,
+              "froidPerS": 1
+            }
+          }
+        }
+      ],
+      "vfx": "Rubans d'aurore verte et bleue autour du mage."
+    },
+    {
+      "id": "ma_p_hiver_long",
+      "region": "mage",
+      "branch": "givre",
+      "type": "passive",
+      "name": "Hiver long",
+      "desc": "Vos charges de Froid durent 0,5 s de plus par rang.",
+      "x": -861,
+      "y": -963,
+      "links": [
+        "ma_ice_wall",
+        "ma_p_poids_des_astres"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "statusDurS.froid",
+          "op": "add",
+          "value": 0.5,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_p_peau_de_givre",
+      "region": "mage",
+      "branch": "givre",
+      "type": "passive",
+      "name": "Peau de givre",
+      "desc": "+5 % de défense par rang.",
+      "x": -571,
+      "y": -1159,
+      "links": [
+        "ma_frost_armor"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "def",
+          "op": "pct",
+          "value": 5,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_p_coeur_gele",
+      "region": "mage",
+      "branch": "givre",
+      "type": "passive",
+      "name": "Cœur gelé",
+      "desc": "+5 % de dégâts contre les cibles ralenties par rang.",
+      "x": -705,
+      "y": -1045,
+      "links": [
+        "ma_ice_wall",
+        "ma_frost_armor",
+        "ma_blizzard"
+      ],
+      "maxRank": 3,
+      "effects": [
+        {
+          "stat": "dmgVsStatusPct.froid",
+          "op": "add",
+          "value": 5,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "ma_blizzard",
+      "region": "mage",
+      "branch": "givre",
+      "type": "skill",
+      "name": "Blizzard",
+      "desc": "Canalise une tempête de neige sur une zone (3 s max) : chaque tic ajoute 1 charge de Froid.",
+      "x": -772,
+      "y": -1144,
+      "links": [
+        "ma_p_coeur_gele",
+        "ma_v_blizzard_errant",
+        "ma_v_blizzard_oeil",
+        "ma_ks_hiver_eternel"
+      ],
+      "maxRank": 1,
+      "ability": "blizzard",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "blizzard"
+        }
+      ]
+    },
+    {
+      "id": "ma_v_blizzard_errant",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Tempête errante",
+      "desc": "Le blizzard vous suit (rayon 4 m) et vous pouvez marcher à 50 % ; tics −20 %.",
+      "x": -888,
+      "y": -1138,
+      "links": [
+        "ma_blizzard"
+      ],
+      "maxRank": 1,
+      "ability": "blizzard",
+      "exclusiveGroup": "ma_g_blizzard",
+      "effects": [
+        {
+          "mod": "blizzard.at",
+          "op": "set",
+          "value": "self"
+        },
+        {
+          "mod": "blizzard.radius",
+          "op": "set",
+          "value": 4
+        },
+        {
+          "mod": "blizzard.moveWhileChannel",
+          "op": "set",
+          "value": 0.5
+        },
+        {
+          "mod": "blizzard.power",
+          "op": "mul",
+          "value": -0.2
+        }
+      ],
+      "vfx": "Tourbillon de neige centré sur le mage."
+    },
+    {
+      "id": "ma_v_blizzard_oeil",
+      "region": "mage",
+      "branch": "givre",
+      "type": "variant",
+      "name": "Œil du blizzard",
+      "desc": "Rayon 5 → 3,5 m, tics +40 % ; à la fin, gèle 1 s les non-boss à 3 charges.",
+      "x": -722,
+      "y": -1250,
+      "links": [
+        "ma_blizzard"
+      ],
+      "maxRank": 1,
+      "ability": "blizzard",
+      "exclusiveGroup": "ma_g_blizzard",
+      "effects": [
+        {
+          "mod": "blizzard.radius",
+          "op": "set",
+          "value": 3.5
+        },
+        {
+          "mod": "blizzard.endFreeze",
+          "op": "set",
+          "value": {
+            "minStacks": 3,
+            "dur": 1
+          }
+        },
+        {
+          "mod": "blizzard.power",
+          "op": "mul",
+          "value": 0.4
+        }
+      ],
+      "vfx": "Vortex dense en spirale, éclatement de glace à la fin."
+    },
+    {
+      "id": "ma_ks_hiver_eternel",
+      "region": "mage",
+      "branch": "givre",
+      "type": "keystone",
+      "name": "Hiver éternel",
+      "desc": "À 3 charges de Froid, un monstre non-boss est Gelé 1,2 s (puis immunisé 8 s) ; un boss subit +25 % de déséquilibre pendant 3 s. En contrepartie : vos dégâts de feu −40 % et votre vitesse −8 %.",
+      "x": -850,
+      "y": -1260,
+      "links": [
+        "ma_blizzard"
+      ],
+      "maxRank": 1,
+      "effects": [
+        {
+          "stat": "froidToGel",
+          "op": "set",
+          "value": {
+            "stacks": 3,
+            "durS": 1.2,
+            "immunityS": 8,
+            "bosses": false
+          },
+          "final": true
+        },
+        {
+          "stat": "bossFroidPoiseTakenPct",
+          "op": "set",
+          "value": {
+            "pct": 25,
+            "durS": 3
+          },
+          "final": true
+        },
+        {
+          "stat": "dmgPct.feu",
+          "op": "add",
+          "value": -40,
+          "final": true
+        },
+        {
+          "stat": "speed",
+          "op": "pct",
+          "value": -8,
+          "final": true
+        }
+      ]
+    },
+    {
+      "id": "mr_p_seve_arcanique",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "passive",
+      "name": "Sève arcanique",
+      "desc": "+4 % de dégâts d'arcane et de nature par rang.",
+      "x": -150,
+      "y": -790,
+      "links": [
+        "ma_p_vigueur_erudit",
+        "mr_rune_arrow"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "dmgPct.arcane",
+          "op": "add",
+          "value": 4,
+          "perRank": true
+        },
+        {
+          "stat": "dmgPct.nature",
+          "op": "add",
+          "value": 4,
+          "perRank": true
+        }
+      ]
+    },
+    {
+      "id": "mr_p_oeil_sylvestre",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "passive",
+      "name": "Œil sylvestre",
+      "desc": "+3 % de chances de critique des projectiles par rang.",
+      "x": 150,
+      "y": -790,
+      "links": [
+        "v_cueilleur",
+        "mr_rune_arrow"
+      ],
+      "maxRank": 2,
+      "effects": [
+        {
+          "stat": "critTag.projectile",
+          "op": "add",
+          "value": 0.03,
+          "perRank": true
+        }
+      ],
+      "externalLinks": [
+        {
+          "id": "v_cueilleur",
+          "draft": "tree_ranger",
+          "note": "Cueilleur de brume (Rôdeur) — son lien « pont_mr:* » se résout ici"
+        }
+      ]
+    },
+    {
+      "id": "mr_rune_arrow",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "skill",
+      "name": "Flèche runique",
+      "desc": "Une flèche gravée d'une rune qui perce la première cible et inflige des dégâts d'arcane.",
+      "x": 0,
+      "y": -890,
+      "links": [
+        "mr_p_seve_arcanique",
+        "mr_p_oeil_sylvestre",
+        "mr_v_arrow_eclatee",
+        "mr_v_arrow_marque",
+        "mr_frost_brambles",
+        "mr_wisp"
+      ],
+      "maxRank": 1,
+      "ability": "rune_arrow",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "rune_arrow"
+        }
+      ]
+    },
+    {
+      "id": "mr_v_arrow_eclatee",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "variant",
+      "name": "Flèche éclatée",
+      "desc": "Ne perce plus : à l'impact, 3 éclats d'arcane (×0,35) frappent les ennemis à 4 m.",
+      "x": -100,
+      "y": -950,
+      "links": [
+        "mr_rune_arrow"
+      ],
+      "maxRank": 1,
+      "ability": "rune_arrow",
+      "exclusiveGroup": "mr_g_rune_arrow",
+      "effects": [
+        {
+          "mod": "rune_arrow.pierce",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "mod": "rune_arrow.split",
+          "op": "set",
+          "value": {
+            "count": 3,
+            "radius": 4,
+            "power": 0.35
+          }
+        }
+      ],
+      "vfx": "Rune qui éclate en trois fragments lumineux."
+    },
+    {
+      "id": "mr_v_arrow_marque",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "variant",
+      "name": "Flèche de marque",
+      "desc": "La cible est Marquée 6 s : +12 % de dégâts subis de votre part et de votre groupe (non cumulable).",
+      "x": 100,
+      "y": -950,
+      "links": [
+        "mr_rune_arrow"
+      ],
+      "maxRank": 1,
+      "ability": "rune_arrow",
+      "exclusiveGroup": "mr_g_rune_arrow",
+      "effects": [
+        {
+          "mod": "rune_arrow.applies",
+          "op": "set",
+          "value": [
+            {
+              "id": "marque",
+              "dur": 6,
+              "dmgTakenPct": 0.12
+            }
+          ]
+        }
+      ],
+      "vfx": "Sceau vert lumineux au-dessus de la cible."
+    },
+    {
+      "id": "mr_frost_brambles",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "skill",
+      "name": "Ronces givrées",
+      "desc": "Des ronces couvertes de givre jaillissent du sol et enracinent les ennemis 1,5 s (×0,8 sur 3 s).",
+      "x": -110,
+      "y": -1040,
+      "links": [
+        "mr_rune_arrow",
+        "mr_v_brambles_epines",
+        "mr_v_brambles_nord",
+        "mr_ks_arc_des_astres"
+      ],
+      "maxRank": 1,
+      "ability": "frost_brambles",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "frost_brambles"
+        }
+      ]
+    },
+    {
+      "id": "mr_wisp",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "skill",
+      "name": "Feu follet",
+      "desc": "Invoque un feu follet pendant 15 s qui tire un petit trait d'arcane (×0,3) sur votre cible toutes les 1,5 s.",
+      "x": 110,
+      "y": -1040,
+      "links": [
+        "mr_rune_arrow",
+        "mr_v_wisp_braise",
+        "mr_v_wisp_gardien",
+        "mr_ks_arc_des_astres"
+      ],
+      "maxRank": 1,
+      "ability": "wisp",
+      "effects": [
+        {
+          "mod": "unlock",
+          "op": "set",
+          "value": "wisp"
+        }
+      ]
+    },
+    {
+      "id": "mr_v_brambles_epines",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "variant",
+      "name": "Ronces à épines",
+      "desc": "Enracinement 1,5 → 0,8 s, dégâts ×2 et Saignement (tag saignement).",
+      "x": -215,
+      "y": -1000,
+      "links": [
+        "mr_frost_brambles"
+      ],
+      "maxRank": 1,
+      "ability": "frost_brambles",
+      "exclusiveGroup": "mr_g_frost_brambles",
+      "effects": [
+        {
+          "mod": "frost_brambles.root",
+          "op": "set",
+          "value": 0.8
+        },
+        {
+          "mod": "frost_brambles.applies",
+          "op": "set",
+          "value": [
+            "saignement"
+          ]
+        },
+        {
+          "mod": "frost_brambles.power",
+          "op": "mul",
+          "value": 1
+        }
+      ],
+      "vfx": "Ronces rouge sombre, épines luisantes."
+    },
+    {
+      "id": "mr_v_brambles_nord",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "variant",
+      "name": "Ronces du Nord",
+      "desc": "N'enracine plus : 3 charges de Froid, rayon 3,5 → 5 m.",
+      "x": -215,
+      "y": -1130,
+      "links": [
+        "mr_frost_brambles"
+      ],
+      "maxRank": 1,
+      "ability": "frost_brambles",
+      "exclusiveGroup": "mr_g_frost_brambles",
+      "effects": [
+        {
+          "mod": "frost_brambles.root",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "mod": "frost_brambles.radius",
+          "op": "set",
+          "value": 5
+        },
+        {
+          "mod": "frost_brambles.applies",
+          "op": "set",
+          "value": [
+            {
+              "id": "froid",
+              "stacks": 3
+            }
+          ]
+        }
+      ],
+      "vfx": "Tapis de ronces blanches de givre."
+    },
+    {
+      "id": "mr_v_wisp_braise",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "variant",
+      "name": "Follet de braise",
+      "desc": "Le follet devient du feu : ses traits infligent Brûlure, un tir toutes les 2 s au lieu de 1,5 s.",
+      "x": 215,
+      "y": -1000,
+      "links": [
+        "mr_wisp"
+      ],
+      "maxRank": 1,
+      "ability": "wisp",
+      "exclusiveGroup": "mr_g_wisp",
+      "effects": [
+        {
+          "mod": "wisp.element",
+          "op": "set",
+          "value": "feu"
+        },
+        {
+          "mod": "wisp.period",
+          "op": "set",
+          "value": 2
+        },
+        {
+          "mod": "wisp.applies",
+          "op": "set",
+          "value": [
+            "brulure"
+          ]
+        }
+      ],
+      "vfx": "Flamme orange dansante."
+    },
+    {
+      "id": "mr_v_wisp_gardien",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "variant",
+      "name": "Follet gardien",
+      "desc": "Le follet n'attaque plus : il intercepte un projectile ennemi toutes les 4 s.",
+      "x": 215,
+      "y": -1130,
+      "links": [
+        "mr_wisp"
+      ],
+      "maxRank": 1,
+      "ability": "wisp",
+      "exclusiveGroup": "mr_g_wisp",
+      "effects": [
+        {
+          "mod": "wisp.power",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "mod": "wisp.intercept",
+          "op": "set",
+          "value": {
+            "period": 4
+          }
+        }
+      ],
+      "vfx": "Follet blanc qui tourne autour du mage et éclate en bouclier."
+    },
+    {
+      "id": "mr_ks_arc_des_astres",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "type": "keystone",
+      "name": "Arc des astres",
+      "desc": "Votre arc ou arbalète compte comme un focalisateur (plus de −20 % sur vos sorts) et vos sorts de projectile volent 20 % plus vite. En contrepartie : mana maximale −15 % et +10 % de coût d'endurance sur vos tirs et vos sorts.",
+      "x": 0,
+      "y": -1190,
+      "links": [
+        "mr_frost_brambles",
+        "mr_wisp"
+      ],
+      "maxRank": 1,
+      "effects": [
+        {
+          "stat": "focusFromBow",
+          "op": "set",
+          "value": true,
+          "final": true
+        },
+        {
+          "stat": "projSpeedPct.sort",
+          "op": "add",
+          "value": 20,
+          "final": true
+        },
+        {
+          "stat": "mmp",
+          "op": "pct",
+          "value": -15,
+          "final": true
+        },
+        {
+          "stat": "stCostPct",
+          "op": "add",
+          "value": 10,
+          "final": true
+        }
+      ]
+    },
+    {
+      "id": "ma_ks_erudit_martial",
+      "region": "mage",
+      "branch": "pyromancie",
+      "type": "keystone",
+      "name": "Érudit martial",
+      "desc": "Votre bâton ou sceptre compte comme une arme de mêlée : les compétences de mêlée ne sont plus grisées (−15 % de puissance au bâton). L'Inaptitude des compétences de Guerrier est réduite de moitié. En contrepartie, vos sorts coûtent 10 % de mana en plus.",
+      "x": -1198,
+      "y": 217,
+      "links": [
+        "ma_p_sang_chaud"
+      ],
+      "maxRank": 1,
+      "effects": [
+        {
+          "stat": "meleeFromStaff",
+          "op": "set",
+          "value": {
+            "powerPct": -15
+          },
+          "final": true
+        },
+        {
+          "stat": "inaptitudeMult.warrior",
+          "op": "add",
+          "value": -0.5,
+          "final": true
+        },
+        {
+          "stat": "mpCostPct",
+          "op": "add",
+          "value": 10,
+          "final": true
+        }
+      ]
+    }
+  ],
+  "keystones": [
+    {
+      "id": "ma_ks_coeur_de_braise",
+      "name": "Cœur de braise",
+      "region": "mage",
+      "branch": "pyromancie",
+      "upside": "Brûlures cumulables jusqu'à 3 fois (durées séparées) ; +15 % de dégâts de feu.",
+      "drawback": "+15 % de dégâts subis de toutes sources.",
+      "intent": "Le pyromancien le plus fort est le plus fragile : il doit tuer vite ou esquiver parfaitement."
+    },
+    {
+      "id": "ma_ks_grand_rituel",
+      "name": "Grand rituel",
+      "region": "mage",
+      "branch": "arcanes",
+      "upside": "Sorts (hors attaque de base) : +35 % de puissance, +50 % de déséquilibre.",
+      "drawback": "Incantations +50 % (au moins +0,3 s), récupération +30 %.",
+      "intent": "Le mage « canon de verre » à la Elden Ring : chaque sort est un pari de placement et de timing."
+    },
+    {
+      "id": "ma_ks_pacte_sang_lune",
+      "name": "Pacte de la lune de sang",
+      "region": "mage",
+      "branch": "arcanes",
+      "upside": "Sans assez de mana, le sort se paie en PV (1 PV par mana manquante), refusé sous 10 % de PV.",
+      "drawback": "Mana maximale −25 %, potions de mana −50 %.",
+      "intent": "Supprime la panne sèche au prix d'un risque permanent ; le plancher de 10 % empêche le suicide mais pas l'erreur suivante."
+    },
+    {
+      "id": "ma_ks_hiver_eternel",
+      "name": "Hiver éternel",
+      "region": "mage",
+      "branch": "givre",
+      "upside": "3 charges de Froid gèlent un non-boss 1,2 s (immunité 8 s) ; un boss subit +25 % de déséquilibre 3 s.",
+      "drawback": "Dégâts de feu −40 %, vitesse −8 %.",
+      "intent": "Le contrôleur de groupe : il ne verrouille jamais un monstre (immunité) ni un boss."
+    },
+    {
+      "id": "mr_ks_arc_des_astres",
+      "name": "Arc des astres",
+      "region": "pont_mr",
+      "branch": "arcaniste_sylvestre",
+      "upside": "L'arc ou l'arbalète compte comme focalisateur ; sorts de projectile +20 % de vitesse.",
+      "drawback": "Mana maximale −15 %, +10 % de coût d'endurance des tirs et sorts.",
+      "intent": "Rend jouable l'Arcaniste sylvestre (arc + sorts). Différent de Touche-à-tout (Survie), qui réduit l'Inaptitude."
+    },
+    {
+      "id": "ma_ks_erudit_martial",
+      "name": "Érudit martial",
+      "region": "mage",
+      "branch": "pyromancie",
+      "upside": "Bâton/sceptre = arme de mêlée (−15 %) ; Inaptitude des compétences de Guerrier ÷ 2 (se cumule avec Touche-à-tout, plancher 40 %).",
+      "drawback": "Sorts +10 % de mana.",
+      "intent": "Le mage de bataille : rend jouables les compétences de mêlée sans lâcher le bâton, au prix de la réserve de mana."
+    }
+  ]
+}

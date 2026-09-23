@@ -1,0 +1,11137 @@
+{
+ "version": "v0.3-final-1",
+ "note": "Artisanat v0.3. Les statistiques des objets fabriqués sont celles d'items.json › bases (mêmes formules que le butin). Tables de butin des monstres : items.json › dropTables.monsters.",
+ "materials": [
+  {
+   "id": "slime_gel",
+   "name": "Gelée de gluant",
+   "type": "material",
+   "kind": "monster",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 3,
+   "icon": "slime_gel",
+   "desc": "Visqueuse et vaguement lumineuse. La base de toutes les potions de soin.",
+   "legacy": true,
+   "sources": [
+    {
+     "monster": "slime",
+     "ch": 0.55,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "slime_core",
+   "name": "Cœur de gluant",
+   "type": "material",
+   "kind": "monster",
+   "tier": 1,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 12,
+   "icon": "slime_core",
+   "desc": "Un noyau tiède qui palpite encore. Concentre la vertu des potions.",
+   "sources": [
+    {
+     "monster": "slime",
+     "ch": 0.06,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wolf_pelt",
+   "name": "Fourrure de loup",
+   "type": "material",
+   "kind": "monster",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 7,
+   "icon": "wolf_pelt",
+   "desc": "Une fourrure épaisse et chaude. Se tanne en lanières de cuir.",
+   "legacy": true,
+   "sources": [
+    {
+     "monster": "wolf",
+     "ch": 0.5,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wolf_fang",
+   "name": "Croc de loup",
+   "type": "material",
+   "kind": "monster",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 6,
+   "icon": "wolf_fang",
+   "desc": "Un croc long comme un doigt, encore tranchant.",
+   "sources": [
+    {
+     "monster": "wolf",
+     "ch": 0.3,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "boar_hide",
+   "name": "Cuir de sanglier",
+   "type": "material",
+   "kind": "monster",
+   "tier": 2,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 8,
+   "icon": "boar_hide",
+   "desc": "Un cuir rêche et épais, presque impossible à percer.",
+   "sources": [
+    {
+     "monster": "boar",
+     "ch": 0.5,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "boar_tusk",
+   "name": "Défense de sanglier",
+   "type": "material",
+   "kind": "monster",
+   "tier": 2,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 9,
+   "icon": "boar_tusk",
+   "desc": "Une défense jaunie, dure comme la pierre.",
+   "sources": [
+    {
+     "monster": "boar",
+     "ch": 0.25,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "goblin_trinket",
+   "name": "Babiole gobeline",
+   "type": "material",
+   "kind": "monster",
+   "tier": 2,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 11,
+   "icon": "goblin_trinket",
+   "desc": "Un bibelot volé. Un orfèvre saura en tirer quelque chose.",
+   "legacy": true,
+   "sources": [
+    {
+     "monster": "goblin",
+     "ch": 0.4,
+     "qty": [
+      1,
+      1
+     ]
+    },
+    {
+     "monster": "goblin_shaman",
+     "ch": 0.3,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "goblin_scrap",
+   "name": "Ferraille gobeline",
+   "type": "material",
+   "kind": "monster",
+   "tier": 2,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 6,
+   "icon": "goblin_scrap",
+   "desc": "Des bouts de métal tordus. Refondus, ils donnent un fer honnête.",
+   "sources": [
+    {
+     "monster": "goblin",
+     "ch": 0.35,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "totem_feather",
+   "name": "Plume de totem",
+   "type": "material",
+   "kind": "monster",
+   "tier": 2,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 12,
+   "icon": "totem_feather",
+   "desc": "Une plume peinte, chargée des murmures du chaman.",
+   "sources": [
+    {
+     "monster": "goblin_shaman",
+     "ch": 0.45,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "spider_silk",
+   "name": "Soie d'araignée",
+   "type": "material",
+   "kind": "monster",
+   "tier": 2,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 8,
+   "icon": "spider_silk",
+   "desc": "Un fil gluant, d'une solidité étonnante une fois tissé.",
+   "sources": [
+    {
+     "monster": "spider",
+     "ch": 0.55,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "venom_gland",
+   "name": "Glande à venin",
+   "type": "material",
+   "kind": "monster",
+   "tier": 2,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 12,
+   "icon": "venom_gland",
+   "desc": "Elle suinte encore. À manipuler avec des gants.",
+   "sources": [
+    {
+     "monster": "spider",
+     "ch": 0.25,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ancient_bone",
+   "name": "Os ancien",
+   "type": "material",
+   "kind": "monster",
+   "tier": 3,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 16,
+   "icon": "ancient_bone",
+   "desc": "Il émane de cet os une étrange aura.",
+   "legacy": true,
+   "sources": [
+    {
+     "monster": "skeleton",
+     "ch": 0.45,
+     "qty": [
+      1,
+      1
+     ]
+    },
+    {
+     "monster": "skeleton_archer",
+     "ch": 0.35,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "grave_dust",
+   "name": "Poussière de tombe",
+   "type": "material",
+   "kind": "monster",
+   "tier": 3,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 10,
+   "icon": "grave_dust",
+   "desc": "Une cendre grise qui ne retombe jamais tout à fait.",
+   "sources": [
+    {
+     "monster": "skeleton",
+     "ch": 0.3,
+     "qty": [
+      1,
+      2
+     ]
+    },
+    {
+     "monster": "skeleton_archer",
+     "ch": 0.2,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "black_fletching",
+   "name": "Empenne noire",
+   "type": "material",
+   "kind": "monster",
+   "tier": 3,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 10,
+   "icon": "black_fletching",
+   "desc": "Des plumes de corbeau taillées par un archer mort depuis longtemps.",
+   "sources": [
+    {
+     "monster": "skeleton_archer",
+     "ch": 0.4,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wraith_veil",
+   "name": "Voile spectral",
+   "type": "material",
+   "kind": "monster",
+   "tier": 3,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 14,
+   "icon": "wraith_veil",
+   "desc": "Un lambeau de brume froide qui se laisse coudre.",
+   "sources": [
+    {
+     "monster": "wraith",
+     "ch": 0.5,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "soul_shard",
+   "name": "Éclat d'âme",
+   "type": "material",
+   "kind": "monster",
+   "tier": 3,
+   "rarity": "rare",
+   "stack": 50,
+   "sell": 30,
+   "icon": "soul_shard",
+   "desc": "Un fragment lumineux. On y entend parfois un soupir.",
+   "sources": [
+    {
+     "monster": "wraith",
+     "ch": 0.12,
+     "qty": [
+      1,
+      1
+     ]
+    },
+    {
+     "monster": "swamp_hag",
+     "ch": 0.5,
+     "qty": [
+      1,
+      2
+     ]
+    },
+    {
+     "monster": "lich",
+     "ch": 1,
+     "qty": [
+      3,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bandit_cloth",
+   "name": "Étoffe de brigand",
+   "type": "material",
+   "kind": "monster",
+   "tier": 3,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 10,
+   "icon": "bandit_cloth",
+   "desc": "Une toile teinte de sombre, rapiécée cent fois.",
+   "sources": [
+    {
+     "monster": "bandit",
+     "ch": 0.5,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "chipped_blade",
+   "name": "Lame ébréchée",
+   "type": "material",
+   "kind": "monster",
+   "tier": 3,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 9,
+   "icon": "chipped_blade",
+   "desc": "Bonne pour la refonte, plus pour le combat.",
+   "sources": [
+    {
+     "monster": "bandit",
+     "ch": 0.3,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "golem_core",
+   "name": "Cœur de golem",
+   "type": "material",
+   "kind": "boss",
+   "tier": 3,
+   "rarity": "epic",
+   "stack": 10,
+   "sell": 150,
+   "icon": "golem_core",
+   "desc": "Une gemme vibrante d'énergie ancienne.",
+   "legacy": true,
+   "sources": [
+    {
+     "monster": "golem",
+     "ch": 1,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "golem_stone",
+   "name": "Pierre animée",
+   "type": "material",
+   "kind": "boss",
+   "tier": 3,
+   "rarity": "rare",
+   "stack": 50,
+   "sell": 25,
+   "icon": "golem_stone",
+   "desc": "Un éclat du golem, gravé de runes qui luisent encore.",
+   "sources": [
+    {
+     "monster": "golem",
+     "ch": 1,
+     "qty": [
+      3,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "scorpion_chitin",
+   "name": "Chitine de scorpion",
+   "type": "material",
+   "kind": "monster",
+   "tier": 4,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 14,
+   "icon": "scorpion_chitin",
+   "desc": "Une plaque de carapace, légère et dure.",
+   "sources": [
+    {
+     "monster": "scorpion",
+     "ch": 0.5,
+     "qty": [
+      1,
+      2
+     ]
+    },
+    {
+     "monster": "sand_wyrm",
+     "ch": 1,
+     "qty": [
+      2,
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "id": "scorpion_stinger",
+   "name": "Dard de scorpion",
+   "type": "material",
+   "kind": "monster",
+   "tier": 4,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 18,
+   "icon": "scorpion_stinger",
+   "desc": "La pointe brille d'un venin ambré.",
+   "sources": [
+    {
+     "monster": "scorpion",
+     "ch": 0.25,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lurker_scale",
+   "name": "Écaille des marais",
+   "type": "material",
+   "kind": "monster",
+   "tier": 4,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 14,
+   "icon": "lurker_scale",
+   "desc": "Une écaille verdâtre, souple comme du cuir.",
+   "sources": [
+    {
+     "monster": "bog_lurker",
+     "ch": 0.5,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bog_moss",
+   "name": "Mousse des tourbières",
+   "type": "material",
+   "kind": "monster",
+   "tier": 4,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 12,
+   "icon": "bog_moss",
+   "desc": "Spongieuse, elle absorbe poisons et fièvres.",
+   "sources": [
+    {
+     "monster": "bog_lurker",
+     "ch": 0.4,
+     "qty": [
+      1,
+      2
+     ]
+    },
+    {
+     "monster": "swamp_hag",
+     "ch": 1,
+     "qty": [
+      3,
+      5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hag_eye",
+   "name": "Œil de la sorcière",
+   "type": "material",
+   "kind": "boss",
+   "tier": 4,
+   "rarity": "epic",
+   "stack": 10,
+   "sell": 220,
+   "icon": "hag_eye",
+   "desc": "Il vous suit du regard, même dans le sac.",
+   "sources": [
+    {
+     "monster": "swamp_hag",
+     "ch": 1,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wyrm_scale",
+   "name": "Écaille de ver des sables",
+   "type": "material",
+   "kind": "boss",
+   "tier": 4,
+   "rarity": "rare",
+   "stack": 50,
+   "sell": 40,
+   "icon": "wyrm_scale",
+   "desc": "Large comme un bouclier, brûlante au toucher.",
+   "sources": [
+    {
+     "monster": "sand_wyrm",
+     "ch": 1,
+     "qty": [
+      4,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wyrm_tooth",
+   "name": "Dent du ver des sables",
+   "type": "material",
+   "kind": "boss",
+   "tier": 4,
+   "rarity": "epic",
+   "stack": 10,
+   "sell": 200,
+   "icon": "wyrm_tooth",
+   "desc": "Une dent courbe, longue comme un bras.",
+   "sources": [
+    {
+     "monster": "sand_wyrm",
+     "ch": 0.6,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "frost_pelt",
+   "name": "Fourrure de givre",
+   "type": "material",
+   "kind": "monster",
+   "tier": 5,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 18,
+   "icon": "frost_pelt",
+   "desc": "Blanche et raide de glace, elle ne dégèle jamais.",
+   "sources": [
+    {
+     "monster": "ice_wolf",
+     "ch": 0.5,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "icewolf_fang",
+   "name": "Croc de loup de givre",
+   "type": "material",
+   "kind": "monster",
+   "tier": 5,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 22,
+   "icon": "icewolf_fang",
+   "desc": "Un croc bleuté qui brûle de froid.",
+   "sources": [
+    {
+     "monster": "ice_wolf",
+     "ch": 0.3,
+     "qty": [
+      1,
+      2
+     ]
+    },
+    {
+     "monster": "frost_giant",
+     "ch": 1,
+     "qty": [
+      2,
+      3
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yeti_fur",
+   "name": "Toison de yéti",
+   "type": "material",
+   "kind": "monster",
+   "tier": 5,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 20,
+   "icon": "yeti_fur",
+   "desc": "Un pelage épais comme un matelas.",
+   "sources": [
+    {
+     "monster": "yeti",
+     "ch": 0.55,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yeti_horn",
+   "name": "Corne de yéti",
+   "type": "material",
+   "kind": "monster",
+   "tier": 5,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 26,
+   "icon": "yeti_horn",
+   "desc": "Torsadée, lourde, parfaite pour un arc ou une garde.",
+   "sources": [
+    {
+     "monster": "yeti",
+     "ch": 0.2,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "frost_heart",
+   "name": "Cœur de givre éternel",
+   "type": "material",
+   "kind": "boss",
+   "tier": 5,
+   "rarity": "epic",
+   "stack": 10,
+   "sell": 300,
+   "icon": "frost_heart",
+   "desc": "Il bat encore, lentement, au rythme de l'hiver.",
+   "sources": [
+    {
+     "monster": "frost_giant",
+     "ch": 1,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "troll_hide",
+   "name": "Peau de troll",
+   "type": "material",
+   "kind": "monster",
+   "tier": 6,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 24,
+   "icon": "troll_hide",
+   "desc": "Une peau épaisse qui se referme quand on l'entaille.",
+   "sources": [
+    {
+     "monster": "troll",
+     "ch": 0.5,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "troll_blood",
+   "name": "Sang de troll",
+   "type": "material",
+   "kind": "monster",
+   "tier": 6,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 30,
+   "icon": "troll_blood",
+   "desc": "Il bouillonne dans la fiole. Il guérit tout, ou presque.",
+   "sources": [
+    {
+     "monster": "troll",
+     "ch": 0.25,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rune_shard",
+   "name": "Fragment runique d'Aldmar",
+   "type": "material",
+   "kind": "monster",
+   "tier": 6,
+   "rarity": "rare",
+   "stack": 50,
+   "sell": 60,
+   "icon": "rune_shard",
+   "desc": "Un morceau de pierre gravée qui vibre sous les doigts.",
+   "sources": [
+    {
+     "monster": "troll",
+     "ch": 0.08,
+     "qty": [
+      1,
+      1
+     ]
+    },
+    {
+     "monster": "lich",
+     "ch": 1,
+     "qty": [
+      2,
+      4
+     ]
+    },
+    {
+     "ch": 0.25,
+     "qty": [
+      1,
+      2
+     ],
+     "redZoneElite": true
+    },
+    {
+     "monster": "scarlet_champion",
+     "ch": 0.5,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phylactery_shard",
+   "name": "Éclat de phylactère",
+   "type": "material",
+   "kind": "boss",
+   "tier": 6,
+   "rarity": "epic",
+   "stack": 10,
+   "sell": 400,
+   "icon": "phylactery_shard",
+   "desc": "La prison brisée d'une âme de liche. Elle cherche un nouveau corps.",
+   "sources": [
+    {
+     "monster": "lich",
+     "ch": 1,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ore_copper",
+   "name": "Minerai de cuivre",
+   "type": "material",
+   "kind": "gathered",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 3,
+   "icon": "ore_copper",
+   "desc": "Un minerai tendre et rougeâtre."
+  },
+  {
+   "id": "ore_iron",
+   "name": "Minerai de fer",
+   "type": "material",
+   "kind": "gathered",
+   "tier": 2,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 6,
+   "icon": "ore_iron",
+   "desc": "Un minerai lourd et sombre."
+  },
+  {
+   "id": "ore_mithril",
+   "name": "Minerai de mithril",
+   "type": "material",
+   "kind": "gathered",
+   "tier": 5,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 18,
+   "icon": "ore_mithril",
+   "desc": "Il reflète la lumière comme de l'eau."
+  },
+  {
+   "id": "crystal_shard",
+   "name": "Éclat de cristal",
+   "type": "material",
+   "kind": "gathered",
+   "tier": 3,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 15,
+   "icon": "crystal_shard",
+   "desc": "Un cristal pur. Ajouté à une recette, il favorise le chef-d'œuvre.",
+   "sources": [
+    {
+     "monster": "golem",
+     "ch": 0.5,
+     "qty": [
+      2,
+      3
+     ]
+    },
+    {
+     "monster": "frost_giant",
+     "ch": 1,
+     "qty": [
+      3,
+      5
+     ]
+    },
+    {
+     "ch": 0.3,
+     "qty": [
+      1,
+      2
+     ],
+     "redZoneElite": true
+    },
+    {
+     "monster": "scarlet_champion",
+     "ch": 0.5,
+     "qty": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "herb_brume",
+   "name": "Herbe de brume",
+   "type": "material",
+   "kind": "gathered",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 3,
+   "icon": "herb_brume",
+   "desc": "Une herbe pâle qui pousse dans la brume du matin."
+  },
+  {
+   "id": "herb_braise",
+   "name": "Pétale de braise",
+   "type": "material",
+   "kind": "gathered",
+   "tier": 4,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 10,
+   "icon": "herb_braise",
+   "desc": "Chaud au toucher, il rougeoie la nuit."
+  },
+  {
+   "id": "herb_givre",
+   "name": "Fleur de givre",
+   "type": "material",
+   "kind": "gathered",
+   "tier": 5,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 14,
+   "icon": "herb_givre",
+   "desc": "Une fleur de glace qui ne fond qu'au creux d'une fiole."
+  },
+  {
+   "id": "ingot_copper",
+   "name": "Lingot de cuivre",
+   "type": "material",
+   "kind": "refined",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 7,
+   "icon": "ingot_copper",
+   "desc": "Fondu à la forge à partir de minerai de cuivre."
+  },
+  {
+   "id": "ingot_iron",
+   "name": "Lingot de fer",
+   "type": "material",
+   "kind": "refined",
+   "tier": 2,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 13,
+   "icon": "ingot_iron",
+   "desc": "Fondu à partir de minerai de fer ou de ferraille."
+  },
+  {
+   "id": "ingot_mithril",
+   "name": "Lingot de mithril",
+   "type": "material",
+   "kind": "refined",
+   "tier": 5,
+   "rarity": "uncommon",
+   "stack": 50,
+   "sell": 38,
+   "icon": "ingot_mithril",
+   "desc": "Léger comme une plume, dur comme la foi."
+  },
+  {
+   "id": "leather_strip",
+   "name": "Lanières de cuir",
+   "type": "material",
+   "kind": "refined",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 4,
+   "icon": "leather_strip",
+   "desc": "Du cuir tanné et découpé, prêt à coudre."
+  },
+  {
+   "id": "cloth_bolt",
+   "name": "Rouleau de tissu",
+   "type": "material",
+   "kind": "refined",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 5,
+   "icon": "cloth_bolt",
+   "desc": "Un tissu solide, de lin ou de soie."
+  },
+  {
+   "id": "scrap_metal",
+   "name": "Ferraille",
+   "type": "material",
+   "kind": "salvage",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 2,
+   "icon": "scrap_metal",
+   "desc": "Des restes d'armes et d'armures recyclées. Refondus, ils donnent du fer."
+  },
+  {
+   "id": "leather_scraps",
+   "name": "Chutes de cuir",
+   "type": "material",
+   "kind": "salvage",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 2,
+   "icon": "leather_scraps",
+   "desc": "Des bouts de cuir récupérés. Recousus, ils donnent des lanières."
+  },
+  {
+   "id": "cloth_scraps",
+   "name": "Chutes d'étoffe",
+   "type": "material",
+   "kind": "salvage",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 2,
+   "icon": "cloth_scraps",
+   "desc": "Des lambeaux de tissu à retisser."
+  },
+  {
+   "id": "wood_scraps",
+   "name": "Copeaux de bois précieux",
+   "type": "material",
+   "kind": "salvage",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 2,
+   "icon": "wood_scraps",
+   "desc": "Des copeaux de bâtons démontés. Collés, ils redeviennent une planche."
+  },
+  {
+   "id": "vial",
+   "name": "Fiole de verre",
+   "type": "material",
+   "kind": "vendor",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 100,
+   "sell": 0,
+   "icon": "vial",
+   "desc": "Une fiole vide. Vendue par l'alchimiste.",
+   "price": 2
+  },
+  {
+   "id": "linen",
+   "name": "Toile de lin",
+   "type": "material",
+   "kind": "vendor",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 1,
+   "icon": "linen",
+   "desc": "Une toile grossière. Vendue par la tanneuse.",
+   "price": 3
+  },
+  {
+   "id": "ash_wood",
+   "name": "Bois de frêne",
+   "type": "material",
+   "kind": "vendor",
+   "tier": 1,
+   "rarity": "common",
+   "stack": 50,
+   "sell": 1,
+   "icon": "ash_wood",
+   "desc": "Une planche droite et souple. Vendue par la tanneuse et le forgeron.",
+   "price": 4
+  },
+  {
+   "id": "scarlet_mark",
+   "name": "Marque écarlate",
+   "type": "material",
+   "kind": "monster",
+   "tier": 6,
+   "rarity": "rare",
+   "stack": 50,
+   "sell": 40,
+   "icon": "scarlet_mark",
+   "desc": "Un sceau de sang séché arraché aux champions des zones rouges. Les forgerons d'Aldmar l'échangent contre leurs meilleures pierres.",
+   "sources": [
+    {
+     "monster": "scarlet_champion",
+     "ch": 1,
+     "qty": [
+      3,
+      5
+     ]
+    },
+    {
+     "redZoneElite": true,
+     "ch": 0.2,
+     "qty": [
+      1,
+      1
+     ]
+    }
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "id": "ore_copper",
+   "model": "node_copper",
+   "name": "Filon de cuivre",
+   "item": "ore_copper",
+   "qty": [
+    2,
+    3
+   ],
+   "tier": 1,
+   "prof": "forge",
+   "bonus": [
+    [
+     "crystal_shard",
+     0.03
+    ]
+   ],
+   "regions": [
+    "plains_e",
+    "plains_sw",
+    "forest"
+   ],
+   "gatherMs": 2000,
+   "respawnPerPlayerS": 180,
+   "profXp": 2,
+   "redZoneYield": 2
+  },
+  {
+   "id": "ore_iron",
+   "model": "node_iron",
+   "name": "Filon de fer",
+   "item": "ore_iron",
+   "qty": [
+    2,
+    3
+   ],
+   "tier": 2,
+   "prof": "forge",
+   "bonus": [
+    [
+     "crystal_shard",
+     0.05
+    ]
+   ],
+   "regions": [
+    "goblins",
+    "graveyard",
+    "desert",
+    "swamp",
+    "ruins_aldmar"
+   ],
+   "gatherMs": 2000,
+   "respawnPerPlayerS": 180,
+   "profXp": 2,
+   "redZoneYield": 2
+  },
+  {
+   "id": "ore_mithril",
+   "model": "node_mithril",
+   "name": "Filon de mithril",
+   "item": "ore_mithril",
+   "qty": [
+    1,
+    2
+   ],
+   "tier": 5,
+   "prof": "forge",
+   "bonus": [
+    [
+     "crystal_shard",
+     0.08
+    ]
+   ],
+   "regions": [
+    "frostpeaks",
+    "ruins_aldmar",
+    "red_zones"
+   ],
+   "gatherMs": 2000,
+   "respawnPerPlayerS": 180,
+   "profXp": 2,
+   "redZoneYield": 2
+  },
+  {
+   "id": "crystal",
+   "model": "node_crystal",
+   "name": "Amas de cristal",
+   "item": "crystal_shard",
+   "qty": [
+    1,
+    2
+   ],
+   "tier": 3,
+   "prof": "forge",
+   "bonus": [],
+   "regions": [
+    "lair",
+    "frostpeaks",
+    "ruins_aldmar",
+    "red_zones"
+   ],
+   "gatherMs": 2000,
+   "respawnPerPlayerS": 180,
+   "profXp": 2,
+   "redZoneYield": 2
+  },
+  {
+   "id": "herb_brume",
+   "model": "node_herb_brume",
+   "name": "Touffe d'herbe de brume",
+   "item": "herb_brume",
+   "qty": [
+    2,
+    3
+   ],
+   "tier": 1,
+   "prof": "alchemy",
+   "bonus": [],
+   "regions": [
+    "plains_e",
+    "plains_sw",
+    "forest",
+    "graveyard",
+    "swamp"
+   ],
+   "gatherMs": 2000,
+   "respawnPerPlayerS": 180,
+   "profXp": 2,
+   "redZoneYield": 2
+  },
+  {
+   "id": "herb_braise",
+   "model": "node_herb_braise",
+   "name": "Pétales de braise",
+   "item": "herb_braise",
+   "qty": [
+    1,
+    3
+   ],
+   "tier": 4,
+   "prof": "alchemy",
+   "bonus": [],
+   "regions": [
+    "desert",
+    "ruins_aldmar"
+   ],
+   "gatherMs": 2000,
+   "respawnPerPlayerS": 180,
+   "profXp": 2,
+   "redZoneYield": 2
+  },
+  {
+   "id": "herb_givre",
+   "model": "node_herb_givre",
+   "name": "Fleur de givre",
+   "item": "herb_givre",
+   "qty": [
+    1,
+    3
+   ],
+   "tier": 5,
+   "prof": "alchemy",
+   "bonus": [],
+   "regions": [
+    "frostpeaks"
+   ],
+   "gatherMs": 2000,
+   "respawnPerPlayerS": 180,
+   "profXp": 2,
+   "redZoneYield": 2
+  }
+ ],
+ "professions": {
+  "forge": {
+   "name": "Forge",
+   "station": "forge",
+   "trainer": "blacksmith",
+   "desc": "Fondre les minerais, forger les armes, les boucliers, les armures de plaques, les bijoux et les pierres de forge.",
+   "makes": [
+    "lingots",
+    "épées et espadons",
+    "bâtons",
+    "boucliers",
+    "armures de plaques",
+    "anneaux et amulettes",
+    "pierres de forge"
+   ]
+  },
+  "alchemy": {
+   "name": "Alchimie",
+   "station": "alchemy_table",
+   "trainer": "alchemist",
+   "desc": "Distiller les potions de soin, de mana et d'endurance, les élixirs de résistance et les huiles d'arme.",
+   "makes": [
+    "potions",
+    "toniques d'endurance",
+    "élixirs de résistance",
+    "huiles d'arme"
+   ]
+  },
+  "tailoring": {
+   "name": "Couture et tannerie",
+   "station": "workbench",
+   "trainer": "tanner",
+   "desc": "Tanner les peaux, tisser la soie, coudre les armures de cuir et de tissu, les arcs, carquois, grimoires et sacs.",
+   "makes": [
+    "lanières de cuir",
+    "rouleaux de tissu",
+    "armures de cuir",
+    "armures de tissu",
+    "arcs",
+    "carquois",
+    "grimoires",
+    "sacs"
+   ]
+  },
+  "levels": {
+   "max": 30,
+   "xpToNext": "30 + 12 × niveau  (niv. 1→2 : 42 ; niv. 29→30 : 378 ; total 1→30 : 6 090)",
+   "craftXp": "arrondi(8 + 2 × niveau de la recette) × couleur ; recettes d'affinage (lingots, lanières, tissu) : 4 × couleur",
+   "colors": [
+    {
+     "name": "orange",
+     "diff": "< 3",
+     "mult": 1
+    },
+    {
+     "name": "jaune",
+     "diff": "3–5",
+     "mult": 0.6
+    },
+    {
+     "name": "verte",
+     "diff": "6–9",
+     "mult": 0.25
+    },
+    {
+     "name": "grise",
+     "diff": "≥ 10",
+     "mult": 0
+    }
+   ],
+   "discovery": "La première fabrication de chaque recette donne ×3 XP (« Découverte »).",
+   "gatherXp": "Chaque récolte donne 2 XP au métier lié (minerais/cristal → Forge, plantes → Alchimie), jusqu'au niveau 10.",
+   "milestones": [
+    {
+     "lvl": 1,
+     "title": "Apprenti",
+     "perk": "Recettes de départ."
+    },
+    {
+     "lvl": 10,
+     "title": "Compagnon",
+     "perk": "+5 % de chances de qualité Supérieure ; fabrication en série jusqu'à ×20."
+    },
+    {
+     "lvl": 20,
+     "title": "Maître",
+     "perk": "+3 % de chances de Chef-d'œuvre ; le recyclage rend 1 matériau de plus."
+    },
+    {
+     "lvl": 30,
+     "title": "Grand maître",
+     "perk": "Titre affiché (« Grand maître forgeron »…) ; −25 % de frais de station ; Retremper (items.json) à moitié prix sur les objets qu'on a fabriqués soi-même."
+    }
+   ]
+  },
+  "trainers": {
+   "blacksmith": {
+    "name": "Maître Bertram",
+    "model": "npc_blacksmith",
+    "prof": "forge",
+    "station": "forge",
+    "greeting": "Le feu ne ment jamais. Apporte-moi du minerai, je t'apprendrai à lui donner une forme.",
+    "sells": [
+     "ash_wood"
+    ]
+   },
+   "alchemist": {
+    "name": "Ysolde l'alchimiste",
+    "model": "npc_alchemist",
+    "prof": "alchemy",
+    "station": "alchemy_table",
+    "greeting": "Une gelée de gluant, une pincée d'herbe de brume… et voilà de quoi tenir un combat de plus.",
+    "sells": [
+     "vial"
+    ]
+   },
+   "tanner": {
+    "name": "Maud la tanneuse",
+    "model": "npc_merchant",
+    "prof": "tailoring",
+    "station": "workbench",
+    "greeting": "Ramène-moi des peaux bien entières, pas de la charpie. Le loup, ça se porte bien.",
+    "sells": [
+     "linen",
+     "ash_wood"
+    ]
+   }
+  }
+ },
+ "recipes": [
+  {
+   "id": "r_ingot_copper",
+   "name": "Fondre du cuivre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "ore_copper",
+     2
+    ]
+   ],
+   "output": {
+    "item": "ingot_copper",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_ingot_iron",
+   "name": "Fondre du fer",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 6,
+   "tier": 2,
+   "inputs": [
+    [
+     "ore_iron",
+     2
+    ]
+   ],
+   "output": {
+    "item": "ingot_iron",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 46
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_ingot_iron_scrap",
+   "name": "Refondre de la ferraille",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "goblin_scrap",
+     3
+    ]
+   ],
+   "output": {
+    "item": "ingot_iron",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 59
+   },
+   "fee": 2,
+   "xp": 4
+  },
+  {
+   "id": "r_ingot_iron_blades",
+   "name": "Refondre des lames ébréchées",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 11,
+   "tier": 3,
+   "inputs": [
+    [
+     "chipped_blade",
+     2
+    ]
+   ],
+   "output": {
+    "item": "ingot_iron",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 131
+   },
+   "fee": 3,
+   "xp": 4
+  },
+  {
+   "id": "r_ingot_mithril",
+   "name": "Fondre du mithril",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 20,
+   "tier": 5,
+   "inputs": [
+    [
+     "ore_mithril",
+     2
+    ]
+   ],
+   "output": {
+    "item": "ingot_mithril",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 410
+   },
+   "fee": 9,
+   "xp": 4
+  },
+  {
+   "id": "r_leather_wolf",
+   "name": "Tanner une fourrure de loup",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "wolf_pelt",
+     1
+    ]
+   ],
+   "output": {
+    "item": "leather_strip",
+    "qty": 2
+   },
+   "quality": "none",
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_leather_boar",
+   "name": "Tanner un cuir de sanglier",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 5,
+   "tier": 2,
+   "inputs": [
+    [
+     "boar_hide",
+     1
+    ]
+   ],
+   "output": {
+    "item": "leather_strip",
+    "qty": 3
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 35
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_leather_troll",
+   "name": "Tanner une peau de troll",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 25,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_hide",
+     1
+    ]
+   ],
+   "output": {
+    "item": "leather_strip",
+    "qty": 5
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 635
+   },
+   "fee": 14,
+   "xp": 4
+  },
+  {
+   "id": "r_cloth_linen",
+   "name": "Tisser du lin",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "linen",
+     2
+    ]
+   ],
+   "output": {
+    "item": "cloth_bolt",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_cloth_silk",
+   "name": "Tisser de la soie",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "spider_silk",
+     3
+    ]
+   ],
+   "output": {
+    "item": "cloth_bolt",
+    "qty": 2
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 59
+   },
+   "fee": 2,
+   "xp": 4
+  },
+  {
+   "id": "r_salvage_metal",
+   "name": "Refondre la ferraille de recyclage",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 6,
+   "tier": 2,
+   "inputs": [
+    [
+     "scrap_metal",
+     3
+    ]
+   ],
+   "output": {
+    "item": "ingot_iron",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 46
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_salvage_leather",
+   "name": "Recoudre des chutes de cuir",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "leather_scraps",
+     2
+    ]
+   ],
+   "output": {
+    "item": "leather_strip",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_salvage_cloth",
+   "name": "Retisser des chutes d'étoffe",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "cloth_scraps",
+     2
+    ]
+   ],
+   "output": {
+    "item": "cloth_bolt",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_salvage_wood",
+   "name": "Recoller des copeaux",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "wood_scraps",
+     2
+    ]
+   ],
+   "output": {
+    "item": "ash_wood",
+    "qty": 1
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 19
+   },
+   "fee": 1,
+   "xp": 4
+  },
+  {
+   "id": "r_forge_stone_rough",
+   "name": "Pierre de forge brute",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 8,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_copper",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "forge_stone_rough",
+    "qty": 1,
+    "name": "Pierre de forge brute",
+    "icon": "forge_stone_1",
+    "use": "Amélioration +1 à +4"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 74
+   },
+   "fee": 2,
+   "xp": 24
+  },
+  {
+   "id": "r_forge_stone_cut",
+   "name": "Pierre de forge taillée",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 16,
+   "tier": 4,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "crystal_shard",
+     3
+    ],
+    [
+     "golem_stone",
+     1
+    ]
+   ],
+   "output": {
+    "item": "forge_stone_cut",
+    "qty": 1,
+    "name": "Pierre de forge taillée",
+    "icon": "forge_stone_2",
+    "use": "Amélioration +5 à +7"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 266
+   },
+   "fee": 6,
+   "xp": 40
+  },
+  {
+   "id": "r_forge_stone_ancestral",
+   "name": "Pierre de forge ancestrale",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 26,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "crystal_shard",
+     5
+    ],
+    [
+     "rune_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "forge_stone_ancestral",
+    "qty": 1,
+    "name": "Pierre de forge ancestrale",
+    "icon": "forge_stone_3",
+    "use": "Amélioration +8 à +10"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "troll",
+     "red_zone_elite"
+    ],
+    "ch": 0.01
+   },
+   "fee": 15,
+   "xp": 60
+  },
+  {
+   "id": "r_potion_hp_s",
+   "name": "Petite potion de soin",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "slime_gel",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_hp_s",
+    "qty": 1,
+    "name": "Petite potion de soin",
+    "effect": "Rend 60 PV.",
+    "icon": "potion_hp_s"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 10
+  },
+  {
+   "id": "r_potion_mp_s",
+   "name": "Potion de mana",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 2,
+   "tier": 1,
+   "inputs": [
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_mp_s",
+    "qty": 1,
+    "name": "Potion de mana",
+    "effect": "Rend 70 points de mana.",
+    "icon": "potion_mp_s"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 14
+   },
+   "fee": 1,
+   "xp": 12
+  },
+  {
+   "id": "r_potion_stamina",
+   "name": "Tonique d'endurance",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "slime_gel",
+     1
+    ],
+    [
+     "herb_brume",
+     1
+    ],
+    [
+     "wolf_fang",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_stamina",
+    "qty": 1,
+    "name": "Tonique d'endurance",
+    "effect": "Rend 60 d'endurance et +30 % de régénération d'endurance pendant 15 s.",
+    "icon": "potion_stamina"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 26
+   },
+   "fee": 1,
+   "xp": 16
+  },
+  {
+   "id": "r_potion_hp_m",
+   "name": "Potion de soin moyenne",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "slime_gel",
+     3
+    ],
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_hp_m",
+    "qty": 1,
+    "name": "Potion de soin moyenne",
+    "effect": "Rend 140 PV.",
+    "icon": "potion_hp_m"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 59
+   },
+   "fee": 2,
+   "xp": 22
+  },
+  {
+   "id": "r_potion_mp_m",
+   "name": "Potion de mana moyenne",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "herb_brume",
+     3
+    ],
+    [
+     "totem_feather",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_mp_m",
+    "qty": 1,
+    "name": "Potion de mana moyenne",
+    "effect": "Rend 150 points de mana.",
+    "icon": "potion_mp_m"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 91
+   },
+   "fee": 2,
+   "xp": 26
+  },
+  {
+   "id": "r_oil_venom",
+   "name": "Huile venimeuse",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "venom_gland",
+     2
+    ],
+    [
+     "slime_gel",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "oil_venom",
+    "qty": 1,
+    "name": "Huile venimeuse",
+    "effect": "Arme : les coups empoisonnent (4 % de l'attaque par s pendant 4 s). 10 min.",
+    "icon": "oil_venom"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 91
+   },
+   "fee": 2,
+   "xp": 26
+  },
+  {
+   "id": "r_oil_blessed",
+   "name": "Huile consacrée",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 11,
+   "tier": 3,
+   "inputs": [
+    [
+     "grave_dust",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "oil_blessed",
+    "qty": 1,
+    "name": "Huile consacrée",
+    "effect": "Arme : +20 % de dégâts contre les morts-vivants (squelettes, spectres, liche). 10 min.",
+    "icon": "oil_blessed"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 131
+   },
+   "fee": 3,
+   "xp": 30
+  },
+  {
+   "id": "r_elixir_res_poison",
+   "name": "Élixir de contrepoison",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "venom_gland",
+     1
+    ],
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "elixir_res_poison",
+    "qty": 1,
+    "name": "Élixir de contrepoison",
+    "effect": "+25 % de résistance au poison et guérit les poisons. 10 min.",
+    "icon": "elixir_res_poison"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 154
+   },
+   "fee": 4,
+   "xp": 32
+  },
+  {
+   "id": "r_potion_hp_l",
+   "name": "Grande potion de soin",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "slime_gel",
+     2
+    ],
+    [
+     "slime_core",
+     1
+    ],
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_hp_l",
+    "qty": 1,
+    "name": "Grande potion de soin",
+    "effect": "Rend 220 PV.",
+    "icon": "potion_hp_l"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 206
+   },
+   "fee": 5,
+   "xp": 36
+  },
+  {
+   "id": "r_potion_mp_l",
+   "name": "Grande potion de mana",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 15,
+   "tier": 4,
+   "inputs": [
+    [
+     "herb_brume",
+     3
+    ],
+    [
+     "soul_shard",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_mp_l",
+    "qty": 2,
+    "name": "Grande potion de mana",
+    "effect": "Rend 260 points de mana.",
+    "icon": "potion_mp_l"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 235
+   },
+   "fee": 5,
+   "xp": 38
+  },
+  {
+   "id": "r_potion_stamina_l",
+   "name": "Grand tonique d'endurance",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 16,
+   "tier": 4,
+   "inputs": [
+    [
+     "bog_moss",
+     2
+    ],
+    [
+     "herb_braise",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_stamina_l",
+    "qty": 1,
+    "name": "Grand tonique d'endurance",
+    "effect": "Rend toute l'endurance et +50 % de régénération d'endurance pendant 20 s.",
+    "icon": "potion_stamina_l"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 266
+   },
+   "fee": 6,
+   "xp": 40
+  },
+  {
+   "id": "r_elixir_res_fire",
+   "name": "Élixir ignifuge",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_chitin",
+     1
+    ],
+    [
+     "bog_moss",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "elixir_res_fire",
+    "qty": 1,
+    "name": "Élixir ignifuge",
+    "effect": "+25 % de résistance au feu. 10 min.",
+    "icon": "elixir_res_fire"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 299
+   },
+   "fee": 7,
+   "xp": 42
+  },
+  {
+   "id": "r_oil_ember",
+   "name": "Huile de braise",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "herb_braise",
+     3
+    ],
+    [
+     "slime_gel",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "oil_ember",
+    "qty": 1,
+    "name": "Huile de braise",
+    "effect": "Arme : +8 % des dégâts convertis en feu, qui brûle 3 s. 10 min.",
+    "icon": "oil_ember"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 334
+   },
+   "fee": 7,
+   "xp": 44
+  },
+  {
+   "id": "r_elixir_res_frost",
+   "name": "Élixir de chaleur",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 21,
+   "tier": 5,
+   "inputs": [
+    [
+     "herb_braise",
+     2
+    ],
+    [
+     "icewolf_fang",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "elixir_res_frost",
+    "qty": 1,
+    "name": "Élixir de chaleur",
+    "effect": "+25 % de résistance au givre ; immunité au gel pendant 10 min.",
+    "icon": "elixir_res_frost"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 451
+   },
+   "fee": 10,
+   "xp": 50
+  },
+  {
+   "id": "r_oil_frost",
+   "name": "Huile de givre",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "herb_givre",
+     3
+    ],
+    [
+     "icewolf_fang",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "oil_frost",
+    "qty": 1,
+    "name": "Huile de givre",
+    "effect": "Arme : +8 % des dégâts convertis en givre, ralentit de 15 %. 10 min.",
+    "icon": "oil_frost"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 494
+   },
+   "fee": 11,
+   "xp": 52
+  },
+  {
+   "id": "r_potion_hp_xl",
+   "name": "Potion de soin suprême",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 25,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_blood",
+     1
+    ],
+    [
+     "herb_givre",
+     2
+    ],
+    [
+     "slime_core",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "potion_hp_xl",
+    "qty": 2,
+    "name": "Potion de soin suprême",
+    "effect": "Rend 400 PV.",
+    "icon": "potion_hp_xl"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "trainer",
+    "npc": "alchemist",
+    "price": 635
+   },
+   "fee": 14,
+   "xp": 58
+  },
+  {
+   "id": "r_elixir_regen",
+   "name": "Élixir de régénération",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_blood",
+     2
+    ],
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "elixir_regen",
+    "qty": 1,
+    "name": "Élixir de régénération",
+    "effect": "Rend 2 % des PV max par seconde pendant 20 s (même en combat).",
+    "icon": "elixir_regen"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "troll"
+    ],
+    "ch": 0.02
+   },
+   "fee": 16,
+   "xp": 62
+  },
+  {
+   "id": "r_elixir_res_arcane",
+   "name": "Élixir de garde-âme",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "soul_shard",
+     2
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "elixir_res_arcane",
+    "qty": 1,
+    "name": "Élixir de garde-âme",
+    "effect": "+25 % de résistance aux arcanes et aux ténèbres. 10 min.",
+    "icon": "elixir_res_arcane"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "lich",
+     "red_zone_elite"
+    ],
+    "ch": 0.02
+   },
+   "fee": 17,
+   "xp": 64
+  },
+  {
+   "id": "r_oil_rune",
+   "name": "Huile runique",
+   "prof": "alchemy",
+   "station": "alchemy_table",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "crystal_shard",
+     2
+    ],
+    [
+     "herb_givre",
+     2
+    ],
+    [
+     "vial",
+     1
+    ]
+   ],
+   "output": {
+    "item": "oil_rune",
+    "qty": 1,
+    "name": "Huile runique",
+    "effect": "Arme : +8 % des dégâts convertis en arcane et +4 % de critique. 10 min.",
+    "icon": "oil_rune"
+   },
+   "quality": "consumable",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "red_zone_elite"
+    ],
+    "ch": 0.02
+   },
+   "fee": 18,
+   "xp": 66
+  },
+  {
+   "id": "r_militia_helm",
+   "name": "Casque de la milice",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     3
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "militia_helm",
+    "qty": 1,
+    "name": "Casque de la milice",
+    "base": "helm_plate",
+    "armor": "plaques",
+    "slot": "head",
+    "weight": "plate",
+    "ilvl": 3,
+    "icon": "helm_plate_t1"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "endurance"
+   ],
+   "set": "militia",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_militia"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 25
+  },
+  {
+   "id": "r_militia_chest",
+   "name": "Cuirasse de la milice",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     5
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "militia_chest",
+    "qty": 1,
+    "name": "Cuirasse de la milice",
+    "base": "chest_plate",
+    "armor": "plaques",
+    "slot": "chest",
+    "weight": "plate",
+    "ilvl": 3,
+    "icon": "chest_plate_t1"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "endurance"
+   ],
+   "set": "militia",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_militia"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 43
+  },
+  {
+   "id": "r_militia_gloves",
+   "name": "Gantelets de la milice",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     3
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "militia_gloves",
+    "qty": 1,
+    "name": "Gantelets de la milice",
+    "base": "gloves_plate",
+    "armor": "plaques",
+    "slot": "hands",
+    "weight": "plate",
+    "ilvl": 3,
+    "icon": "gloves_plate_t1"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "endurance"
+   ],
+   "set": "militia",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_militia"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 25
+  },
+  {
+   "id": "r_militia_boots",
+   "name": "Solerets de la milice",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     3
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "militia_boots",
+    "qty": 1,
+    "name": "Solerets de la milice",
+    "base": "boots_plate",
+    "armor": "plaques",
+    "slot": "feet",
+    "weight": "plate",
+    "ilvl": 3,
+    "icon": "boots_plate_t1"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "endurance"
+   ],
+   "set": "militia",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_militia"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 25
+  },
+  {
+   "id": "r_wolf_helm",
+   "name": "Capuche du loup",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "wolf_pelt",
+     3
+    ],
+    [
+     "wolf_fang",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "wolf_helm",
+    "qty": 1,
+    "name": "Capuche du loup",
+    "base": "helm_leather",
+    "armor": "cuir",
+    "slot": "head",
+    "weight": "leather",
+    "ilvl": 4,
+    "icon": "helm_leather_t1"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "endurance",
+    "vitalite"
+   ],
+   "set": "wolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wolf"
+   },
+   "fee": 2,
+   "xp": 16,
+   "vendorValue": 35
+  },
+  {
+   "id": "r_wolf_chest",
+   "name": "Pelisse du loup",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "wolf_pelt",
+     5
+    ],
+    [
+     "wolf_fang",
+     2
+    ],
+    [
+     "leather_strip",
+     3
+    ]
+   ],
+   "output": {
+    "item": "wolf_chest",
+    "qty": 1,
+    "name": "Pelisse du loup",
+    "base": "chest_leather",
+    "armor": "cuir",
+    "slot": "chest",
+    "weight": "leather",
+    "ilvl": 4,
+    "icon": "chest_leather_t1"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "endurance",
+    "vitalite"
+   ],
+   "set": "wolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wolf"
+   },
+   "fee": 2,
+   "xp": 16,
+   "vendorValue": 59
+  },
+  {
+   "id": "r_wolf_gloves",
+   "name": "Gants du loup",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "wolf_pelt",
+     3
+    ],
+    [
+     "wolf_fang",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "wolf_gloves",
+    "qty": 1,
+    "name": "Gants du loup",
+    "base": "gloves_leather",
+    "armor": "cuir",
+    "slot": "hands",
+    "weight": "leather",
+    "ilvl": 4,
+    "icon": "gloves_leather_t1"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "endurance",
+    "vitalite"
+   ],
+   "set": "wolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wolf"
+   },
+   "fee": 2,
+   "xp": 16,
+   "vendorValue": 35
+  },
+  {
+   "id": "r_wolf_boots",
+   "name": "Bottes du loup",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "wolf_pelt",
+     3
+    ],
+    [
+     "wolf_fang",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "wolf_boots",
+    "qty": 1,
+    "name": "Bottes du loup",
+    "base": "boots_leather",
+    "armor": "cuir",
+    "slot": "feet",
+    "weight": "leather",
+    "ilvl": 4,
+    "icon": "boots_leather_t1"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "endurance",
+    "vitalite"
+   ],
+   "set": "wolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wolf"
+   },
+   "fee": 2,
+   "xp": 16,
+   "vendorValue": 35
+  },
+  {
+   "id": "r_mistwatch_helm",
+   "name": "Capuchon du guetteur",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "slime_gel",
+     1
+    ]
+   ],
+   "output": {
+    "item": "mistwatch_helm",
+    "qty": 1,
+    "name": "Capuchon du guetteur",
+    "base": "helm_cloth",
+    "armor": "tissu",
+    "slot": "head",
+    "weight": "cloth",
+    "ilvl": 3,
+    "icon": "helm_cloth_t1"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "vitalite",
+    "arcane",
+    "feu",
+    "endurance"
+   ],
+   "set": "mistwatch",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_mistwatch"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 19
+  },
+  {
+   "id": "r_mistwatch_chest",
+   "name": "Robe du guetteur",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "herb_brume",
+     3
+    ],
+    [
+     "slime_gel",
+     2
+    ]
+   ],
+   "output": {
+    "item": "mistwatch_chest",
+    "qty": 1,
+    "name": "Robe du guetteur",
+    "base": "chest_cloth",
+    "armor": "tissu",
+    "slot": "chest",
+    "weight": "cloth",
+    "ilvl": 3,
+    "icon": "chest_cloth_t1"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "vitalite",
+    "arcane",
+    "feu",
+    "endurance"
+   ],
+   "set": "mistwatch",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_mistwatch"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 30
+  },
+  {
+   "id": "r_mistwatch_gloves",
+   "name": "Mitaines du guetteur",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "slime_gel",
+     1
+    ]
+   ],
+   "output": {
+    "item": "mistwatch_gloves",
+    "qty": 1,
+    "name": "Mitaines du guetteur",
+    "base": "gloves_cloth",
+    "armor": "tissu",
+    "slot": "hands",
+    "weight": "cloth",
+    "ilvl": 3,
+    "icon": "gloves_cloth_t1"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "vitalite",
+    "arcane",
+    "feu",
+    "endurance"
+   ],
+   "set": "mistwatch",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_mistwatch"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 19
+  },
+  {
+   "id": "r_mistwatch_boots",
+   "name": "Sandales du guetteur",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "herb_brume",
+     2
+    ],
+    [
+     "slime_gel",
+     1
+    ]
+   ],
+   "output": {
+    "item": "mistwatch_boots",
+    "qty": 1,
+    "name": "Sandales du guetteur",
+    "base": "boots_cloth",
+    "armor": "tissu",
+    "slot": "feet",
+    "weight": "cloth",
+    "ilvl": 3,
+    "icon": "boots_cloth_t1"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "vitalite",
+    "arcane",
+    "feu",
+    "endurance"
+   ],
+   "set": "mistwatch",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_mistwatch"
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 19
+  },
+  {
+   "id": "r_scrap_helm",
+   "name": "Heaume de ferraille",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "goblin_scrap",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "scrap_helm",
+    "qty": 1,
+    "name": "Heaume de ferraille",
+    "base": "helm_plate",
+    "armor": "plaques",
+    "slot": "head",
+    "weight": "plate",
+    "ilvl": 7,
+    "icon": "helm_plate_t2"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "garde",
+    "force",
+    "equilibre",
+    "res_poison"
+   ],
+   "set": "scrap",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_scrap"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 55
+  },
+  {
+   "id": "r_chainmail",
+   "name": "Plastron de ferraille",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_iron",
+     5
+    ],
+    [
+     "goblin_scrap",
+     3
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "chainmail",
+    "qty": 1,
+    "name": "Plastron de ferraille",
+    "base": "chest_plate",
+    "armor": "plaques",
+    "slot": "chest",
+    "weight": "plate",
+    "ilvl": 7,
+    "icon": "chainmail"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "garde",
+    "force",
+    "equilibre",
+    "res_poison"
+   ],
+   "set": "scrap",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_scrap"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 91
+  },
+  {
+   "id": "r_scrap_gloves",
+   "name": "Gantelets de ferraille",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "goblin_scrap",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "scrap_gloves",
+    "qty": 1,
+    "name": "Gantelets de ferraille",
+    "base": "gloves_plate",
+    "armor": "plaques",
+    "slot": "hands",
+    "weight": "plate",
+    "ilvl": 7,
+    "icon": "gloves_plate_t2"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "garde",
+    "force",
+    "equilibre",
+    "res_poison"
+   ],
+   "set": "scrap",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_scrap"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 55
+  },
+  {
+   "id": "r_scrap_boots",
+   "name": "Grèves de ferraille",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "goblin_scrap",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "scrap_boots",
+    "qty": 1,
+    "name": "Grèves de ferraille",
+    "base": "boots_plate",
+    "armor": "plaques",
+    "slot": "feet",
+    "weight": "plate",
+    "ilvl": 7,
+    "icon": "boots_plate_t2"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "garde",
+    "force",
+    "equilibre",
+    "res_poison"
+   ],
+   "set": "scrap",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_scrap"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 55
+  },
+  {
+   "id": "r_boar_helm",
+   "name": "Masque du sanglier",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "boar_hide",
+     2
+    ],
+    [
+     "boar_tusk",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "boar_helm",
+    "qty": 1,
+    "name": "Masque du sanglier",
+    "base": "helm_leather",
+    "armor": "cuir",
+    "slot": "head",
+    "weight": "leather",
+    "ilvl": 7,
+    "icon": "helm_leather_t2"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "vitalite",
+    "endurance",
+    "precision"
+   ],
+   "set": "boar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_boar"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 33
+  },
+  {
+   "id": "r_boar_chest",
+   "name": "Brigandine du sanglier",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "boar_hide",
+     3
+    ],
+    [
+     "boar_tusk",
+     2
+    ],
+    [
+     "leather_strip",
+     3
+    ]
+   ],
+   "output": {
+    "item": "boar_chest",
+    "qty": 1,
+    "name": "Brigandine du sanglier",
+    "base": "chest_leather",
+    "armor": "cuir",
+    "slot": "chest",
+    "weight": "leather",
+    "ilvl": 7,
+    "icon": "chest_leather_t2"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "vitalite",
+    "endurance",
+    "precision"
+   ],
+   "set": "boar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_boar"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 54
+  },
+  {
+   "id": "r_boar_gloves",
+   "name": "Gants du sanglier",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "boar_hide",
+     2
+    ],
+    [
+     "boar_tusk",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "boar_gloves",
+    "qty": 1,
+    "name": "Gants du sanglier",
+    "base": "gloves_leather",
+    "armor": "cuir",
+    "slot": "hands",
+    "weight": "leather",
+    "ilvl": 7,
+    "icon": "gloves_leather_t2"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "vitalite",
+    "endurance",
+    "precision"
+   ],
+   "set": "boar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_boar"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 33
+  },
+  {
+   "id": "r_boar_boots",
+   "name": "Bottes du sanglier",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "boar_hide",
+     2
+    ],
+    [
+     "boar_tusk",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "boar_boots",
+    "qty": 1,
+    "name": "Bottes du sanglier",
+    "base": "boots_leather",
+    "armor": "cuir",
+    "slot": "feet",
+    "weight": "leather",
+    "ilvl": 7,
+    "icon": "boots_leather_t2"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "vitalite",
+    "endurance",
+    "precision"
+   ],
+   "set": "boar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_boar"
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 33
+  },
+  {
+   "id": "r_silk_helm",
+   "name": "Voile de soie",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "spider_silk",
+     2
+    ],
+    [
+     "venom_gland",
+     1
+    ]
+   ],
+   "output": {
+    "item": "silk_helm",
+    "qty": 1,
+    "name": "Voile de soie",
+    "base": "helm_cloth",
+    "armor": "tissu",
+    "slot": "head",
+    "weight": "cloth",
+    "ilvl": 9,
+    "icon": "helm_cloth_t2"
+   },
+   "quality": "gear",
+   "signature": "res_poison",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "celerite",
+    "vitalite"
+   ],
+   "set": "silk",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_silk"
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 38
+  },
+  {
+   "id": "r_silk_chest",
+   "name": "Robe de soie",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "spider_silk",
+     3
+    ],
+    [
+     "venom_gland",
+     2
+    ]
+   ],
+   "output": {
+    "item": "silk_chest",
+    "qty": 1,
+    "name": "Robe de soie",
+    "base": "chest_cloth",
+    "armor": "tissu",
+    "slot": "chest",
+    "weight": "cloth",
+    "ilvl": 9,
+    "icon": "chest_cloth_t2"
+   },
+   "quality": "gear",
+   "signature": "res_poison",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "celerite",
+    "vitalite"
+   ],
+   "set": "silk",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_silk"
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 63
+  },
+  {
+   "id": "r_silk_gloves",
+   "name": "Gants de soie",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "spider_silk",
+     2
+    ],
+    [
+     "venom_gland",
+     1
+    ]
+   ],
+   "output": {
+    "item": "silk_gloves",
+    "qty": 1,
+    "name": "Gants de soie",
+    "base": "gloves_cloth",
+    "armor": "tissu",
+    "slot": "hands",
+    "weight": "cloth",
+    "ilvl": 9,
+    "icon": "gloves_cloth_t2"
+   },
+   "quality": "gear",
+   "signature": "res_poison",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "celerite",
+    "vitalite"
+   ],
+   "set": "silk",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_silk"
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 38
+  },
+  {
+   "id": "r_silk_boots",
+   "name": "Chaussons de soie",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "spider_silk",
+     2
+    ],
+    [
+     "venom_gland",
+     1
+    ]
+   ],
+   "output": {
+    "item": "silk_boots",
+    "qty": 1,
+    "name": "Chaussons de soie",
+    "base": "boots_cloth",
+    "armor": "tissu",
+    "slot": "feet",
+    "weight": "cloth",
+    "ilvl": 9,
+    "icon": "boots_cloth_t2"
+   },
+   "quality": "gear",
+   "signature": "res_poison",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "celerite",
+    "vitalite"
+   ],
+   "set": "silk",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_silk"
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 38
+  },
+  {
+   "id": "r_bone_helm",
+   "name": "Heaume d'os",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "ancient_bone",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "grave_dust",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bone_helm",
+    "qty": 1,
+    "name": "Heaume d'os",
+    "base": "helm_plate",
+    "armor": "plaques",
+    "slot": "head",
+    "weight": "plate",
+    "ilvl": 12,
+    "icon": "helm_plate_t3"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "bone",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bone"
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 84
+  },
+  {
+   "id": "r_bone_chest",
+   "name": "Cuirasse d'os",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "ancient_bone",
+     5
+    ],
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "grave_dust",
+     2
+    ]
+   ],
+   "output": {
+    "item": "bone_chest",
+    "qty": 1,
+    "name": "Cuirasse d'os",
+    "base": "chest_plate",
+    "armor": "plaques",
+    "slot": "chest",
+    "weight": "plate",
+    "ilvl": 12,
+    "icon": "chest_plate_t3"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "bone",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bone"
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 139
+  },
+  {
+   "id": "r_bone_gloves",
+   "name": "Gantelets d'os",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "ancient_bone",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "grave_dust",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bone_gloves",
+    "qty": 1,
+    "name": "Gantelets d'os",
+    "base": "gloves_plate",
+    "armor": "plaques",
+    "slot": "hands",
+    "weight": "plate",
+    "ilvl": 12,
+    "icon": "gloves_plate_t3"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "bone",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bone"
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 84
+  },
+  {
+   "id": "r_bone_boots",
+   "name": "Solerets d'os",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "ancient_bone",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "grave_dust",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bone_boots",
+    "qty": 1,
+    "name": "Solerets d'os",
+    "base": "boots_plate",
+    "armor": "plaques",
+    "slot": "feet",
+    "weight": "plate",
+    "ilvl": 12,
+    "icon": "boots_plate_t3"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "bone",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bone"
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 84
+  },
+  {
+   "id": "r_bandit_helm",
+   "name": "Capuche du brigand",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 13,
+   "tier": 3,
+   "inputs": [
+    [
+     "bandit_cloth",
+     2
+    ],
+    [
+     "leather_strip",
+     3
+    ],
+    [
+     "ingot_iron",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bandit_helm",
+    "qty": 1,
+    "name": "Capuche du brigand",
+    "base": "helm_leather",
+    "armor": "cuir",
+    "slot": "head",
+    "weight": "leather",
+    "ilvl": 13,
+    "icon": "helm_leather_t3"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "celerite",
+    "vol_de_vie",
+    "force",
+    "endurance"
+   ],
+   "set": "bandit",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bandit"
+   },
+   "fee": 15,
+   "xp": 34,
+   "vendorValue": 45
+  },
+  {
+   "id": "r_bandit_chest",
+   "name": "Gilet du brigand",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 13,
+   "tier": 3,
+   "inputs": [
+    [
+     "bandit_cloth",
+     3
+    ],
+    [
+     "leather_strip",
+     5
+    ],
+    [
+     "ingot_iron",
+     2
+    ]
+   ],
+   "output": {
+    "item": "bandit_chest",
+    "qty": 1,
+    "name": "Gilet du brigand",
+    "base": "chest_leather",
+    "armor": "cuir",
+    "slot": "chest",
+    "weight": "leather",
+    "ilvl": 13,
+    "icon": "chest_leather_t3"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "celerite",
+    "vol_de_vie",
+    "force",
+    "endurance"
+   ],
+   "set": "bandit",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bandit"
+   },
+   "fee": 15,
+   "xp": 34,
+   "vendorValue": 76
+  },
+  {
+   "id": "r_bandit_gloves",
+   "name": "Gants du brigand",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 13,
+   "tier": 3,
+   "inputs": [
+    [
+     "bandit_cloth",
+     2
+    ],
+    [
+     "leather_strip",
+     3
+    ],
+    [
+     "ingot_iron",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bandit_gloves",
+    "qty": 1,
+    "name": "Gants du brigand",
+    "base": "gloves_leather",
+    "armor": "cuir",
+    "slot": "hands",
+    "weight": "leather",
+    "ilvl": 13,
+    "icon": "gloves_leather_t3"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "celerite",
+    "vol_de_vie",
+    "force",
+    "endurance"
+   ],
+   "set": "bandit",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bandit"
+   },
+   "fee": 15,
+   "xp": 34,
+   "vendorValue": 45
+  },
+  {
+   "id": "r_bandit_boots",
+   "name": "Bottes du brigand",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 13,
+   "tier": 3,
+   "inputs": [
+    [
+     "bandit_cloth",
+     2
+    ],
+    [
+     "leather_strip",
+     3
+    ],
+    [
+     "ingot_iron",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bandit_boots",
+    "qty": 1,
+    "name": "Bottes du brigand",
+    "base": "boots_leather",
+    "armor": "cuir",
+    "slot": "feet",
+    "weight": "leather",
+    "ilvl": 13,
+    "icon": "boots_leather_t3"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "celerite",
+    "vol_de_vie",
+    "force",
+    "endurance"
+   ],
+   "set": "bandit",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bandit"
+   },
+   "fee": 15,
+   "xp": 34,
+   "vendorValue": 45
+  },
+  {
+   "id": "r_wraith_helm",
+   "name": "Capuchon spectral",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "wraith_veil",
+     2
+    ],
+    [
+     "soul_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "wraith_helm",
+    "qty": 1,
+    "name": "Capuchon spectral",
+    "base": "helm_cloth",
+    "armor": "tissu",
+    "slot": "head",
+    "weight": "cloth",
+    "ilvl": 14,
+    "icon": "helm_cloth_t3"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_arcane",
+    "celerite"
+   ],
+   "set": "wraith",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wraith"
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 68
+  },
+  {
+   "id": "r_wraith_chest",
+   "name": "Robe spectrale",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "wraith_veil",
+     3
+    ],
+    [
+     "soul_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "wraith_chest",
+    "qty": 1,
+    "name": "Robe spectrale",
+    "base": "chest_cloth",
+    "armor": "tissu",
+    "slot": "chest",
+    "weight": "cloth",
+    "ilvl": 14,
+    "icon": "chest_cloth_t3"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_arcane",
+    "celerite"
+   ],
+   "set": "wraith",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wraith"
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 117
+  },
+  {
+   "id": "r_wraith_gloves",
+   "name": "Gants spectraux",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "wraith_veil",
+     2
+    ],
+    [
+     "soul_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "wraith_gloves",
+    "qty": 1,
+    "name": "Gants spectraux",
+    "base": "gloves_cloth",
+    "armor": "tissu",
+    "slot": "hands",
+    "weight": "cloth",
+    "ilvl": 14,
+    "icon": "gloves_cloth_t3"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_arcane",
+    "celerite"
+   ],
+   "set": "wraith",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wraith"
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 68
+  },
+  {
+   "id": "r_wraith_boots",
+   "name": "Chaussures spectrales",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "wraith_veil",
+     2
+    ],
+    [
+     "soul_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "wraith_boots",
+    "qty": 1,
+    "name": "Chaussures spectrales",
+    "base": "boots_cloth",
+    "armor": "tissu",
+    "slot": "feet",
+    "weight": "cloth",
+    "ilvl": 14,
+    "icon": "boots_cloth_t3"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_arcane",
+    "celerite"
+   ],
+   "set": "wraith",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_wraith"
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 68
+  },
+  {
+   "id": "r_chitin_helm",
+   "name": "Heaume de chitine",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_chitin",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "scorpion_stinger",
+     1
+    ]
+   ],
+   "output": {
+    "item": "chitin_helm",
+    "qty": 1,
+    "name": "Heaume de chitine",
+    "base": "helm_plate",
+    "armor": "plaques",
+    "slot": "head",
+    "weight": "plate",
+    "ilvl": 17,
+    "icon": "helm_plate_t4"
+   },
+   "quality": "gear",
+   "signature": "res_feu",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "res_poison"
+   ],
+   "set": "chitin",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_chitin"
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 86
+  },
+  {
+   "id": "r_chitin_chest",
+   "name": "Carapace de chitine",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_chitin",
+     5
+    ],
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "scorpion_stinger",
+     2
+    ]
+   ],
+   "output": {
+    "item": "chitin_chest",
+    "qty": 1,
+    "name": "Carapace de chitine",
+    "base": "chest_plate",
+    "armor": "plaques",
+    "slot": "chest",
+    "weight": "plate",
+    "ilvl": 17,
+    "icon": "chest_plate_t4"
+   },
+   "quality": "gear",
+   "signature": "res_feu",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "res_poison"
+   ],
+   "set": "chitin",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_chitin"
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 145
+  },
+  {
+   "id": "r_chitin_gloves",
+   "name": "Gantelets de chitine",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_chitin",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "scorpion_stinger",
+     1
+    ]
+   ],
+   "output": {
+    "item": "chitin_gloves",
+    "qty": 1,
+    "name": "Gantelets de chitine",
+    "base": "gloves_plate",
+    "armor": "plaques",
+    "slot": "hands",
+    "weight": "plate",
+    "ilvl": 17,
+    "icon": "gloves_plate_t4"
+   },
+   "quality": "gear",
+   "signature": "res_feu",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "res_poison"
+   ],
+   "set": "chitin",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_chitin"
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 86
+  },
+  {
+   "id": "r_chitin_boots",
+   "name": "Grèves de chitine",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_chitin",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "scorpion_stinger",
+     1
+    ]
+   ],
+   "output": {
+    "item": "chitin_boots",
+    "qty": 1,
+    "name": "Grèves de chitine",
+    "base": "boots_plate",
+    "armor": "plaques",
+    "slot": "feet",
+    "weight": "plate",
+    "ilvl": 17,
+    "icon": "boots_plate_t4"
+   },
+   "quality": "gear",
+   "signature": "res_feu",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "res_poison"
+   ],
+   "set": "chitin",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_chitin"
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 86
+  },
+  {
+   "id": "r_lurker_helm",
+   "name": "Capuche d'écailles",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "lurker_scale",
+     3
+    ],
+    [
+     "leather_strip",
+     2
+    ],
+    [
+     "bog_moss",
+     1
+    ]
+   ],
+   "output": {
+    "item": "lurker_helm",
+    "qty": 1,
+    "name": "Capuche d'écailles",
+    "base": "helm_leather",
+    "armor": "cuir",
+    "slot": "head",
+    "weight": "leather",
+    "ilvl": 18,
+    "icon": "helm_leather_t4"
+   },
+   "quality": "gear",
+   "signature": "endurance",
+   "affixPool": [
+    "precision",
+    "celerite",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "lurker",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_lurker"
+   },
+   "fee": 28,
+   "xp": 44,
+   "vendorValue": 62
+  },
+  {
+   "id": "r_lurker_chest",
+   "name": "Brigandine d'écailles",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "lurker_scale",
+     5
+    ],
+    [
+     "leather_strip",
+     3
+    ],
+    [
+     "bog_moss",
+     2
+    ]
+   ],
+   "output": {
+    "item": "lurker_chest",
+    "qty": 1,
+    "name": "Brigandine d'écailles",
+    "base": "chest_leather",
+    "armor": "cuir",
+    "slot": "chest",
+    "weight": "leather",
+    "ilvl": 18,
+    "icon": "chest_leather_t4"
+   },
+   "quality": "gear",
+   "signature": "endurance",
+   "affixPool": [
+    "precision",
+    "celerite",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "lurker",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_lurker"
+   },
+   "fee": 28,
+   "xp": 44,
+   "vendorValue": 106
+  },
+  {
+   "id": "r_lurker_gloves",
+   "name": "Gants d'écailles",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "lurker_scale",
+     3
+    ],
+    [
+     "leather_strip",
+     2
+    ],
+    [
+     "bog_moss",
+     1
+    ]
+   ],
+   "output": {
+    "item": "lurker_gloves",
+    "qty": 1,
+    "name": "Gants d'écailles",
+    "base": "gloves_leather",
+    "armor": "cuir",
+    "slot": "hands",
+    "weight": "leather",
+    "ilvl": 18,
+    "icon": "gloves_leather_t4"
+   },
+   "quality": "gear",
+   "signature": "endurance",
+   "affixPool": [
+    "precision",
+    "celerite",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "lurker",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_lurker"
+   },
+   "fee": 28,
+   "xp": 44,
+   "vendorValue": 62
+  },
+  {
+   "id": "r_lurker_boots",
+   "name": "Bottes d'écailles",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "lurker_scale",
+     3
+    ],
+    [
+     "leather_strip",
+     2
+    ],
+    [
+     "bog_moss",
+     1
+    ]
+   ],
+   "output": {
+    "item": "lurker_boots",
+    "qty": 1,
+    "name": "Bottes d'écailles",
+    "base": "boots_leather",
+    "armor": "cuir",
+    "slot": "feet",
+    "weight": "leather",
+    "ilvl": 18,
+    "icon": "boots_leather_t4"
+   },
+   "quality": "gear",
+   "signature": "endurance",
+   "affixPool": [
+    "precision",
+    "celerite",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "lurker",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_lurker"
+   },
+   "fee": 28,
+   "xp": 44,
+   "vendorValue": 62
+  },
+  {
+   "id": "r_bog_helm",
+   "name": "Coiffe de la tourbière",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "bog_moss",
+     2
+    ],
+    [
+     "herb_braise",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bog_helm",
+    "qty": 1,
+    "name": "Coiffe de la tourbière",
+    "base": "helm_cloth",
+    "armor": "tissu",
+    "slot": "head",
+    "weight": "cloth",
+    "ilvl": 19,
+    "icon": "helm_cloth_t4"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "feu",
+    "arcane",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "bog",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bog"
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 49
+  },
+  {
+   "id": "r_bog_chest",
+   "name": "Robe de la tourbière",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "cloth_bolt",
+     5
+    ],
+    [
+     "bog_moss",
+     3
+    ],
+    [
+     "herb_braise",
+     2
+    ]
+   ],
+   "output": {
+    "item": "bog_chest",
+    "qty": 1,
+    "name": "Robe de la tourbière",
+    "base": "chest_cloth",
+    "armor": "tissu",
+    "slot": "chest",
+    "weight": "cloth",
+    "ilvl": 19,
+    "icon": "chest_cloth_t4"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "feu",
+    "arcane",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "bog",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bog"
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 81
+  },
+  {
+   "id": "r_bog_gloves",
+   "name": "Gants de la tourbière",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "bog_moss",
+     2
+    ],
+    [
+     "herb_braise",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bog_gloves",
+    "qty": 1,
+    "name": "Gants de la tourbière",
+    "base": "gloves_cloth",
+    "armor": "tissu",
+    "slot": "hands",
+    "weight": "cloth",
+    "ilvl": 19,
+    "icon": "gloves_cloth_t4"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "feu",
+    "arcane",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "bog",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bog"
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 49
+  },
+  {
+   "id": "r_bog_boots",
+   "name": "Bottines de la tourbière",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "bog_moss",
+     2
+    ],
+    [
+     "herb_braise",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bog_boots",
+    "qty": 1,
+    "name": "Bottines de la tourbière",
+    "base": "boots_cloth",
+    "armor": "tissu",
+    "slot": "feet",
+    "weight": "cloth",
+    "ilvl": 19,
+    "icon": "boots_cloth_t4"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "feu",
+    "arcane",
+    "res_poison",
+    "vitalite"
+   ],
+   "set": "bog",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_bog"
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 49
+  },
+  {
+   "id": "r_frost_helm",
+   "name": "Heaume de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     2
+    ],
+    [
+     "icewolf_fang",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "frost_helm",
+    "qty": 1,
+    "name": "Heaume de givre",
+    "base": "helm_plate",
+    "armor": "plaques",
+    "slot": "head",
+    "weight": "plate",
+    "ilvl": 22,
+    "icon": "helm_plate_t5"
+   },
+   "quality": "gear",
+   "signature": "res_givre",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "equilibre"
+   ],
+   "set": "frost",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_frost"
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 135
+  },
+  {
+   "id": "r_frost_chest",
+   "name": "Cuirasse de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "icewolf_fang",
+     3
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "frost_chest",
+    "qty": 1,
+    "name": "Cuirasse de givre",
+    "base": "chest_plate",
+    "armor": "plaques",
+    "slot": "chest",
+    "weight": "plate",
+    "ilvl": 22,
+    "icon": "chest_plate_t5"
+   },
+   "quality": "gear",
+   "signature": "res_givre",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "equilibre"
+   ],
+   "set": "frost",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_frost"
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 210
+  },
+  {
+   "id": "r_frost_gloves",
+   "name": "Gantelets de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     2
+    ],
+    [
+     "icewolf_fang",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "frost_gloves",
+    "qty": 1,
+    "name": "Gantelets de givre",
+    "base": "gloves_plate",
+    "armor": "plaques",
+    "slot": "hands",
+    "weight": "plate",
+    "ilvl": 22,
+    "icon": "gloves_plate_t5"
+   },
+   "quality": "gear",
+   "signature": "res_givre",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "equilibre"
+   ],
+   "set": "frost",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_frost"
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 135
+  },
+  {
+   "id": "r_frost_boots",
+   "name": "Solerets de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     2
+    ],
+    [
+     "icewolf_fang",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "frost_boots",
+    "qty": 1,
+    "name": "Solerets de givre",
+    "base": "boots_plate",
+    "armor": "plaques",
+    "slot": "feet",
+    "weight": "plate",
+    "ilvl": 22,
+    "icon": "boots_plate_t5"
+   },
+   "quality": "gear",
+   "signature": "res_givre",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "force",
+    "equilibre"
+   ],
+   "set": "frost",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_frost"
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 135
+  },
+  {
+   "id": "r_icewolf_helm",
+   "name": "Capuche du loup de givre",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 23,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_pelt",
+     3
+    ],
+    [
+     "icewolf_fang",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "icewolf_helm",
+    "qty": 1,
+    "name": "Capuche du loup de givre",
+    "base": "helm_leather",
+    "armor": "cuir",
+    "slot": "head",
+    "weight": "leather",
+    "ilvl": 23,
+    "icon": "helm_leather_t5"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "givre",
+    "endurance"
+   ],
+   "set": "icewolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_icewolf"
+   },
+   "fee": 45,
+   "xp": 54,
+   "vendorValue": 84
+  },
+  {
+   "id": "r_icewolf_chest",
+   "name": "Pelisse du loup de givre",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 23,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_pelt",
+     5
+    ],
+    [
+     "icewolf_fang",
+     2
+    ],
+    [
+     "leather_strip",
+     3
+    ]
+   ],
+   "output": {
+    "item": "icewolf_chest",
+    "qty": 1,
+    "name": "Pelisse du loup de givre",
+    "base": "chest_leather",
+    "armor": "cuir",
+    "slot": "chest",
+    "weight": "leather",
+    "ilvl": 23,
+    "icon": "chest_leather_t5"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "givre",
+    "endurance"
+   ],
+   "set": "icewolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_icewolf"
+   },
+   "fee": 45,
+   "xp": 54,
+   "vendorValue": 146
+  },
+  {
+   "id": "r_icewolf_gloves",
+   "name": "Gants du loup de givre",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 23,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_pelt",
+     3
+    ],
+    [
+     "icewolf_fang",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "icewolf_gloves",
+    "qty": 1,
+    "name": "Gants du loup de givre",
+    "base": "gloves_leather",
+    "armor": "cuir",
+    "slot": "hands",
+    "weight": "leather",
+    "ilvl": 23,
+    "icon": "gloves_leather_t5"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "givre",
+    "endurance"
+   ],
+   "set": "icewolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_icewolf"
+   },
+   "fee": 45,
+   "xp": 54,
+   "vendorValue": 84
+  },
+  {
+   "id": "r_icewolf_boots",
+   "name": "Bottes du loup de givre",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 23,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_pelt",
+     3
+    ],
+    [
+     "icewolf_fang",
+     1
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "icewolf_boots",
+    "qty": 1,
+    "name": "Bottes du loup de givre",
+    "base": "boots_leather",
+    "armor": "cuir",
+    "slot": "feet",
+    "weight": "leather",
+    "ilvl": 23,
+    "icon": "boots_leather_t5"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "celerite",
+    "givre",
+    "endurance"
+   ],
+   "set": "icewolf",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_icewolf"
+   },
+   "fee": 45,
+   "xp": 54,
+   "vendorValue": 84
+  },
+  {
+   "id": "r_fleece_helm",
+   "name": "Capuchon de toison",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "yeti_fur",
+     2
+    ],
+    [
+     "herb_givre",
+     1
+    ]
+   ],
+   "output": {
+    "item": "fleece_helm",
+    "qty": 1,
+    "name": "Capuchon de toison",
+    "base": "helm_cloth",
+    "armor": "tissu",
+    "slot": "head",
+    "weight": "cloth",
+    "ilvl": 24,
+    "icon": "helm_cloth_t5"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_givre",
+    "celerite"
+   ],
+   "set": "fleece",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_fleece"
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 64
+  },
+  {
+   "id": "r_fleece_chest",
+   "name": "Mante de toison",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "yeti_fur",
+     3
+    ],
+    [
+     "herb_givre",
+     2
+    ]
+   ],
+   "output": {
+    "item": "fleece_chest",
+    "qty": 1,
+    "name": "Mante de toison",
+    "base": "chest_cloth",
+    "armor": "tissu",
+    "slot": "chest",
+    "weight": "cloth",
+    "ilvl": 24,
+    "icon": "chest_cloth_t5"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_givre",
+    "celerite"
+   ],
+   "set": "fleece",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_fleece"
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 103
+  },
+  {
+   "id": "r_fleece_gloves",
+   "name": "Moufles de toison",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "yeti_fur",
+     2
+    ],
+    [
+     "herb_givre",
+     1
+    ]
+   ],
+   "output": {
+    "item": "fleece_gloves",
+    "qty": 1,
+    "name": "Moufles de toison",
+    "base": "gloves_cloth",
+    "armor": "tissu",
+    "slot": "hands",
+    "weight": "cloth",
+    "ilvl": 24,
+    "icon": "gloves_cloth_t5"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_givre",
+    "celerite"
+   ],
+   "set": "fleece",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_fleece"
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 64
+  },
+  {
+   "id": "r_fleece_boots",
+   "name": "Bottes fourrées",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "yeti_fur",
+     2
+    ],
+    [
+     "herb_givre",
+     1
+    ]
+   ],
+   "output": {
+    "item": "fleece_boots",
+    "qty": 1,
+    "name": "Bottes fourrées",
+    "base": "boots_cloth",
+    "armor": "tissu",
+    "slot": "feet",
+    "weight": "cloth",
+    "ilvl": 24,
+    "icon": "boots_cloth_t5"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "esprit",
+    "vitalite",
+    "res_givre",
+    "celerite"
+   ],
+   "set": "fleece",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_fleece"
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 64
+  },
+  {
+   "id": "r_aldmar_helm",
+   "name": "Heaume runique",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "aldmar_helm",
+    "qty": 1,
+    "name": "Heaume runique",
+    "base": "helm_plate",
+    "armor": "plaques",
+    "slot": "head",
+    "weight": "plate",
+    "ilvl": 27,
+    "icon": "helm_plate_t6"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "aldmar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_aldmar"
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 189
+  },
+  {
+   "id": "r_aldmar_chest",
+   "name": "Cuirasse runique",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     5
+    ],
+    [
+     "rune_shard",
+     2
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "aldmar_chest",
+    "qty": 1,
+    "name": "Cuirasse runique",
+    "base": "chest_plate",
+    "armor": "plaques",
+    "slot": "chest",
+    "weight": "plate",
+    "ilvl": 27,
+    "icon": "chest_plate_t6"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "aldmar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_aldmar"
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 340
+  },
+  {
+   "id": "r_aldmar_gloves",
+   "name": "Gantelets runiques",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "aldmar_gloves",
+    "qty": 1,
+    "name": "Gantelets runiques",
+    "base": "gloves_plate",
+    "armor": "plaques",
+    "slot": "hands",
+    "weight": "plate",
+    "ilvl": 27,
+    "icon": "gloves_plate_t6"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "aldmar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_aldmar"
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 189
+  },
+  {
+   "id": "r_aldmar_boots",
+   "name": "Solerets runiques",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "aldmar_boots",
+    "qty": 1,
+    "name": "Solerets runiques",
+    "base": "boots_plate",
+    "armor": "plaques",
+    "slot": "feet",
+    "weight": "plate",
+    "ilvl": 27,
+    "icon": "boots_plate_t6"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "vitalite",
+    "force",
+    "equilibre",
+    "res_arcane"
+   ],
+   "set": "aldmar",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_aldmar"
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 189
+  },
+  {
+   "id": "r_troll_helm",
+   "name": "Masque du troll",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_hide",
+     2
+    ],
+    [
+     "troll_blood",
+     1
+    ],
+    [
+     "leather_strip",
+     3
+    ]
+   ],
+   "output": {
+    "item": "troll_helm",
+    "qty": 1,
+    "name": "Masque du troll",
+    "base": "helm_leather",
+    "armor": "cuir",
+    "slot": "head",
+    "weight": "leather",
+    "ilvl": 28,
+    "icon": "helm_leather_t6"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "precision",
+    "endurance",
+    "vol_de_vie",
+    "celerite"
+   ],
+   "set": "troll",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_troll"
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 90
+  },
+  {
+   "id": "r_troll_chest",
+   "name": "Brigandine du troll",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_hide",
+     3
+    ],
+    [
+     "troll_blood",
+     2
+    ],
+    [
+     "leather_strip",
+     5
+    ]
+   ],
+   "output": {
+    "item": "troll_chest",
+    "qty": 1,
+    "name": "Brigandine du troll",
+    "base": "chest_leather",
+    "armor": "cuir",
+    "slot": "chest",
+    "weight": "leather",
+    "ilvl": 28,
+    "icon": "chest_leather_t6"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "precision",
+    "endurance",
+    "vol_de_vie",
+    "celerite"
+   ],
+   "set": "troll",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_troll"
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 152
+  },
+  {
+   "id": "r_troll_gloves",
+   "name": "Gants du troll",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_hide",
+     2
+    ],
+    [
+     "troll_blood",
+     1
+    ],
+    [
+     "leather_strip",
+     3
+    ]
+   ],
+   "output": {
+    "item": "troll_gloves",
+    "qty": 1,
+    "name": "Gants du troll",
+    "base": "gloves_leather",
+    "armor": "cuir",
+    "slot": "hands",
+    "weight": "leather",
+    "ilvl": 28,
+    "icon": "gloves_leather_t6"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "precision",
+    "endurance",
+    "vol_de_vie",
+    "celerite"
+   ],
+   "set": "troll",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_troll"
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 90
+  },
+  {
+   "id": "r_troll_boots",
+   "name": "Bottes du troll",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_hide",
+     2
+    ],
+    [
+     "troll_blood",
+     1
+    ],
+    [
+     "leather_strip",
+     3
+    ]
+   ],
+   "output": {
+    "item": "troll_boots",
+    "qty": 1,
+    "name": "Bottes du troll",
+    "base": "boots_leather",
+    "armor": "cuir",
+    "slot": "feet",
+    "weight": "leather",
+    "ilvl": 28,
+    "icon": "boots_leather_t6"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "precision",
+    "endurance",
+    "vol_de_vie",
+    "celerite"
+   ],
+   "set": "troll",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_troll"
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 90
+  },
+  {
+   "id": "r_arcanist_helm",
+   "name": "Capuchon de l'arcaniste",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "soul_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "arcanist_helm",
+    "qty": 1,
+    "name": "Capuchon de l'arcaniste",
+    "base": "helm_cloth",
+    "armor": "tissu",
+    "slot": "head",
+    "weight": "cloth",
+    "ilvl": 29,
+    "icon": "helm_cloth_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "celerite",
+    "res_arcane",
+    "vitalite"
+   ],
+   "set": "arcanist",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_arcanist"
+   },
+   "fee": 71,
+   "xp": 66,
+   "vendorValue": 105
+  },
+  {
+   "id": "r_arcanist_chest",
+   "name": "Robe de l'arcaniste",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "cloth_bolt",
+     5
+    ],
+    [
+     "rune_shard",
+     2
+    ],
+    [
+     "soul_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "arcanist_chest",
+    "qty": 1,
+    "name": "Robe de l'arcaniste",
+    "base": "chest_cloth",
+    "armor": "tissu",
+    "slot": "chest",
+    "weight": "cloth",
+    "ilvl": 29,
+    "icon": "chest_cloth_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "celerite",
+    "res_arcane",
+    "vitalite"
+   ],
+   "set": "arcanist",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_arcanist"
+   },
+   "fee": 71,
+   "xp": 66,
+   "vendorValue": 205
+  },
+  {
+   "id": "r_arcanist_gloves",
+   "name": "Gants de l'arcaniste",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "soul_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "arcanist_gloves",
+    "qty": 1,
+    "name": "Gants de l'arcaniste",
+    "base": "gloves_cloth",
+    "armor": "tissu",
+    "slot": "hands",
+    "weight": "cloth",
+    "ilvl": 29,
+    "icon": "gloves_cloth_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "celerite",
+    "res_arcane",
+    "vitalite"
+   ],
+   "set": "arcanist",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_arcanist"
+   },
+   "fee": 71,
+   "xp": 66,
+   "vendorValue": 105
+  },
+  {
+   "id": "r_arcanist_boots",
+   "name": "Souliers de l'arcaniste",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "soul_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "arcanist_boots",
+    "qty": 1,
+    "name": "Souliers de l'arcaniste",
+    "base": "boots_cloth",
+    "armor": "tissu",
+    "slot": "feet",
+    "weight": "cloth",
+    "ilvl": 29,
+    "icon": "boots_cloth_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "celerite",
+    "res_arcane",
+    "vitalite"
+   ],
+   "set": "arcanist",
+   "learn": {
+    "from": "set_plan",
+    "plan": "plan_arcanist"
+   },
+   "fee": 71,
+   "xp": 66,
+   "vendorValue": 105
+  },
+  {
+   "id": "r_shortsword_copper",
+   "name": "Épée courte de cuivre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     3
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "shortsword_copper",
+    "qty": 1,
+    "name": "Épée courte de cuivre",
+    "base": "shortsword",
+    "family": "epee_courte",
+    "slot": "weapon",
+    "ilvl": 1,
+    "icon": "shortsword_t1"
+   },
+   "quality": "gear",
+   "signature": "celerite",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 10,
+   "vendorValue": 25
+  },
+  {
+   "id": "r_longsword_militia",
+   "name": "Épée longue de la milice",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     4
+    ],
+    [
+     "leather_strip",
+     1
+    ],
+    [
+     "wolf_fang",
+     1
+    ]
+   ],
+   "output": {
+    "item": "longsword_militia",
+    "qty": 1,
+    "name": "Épée longue de la milice",
+    "base": "longsword",
+    "family": "epee_longue",
+    "slot": "weapon",
+    "ilvl": 4,
+    "icon": "sword_t1"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 26
+   },
+   "fee": 2,
+   "xp": 16,
+   "vendorValue": 38
+  },
+  {
+   "id": "r_greatsword_warden",
+   "name": "Grande épée du garde",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     6
+    ],
+    [
+     "leather_strip",
+     2
+    ],
+    [
+     "ash_wood",
+     1
+    ]
+   ],
+   "output": {
+    "item": "greatsword_warden",
+    "qty": 1,
+    "name": "Grande épée du garde",
+    "base": "greatsword",
+    "family": "espadon",
+    "slot": "weapon",
+    "ilvl": 4,
+    "icon": "greatsword_t1"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 26
+   },
+   "fee": 2,
+   "xp": 16,
+   "vendorValue": 51
+  },
+  {
+   "id": "r_staff_mist",
+   "name": "Bâton des brumes",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "ingot_copper",
+     1
+    ],
+    [
+     "slime_core",
+     1
+    ]
+   ],
+   "output": {
+    "item": "staff_mist",
+    "qty": 1,
+    "name": "Bâton des brumes",
+    "base": "staff",
+    "family": "baton",
+    "slot": "weapon",
+    "ilvl": 3,
+    "icon": "staff_t1"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 19
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 22
+  },
+  {
+   "id": "r_shield_militia",
+   "name": "Écu de la milice",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "ash_wood",
+     2
+    ],
+    [
+     "ingot_copper",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "shield_militia",
+    "qty": 1,
+    "name": "Écu de la milice",
+    "base": "shield",
+    "family": "bouclier",
+    "slot": "offhand",
+    "ilvl": 3,
+    "icon": "shield_t1"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "equilibre",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 19
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 20
+  },
+  {
+   "id": "r_ring_copper",
+   "name": "Anneau de cuivre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "ingot_copper",
+     2
+    ],
+    [
+     "slime_core",
+     1
+    ]
+   ],
+   "output": {
+    "item": "copper_ring",
+    "qty": 1,
+    "name": "Anneau de cuivre",
+    "base": "ring",
+    "family": "anneau",
+    "slot": "ring",
+    "ilvl": 3,
+    "icon": "ring_t1"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 19
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 26
+  },
+  {
+   "id": "r_amulet_wolf",
+   "name": "Amulette de crocs",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 5,
+   "tier": 2,
+   "inputs": [
+    [
+     "wolf_fang",
+     4
+    ],
+    [
+     "leather_strip",
+     1
+    ],
+    [
+     "ingot_copper",
+     1
+    ]
+   ],
+   "output": {
+    "item": "amulet_wolf",
+    "qty": 1,
+    "name": "Amulette de crocs",
+    "base": "amulet",
+    "family": "amulette",
+    "slot": "amulet",
+    "ilvl": 5,
+    "icon": "amulet_t2"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 35
+   },
+   "fee": 3,
+   "xp": 18,
+   "vendorValue": 35
+  },
+  {
+   "id": "r_bow_ash",
+   "name": "Arc de frêne",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 1,
+   "tier": 1,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bow_ash",
+    "qty": 1,
+    "name": "Arc de frêne",
+    "base": "bow",
+    "family": "arc_court",
+    "slot": "weapon",
+    "ilvl": 1,
+    "icon": "bow_t1"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "start"
+   },
+   "fee": 1,
+   "xp": 10,
+   "vendorValue": 7
+  },
+  {
+   "id": "r_quiver_wolf",
+   "name": "Carquois en peau de loup",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 4,
+   "tier": 1,
+   "inputs": [
+    [
+     "wolf_pelt",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "quiver_wolf",
+    "qty": 1,
+    "name": "Carquois en peau de loup",
+    "base": "quiver",
+    "family": "carquois",
+    "slot": "offhand",
+    "ilvl": 4,
+    "icon": "quiver_t1"
+   },
+   "quality": "gear",
+   "signature": "celerite",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 26
+   },
+   "fee": 2,
+   "xp": 16,
+   "vendorValue": 22
+  },
+  {
+   "id": "r_tome_novice",
+   "name": "Grimoire du novice",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 3,
+   "tier": 1,
+   "inputs": [
+    [
+     "cloth_bolt",
+     1
+    ],
+    [
+     "leather_strip",
+     1
+    ],
+    [
+     "slime_gel",
+     2
+    ]
+   ],
+   "output": {
+    "item": "tome_novice",
+    "qty": 1,
+    "name": "Grimoire du novice",
+    "base": "tome",
+    "family": "grimoire",
+    "slot": "offhand",
+    "ilvl": 3,
+    "icon": "tome_t1"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 19
+   },
+   "fee": 1,
+   "xp": 14,
+   "vendorValue": 15
+  },
+  {
+   "id": "r_rapier_scout",
+   "name": "Rapière de l'éclaireur",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "leather_strip",
+     1
+    ],
+    [
+     "venom_gland",
+     1
+    ]
+   ],
+   "output": {
+    "item": "rapier_scout",
+    "qty": 1,
+    "name": "Rapière de l'éclaireur",
+    "base": "rapier",
+    "family": "rapiere",
+    "slot": "weapon",
+    "ilvl": 7,
+    "icon": "rapier_t2"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 59
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 55
+  },
+  {
+   "id": "r_scimitar_goblin",
+   "name": "Cimeterre gobelin",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 8,
+   "tier": 2,
+   "inputs": [
+    [
+     "goblin_scrap",
+     4
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "goblin_trinket",
+     1
+    ]
+   ],
+   "output": {
+    "item": "goblin_scimitar",
+    "qty": 1,
+    "name": "Cimeterre gobelin",
+    "base": "scimitar",
+    "family": "cimeterre",
+    "slot": "weapon",
+    "ilvl": 8,
+    "icon": "scimitar_t2"
+   },
+   "quality": "gear",
+   "signature": "celerite",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 74
+   },
+   "fee": 6,
+   "xp": 24,
+   "vendorValue": 61
+  },
+  {
+   "id": "r_longsword_iron",
+   "name": "Épée longue de fer",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_iron",
+     4
+    ],
+    [
+     "leather_strip",
+     1
+    ],
+    [
+     "boar_tusk",
+     1
+    ]
+   ],
+   "output": {
+    "item": "longsword_iron",
+    "qty": 1,
+    "name": "Épée longue de fer",
+    "base": "longsword",
+    "family": "epee_longue",
+    "slot": "weapon",
+    "ilvl": 9,
+    "icon": "sword_t2"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 91
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 65
+  },
+  {
+   "id": "r_greatsword_boar",
+   "name": "Fendoir du sanglier",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "ingot_iron",
+     6
+    ],
+    [
+     "boar_tusk",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "greatsword_boar",
+    "qty": 1,
+    "name": "Fendoir du sanglier",
+    "base": "greatsword",
+    "family": "espadon",
+    "slot": "weapon",
+    "ilvl": 9,
+    "icon": "greatsword_t2"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 91
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 104
+  },
+  {
+   "id": "r_staff_totem",
+   "name": "Bâton-totem",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 8,
+   "tier": 2,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "totem_feather",
+     2
+    ],
+    [
+     "ingot_iron",
+     1
+    ]
+   ],
+   "output": {
+    "item": "staff_totem",
+    "qty": 1,
+    "name": "Bâton-totem",
+    "base": "staff",
+    "family": "baton",
+    "slot": "weapon",
+    "ilvl": 8,
+    "icon": "staff_t2"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 74
+   },
+   "fee": 6,
+   "xp": 24,
+   "vendorValue": 40
+  },
+  {
+   "id": "r_shield_scrap",
+   "name": "Pavois de ferraille",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 8,
+   "tier": 2,
+   "inputs": [
+    [
+     "goblin_scrap",
+     4
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "ash_wood",
+     1
+    ]
+   ],
+   "output": {
+    "item": "shield_scrap",
+    "qty": 1,
+    "name": "Pavois de ferraille",
+    "base": "shield",
+    "family": "bouclier",
+    "slot": "offhand",
+    "ilvl": 8,
+    "icon": "shield_t2"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "equilibre",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 74
+   },
+   "fee": 6,
+   "xp": 24,
+   "vendorValue": 51
+  },
+  {
+   "id": "r_ring_goblin",
+   "name": "Chevalière gobeline",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "goblin_trinket",
+     3
+    ],
+    [
+     "ingot_iron",
+     1
+    ]
+   ],
+   "output": {
+    "item": "ring_goblin",
+    "qty": 1,
+    "name": "Chevalière gobeline",
+    "base": "ring",
+    "family": "anneau",
+    "slot": "ring",
+    "ilvl": 7,
+    "icon": "ring_t2"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 59
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 46
+  },
+  {
+   "id": "r_amulet_totem",
+   "name": "Talisman-totem",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "totem_feather",
+     2
+    ],
+    [
+     "goblin_trinket",
+     2
+    ],
+    [
+     "ingot_iron",
+     1
+    ]
+   ],
+   "output": {
+    "item": "amulet_totem",
+    "qty": 1,
+    "name": "Talisman-totem",
+    "base": "amulet",
+    "family": "amulette",
+    "slot": "amulet",
+    "ilvl": 9,
+    "icon": "amulet_t2"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 91
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 59
+  },
+  {
+   "id": "r_bow_silk",
+   "name": "Arc à corde de soie",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 8,
+   "tier": 2,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "spider_silk",
+     3
+    ],
+    [
+     "boar_tusk",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bow_silk",
+    "qty": 1,
+    "name": "Arc à corde de soie",
+    "base": "bow",
+    "family": "arc_court",
+    "slot": "weapon",
+    "ilvl": 8,
+    "icon": "bow_t2"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 74
+   },
+   "fee": 6,
+   "xp": 24,
+   "vendorValue": 36
+  },
+  {
+   "id": "r_quiver_boar",
+   "name": "Carquois du chasseur",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 7,
+   "tier": 2,
+   "inputs": [
+    [
+     "boar_hide",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "quiver_boar",
+    "qty": 1,
+    "name": "Carquois du chasseur",
+    "base": "quiver",
+    "family": "carquois",
+    "slot": "offhand",
+    "ilvl": 7,
+    "icon": "quiver_t2"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 59
+   },
+   "fee": 5,
+   "xp": 22,
+   "vendorValue": 24
+  },
+  {
+   "id": "r_tome_silk",
+   "name": "Grimoire de soie",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 9,
+   "tier": 2,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ],
+    [
+     "venom_gland",
+     1
+    ]
+   ],
+   "output": {
+    "item": "tome_silk",
+    "qty": 1,
+    "name": "Grimoire de soie",
+    "base": "tome",
+    "family": "grimoire",
+    "slot": "offhand",
+    "ilvl": 9,
+    "icon": "tome_t2"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 91
+   },
+   "fee": 7,
+   "xp": 26,
+   "vendorValue": 26
+  },
+  {
+   "id": "r_bastard_bone",
+   "name": "Épée bâtarde d'os",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "ingot_iron",
+     4
+    ],
+    [
+     "ancient_bone",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bastard_bone",
+    "qty": 1,
+    "name": "Épée bâtarde d'os",
+    "base": "bastard",
+    "family": "epee_batarde",
+    "slot": "weapon",
+    "ilvl": 12,
+    "icon": "bastard_t3"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 154
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 88
+  },
+  {
+   "id": "r_curved_bandit",
+   "name": "Lame courbe du brigand",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 13,
+   "tier": 3,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "chipped_blade",
+     2
+    ],
+    [
+     "bandit_cloth",
+     1
+    ]
+   ],
+   "output": {
+    "item": "curved_bandit",
+    "qty": 1,
+    "name": "Lame courbe du brigand",
+    "base": "curved",
+    "family": "lame_courbe",
+    "slot": "weapon",
+    "ilvl": 13,
+    "icon": "curved_t3"
+   },
+   "quality": "gear",
+   "signature": "vol_de_vie",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 179
+   },
+   "fee": 15,
+   "xp": 34,
+   "vendorValue": 67
+  },
+  {
+   "id": "r_rapier_wraith",
+   "name": "Rapière spectrale",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "wraith_veil",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "rapier_wraith",
+    "qty": 1,
+    "name": "Rapière spectrale",
+    "base": "rapier",
+    "family": "rapiere",
+    "slot": "weapon",
+    "ilvl": 14,
+    "icon": "rapier_t3"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 206
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 82
+  },
+  {
+   "id": "r_greatsword_gravedigger",
+   "name": "Espadon du fossoyeur",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "ingot_iron",
+     6
+    ],
+    [
+     "ancient_bone",
+     2
+    ],
+    [
+     "grave_dust",
+     2
+    ]
+   ],
+   "output": {
+    "item": "greatsword_gravedigger",
+    "qty": 1,
+    "name": "Espadon du fossoyeur",
+    "base": "greatsword",
+    "family": "espadon",
+    "slot": "weapon",
+    "ilvl": 14,
+    "icon": "greatsword_t3"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 206
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 130
+  },
+  {
+   "id": "r_staff_soul",
+   "name": "Bâton d'éclats d'âme",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 13,
+   "tier": 3,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "soul_shard",
+     1
+    ],
+    [
+     "wraith_veil",
+     2
+    ]
+   ],
+   "output": {
+    "item": "staff_soul",
+    "qty": 1,
+    "name": "Bâton d'éclats d'âme",
+    "base": "staff",
+    "family": "baton",
+    "slot": "weapon",
+    "ilvl": 13,
+    "icon": "staff_t3"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 179
+   },
+   "fee": 15,
+   "xp": 34,
+   "vendorValue": 61
+  },
+  {
+   "id": "r_shield_bone",
+   "name": "Bouclier d'os",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "ancient_bone",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "shield_bone",
+    "qty": 1,
+    "name": "Bouclier d'os",
+    "base": "shield",
+    "family": "bouclier",
+    "slot": "offhand",
+    "ilvl": 12,
+    "icon": "shield_t3"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "equilibre",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 154
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 78
+  },
+  {
+   "id": "r_ring_bone",
+   "name": "Anneau d'os gravé",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "ancient_bone",
+     2
+    ],
+    [
+     "ingot_iron",
+     1
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "ring_bone",
+    "qty": 1,
+    "name": "Anneau d'os gravé",
+    "base": "ring",
+    "family": "anneau",
+    "slot": "ring",
+    "ilvl": 12,
+    "icon": "ring_t3"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 154
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 60
+  },
+  {
+   "id": "r_amulet_bone",
+   "name": "Amulette d'os",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "ancient_bone",
+     2
+    ],
+    [
+     "soul_shard",
+     1
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "amulet_bone",
+    "qty": 1,
+    "name": "Amulette d'os",
+    "base": "amulet",
+    "family": "amulette",
+    "slot": "amulet",
+    "ilvl": 14,
+    "icon": "amulet_t3"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 206
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 66
+  },
+  {
+   "id": "r_bow_fletch",
+   "name": "Arc à empenne noire",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 13,
+   "tier": 3,
+   "inputs": [
+    [
+     "ash_wood",
+     4
+    ],
+    [
+     "black_fletching",
+     3
+    ],
+    [
+     "spider_silk",
+     2
+    ]
+   ],
+   "output": {
+    "item": "bow_fletch",
+    "qty": 1,
+    "name": "Arc à empenne noire",
+    "base": "bow",
+    "family": "arc_long",
+    "slot": "weapon",
+    "ilvl": 13,
+    "icon": "longbow_t3"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 179
+   },
+   "fee": 15,
+   "xp": 34,
+   "vendorValue": 50
+  },
+  {
+   "id": "r_quiver_fletch",
+   "name": "Carquois du fossoyeur",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 12,
+   "tier": 3,
+   "inputs": [
+    [
+     "leather_strip",
+     3
+    ],
+    [
+     "black_fletching",
+     3
+    ]
+   ],
+   "output": {
+    "item": "quiver_fletch",
+    "qty": 1,
+    "name": "Carquois du fossoyeur",
+    "base": "quiver",
+    "family": "carquois",
+    "slot": "offhand",
+    "ilvl": 12,
+    "icon": "quiver_t3"
+   },
+   "quality": "gear",
+   "signature": "celerite",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 154
+   },
+   "fee": 13,
+   "xp": 32,
+   "vendorValue": 42
+  },
+  {
+   "id": "r_tome_wraith",
+   "name": "Codex spectral",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "wraith_veil",
+     2
+    ],
+    [
+     "grave_dust",
+     1
+    ]
+   ],
+   "output": {
+    "item": "tome_wraith",
+    "qty": 1,
+    "name": "Codex spectral",
+    "base": "tome",
+    "family": "grimoire",
+    "slot": "offhand",
+    "ilvl": 14,
+    "icon": "tome_t3"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 206
+   },
+   "fee": 17,
+   "xp": 36,
+   "vendorValue": 48
+  },
+  {
+   "id": "r_bag_medium",
+   "name": "Besace de voyageur",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "leather_strip",
+     8
+    ],
+    [
+     "cloth_bolt",
+     4
+    ],
+    [
+     "spider_silk",
+     4
+    ]
+   ],
+   "output": {
+    "item": "bag_medium",
+    "qty": 1,
+    "name": "Besace de voyageur",
+    "base": "bag",
+    "family": "sac",
+    "slot": "bag",
+    "ilvl": 14,
+    "icon": "bag_medium",
+    "bagSlots": 8
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 206
+   },
+   "fee": 5,
+   "xp": 36
+  },
+  {
+   "id": "r_scimitar_sands",
+   "name": "Cimeterre de Sable-Rouge",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "ingot_iron",
+     4
+    ],
+    [
+     "scorpion_stinger",
+     1
+    ],
+    [
+     "scorpion_chitin",
+     2
+    ]
+   ],
+   "output": {
+    "item": "redsand_scimitar",
+    "qty": 1,
+    "name": "Cimeterre de Sable-Rouge",
+    "base": "scimitar",
+    "family": "cimeterre",
+    "slot": "weapon",
+    "ilvl": 17,
+    "icon": "scimitar_t4"
+   },
+   "quality": "gear",
+   "signature": "celerite",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 299
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 98
+  },
+  {
+   "id": "r_rapier_stinger",
+   "name": "Rapière au dard",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "ingot_iron",
+     3
+    ],
+    [
+     "scorpion_stinger",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "rapier_stinger",
+    "qty": 1,
+    "name": "Rapière au dard",
+    "base": "rapier",
+    "family": "rapiere",
+    "slot": "weapon",
+    "ilvl": 18,
+    "icon": "rapier_t4"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "scorpion"
+    ],
+    "ch": 0.01
+   },
+   "fee": 28,
+   "xp": 44,
+   "vendorValue": 79
+  },
+  {
+   "id": "r_longsword_bog",
+   "name": "Épée longue des tourbières",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "ingot_iron",
+     5
+    ],
+    [
+     "lurker_scale",
+     2
+    ],
+    [
+     "bog_moss",
+     1
+    ]
+   ],
+   "output": {
+    "item": "longsword_bog",
+    "qty": 1,
+    "name": "Épée longue des tourbières",
+    "base": "longsword",
+    "family": "epee_longue",
+    "slot": "weapon",
+    "ilvl": 19,
+    "icon": "sword_t4"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 371
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 105
+  },
+  {
+   "id": "r_greatsword_chitin",
+   "name": "Grande lame de chitine",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "ingot_iron",
+     6
+    ],
+    [
+     "scorpion_chitin",
+     3
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "greatsword_chitin",
+    "qty": 1,
+    "name": "Grande lame de chitine",
+    "base": "greatsword",
+    "family": "espadon",
+    "slot": "weapon",
+    "ilvl": 19,
+    "icon": "greatsword_t4"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 371
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 128
+  },
+  {
+   "id": "r_staff_ember",
+   "name": "Bâton de braise",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "herb_braise",
+     3
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "staff_ember",
+    "qty": 1,
+    "name": "Bâton de braise",
+    "base": "staff",
+    "family": "baton",
+    "slot": "weapon",
+    "ilvl": 18,
+    "icon": "staff_t4"
+   },
+   "quality": "gear",
+   "signature": "feu",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 334
+   },
+   "fee": 28,
+   "xp": 44,
+   "vendorValue": 48
+  },
+  {
+   "id": "r_shield_chitin",
+   "name": "Écu de chitine",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_chitin",
+     3
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "shield_chitin",
+    "qty": 1,
+    "name": "Écu de chitine",
+    "base": "shield",
+    "family": "bouclier",
+    "slot": "offhand",
+    "ilvl": 17,
+    "icon": "shield_t4"
+   },
+   "quality": "gear",
+   "signature": "res_feu",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "equilibre",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 299
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 72
+  },
+  {
+   "id": "r_ring_stinger",
+   "name": "Anneau au dard",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_stinger",
+     1
+    ],
+    [
+     "ingot_iron",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "ring_stinger",
+    "qty": 1,
+    "name": "Anneau au dard",
+    "base": "ring",
+    "family": "anneau",
+    "slot": "ring",
+    "ilvl": 17,
+    "icon": "ring_t4"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 299
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 59
+  },
+  {
+   "id": "r_amulet_bog",
+   "name": "Amulette des tourbières",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "lurker_scale",
+     2
+    ],
+    [
+     "bog_moss",
+     2
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "amulet_bog",
+    "qty": 1,
+    "name": "Amulette des tourbières",
+    "base": "amulet",
+    "family": "amulette",
+    "slot": "amulet",
+    "ilvl": 19,
+    "icon": "amulet_t4"
+   },
+   "quality": "gear",
+   "signature": "res_poison",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 371
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 67
+  },
+  {
+   "id": "r_bow_bog",
+   "name": "Arc des marais",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 18,
+   "tier": 4,
+   "inputs": [
+    [
+     "ash_wood",
+     4
+    ],
+    [
+     "lurker_scale",
+     2
+    ],
+    [
+     "spider_silk",
+     2
+    ]
+   ],
+   "output": {
+    "item": "bow_bog",
+    "qty": 1,
+    "name": "Arc des marais",
+    "base": "bow",
+    "family": "arc_long",
+    "slot": "weapon",
+    "ilvl": 18,
+    "icon": "longbow_t4"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 334
+   },
+   "fee": 28,
+   "xp": 44,
+   "vendorValue": 48
+  },
+  {
+   "id": "r_quiver_chitin",
+   "name": "Carquois de chitine",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 17,
+   "tier": 4,
+   "inputs": [
+    [
+     "scorpion_chitin",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "chitin_quiver",
+    "qty": 1,
+    "name": "Carquois de chitine",
+    "base": "quiver",
+    "family": "carquois",
+    "slot": "offhand",
+    "ilvl": 17,
+    "icon": "quiver_t4"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 299
+   },
+   "fee": 25,
+   "xp": 42,
+   "vendorValue": 36
+  },
+  {
+   "id": "r_tome_bog",
+   "name": "Herbier de la tourbière",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 19,
+   "tier": 4,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "bog_moss",
+     3
+    ],
+    [
+     "herb_braise",
+     1
+    ]
+   ],
+   "output": {
+    "item": "tome_bog",
+    "qty": 1,
+    "name": "Herbier de la tourbière",
+    "base": "tome",
+    "family": "grimoire",
+    "slot": "offhand",
+    "ilvl": 19,
+    "icon": "tome_t4"
+   },
+   "quality": "gear",
+   "signature": "esprit",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 371
+   },
+   "fee": 31,
+   "xp": 46,
+   "vendorValue": 56
+  },
+  {
+   "id": "r_longsword_frost",
+   "name": "Épée longue de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "icewolf_fang",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "longsword_frost",
+    "qty": 1,
+    "name": "Épée longue de givre",
+    "base": "longsword",
+    "family": "epee_longue",
+    "slot": "weapon",
+    "ilvl": 22,
+    "icon": "sword_t5"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 494
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 162
+  },
+  {
+   "id": "r_bastard_icewolf",
+   "name": "Bâtarde du loup de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 23,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     4
+    ],
+    [
+     "icewolf_fang",
+     2
+    ],
+    [
+     "frost_pelt",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bastard_icewolf",
+    "qty": 1,
+    "name": "Bâtarde du loup de givre",
+    "base": "bastard",
+    "family": "epee_batarde",
+    "slot": "weapon",
+    "ilvl": 23,
+    "icon": "bastard_t5"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "ice_wolf"
+    ],
+    "ch": 0.01
+   },
+   "fee": 45,
+   "xp": 54,
+   "vendorValue": 214
+  },
+  {
+   "id": "r_curved_horn",
+   "name": "Lame courbe en corne",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "yeti_horn",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "curved_horn",
+    "qty": 1,
+    "name": "Lame courbe en corne",
+    "base": "curved",
+    "family": "lame_courbe",
+    "slot": "weapon",
+    "ilvl": 24,
+    "icon": "curved_t5"
+   },
+   "quality": "gear",
+   "signature": "celerite",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 586
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 170
+  },
+  {
+   "id": "r_greatsword_mithril",
+   "name": "Espadon de mithril",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     6
+    ],
+    [
+     "crystal_shard",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "greatsword_mithril",
+    "qty": 1,
+    "name": "Espadon de mithril",
+    "base": "greatsword",
+    "family": "espadon",
+    "slot": "weapon",
+    "ilvl": 24,
+    "icon": "greatsword_t5"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 586
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 266
+  },
+  {
+   "id": "r_staff_frost",
+   "name": "Bâton de fleur de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 23,
+   "tier": 5,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "herb_givre",
+     3
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "staff_frost",
+    "qty": 1,
+    "name": "Bâton de fleur de givre",
+    "base": "staff",
+    "family": "baton",
+    "slot": "weapon",
+    "ilvl": 23,
+    "icon": "staff_t5"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 539
+   },
+   "fee": 45,
+   "xp": 54,
+   "vendorValue": 75
+  },
+  {
+   "id": "r_shield_yeti",
+   "name": "Pavois du yéti",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     2
+    ],
+    [
+     "yeti_fur",
+     2
+    ],
+    [
+     "yeti_horn",
+     1
+    ]
+   ],
+   "output": {
+    "item": "shield_yeti",
+    "qty": 1,
+    "name": "Pavois du yéti",
+    "base": "shield",
+    "family": "bouclier",
+    "slot": "offhand",
+    "ilvl": 22,
+    "icon": "shield_t5"
+   },
+   "quality": "gear",
+   "signature": "res_givre",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "equilibre",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 494
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 142
+  },
+  {
+   "id": "r_ring_frost",
+   "name": "Anneau de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "ingot_mithril",
+     1
+    ],
+    [
+     "icewolf_fang",
+     1
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "frost_ring",
+    "qty": 1,
+    "name": "Anneau de givre",
+    "base": "ring",
+    "family": "anneau",
+    "slot": "ring",
+    "ilvl": 22,
+    "icon": "ring_t5"
+   },
+   "quality": "gear",
+   "signature": "res_givre",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 494
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 90
+  },
+  {
+   "id": "r_amulet_yeti",
+   "name": "Amulette en corne de yéti",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "yeti_horn",
+     2
+    ],
+    [
+     "ingot_mithril",
+     1
+    ],
+    [
+     "crystal_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "amulet_yeti",
+    "qty": 1,
+    "name": "Amulette en corne de yéti",
+    "base": "amulet",
+    "family": "amulette",
+    "slot": "amulet",
+    "ilvl": 24,
+    "icon": "amulet_t5"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 586
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 105
+  },
+  {
+   "id": "r_bow_horn",
+   "name": "Arc en corne de yéti",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 23,
+   "tier": 5,
+   "inputs": [
+    [
+     "yeti_horn",
+     2
+    ],
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "spider_silk",
+     3
+    ]
+   ],
+   "output": {
+    "item": "bow_horn",
+    "qty": 1,
+    "name": "Arc en corne de yéti",
+    "base": "bow",
+    "family": "arc_long",
+    "slot": "weapon",
+    "ilvl": 23,
+    "icon": "longbow_t5"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "yeti"
+    ],
+    "ch": 0.01
+   },
+   "fee": 45,
+   "xp": 54,
+   "vendorValue": 79
+  },
+  {
+   "id": "r_quiver_fleece",
+   "name": "Carquois de toison",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 22,
+   "tier": 5,
+   "inputs": [
+    [
+     "yeti_fur",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "quiver_fleece",
+    "qty": 1,
+    "name": "Carquois de toison",
+    "base": "quiver",
+    "family": "carquois",
+    "slot": "offhand",
+    "ilvl": 22,
+    "icon": "quiver_t5"
+   },
+   "quality": "gear",
+   "signature": "celerite",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 494
+   },
+   "fee": 41,
+   "xp": 52,
+   "vendorValue": 48
+  },
+  {
+   "id": "r_tome_snow",
+   "name": "Grimoire des neiges",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "cloth_bolt",
+     2
+    ],
+    [
+     "herb_givre",
+     2
+    ],
+    [
+     "frost_pelt",
+     1
+    ]
+   ],
+   "output": {
+    "item": "tome_snow",
+    "qty": 1,
+    "name": "Grimoire des neiges",
+    "base": "tome",
+    "family": "grimoire",
+    "slot": "offhand",
+    "ilvl": 24,
+    "icon": "tome_t5"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 586
+   },
+   "fee": 49,
+   "xp": 56,
+   "vendorValue": 56
+  },
+  {
+   "id": "r_bag_large",
+   "name": "Grand sac en toison",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "yeti_fur",
+     6
+    ],
+    [
+     "cloth_bolt",
+     6
+    ],
+    [
+     "leather_strip",
+     6
+    ]
+   ],
+   "output": {
+    "item": "bag_large",
+    "qty": 1,
+    "name": "Grand sac en toison",
+    "base": "bag",
+    "family": "sac",
+    "slot": "bag",
+    "ilvl": 24,
+    "icon": "bag_large",
+    "bagSlots": 12
+   },
+   "quality": "none",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "yeti"
+    ],
+    "ch": 0.01
+   },
+   "fee": 13,
+   "xp": 56
+  },
+  {
+   "id": "r_runesword_aldmar",
+   "name": "Épée runique d'Aldmar",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     4
+    ],
+    [
+     "rune_shard",
+     2
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "runesword_aldmar",
+    "qty": 1,
+    "name": "Épée runique d'Aldmar",
+    "base": "runesword",
+    "family": "epee_runique",
+    "slot": "weapon",
+    "ilvl": 27,
+    "icon": "runesword_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "red_zone_elite"
+    ],
+    "ch": 0.01
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 302
+  },
+  {
+   "id": "r_rapier_mithril",
+   "name": "Rapière de mithril",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     3
+    ],
+    [
+     "crystal_shard",
+     2
+    ],
+    [
+     "leather_strip",
+     1
+    ]
+   ],
+   "output": {
+    "item": "rapier_mithril",
+    "qty": 1,
+    "name": "Rapière de mithril",
+    "base": "rapier",
+    "family": "rapiere",
+    "slot": "weapon",
+    "ilvl": 27,
+    "icon": "rapier_t6"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 739
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 148
+  },
+  {
+   "id": "r_bastard_watcher",
+   "name": "Épée bâtarde du veilleur",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     5
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "troll_hide",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bastard_watcher",
+    "qty": 1,
+    "name": "Épée bâtarde du veilleur",
+    "base": "bastard",
+    "family": "epee_batarde",
+    "slot": "weapon",
+    "ilvl": 29,
+    "icon": "bastard_t6"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "troll"
+    ],
+    "ch": 0.01
+   },
+   "fee": 71,
+   "xp": 66,
+   "vendorValue": 274
+  },
+  {
+   "id": "r_greatsword_rune",
+   "name": "Espadon runique",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     7
+    ],
+    [
+     "rune_shard",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "greatsword_rune",
+    "qty": 1,
+    "name": "Espadon runique",
+    "base": "greatsword",
+    "family": "espadon",
+    "slot": "weapon",
+    "ilvl": 28,
+    "icon": "greatsword_t6"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "red_zone_elite"
+    ],
+    "ch": 0.01
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 394
+  },
+  {
+   "id": "r_staff_rune",
+   "name": "Bâton runique",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "ash_wood",
+     3
+    ],
+    [
+     "rune_shard",
+     2
+    ],
+    [
+     "soul_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "staff_rune",
+    "qty": 1,
+    "name": "Bâton runique",
+    "base": "staff",
+    "family": "baton",
+    "slot": "weapon",
+    "ilvl": 28,
+    "icon": "staff_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "red_zone_elite"
+    ],
+    "ch": 0.01
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 183
+  },
+  {
+   "id": "r_shield_aldmar",
+   "name": "Rempart d'Aldmar",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     4
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "troll_hide",
+     1
+    ]
+   ],
+   "output": {
+    "item": "shield_aldmar",
+    "qty": 1,
+    "name": "Rempart d'Aldmar",
+    "base": "shield",
+    "family": "bouclier",
+    "slot": "offhand",
+    "ilvl": 28,
+    "icon": "shield_t6"
+   },
+   "quality": "gear",
+   "signature": "garde",
+   "affixPool": [
+    "garde",
+    "vitalite",
+    "equilibre",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 794
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 236
+  },
+  {
+   "id": "r_ring_rune",
+   "name": "Anneau runique",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "ingot_mithril",
+     1
+    ],
+    [
+     "rune_shard",
+     1
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "ring_rune",
+    "qty": 1,
+    "name": "Anneau runique",
+    "base": "ring",
+    "family": "anneau",
+    "slot": "ring",
+    "ilvl": 27,
+    "icon": "ring_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 739
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 128
+  },
+  {
+   "id": "r_amulet_troll",
+   "name": "Amulette de sang de troll",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_blood",
+     2
+    ],
+    [
+     "ingot_mithril",
+     1
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "amulet_troll",
+    "qty": 1,
+    "name": "Amulette de sang de troll",
+    "base": "amulet",
+    "family": "amulette",
+    "slot": "amulet",
+    "ilvl": 29,
+    "icon": "amulet_t6"
+   },
+   "quality": "gear",
+   "signature": "vitalite",
+   "affixPool": [
+    "force",
+    "esprit",
+    "vitalite",
+    "precision",
+    "endurance",
+    "garde"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 851
+   },
+   "fee": 71,
+   "xp": 66,
+   "vendorValue": 128
+  },
+  {
+   "id": "r_bow_rune",
+   "name": "Arc runique",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 28,
+   "tier": 6,
+   "inputs": [
+    [
+     "ash_wood",
+     4
+    ],
+    [
+     "rune_shard",
+     2
+    ],
+    [
+     "troll_hide",
+     1
+    ]
+   ],
+   "output": {
+    "item": "bow_rune",
+    "qty": 1,
+    "name": "Arc runique",
+    "base": "bow",
+    "family": "arc_long",
+    "slot": "weapon",
+    "ilvl": 28,
+    "icon": "longbow_t6"
+   },
+   "quality": "gear",
+   "signature": "precision",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "red_zone_elite"
+    ],
+    "ch": 0.01
+   },
+   "fee": 66,
+   "xp": 64,
+   "vendorValue": 148
+  },
+  {
+   "id": "r_quiver_troll",
+   "name": "Carquois en peau de troll",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 27,
+   "tier": 6,
+   "inputs": [
+    [
+     "troll_hide",
+     2
+    ],
+    [
+     "leather_strip",
+     2
+    ]
+   ],
+   "output": {
+    "item": "quiver_troll",
+    "qty": 1,
+    "name": "Carquois en peau de troll",
+    "base": "quiver",
+    "family": "carquois",
+    "slot": "offhand",
+    "ilvl": 27,
+    "icon": "quiver_t6"
+   },
+   "quality": "gear",
+   "signature": "force",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "endurance"
+   ],
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 739
+   },
+   "fee": 61,
+   "xp": 62,
+   "vendorValue": 56
+  },
+  {
+   "id": "r_tome_aldmar",
+   "name": "Grimoire d'Aldmar",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "cloth_bolt",
+     3
+    ],
+    [
+     "rune_shard",
+     2
+    ],
+    [
+     "soul_shard",
+     1
+    ]
+   ],
+   "output": {
+    "item": "tome_aldmar",
+    "qty": 1,
+    "name": "Grimoire d'Aldmar",
+    "base": "tome",
+    "family": "grimoire",
+    "slot": "offhand",
+    "ilvl": 29,
+    "icon": "tome_t6"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "lich",
+     "red_zone_elite"
+    ],
+    "ch": 0.01
+   },
+   "fee": 71,
+   "xp": 66,
+   "vendorValue": 165
+  },
+  {
+   "id": "r_bag_small",
+   "name": "Sacoche de cuir",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 5,
+   "tier": 2,
+   "inputs": [
+    [
+     "leather_strip",
+     6
+    ],
+    [
+     "wolf_pelt",
+     2
+    ]
+   ],
+   "output": {
+    "item": "bag_small",
+    "qty": 1,
+    "name": "Sacoche de cuir",
+    "base": "bag",
+    "family": "sac",
+    "slot": "bag",
+    "ilvl": 5,
+    "icon": "bag_small",
+    "bagSlots": 4
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 35
+   },
+   "fee": 1,
+   "xp": 18
+  },
+  {
+   "id": "r_bastard_golem",
+   "name": "Lame du golem",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 15,
+   "tier": 4,
+   "inputs": [
+    [
+     "golem_core",
+     1
+    ],
+    [
+     "golem_stone",
+     4
+    ],
+    [
+     "ingot_iron",
+     6
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "bastard_golem",
+    "qty": 1,
+    "name": "Lame du golem",
+    "base": "bastard",
+    "family": "epee_batarde",
+    "slot": "weapon",
+    "ilvl": 15,
+    "icon": "bastard_t4"
+   },
+   "quality": "gear",
+   "signature": "equilibre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "qualityFloor": "superior",
+   "learn": {
+    "from": "boss",
+    "dropFrom": [
+     "golem"
+    ],
+    "ch": 0.2
+   },
+   "fee": 19,
+   "xp": 38,
+   "vendorValue": 358
+  },
+  {
+   "id": "r_tome_hag",
+   "name": "Grimoire de la sorcière",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 20,
+   "tier": 5,
+   "inputs": [
+    [
+     "hag_eye",
+     1
+    ],
+    [
+     "cloth_bolt",
+     6
+    ],
+    [
+     "bog_moss",
+     6
+    ],
+    [
+     "soul_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "tome_hag",
+    "qty": 1,
+    "name": "Grimoire de la sorcière",
+    "base": "tome",
+    "family": "grimoire",
+    "slot": "offhand",
+    "ilvl": 20,
+    "icon": "tome_t5"
+   },
+   "quality": "gear",
+   "signature": "arcane",
+   "affixPool": [
+    "esprit",
+    "arcane",
+    "feu",
+    "givre",
+    "celerite"
+   ],
+   "qualityFloor": "superior",
+   "learn": {
+    "from": "boss",
+    "dropFrom": [
+     "swamp_hag"
+    ],
+    "ch": 0.2
+   },
+   "fee": 34,
+   "xp": 48,
+   "vendorValue": 382
+  },
+  {
+   "id": "r_scimitar_wyrm",
+   "name": "Cimeterre du ver",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 20,
+   "tier": 5,
+   "inputs": [
+    [
+     "wyrm_tooth",
+     1
+    ],
+    [
+     "wyrm_scale",
+     5
+    ],
+    [
+     "ingot_iron",
+     8
+    ],
+    [
+     "scorpion_stinger",
+     2
+    ]
+   ],
+   "output": {
+    "item": "scimitar_wyrm",
+    "qty": 1,
+    "name": "Cimeterre du ver",
+    "base": "scimitar",
+    "family": "cimeterre",
+    "slot": "weapon",
+    "ilvl": 20,
+    "icon": "scimitar_t5"
+   },
+   "quality": "gear",
+   "signature": "feu",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "qualityFloor": "superior",
+   "learn": {
+    "from": "boss",
+    "dropFrom": [
+     "sand_wyrm"
+    ],
+    "ch": 0.2
+   },
+   "fee": 34,
+   "xp": 48,
+   "vendorValue": 540
+  },
+  {
+   "id": "r_greatsword_giant",
+   "name": "Espadon du géant",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 25,
+   "tier": 6,
+   "inputs": [
+    [
+     "frost_heart",
+     1
+    ],
+    [
+     "ingot_mithril",
+     8
+    ],
+    [
+     "icewolf_fang",
+     4
+    ],
+    [
+     "crystal_shard",
+     4
+    ]
+   ],
+   "output": {
+    "item": "greatsword_giant",
+    "qty": 1,
+    "name": "Espadon du géant",
+    "base": "greatsword",
+    "family": "espadon",
+    "slot": "weapon",
+    "ilvl": 25,
+    "icon": "greatsword_t6"
+   },
+   "quality": "gear",
+   "signature": "givre",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "qualityFloor": "superior",
+   "learn": {
+    "from": "boss",
+    "dropFrom": [
+     "frost_giant"
+    ],
+    "ch": 0.2
+   },
+   "fee": 53,
+   "xp": 58,
+   "vendorValue": 752
+  },
+  {
+   "id": "r_runesword_phylactery",
+   "name": "Épée runique du phylactère",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 30,
+   "tier": 6,
+   "inputs": [
+    [
+     "phylactery_shard",
+     1
+    ],
+    [
+     "rune_shard",
+     6
+    ],
+    [
+     "ingot_mithril",
+     10
+    ],
+    [
+     "soul_shard",
+     6
+    ]
+   ],
+   "output": {
+    "item": "runesword_phylactery",
+    "qty": 1,
+    "name": "Épée runique du phylactère",
+    "base": "runesword",
+    "family": "epee_runique",
+    "slot": "weapon",
+    "ilvl": 30,
+    "icon": "runesword_t6"
+   },
+   "quality": "gear",
+   "signature": "vol_de_vie",
+   "affixPool": [
+    "force",
+    "precision",
+    "celerite",
+    "vol_de_vie",
+    "equilibre"
+   ],
+   "qualityFloor": "superior",
+   "learn": {
+    "from": "boss",
+    "dropFrom": [
+     "lich"
+    ],
+    "ch": 0.2
+   },
+   "fee": 76,
+   "xp": 68,
+   "vendorValue": 1320
+  },
+  {
+   "id": "r_golem_helm",
+   "name": "Heaume du Golem ancien",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "golem_core",
+     1
+    ],
+    [
+     "golem_stone",
+     3
+    ],
+    [
+     "ingot_iron",
+     4
+    ]
+   ],
+   "output": {
+    "item": "golem_helm",
+    "qty": 1,
+    "name": "Heaume du Golem ancien",
+    "slot": "head",
+    "ilvl": 14,
+    "lootSet": "golem_set",
+    "rarity": "epic",
+    "icon": "helm_plate_t3"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "golem",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 17,
+   "xp": 36
+  },
+  {
+   "id": "r_golem_plate",
+   "name": "Armure du golem",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "golem_core",
+     2
+    ],
+    [
+     "golem_stone",
+     6
+    ],
+    [
+     "ingot_iron",
+     8
+    ]
+   ],
+   "output": {
+    "item": "golem_plate",
+    "qty": 1,
+    "name": "Armure du golem",
+    "slot": "chest",
+    "ilvl": 14,
+    "lootSet": "golem_set",
+    "rarity": "epic",
+    "icon": "golem_plate"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "golem",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 17,
+   "xp": 36
+  },
+  {
+   "id": "r_golem_gloves",
+   "name": "Gantelets du Golem ancien",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "golem_core",
+     1
+    ],
+    [
+     "golem_stone",
+     3
+    ],
+    [
+     "ingot_iron",
+     4
+    ]
+   ],
+   "output": {
+    "item": "golem_gloves",
+    "qty": 1,
+    "name": "Gantelets du Golem ancien",
+    "slot": "hands",
+    "ilvl": 14,
+    "lootSet": "golem_set",
+    "rarity": "epic",
+    "icon": "gloves_plate_t3"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "golem",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 17,
+   "xp": 36
+  },
+  {
+   "id": "r_golem_boots",
+   "name": "Solerets du Golem ancien",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 14,
+   "tier": 3,
+   "inputs": [
+    [
+     "golem_core",
+     1
+    ],
+    [
+     "golem_stone",
+     3
+    ],
+    [
+     "ingot_iron",
+     4
+    ]
+   ],
+   "output": {
+    "item": "golem_boots",
+    "qty": 1,
+    "name": "Solerets du Golem ancien",
+    "slot": "feet",
+    "ilvl": 14,
+    "lootSet": "golem_set",
+    "rarity": "epic",
+    "icon": "boots_plate_t3"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "golem",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 17,
+   "xp": 36
+  },
+  {
+   "id": "r_frost_giant_helm",
+   "name": "Heaume du Géant de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_heart",
+     1
+    ],
+    [
+     "ingot_mithril",
+     4
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "frost_giant_helm",
+    "qty": 1,
+    "name": "Heaume du Géant de givre",
+    "slot": "head",
+    "ilvl": 24,
+    "lootSet": "frost_giant_set",
+    "rarity": "epic",
+    "icon": "helm_plate_t5"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "frost_giant",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 49,
+   "xp": 56
+  },
+  {
+   "id": "r_frost_giant_chest",
+   "name": "Cuirasse du Géant de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_heart",
+     2
+    ],
+    [
+     "ingot_mithril",
+     8
+    ],
+    [
+     "crystal_shard",
+     4
+    ]
+   ],
+   "output": {
+    "item": "frost_giant_chest",
+    "qty": 1,
+    "name": "Cuirasse du Géant de givre",
+    "slot": "chest",
+    "ilvl": 24,
+    "lootSet": "frost_giant_set",
+    "rarity": "epic",
+    "icon": "chest_plate_t5"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "frost_giant",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 49,
+   "xp": 56
+  },
+  {
+   "id": "r_frost_giant_gloves",
+   "name": "Gantelets du Géant de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_heart",
+     1
+    ],
+    [
+     "ingot_mithril",
+     4
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "frost_giant_gloves",
+    "qty": 1,
+    "name": "Gantelets du Géant de givre",
+    "slot": "hands",
+    "ilvl": 24,
+    "lootSet": "frost_giant_set",
+    "rarity": "epic",
+    "icon": "gloves_plate_t5"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "frost_giant",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 49,
+   "xp": 56
+  },
+  {
+   "id": "r_frost_giant_boots",
+   "name": "Solerets du Géant de givre",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 24,
+   "tier": 5,
+   "inputs": [
+    [
+     "frost_heart",
+     1
+    ],
+    [
+     "ingot_mithril",
+     4
+    ],
+    [
+     "crystal_shard",
+     2
+    ]
+   ],
+   "output": {
+    "item": "frost_giant_boots",
+    "qty": 1,
+    "name": "Solerets du Géant de givre",
+    "slot": "feet",
+    "ilvl": 24,
+    "lootSet": "frost_giant_set",
+    "rarity": "epic",
+    "icon": "boots_plate_t5"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "frost_giant",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 49,
+   "xp": 56
+  },
+  {
+   "id": "r_lich_helm",
+   "name": "Couronne du Roi-Liche",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "phylactery_shard",
+     1
+    ],
+    [
+     "cloth_bolt",
+     4
+    ],
+    [
+     "soul_shard",
+     3
+    ]
+   ],
+   "output": {
+    "item": "lich_helm",
+    "qty": 1,
+    "name": "Couronne du Roi-Liche",
+    "slot": "head",
+    "ilvl": 29,
+    "lootSet": "lich_set",
+    "rarity": "epic",
+    "icon": "helm_cloth_t6"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "lich",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 71,
+   "xp": 66
+  },
+  {
+   "id": "r_lich_chest",
+   "name": "Robe du Roi-Liche",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "phylactery_shard",
+     2
+    ],
+    [
+     "cloth_bolt",
+     8
+    ],
+    [
+     "soul_shard",
+     6
+    ]
+   ],
+   "output": {
+    "item": "lich_chest",
+    "qty": 1,
+    "name": "Robe du Roi-Liche",
+    "slot": "chest",
+    "ilvl": 29,
+    "lootSet": "lich_set",
+    "rarity": "epic",
+    "icon": "chest_cloth_t6"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "lich",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 71,
+   "xp": 66
+  },
+  {
+   "id": "r_lich_gloves",
+   "name": "Gants du Roi-Liche",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "phylactery_shard",
+     1
+    ],
+    [
+     "cloth_bolt",
+     4
+    ],
+    [
+     "soul_shard",
+     3
+    ]
+   ],
+   "output": {
+    "item": "lich_gloves",
+    "qty": 1,
+    "name": "Gants du Roi-Liche",
+    "slot": "hands",
+    "ilvl": 29,
+    "lootSet": "lich_set",
+    "rarity": "epic",
+    "icon": "gloves_cloth_t6"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "lich",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 71,
+   "xp": 66
+  },
+  {
+   "id": "r_lich_boots",
+   "name": "Souliers du Roi-Liche",
+   "prof": "tailoring",
+   "station": "workbench",
+   "lvl": 29,
+   "tier": 6,
+   "inputs": [
+    [
+     "phylactery_shard",
+     1
+    ],
+    [
+     "cloth_bolt",
+     4
+    ],
+    [
+     "soul_shard",
+     3
+    ]
+   ],
+   "output": {
+    "item": "lich_boots",
+    "qty": 1,
+    "name": "Souliers du Roi-Liche",
+    "slot": "feet",
+    "ilvl": 29,
+    "lootSet": "lich_set",
+    "rarity": "epic",
+    "icon": "boots_cloth_t6"
+   },
+   "quality": "fixed",
+   "learn": {
+    "from": "boss_victory",
+    "boss": "lich",
+    "note": "appris automatiquement à la première victoire sur le boss"
+   },
+   "fee": 71,
+   "xp": 66
+  },
+  {
+   "id": "r_forge_stone_scarlet",
+   "name": "Pierre ancestrale (marques écarlates)",
+   "prof": "forge",
+   "station": "forge",
+   "lvl": 25,
+   "tier": 6,
+   "inputs": [
+    [
+     "scarlet_mark",
+     4
+    ],
+    [
+     "forge_stone_cut",
+     2
+    ]
+   ],
+   "output": {
+    "item": "forge_stone_ancestral",
+    "qty": 1,
+    "name": "Pierre de forge ancestrale",
+    "icon": "forge_stone_3"
+   },
+   "quality": "none",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 400
+   },
+   "fee": 20,
+   "xp": 60
+  }
+ ],
+ "sets": [
+  {
+   "id": "militia",
+   "name": "Ensemble de la milice",
+   "prof": "forge",
+   "weight": "plate",
+   "tier": 1,
+   "lvl": 3,
+   "pieces": [
+    "militia_helm",
+    "militia_chest",
+    "militia_gloves",
+    "militia_boots"
+   ],
+   "bonus2": "+5 % de PV max.",
+   "bonus4": "Tenir la ligne : bloquer avec la Garde coûte 20 % d'endurance en moins.",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 38,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "wolf",
+   "name": "Ensemble du loup",
+   "prof": "tailoring",
+   "weight": "leather",
+   "tier": 1,
+   "lvl": 4,
+   "pieces": [
+    "wolf_helm",
+    "wolf_chest",
+    "wolf_gloves",
+    "wolf_boots"
+   ],
+   "bonus2": "+4 % de chances de critique.",
+   "bonus4": "Instinct de meute : après une roulade, la prochaine attaque dans les 2 s inflige +20 % de dégâts.",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 52,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "mistwatch",
+   "name": "Tenue du guetteur des brumes",
+   "prof": "tailoring",
+   "weight": "cloth",
+   "tier": 1,
+   "lvl": 3,
+   "pieces": [
+    "mistwatch_helm",
+    "mistwatch_chest",
+    "mistwatch_gloves",
+    "mistwatch_boots"
+   ],
+   "bonus2": "+8 % de mana max.",
+   "bonus4": "Voile de brume : sous 30 % de PV, votre prochaine roulade laisse un nuage qui réduit de 20 % les dégâts subis pendant 3 s (une fois par minute).",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 38,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "scrap",
+   "name": "Harnois de ferraille gobeline",
+   "prof": "forge",
+   "weight": "plate",
+   "tier": 2,
+   "lvl": 7,
+   "pieces": [
+    "scrap_helm",
+    "chainmail",
+    "scrap_gloves",
+    "scrap_boots"
+   ],
+   "bonus2": "+5 % de défense.",
+   "bonus4": "Rafistolé : chaque coup reçu rend 1 % des PV max (au plus une fois par seconde).",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 118,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "boar",
+   "name": "Ensemble du sanglier",
+   "prof": "tailoring",
+   "weight": "leather",
+   "tier": 2,
+   "lvl": 7,
+   "pieces": [
+    "boar_helm",
+    "boar_chest",
+    "boar_gloves",
+    "boar_boots"
+   ],
+   "bonus2": "+10 % d'équilibre (on titube moins).",
+   "bonus4": "Charge : la première attaque après 1 s de sprint inflige +40 % de dégâts d'équilibre (poise).",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 118,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "silk",
+   "name": "Tenue de soie tisse-venin",
+   "prof": "tailoring",
+   "weight": "cloth",
+   "tier": 2,
+   "lvl": 9,
+   "pieces": [
+    "silk_helm",
+    "silk_chest",
+    "silk_gloves",
+    "silk_boots"
+   ],
+   "bonus2": "+10 % de résistance au poison.",
+   "bonus4": "Toile : vos sorts ont 10 % de chances d'engluer la cible (ralentie de 30 % pendant 2 s).",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 182,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "bone",
+   "name": "Armure d'os ancien",
+   "prof": "forge",
+   "weight": "plate",
+   "tier": 3,
+   "lvl": 12,
+   "pieces": [
+    "bone_helm",
+    "bone_chest",
+    "bone_gloves",
+    "bone_boots"
+   ],
+   "bonus2": "+15 % de dégâts contre les morts-vivants.",
+   "bonus4": "Ossature : toutes les 20 s, la première attaque télégraphiée qui vous touche est réduite de 30 %.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "skeleton",
+     "skeleton_archer"
+    ],
+    "ch": 0.012,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "bandit",
+   "name": "Ensemble du brigand",
+   "prof": "tailoring",
+   "weight": "leather",
+   "tier": 3,
+   "lvl": 13,
+   "pieces": [
+    "bandit_helm",
+    "bandit_chest",
+    "bandit_gloves",
+    "bandit_boots"
+   ],
+   "bonus2": "+5 % de vitesse d'attaque.",
+   "bonus4": "Coup bas : +15 % de chances de critique en frappant un ennemi dans le dos.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "bandit"
+    ],
+    "ch": 0.012,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "wraith",
+   "name": "Tenue spectrale",
+   "prof": "tailoring",
+   "weight": "cloth",
+   "tier": 3,
+   "lvl": 14,
+   "pieces": [
+    "wraith_helm",
+    "wraith_chest",
+    "wraith_gloves",
+    "wraith_boots"
+   ],
+   "bonus2": "+8 % de dégâts d'arcane.",
+   "bonus4": "Évanescence : l'invulnérabilité de la roulade dure 0,1 s de plus.",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 412,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "chitin",
+   "name": "Carapace du désert",
+   "prof": "forge",
+   "weight": "plate",
+   "tier": 4,
+   "lvl": 17,
+   "pieces": [
+    "chitin_helm",
+    "chitin_chest",
+    "chitin_gloves",
+    "chitin_boots"
+   ],
+   "bonus2": "+10 % de résistance au feu.",
+   "bonus4": "Épines : renvoie 10 % des dégâts de mêlée subis à l'attaquant.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "scorpion"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "lurker",
+   "name": "Ensemble du rôdeur des marais",
+   "prof": "tailoring",
+   "weight": "leather",
+   "tier": 4,
+   "lvl": 18,
+   "pieces": [
+    "lurker_helm",
+    "lurker_chest",
+    "lurker_gloves",
+    "lurker_boots"
+   ],
+   "bonus2": "+10 % de régénération d'endurance.",
+   "bonus4": "Amphibie : le sprint coûte 25 % d'endurance en moins et la boue ne vous ralentit plus.",
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 668,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "bog",
+   "name": "Atours de la tourbière",
+   "prof": "tailoring",
+   "weight": "cloth",
+   "tier": 4,
+   "lvl": 19,
+   "pieces": [
+    "bog_helm",
+    "bog_chest",
+    "bog_gloves",
+    "bog_boots"
+   ],
+   "bonus2": "+10 % de régénération de mana.",
+   "bonus4": "Miasmes : vos sorts de zone laissent une flaque toxique pendant 3 s.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "bog_lurker",
+     "swamp_hag"
+    ],
+    "ch": 0.01,
+    "bossCh": 0.3,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "frost",
+   "name": "Harnois de givre",
+   "prof": "forge",
+   "weight": "plate",
+   "tier": 5,
+   "lvl": 22,
+   "pieces": [
+    "frost_helm",
+    "frost_chest",
+    "frost_gloves",
+    "frost_boots"
+   ],
+   "bonus2": "+10 % de résistance au givre.",
+   "bonus4": "Cœur gelé : subir un coup critique gèle l'attaquant 1 s (une fois toutes les 15 s).",
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 988,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "icewolf",
+   "name": "Ensemble du loup de givre",
+   "prof": "tailoring",
+   "weight": "leather",
+   "tier": 5,
+   "lvl": 23,
+   "pieces": [
+    "icewolf_helm",
+    "icewolf_chest",
+    "icewolf_gloves",
+    "icewolf_boots"
+   ],
+   "bonus2": "+5 % de chances de critique.",
+   "bonus4": "Meute blanche : après une roulade, la prochaine attaque dans les 2 s inflige +25 % de dégâts sous forme de givre.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "ice_wolf"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "fleece",
+   "name": "Mantes de toison",
+   "prof": "tailoring",
+   "weight": "cloth",
+   "tier": 5,
+   "lvl": 24,
+   "pieces": [
+    "fleece_helm",
+    "fleece_chest",
+    "fleece_gloves",
+    "fleece_boots"
+   ],
+   "bonus2": "+8 % de dégâts de givre.",
+   "bonus4": "Blizzard intérieur : les compétences de givre coûtent 15 % de mana en moins.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "yeti"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "aldmar",
+   "name": "Harnois runique d'Aldmar",
+   "prof": "forge",
+   "weight": "plate",
+   "tier": 6,
+   "lvl": 27,
+   "pieces": [
+    "aldmar_helm",
+    "aldmar_chest",
+    "aldmar_gloves",
+    "aldmar_boots"
+   ],
+   "bonus2": "+8 % de défense.",
+   "bonus4": "Rune de garde : bloquer une attaque avec la Garde rend 10 d'endurance.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "red_zone_elite"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "troll",
+   "name": "Ensemble du troll",
+   "prof": "tailoring",
+   "weight": "leather",
+   "tier": 6,
+   "lvl": 28,
+   "pieces": [
+    "troll_helm",
+    "troll_chest",
+    "troll_gloves",
+    "troll_boots"
+   ],
+   "bonus2": "+8 % de PV max.",
+   "bonus4": "Chair de troll : sous 40 % de PV, régénère 1 % des PV max par seconde, même en combat.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "troll"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "arcanist",
+   "name": "Tenue de l'arcaniste d'Aldmar",
+   "prof": "tailoring",
+   "weight": "cloth",
+   "tier": 6,
+   "lvl": 29,
+   "pieces": [
+    "arcanist_helm",
+    "arcanist_chest",
+    "arcanist_gloves",
+    "arcanist_boots"
+   ],
+   "bonus2": "+8 % de dégâts d'arcane.",
+   "bonus4": "Surcharge runique : toutes les 5 compétences lancées, la suivante ne coûte pas de mana.",
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "lich",
+     "red_zone_elite"
+    ],
+    "ch": 0.01,
+    "bossCh": 0.3,
+    "teaches": "les 4 pièces"
+   }
+  }
+ ],
+ "plans": [
+  {
+   "id": "plan_militia",
+   "name": "Plan : Ensemble de la milice",
+   "type": "recipe",
+   "teaches": [
+    "r_militia_helm",
+    "r_militia_chest",
+    "r_militia_gloves",
+    "r_militia_boots"
+   ],
+   "prof": "forge",
+   "lvl": 3,
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 38,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_wolf",
+   "name": "Patron : Ensemble du loup",
+   "type": "recipe",
+   "teaches": [
+    "r_wolf_helm",
+    "r_wolf_chest",
+    "r_wolf_gloves",
+    "r_wolf_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 4,
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 52,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_mistwatch",
+   "name": "Patron : Tenue du guetteur des brumes",
+   "type": "recipe",
+   "teaches": [
+    "r_mistwatch_helm",
+    "r_mistwatch_chest",
+    "r_mistwatch_gloves",
+    "r_mistwatch_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 3,
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 38,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_scrap",
+   "name": "Plan : Harnois de ferraille gobeline",
+   "type": "recipe",
+   "teaches": [
+    "r_scrap_helm",
+    "r_chainmail",
+    "r_scrap_gloves",
+    "r_scrap_boots"
+   ],
+   "prof": "forge",
+   "lvl": 7,
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 118,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_boar",
+   "name": "Patron : Ensemble du sanglier",
+   "type": "recipe",
+   "teaches": [
+    "r_boar_helm",
+    "r_boar_chest",
+    "r_boar_gloves",
+    "r_boar_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 7,
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 118,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_silk",
+   "name": "Patron : Tenue de soie tisse-venin",
+   "type": "recipe",
+   "teaches": [
+    "r_silk_helm",
+    "r_silk_chest",
+    "r_silk_gloves",
+    "r_silk_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 9,
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 182,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_bone",
+   "name": "Plan : Armure d'os ancien",
+   "type": "recipe",
+   "teaches": [
+    "r_bone_helm",
+    "r_bone_chest",
+    "r_bone_gloves",
+    "r_bone_boots"
+   ],
+   "prof": "forge",
+   "lvl": 12,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "skeleton",
+     "skeleton_archer"
+    ],
+    "ch": 0.012,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_bandit",
+   "name": "Patron : Ensemble du brigand",
+   "type": "recipe",
+   "teaches": [
+    "r_bandit_helm",
+    "r_bandit_chest",
+    "r_bandit_gloves",
+    "r_bandit_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 13,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "bandit"
+    ],
+    "ch": 0.012,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_wraith",
+   "name": "Patron : Tenue spectrale",
+   "type": "recipe",
+   "teaches": [
+    "r_wraith_helm",
+    "r_wraith_chest",
+    "r_wraith_gloves",
+    "r_wraith_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 14,
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 412,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_chitin",
+   "name": "Plan : Carapace du désert",
+   "type": "recipe",
+   "teaches": [
+    "r_chitin_helm",
+    "r_chitin_chest",
+    "r_chitin_gloves",
+    "r_chitin_boots"
+   ],
+   "prof": "forge",
+   "lvl": 17,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "scorpion"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_lurker",
+   "name": "Patron : Ensemble du rôdeur des marais",
+   "type": "recipe",
+   "teaches": [
+    "r_lurker_helm",
+    "r_lurker_chest",
+    "r_lurker_gloves",
+    "r_lurker_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 18,
+   "learn": {
+    "from": "trainer",
+    "npc": "tanner",
+    "price": 668,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_bog",
+   "name": "Patron : Atours de la tourbière",
+   "type": "recipe",
+   "teaches": [
+    "r_bog_helm",
+    "r_bog_chest",
+    "r_bog_gloves",
+    "r_bog_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 19,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "bog_lurker",
+     "swamp_hag"
+    ],
+    "ch": 0.01,
+    "bossCh": 0.3,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_frost",
+   "name": "Plan : Harnois de givre",
+   "type": "recipe",
+   "teaches": [
+    "r_frost_helm",
+    "r_frost_chest",
+    "r_frost_gloves",
+    "r_frost_boots"
+   ],
+   "prof": "forge",
+   "lvl": 22,
+   "learn": {
+    "from": "trainer",
+    "npc": "blacksmith",
+    "price": 988,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_icewolf",
+   "name": "Patron : Ensemble du loup de givre",
+   "type": "recipe",
+   "teaches": [
+    "r_icewolf_helm",
+    "r_icewolf_chest",
+    "r_icewolf_gloves",
+    "r_icewolf_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 23,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "ice_wolf"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_fleece",
+   "name": "Patron : Mantes de toison",
+   "type": "recipe",
+   "teaches": [
+    "r_fleece_helm",
+    "r_fleece_chest",
+    "r_fleece_gloves",
+    "r_fleece_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 24,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "yeti"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_aldmar",
+   "name": "Plan : Harnois runique d'Aldmar",
+   "type": "recipe",
+   "teaches": [
+    "r_aldmar_helm",
+    "r_aldmar_chest",
+    "r_aldmar_gloves",
+    "r_aldmar_boots"
+   ],
+   "prof": "forge",
+   "lvl": 27,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "red_zone_elite"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_troll",
+   "name": "Patron : Ensemble du troll",
+   "type": "recipe",
+   "teaches": [
+    "r_troll_helm",
+    "r_troll_chest",
+    "r_troll_gloves",
+    "r_troll_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 28,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "troll"
+    ],
+    "ch": 0.01,
+    "teaches": "les 4 pièces"
+   }
+  },
+  {
+   "id": "plan_arcanist",
+   "name": "Patron : Tenue de l'arcaniste d'Aldmar",
+   "type": "recipe",
+   "teaches": [
+    "r_arcanist_helm",
+    "r_arcanist_chest",
+    "r_arcanist_gloves",
+    "r_arcanist_boots"
+   ],
+   "prof": "tailoring",
+   "lvl": 29,
+   "learn": {
+    "from": "drop",
+    "dropFrom": [
+     "lich",
+     "red_zone_elite"
+    ],
+    "ch": 0.01,
+    "bossCh": 0.3,
+    "teaches": "les 4 pièces"
+   }
+  }
+ ],
+ "rules": {
+  "qualities": [
+   {
+    "id": "normal",
+    "name": "Normale",
+    "rarity": "uncommon",
+    "affixes": 1,
+    "baseMult": 1.05,
+    "consumableBonusQty": 0
+   },
+   {
+    "id": "superior",
+    "name": "Supérieure",
+    "rarity": "rare",
+    "affixes": 2,
+    "baseMult": 1.1,
+    "consumableBonusQty": 1
+   },
+   {
+    "id": "masterwork",
+    "name": "Chef-d'œuvre",
+    "rarity": "epic",
+    "affixes": 3,
+    "baseMult": 1.15,
+    "consumableBonusQty": 2
+   }
+  ],
+  "qualityRoll": {
+   "base": {
+    "superior": 0.18,
+    "masterwork": 0.03
+   },
+   "perProfLevelAboveRecipe": {
+    "superior": 0.015,
+    "masterwork": 0.005,
+    "maxLevels": 10
+   },
+   "catalyst": {
+    "item": "crystal_shard",
+    "qty": 1,
+    "superior": 0.1,
+    "masterwork": 0.04,
+    "note": "ingrédient facultatif, case « Catalyseur » (pas pour les recettes d'affinage)"
+   },
+   "milestones": {
+    "compagnon": {
+     "superior": 0.05
+    },
+    "maitre": {
+     "masterwork": 0.03
+    }
+   },
+   "cap": {
+    "superior": 0.45,
+    "masterwork": 0.15
+   },
+   "formula": "on tire d'abord Chef-d'œuvre (p_mw), sinon Supérieure (p_sup), sinon Normale. qualityFloor « superior » (plans de boss) : Normale devient Supérieure."
+  },
+  "affixes": [
+   "force",
+   "garde",
+   "vitalite",
+   "esprit",
+   "endurance",
+   "precision",
+   "celerite",
+   "vol_de_vie",
+   "equilibre",
+   "feu",
+   "givre",
+   "arcane",
+   "res_feu",
+   "res_givre",
+   "res_poison",
+   "res_arcane"
+  ],
+  "affixRule": "La première affixe est toujours la « signature » de la recette ; les suivantes sont tirées dans affixPool (sans doublon). Valeurs tirées comme pour le butin, au niveau d'objet = niveau de la recette.",
+  "vsDrops": "Stats de base = formules de items.json (meta.formulas) au niveau d'objet de la recette, multiplicateur de la rareté obtenue (Inhabituel 1,05 · Rare 1,10 · Épique 1,15). Légendaires (×1,20 + effet unique) : jamais fabriqués. Fabriqué max = Épique.",
+  "crafterSignature": "Les objets de qualité Supérieure et Chef-d'œuvre portent « Fabriqué par <nom> ».",
+  "craftTimeMs": 1500,
+  "batchMax": {
+   "default": 5,
+   "compagnon": 20
+  },
+  "stationRange": 4,
+  "outOfCombatOnly": true,
+  "fees": "Frais de station (or) = 1 + ⌊niveau² / 12⌋ ; consommables et affinage : ÷4 (min 1). Niv. 1 : 1 · 10 : 9 · 20 : 34 · 30 : 76.",
+  "trainerPrice": "Recette à l'unité : 10 + niveau² ; plan d'ensemble (4 pièces) : le double.",
+  "recycling": "Voir items.json (salvage). Un objet fabriqué ne rend que des chutes (1 à 2, selon son type), jamais d'essence ni de pierre (sauf 50 % des pierres de forge dépensées dessus). Les chutes se reconvertissent en lingots, lanières, tissu et bois (recettes r_salvage_*).",
+  "forgeUpgrade": {
+   "1-4": "forge_stone_rough",
+   "5-7": "forge_stone_cut",
+   "8-10": "forge_stone_ancestral",
+   "note": "Coûts, or et réussite : items.json (forge.levels). Les pierres se fabriquent (Forge) ou se trouvent en jeu."
+  },
+  "gathering": "Tout le monde récolte tout, sans outil ni métier. Maintenir [E] 2 s (interrompu par un coup). Chaque filon est personnel : récolté par vous, il est grisé 3 min pour tout votre compte (tous vos personnages), les autres peuvent encore le récolter. En zone rouge, les filons sont partagés (premier arrivé) et donnent le double.",
+  "professionsPerCharacter": "Les trois métiers, sans limite.",
+  "bagSlots": 2,
+  "craftedSell": "Un objet fabriqué (drapeau « crafted » posé à la fabrication, quelle que soit sa qualité) se revend au marchand pour la valeur de ses matériaux (recipe.vendorValue = somme des prix de vente des ingrédients), jamais avec la formule du butin. Il reste échangeable et vendable aux joueurs à n'importe quel prix."
+ }
+}

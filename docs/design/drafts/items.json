@@ -1,0 +1,5667 @@
+{
+  "meta": {
+    "version": "v0.3 draft — agent items",
+    "maxLevel": 30,
+    "slots": {
+      "weapon": "Arme",
+      "offhand": "Main gauche",
+      "head": "Tête",
+      "chest": "Torse",
+      "hands": "Mains",
+      "feet": "Pieds",
+      "ring1": "Anneau 1",
+      "ring2": "Anneau 2",
+      "amulet": "Amulette"
+    },
+    "formulas": {
+      "weaponAtk": "round((3 + 1.6 × lvl) × family.atk × rarity.baseMult × (1 + 0.04 × forge))",
+      "armorDef": "round((6 + 3.2 × lvl) × type.def × share[slot] × rarity.baseMult × (1 + 0.04 × forge)) ; share tête 0.22 / torse 0.40 / mains 0.18 / pieds 0.20",
+      "clothMana": "round((10 + 4 × lvl) × share[slot])",
+      "focusMana": "round((4 + 2 × lvl) × family.mp)",
+      "shield": "def = round(2 + 1.3 × lvl) ; blocage = min(90, 60 + lvl) %",
+      "affixValue": "interpolation linéaire entre range[1] et range[30] selon le niveau d’objet, tirage uniforme dans [min, max]",
+      "sell": "round((5 + 0.6 × lvl²) × rarity.sellMult) ; prix d’achat marchand = 4 × vente (Commun seulement)",
+      "baseAttackDps": "infobulle : attaque × puissance de l’attaque de base ÷ (recharge × family.cd) — pour comparer honnêtement une rapière et un espadon"
+    },
+    "softRules": {
+      "armor": {
+        "plaques": {
+          "name": "Plaques",
+          "def": 1,
+          "perPiece": {
+            "staminaRegen": -0.05,
+            "castSpeed": -0.03,
+            "rollCost": 1
+          },
+          "desc": "Beaucoup de défense. Chaque pièce : −5 % de régénération d’endurance, −3 % de vitesse d’incantation, +1 d’endurance par roulade."
+        },
+        "cuir": {
+          "name": "Cuir",
+          "def": 0.6,
+          "perPiece": {
+            "staminaRegen": 0.03,
+            "sprintCost": -0.03
+          },
+          "desc": "Équilibré. Chaque pièce : +3 % de régénération d’endurance, −3 % d’endurance dépensée en sprint."
+        },
+        "tissu": {
+          "name": "Tissu",
+          "def": 0.35,
+          "perPiece": {
+            "castSpeed": 0.03
+          },
+          "mana": true,
+          "desc": "Peu de défense mais du mana (valeur propre à chaque pièce). Chaque pièce : +3 % de vitesse d’incantation."
+        }
+      },
+      "weaponTags": "les compétences demandent des étiquettes (tags) : melee, distance, focalisateur, bouclier… ; une compétence dont l’étiquette manque est grisée dans la barre avec « Demande : arme de mêlée »",
+      "spellsWithoutFocus": "sort lancé sans focalisateur : −30 % de puissance ; avec focalisateur_partiel (épée runique) ou grimoire en main gauche : −10 %",
+      "twoHanded": "une arme à deux mains libère la main gauche (bouclier / grimoire impossibles) ; arcs et arbalètes n’acceptent que le carquois",
+      "noClassLock": "aucune restriction de classe : seul le niveau requis compte (canUse = niveau)"
+    },
+    "instanceFormat": {
+      "stackable": "{ id, qty } (inchangé)",
+      "equipment": "{ id, uid, r: rarity, il: itemLevel, a: [[affixId, value], …], f: forge 0..10, q?: quality 0|1|2 (artisanat), fails?: n }",
+      "note": "tout l’aléatoire est tiré par le serveur à la création de l’instance ; le client ne fait qu’afficher"
+    },
+    "migration": {
+      "ids": "tous les ids v0.1 restent valides (voir bases[*].legacy)",
+      "equipSlots": "`armor` → `chest` ; `weapon` inchangé ; nouveaux emplacements vides",
+      "plainIds": "un objet stocké comme simple id devient { id, r: legacyRarity, il: lvl, a: legacyAffixes || [], f: 0 }",
+      "classLock": "le champ `cls` est supprimé ; `canUse(item, level)` ne vérifie plus que le niveau",
+      "questReward": "q_golem.classItem reste valide ; la récompense devient « au choix parmi runeblade / ember_staff / elven_bow »",
+      "maxLevel": "MAX_LEVEL 20 → 30 (hors de ce document)"
+    }
+  },
+  "families": {
+    "epee_courte": {
+      "name": "Épée courte",
+      "group": "épée",
+      "hands": 1,
+      "atk": 0.85,
+      "cd": 0.85,
+      "reach": 2.5,
+      "crit": 0.03,
+      "poise": 0.8,
+      "st": 0.8,
+      "tags": [
+        "melee",
+        "lame"
+      ],
+      "offhand": [
+        "bouclier",
+        "grimoire"
+      ],
+      "feel": "Rapide et économe, idéale avec un bouclier.",
+      "slot": "weapon"
+    },
+    "epee_longue": {
+      "name": "Épée longue",
+      "group": "épée",
+      "hands": 1,
+      "atk": 1,
+      "cd": 1,
+      "reach": 2.8,
+      "crit": 0,
+      "poise": 1,
+      "st": 1,
+      "tags": [
+        "melee",
+        "lame"
+      ],
+      "offhand": [
+        "bouclier",
+        "grimoire"
+      ],
+      "feel": "La référence : aucun point faible, aucun point fort.",
+      "slot": "weapon"
+    },
+    "epee_batarde": {
+      "name": "Épée bâtarde",
+      "group": "épée",
+      "hands": 1,
+      "atk": 1.15,
+      "cd": 1.12,
+      "reach": 3,
+      "crit": 0,
+      "poise": 1.25,
+      "st": 1.15,
+      "tags": [
+        "melee",
+        "lame",
+        "lourde"
+      ],
+      "offhand": [
+        "bouclier"
+      ],
+      "feel": "Une main et demie : plus lourde, plus d’allonge, déséquilibre mieux.",
+      "slot": "weapon"
+    },
+    "rapiere": {
+      "name": "Rapière",
+      "group": "épée",
+      "hands": 1,
+      "atk": 0.85,
+      "cd": 0.85,
+      "reach": 3.1,
+      "crit": 0.08,
+      "poise": 0.6,
+      "st": 0.85,
+      "tags": [
+        "melee",
+        "lame",
+        "estoc"
+      ],
+      "offhand": [
+        "bouclier",
+        "grimoire"
+      ],
+      "feel": "Estocades rapides et longues, beaucoup de critiques, peu d’impact.",
+      "special": "Estoc : ignore 15 % de la défense de la cible.",
+      "slot": "weapon"
+    },
+    "cimeterre": {
+      "name": "Cimeterre",
+      "group": "épée",
+      "hands": 1,
+      "atk": 0.9,
+      "cd": 0.9,
+      "reach": 2.7,
+      "crit": 0.04,
+      "poise": 0.8,
+      "st": 0.9,
+      "tags": [
+        "melee",
+        "lame",
+        "taille"
+      ],
+      "offhand": [
+        "bouclier"
+      ],
+      "feel": "Grands arcs rapides qui touchent plusieurs ennemis.",
+      "special": "Taille large : l’attaque de base touche jusqu’à 2 ennemis devant soi.",
+      "slot": "weapon"
+    },
+    "lame_courbe": {
+      "name": "Lame courbe",
+      "group": "épée",
+      "hands": 2,
+      "atk": 1.1,
+      "cd": 1,
+      "reach": 2.9,
+      "crit": 0.05,
+      "critDmg": 0.25,
+      "poise": 0.9,
+      "st": 1.05,
+      "tags": [
+        "melee",
+        "lame",
+        "deux_mains",
+        "taille"
+      ],
+      "offhand": [],
+      "feel": "À deux mains, précise et tranchante : critiques dévastateurs.",
+      "special": "+25 % de dégâts critiques.",
+      "slot": "weapon"
+    },
+    "espadon": {
+      "name": "Espadon",
+      "group": "épée",
+      "hands": 2,
+      "atk": 1.45,
+      "cd": 1.35,
+      "reach": 3.4,
+      "crit": 0,
+      "poise": 1.8,
+      "st": 1.5,
+      "tags": [
+        "melee",
+        "lame",
+        "deux_mains",
+        "lourde"
+      ],
+      "offhand": [],
+      "feel": "Lent et gourmand en endurance, mais chaque coup fait tituber.",
+      "special": "Balayage : l’attaque de base touche tous les ennemis dans un arc de 120°.",
+      "slot": "weapon"
+    },
+    "epee_runique": {
+      "name": "Épée runique",
+      "group": "épée",
+      "hands": 1,
+      "atk": 1,
+      "cd": 1.05,
+      "reach": 2.8,
+      "crit": 0,
+      "poise": 1,
+      "st": 1,
+      "mp": 0.8,
+      "tags": [
+        "melee",
+        "lame",
+        "focalisateur_partiel"
+      ],
+      "offhand": [
+        "bouclier",
+        "grimoire"
+      ],
+      "feel": "Lame gravée pour les lames spirituelles : frappe et lance des sorts.",
+      "special": "25 % des dégâts de mêlée sont arcaniques ; les sorts lancés avec elle ne subissent que −10 % (au lieu de −30 %).",
+      "slot": "weapon"
+    },
+    "hache": {
+      "name": "Hache",
+      "group": "hache",
+      "hands": 1,
+      "atk": 1.1,
+      "cd": 1.1,
+      "reach": 2.6,
+      "crit": 0.02,
+      "poise": 1.3,
+      "st": 1.1,
+      "tags": [
+        "melee",
+        "hache"
+      ],
+      "offhand": [
+        "bouclier"
+      ],
+      "feel": "Coups lourds qui entament la garde.",
+      "special": "Brise-garde : +50 % de dégâts contre une cible qui se protège (squelettes, boucliers, joueurs en Garde).",
+      "slot": "weapon"
+    },
+    "masse": {
+      "name": "Masse",
+      "group": "masse",
+      "hands": 1,
+      "atk": 1.05,
+      "cd": 1.15,
+      "reach": 2.5,
+      "crit": 0,
+      "poise": 1.6,
+      "st": 1.15,
+      "tags": [
+        "melee",
+        "masse",
+        "lourde"
+      ],
+      "offhand": [
+        "bouclier",
+        "grimoire"
+      ],
+      "feel": "Contondante : écrase les os et la pierre.",
+      "special": "Écrasement : +20 % de dégâts contre les squelettes, golems et créatures à carapace.",
+      "slot": "weapon"
+    },
+    "lance": {
+      "name": "Lance",
+      "group": "lance",
+      "hands": 1,
+      "atk": 1,
+      "cd": 1.05,
+      "reach": 3.8,
+      "crit": 0.02,
+      "poise": 1,
+      "st": 1,
+      "tags": [
+        "melee",
+        "lance",
+        "estoc"
+      ],
+      "offhand": [
+        "bouclier"
+      ],
+      "feel": "La plus grande allonge au corps à corps : tenir à distance.",
+      "special": "Allonge : frappe en ligne droite, touche 2 ennemis alignés.",
+      "slot": "weapon"
+    },
+    "dague": {
+      "name": "Dague",
+      "group": "dague",
+      "hands": 1,
+      "atk": 0.7,
+      "cd": 0.7,
+      "reach": 2.2,
+      "crit": 0.12,
+      "poise": 0.5,
+      "st": 0.7,
+      "tags": [
+        "melee",
+        "dague",
+        "estoc"
+      ],
+      "offhand": [
+        "bouclier",
+        "grimoire"
+      ],
+      "feel": "Très rapide, très courte, faite pour les critiques.",
+      "special": "Dans le dos : ×1,5 dégâts sur une cible qui ne vous fait pas face.",
+      "slot": "weapon"
+    },
+    "baton": {
+      "name": "Bâton",
+      "group": "bâton",
+      "hands": 2,
+      "atk": 1.05,
+      "cd": 1,
+      "reach": 2.8,
+      "range": 18,
+      "crit": 0,
+      "poise": 0.7,
+      "st": 1,
+      "mp": 1.5,
+      "tags": [
+        "focalisateur",
+        "melee",
+        "deux_mains",
+        "baton"
+      ],
+      "offhand": [],
+      "feel": "Le focalisateur le plus puissant, se tient à deux mains.",
+      "special": "Sorts à pleine puissance ; peut aussi frapper au corps à corps (faible impact).",
+      "slot": "weapon"
+    },
+    "sceptre": {
+      "name": "Sceptre",
+      "group": "sceptre",
+      "hands": 1,
+      "atk": 0.85,
+      "cd": 0.9,
+      "reach": 2.4,
+      "range": 18,
+      "crit": 0.02,
+      "poise": 0.8,
+      "st": 0.9,
+      "mp": 0.8,
+      "tags": [
+        "focalisateur",
+        "melee",
+        "sceptre"
+      ],
+      "offhand": [
+        "bouclier",
+        "grimoire"
+      ],
+      "feel": "Focalisateur à une main : sorts plus rapides, un grimoire ou un bouclier à côté.",
+      "special": "Sorts à pleine puissance ; −10 % de temps de recharge des sorts.",
+      "slot": "weapon"
+    },
+    "arc_court": {
+      "name": "Arc court",
+      "group": "arc",
+      "hands": 2,
+      "atk": 0.9,
+      "cd": 0.85,
+      "range": 18,
+      "crit": 0.03,
+      "poise": 0.8,
+      "st": 0.9,
+      "tags": [
+        "distance",
+        "arc"
+      ],
+      "offhand": [
+        "carquois"
+      ],
+      "feel": "Léger : on peut tirer en marchant plus vite.",
+      "special": "Tir en mouvement jusqu’à 55 % de sa vitesse (au lieu de 40 %).",
+      "slot": "weapon"
+    },
+    "arc_long": {
+      "name": "Arc long",
+      "group": "arc",
+      "hands": 2,
+      "atk": 1.1,
+      "cd": 1.1,
+      "range": 24,
+      "crit": 0.04,
+      "poise": 1,
+      "st": 1,
+      "tags": [
+        "distance",
+        "arc"
+      ],
+      "offhand": [
+        "carquois"
+      ],
+      "feel": "Portée maximale et précision, à l’arrêt.",
+      "slot": "weapon"
+    },
+    "arbalete": {
+      "name": "Arbalète",
+      "group": "arbalète",
+      "hands": 2,
+      "atk": 1.4,
+      "cd": 1.5,
+      "range": 20,
+      "crit": 0.02,
+      "poise": 1.6,
+      "st": 1.2,
+      "tags": [
+        "distance",
+        "arbalete",
+        "lourde"
+      ],
+      "offhand": [
+        "carquois"
+      ],
+      "feel": "Rechargement lent, carreaux qui percent et font tituber.",
+      "special": "Carreau : ignore 20 % de la défense de la cible.",
+      "slot": "weapon"
+    },
+    "bouclier": {
+      "name": "Bouclier",
+      "group": "main gauche",
+      "slot": "offhand",
+      "tags": [
+        "bouclier"
+      ],
+      "feel": "Défense et Garde bien plus solide.",
+      "special": "En Garde : bloque « blocage » % des dégâts frontaux (sans bouclier : 50 %) ; coûte de l’endurance par coup bloqué."
+    },
+    "grimoire": {
+      "name": "Grimoire",
+      "group": "main gauche",
+      "slot": "offhand",
+      "tags": [
+        "focalisateur_secondaire",
+        "grimoire"
+      ],
+      "feel": "Du mana et de l’attaque pour les sorts.",
+      "special": "Compte comme focalisateur : avec une arme de mêlée à une main, les sorts ne subissent que −10 %."
+    },
+    "carquois": {
+      "name": "Carquois",
+      "group": "main gauche",
+      "slot": "offhand",
+      "tags": [
+        "carquois"
+      ],
+      "feel": "Seule main gauche des arcs et arbalètes.",
+      "special": "Bonus de critique et de dégâts pour les tirs."
+    }
+  },
+  "bases": {
+    "rusty_sword": {
+      "name": "Épée rouillée",
+      "slot": "weapon",
+      "family": "epee_longue",
+      "tier": "T1",
+      "lvl": 1,
+      "atk": 4,
+      "hands": 1,
+      "icon": "rusty_sword",
+      "price": 20,
+      "sell": 5,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "common"
+    },
+    "militia_gladius": {
+      "name": "Glaive du milicien",
+      "slot": "weapon",
+      "family": "epee_courte",
+      "tier": "T1",
+      "lvl": 1,
+      "atk": 4,
+      "hands": 1,
+      "icon": "militia_gladius",
+      "sell": 6,
+      "price": 24
+    },
+    "shepherd_cutlass": {
+      "name": "Coutelas du berger",
+      "slot": "weapon",
+      "family": "epee_courte",
+      "tier": "T1",
+      "lvl": 3,
+      "atk": 7,
+      "hands": 1,
+      "implicit": [
+        [
+          "vitalite",
+          13
+        ]
+      ],
+      "icon": "shepherd_cutlass",
+      "sell": 10,
+      "price": 40
+    },
+    "squire_rapier": {
+      "name": "Rapière de l'écuyer",
+      "slot": "weapon",
+      "family": "rapiere",
+      "tier": "T1",
+      "lvl": 3,
+      "atk": 7,
+      "hands": 1,
+      "icon": "squire_rapier",
+      "sell": 10,
+      "price": 40
+    },
+    "brumeval_longsword": {
+      "name": "Épée de fer de Brumeval",
+      "slot": "weapon",
+      "family": "epee_longue",
+      "tier": "T1",
+      "lvl": 4,
+      "atk": 9,
+      "hands": 1,
+      "implicit": [
+        [
+          "garde",
+          2
+        ]
+      ],
+      "icon": "brumeval_longsword",
+      "sell": 15,
+      "price": 60
+    },
+    "guard_bastard": {
+      "name": "Bâtarde du garde",
+      "slot": "weapon",
+      "family": "epee_batarde",
+      "tier": "T1",
+      "lvl": 5,
+      "atk": 13,
+      "hands": 1,
+      "icon": "guard_bastard",
+      "sell": 20,
+      "price": 80
+    },
+    "steel_sword": {
+      "name": "Épée d'acier",
+      "slot": "weapon",
+      "family": "epee_longue",
+      "tier": "T2",
+      "lvl": 6,
+      "atk": 12,
+      "hands": 1,
+      "icon": "steel_sword",
+      "price": 180,
+      "sell": 45,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "uncommon",
+      "legacyAffixes": [
+        [
+          "force",
+          2
+        ]
+      ]
+    },
+    "goblin_scimitar": {
+      "name": "Cimeterre gobelin",
+      "slot": "weapon",
+      "family": "cimeterre",
+      "tier": "T2",
+      "lvl": 6,
+      "atk": 11,
+      "hands": 1,
+      "icon": "goblin_scimitar",
+      "sell": 27,
+      "price": 108
+    },
+    "duelist_rapier": {
+      "name": "Rapière du duelliste",
+      "slot": "weapon",
+      "family": "rapiere",
+      "tier": "T2",
+      "lvl": 7,
+      "atk": 12,
+      "hands": 1,
+      "implicit": [
+        [
+          "precision",
+          2
+        ]
+      ],
+      "icon": "duelist_rapier",
+      "sell": 34,
+      "price": 136
+    },
+    "whisper_blade": {
+      "name": "Lame des Murmures",
+      "slot": "weapon",
+      "family": "epee_courte",
+      "tier": "T2",
+      "lvl": 8,
+      "atk": 13,
+      "hands": 1,
+      "implicit": [
+        [
+          "vitesse_attaque",
+          4
+        ]
+      ],
+      "icon": "whisper_blade",
+      "sell": 43,
+      "price": 172
+    },
+    "knight_errant_bastard": {
+      "name": "Bâtarde du chevalier errant",
+      "slot": "weapon",
+      "family": "epee_batarde",
+      "tier": "T2",
+      "lvl": 8,
+      "atk": 18,
+      "hands": 1,
+      "icon": "knight_errant_bastard",
+      "sell": 43,
+      "price": 172
+    },
+    "mercenary_greatsword": {
+      "name": "Espadon du mercenaire",
+      "slot": "weapon",
+      "family": "espadon",
+      "tier": "T2",
+      "lvl": 10,
+      "atk": 28,
+      "hands": 2,
+      "icon": "mercenary_greatsword",
+      "sell": 65,
+      "price": 260
+    },
+    "gravedigger_sword": {
+      "name": "Épée du fossoyeur",
+      "slot": "weapon",
+      "family": "epee_longue",
+      "tier": "T3",
+      "lvl": 11,
+      "atk": 21,
+      "hands": 1,
+      "icon": "gravedigger_sword",
+      "sell": 78,
+      "price": 0
+    },
+    "runeblade": {
+      "name": "Lame runique",
+      "slot": "weapon",
+      "family": "epee_runique",
+      "tier": "T3",
+      "lvl": 12,
+      "atk": 24,
+      "mp": 22,
+      "hands": 1,
+      "icon": "runeblade",
+      "price": 0,
+      "sell": 160,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "epic",
+      "legacyAffixes": [
+        [
+          "force",
+          5
+        ],
+        [
+          "esprit",
+          12
+        ],
+        [
+          "arcane",
+          4
+        ]
+      ]
+    },
+    "bone_needle": {
+      "name": "Aiguille d'os",
+      "slot": "weapon",
+      "family": "rapiere",
+      "tier": "T3",
+      "lvl": 12,
+      "atk": 19,
+      "hands": 1,
+      "implicit": [
+        [
+          "precision",
+          2
+        ]
+      ],
+      "icon": "bone_needle",
+      "sell": 91,
+      "price": 0
+    },
+    "watcher_curved_blade": {
+      "name": "Lame courbe du Veilleur",
+      "slot": "weapon",
+      "family": "lame_courbe",
+      "tier": "T3",
+      "lvl": 12,
+      "atk": 24,
+      "hands": 2,
+      "icon": "watcher_curved_blade",
+      "sell": 91,
+      "price": 0
+    },
+    "sepulchral_greatsword": {
+      "name": "Espadon sépulcral",
+      "slot": "weapon",
+      "family": "espadon",
+      "tier": "T3",
+      "lvl": 13,
+      "atk": 35,
+      "hands": 2,
+      "implicit": [
+        [
+          "equilibre",
+          12
+        ]
+      ],
+      "icon": "sepulchral_greatsword",
+      "sell": 106,
+      "price": 0
+    },
+    "mourning_scimitar": {
+      "name": "Cimeterre du Deuil",
+      "slot": "weapon",
+      "family": "cimeterre",
+      "tier": "T3",
+      "lvl": 14,
+      "atk": 23,
+      "hands": 1,
+      "icon": "mourning_scimitar",
+      "sell": 123,
+      "price": 0
+    },
+    "brumenoire_longsword": {
+      "name": "Épée de Brumenoire",
+      "slot": "weapon",
+      "family": "epee_longue",
+      "tier": "T4",
+      "lvl": 16,
+      "atk": 29,
+      "hands": 1,
+      "implicit": [
+        [
+          "res_poison",
+          8
+        ]
+      ],
+      "icon": "brumenoire_longsword",
+      "sell": 159,
+      "price": 636
+    },
+    "redsand_scimitar": {
+      "name": "Cimeterre de Sable-Rouge",
+      "slot": "weapon",
+      "family": "cimeterre",
+      "tier": "T4",
+      "lvl": 16,
+      "atk": 26,
+      "hands": 1,
+      "icon": "redsand_scimitar",
+      "sell": 159,
+      "price": 636
+    },
+    "nomad_curved_blade": {
+      "name": "Lame courbe du nomade",
+      "slot": "weapon",
+      "family": "lame_courbe",
+      "tier": "T4",
+      "lvl": 17,
+      "atk": 33,
+      "hands": 2,
+      "icon": "nomad_curved_blade",
+      "sell": 178,
+      "price": 712
+    },
+    "portsalin_rapier": {
+      "name": "Rapière de Port-Salin",
+      "slot": "weapon",
+      "family": "rapiere",
+      "tier": "T4",
+      "lvl": 18,
+      "atk": 27,
+      "hands": 1,
+      "icon": "portsalin_rapier",
+      "sell": 199,
+      "price": 796
+    },
+    "stinger_bastard": {
+      "name": "Bâtarde à dard",
+      "slot": "weapon",
+      "family": "epee_batarde",
+      "tier": "T4",
+      "lvl": 18,
+      "atk": 37,
+      "hands": 1,
+      "implicit": [
+        [
+          "precision",
+          3
+        ]
+      ],
+      "icon": "stinger_bastard",
+      "sell": 199,
+      "price": 796
+    },
+    "dune_greatsword": {
+      "name": "Espadon des Dunes",
+      "slot": "weapon",
+      "family": "espadon",
+      "tier": "T4",
+      "lvl": 20,
+      "atk": 51,
+      "hands": 2,
+      "icon": "dune_greatsword",
+      "sell": 245,
+      "price": 980
+    },
+    "givreval_longsword": {
+      "name": "Lame de Givreval",
+      "slot": "weapon",
+      "family": "epee_longue",
+      "tier": "T5",
+      "lvl": 21,
+      "atk": 37,
+      "hands": 1,
+      "implicit": [
+        [
+          "res_givre",
+          10
+        ]
+      ],
+      "icon": "givreval_longsword",
+      "sell": 270,
+      "price": 0
+    },
+    "trapper_gladius": {
+      "name": "Glaive du trappeur",
+      "slot": "weapon",
+      "family": "epee_courte",
+      "tier": "T5",
+      "lvl": 21,
+      "atk": 31,
+      "hands": 1,
+      "icon": "trapper_gladius",
+      "sell": 270,
+      "price": 0
+    },
+    "blizzard_runes": {
+      "name": "Runes du Blizzard",
+      "slot": "weapon",
+      "family": "epee_runique",
+      "tier": "T5",
+      "lvl": 22,
+      "atk": 38,
+      "mp": 38,
+      "hands": 1,
+      "implicit": [
+        [
+          "givre",
+          9
+        ]
+      ],
+      "icon": "blizzard_runes",
+      "sell": 295,
+      "price": 0
+    },
+    "glacier_cleaver": {
+      "name": "Fendeur des glaciers",
+      "slot": "weapon",
+      "family": "espadon",
+      "tier": "T5",
+      "lvl": 23,
+      "atk": 58,
+      "hands": 2,
+      "icon": "glacier_cleaver",
+      "sell": 322,
+      "price": 0
+    },
+    "coldawn_curved_blade": {
+      "name": "Lame courbe de l'Aube froide",
+      "slot": "weapon",
+      "family": "lame_courbe",
+      "tier": "T5",
+      "lvl": 24,
+      "atk": 46,
+      "hands": 2,
+      "icon": "coldawn_curved_blade",
+      "sell": 351,
+      "price": 0
+    },
+    "frozen_sentinel_bastard": {
+      "name": "Bâtarde de la Sentinelle glacée",
+      "slot": "weapon",
+      "family": "epee_batarde",
+      "tier": "T5",
+      "lvl": 25,
+      "atk": 49,
+      "hands": 1,
+      "icon": "frozen_sentinel_bastard",
+      "sell": 380,
+      "price": 0
+    },
+    "aldmar_longsword": {
+      "name": "Épée d'Aldmar",
+      "slot": "weapon",
+      "family": "epee_longue",
+      "tier": "T6",
+      "lvl": 26,
+      "atk": 45,
+      "hands": 1,
+      "icon": "aldmar_longsword",
+      "sell": 411,
+      "price": 0
+    },
+    "bloodshed_rapier": {
+      "name": "Rapière du Sang versé",
+      "slot": "weapon",
+      "family": "rapiere",
+      "tier": "T6",
+      "lvl": 27,
+      "atk": 39,
+      "hands": 1,
+      "implicit": [
+        [
+          "vol_de_vie",
+          3
+        ]
+      ],
+      "icon": "bloodshed_rapier",
+      "sell": 442,
+      "price": 0
+    },
+    "scarlet_raider_scimitar": {
+      "name": "Cimeterre du Pillard écarlate",
+      "slot": "weapon",
+      "family": "cimeterre",
+      "tier": "T6",
+      "lvl": 27,
+      "atk": 42,
+      "hands": 1,
+      "icon": "scarlet_raider_scimitar",
+      "sell": 442,
+      "price": 0
+    },
+    "elder_runesword": {
+      "name": "Épée runique des Anciens",
+      "slot": "weapon",
+      "family": "epee_runique",
+      "tier": "T6",
+      "lvl": 28,
+      "atk": 48,
+      "mp": 48,
+      "hands": 1,
+      "implicit": [
+        [
+          "arcane",
+          10
+        ]
+      ],
+      "icon": "elder_runesword",
+      "sell": 475,
+      "price": 0
+    },
+    "fallen_king_greatsword": {
+      "name": "Espadon du Roi déchu",
+      "slot": "weapon",
+      "family": "espadon",
+      "tier": "T6",
+      "lvl": 29,
+      "atk": 72,
+      "hands": 2,
+      "icon": "fallen_king_greatsword",
+      "sell": 510,
+      "price": 0
+    },
+    "dusk_curved_blade": {
+      "name": "Lame courbe du Crépuscule",
+      "slot": "weapon",
+      "family": "lame_courbe",
+      "tier": "T6",
+      "lvl": 30,
+      "atk": 56,
+      "hands": 2,
+      "icon": "dusk_curved_blade",
+      "sell": 545,
+      "price": 0
+    },
+    "woodcutter_hatchet": {
+      "name": "Hachette de bûcheron",
+      "slot": "weapon",
+      "family": "hache",
+      "tier": "T1",
+      "lvl": 2,
+      "atk": 7,
+      "hands": 1,
+      "icon": "woodcutter_hatchet",
+      "sell": 7,
+      "price": 28
+    },
+    "goblin_axe": {
+      "name": "Hache gobeline",
+      "slot": "weapon",
+      "family": "hache",
+      "tier": "T2",
+      "lvl": 7,
+      "atk": 16,
+      "hands": 1,
+      "icon": "goblin_axe",
+      "sell": 34,
+      "price": 136
+    },
+    "headsman_axe": {
+      "name": "Hache du bourreau",
+      "slot": "weapon",
+      "family": "hache",
+      "tier": "T3",
+      "lvl": 12,
+      "atk": 24,
+      "hands": 1,
+      "icon": "headsman_axe",
+      "sell": 91,
+      "price": 0
+    },
+    "brumenoire_axe": {
+      "name": "Hache de Brumenoire",
+      "slot": "weapon",
+      "family": "hache",
+      "tier": "T4",
+      "lvl": 17,
+      "atk": 33,
+      "hands": 1,
+      "icon": "brumenoire_axe",
+      "sell": 178,
+      "price": 712
+    },
+    "givreval_axe": {
+      "name": "Hache de Givreval",
+      "slot": "weapon",
+      "family": "hache",
+      "tier": "T5",
+      "lvl": 22,
+      "atk": 42,
+      "hands": 1,
+      "icon": "givreval_axe",
+      "sell": 295,
+      "price": 0
+    },
+    "scarlet_raider_axe": {
+      "name": "Hache du Pillard écarlate",
+      "slot": "weapon",
+      "family": "hache",
+      "tier": "T6",
+      "lvl": 27,
+      "atk": 51,
+      "hands": 1,
+      "icon": "scarlet_raider_axe",
+      "sell": 442,
+      "price": 0
+    },
+    "studded_club": {
+      "name": "Gourdin clouté",
+      "slot": "weapon",
+      "family": "masse",
+      "tier": "T1",
+      "lvl": 2,
+      "atk": 7,
+      "hands": 1,
+      "icon": "studded_club",
+      "sell": 7,
+      "price": 28
+    },
+    "militia_mace": {
+      "name": "Masse du milicien",
+      "slot": "weapon",
+      "family": "masse",
+      "tier": "T2",
+      "lvl": 8,
+      "atk": 17,
+      "hands": 1,
+      "icon": "militia_mace",
+      "sell": 43,
+      "price": 172
+    },
+    "chaplain_mace": {
+      "name": "Masse du Chapelain",
+      "slot": "weapon",
+      "family": "masse",
+      "tier": "T3",
+      "lvl": 13,
+      "atk": 25,
+      "hands": 1,
+      "icon": "chaplain_mace",
+      "sell": 106,
+      "price": 0
+    },
+    "sandbronze_mace": {
+      "name": "Masse de bronze des sables",
+      "slot": "weapon",
+      "family": "masse",
+      "tier": "T4",
+      "lvl": 18,
+      "atk": 33,
+      "hands": 1,
+      "icon": "sandbronze_mace",
+      "sell": 199,
+      "price": 796
+    },
+    "glacier_maul": {
+      "name": "Masse du Glacier",
+      "slot": "weapon",
+      "family": "masse",
+      "tier": "T5",
+      "lvl": 23,
+      "atk": 42,
+      "hands": 1,
+      "icon": "glacier_maul",
+      "sell": 322,
+      "price": 0
+    },
+    "fallen_king_mace": {
+      "name": "Masse du Roi déchu",
+      "slot": "weapon",
+      "family": "masse",
+      "tier": "T6",
+      "lvl": 28,
+      "atk": 50,
+      "hands": 1,
+      "icon": "fallen_king_mace",
+      "sell": 475,
+      "price": 0
+    },
+    "hunting_spear": {
+      "name": "Épieu de chasse",
+      "slot": "weapon",
+      "family": "lance",
+      "tier": "T1",
+      "lvl": 3,
+      "atk": 8,
+      "hands": 1,
+      "icon": "hunting_spear",
+      "sell": 10,
+      "price": 40
+    },
+    "forest_spear": {
+      "name": "Lance forestière",
+      "slot": "weapon",
+      "family": "lance",
+      "tier": "T2",
+      "lvl": 8,
+      "atk": 16,
+      "hands": 1,
+      "icon": "forest_spear",
+      "sell": 43,
+      "price": 172
+    },
+    "sepulchral_pike": {
+      "name": "Pique sépulcrale",
+      "slot": "weapon",
+      "family": "lance",
+      "tier": "T3",
+      "lvl": 13,
+      "atk": 24,
+      "hands": 1,
+      "icon": "sepulchral_pike",
+      "sell": 106,
+      "price": 0
+    },
+    "portsalin_trident": {
+      "name": "Trident de Port-Salin",
+      "slot": "weapon",
+      "family": "lance",
+      "tier": "T4",
+      "lvl": 18,
+      "atk": 32,
+      "hands": 1,
+      "icon": "portsalin_trident",
+      "sell": 199,
+      "price": 796
+    },
+    "sentinel_spear": {
+      "name": "Lance de la Sentinelle glacée",
+      "slot": "weapon",
+      "family": "lance",
+      "tier": "T5",
+      "lvl": 23,
+      "atk": 40,
+      "hands": 1,
+      "icon": "sentinel_spear",
+      "sell": 322,
+      "price": 0
+    },
+    "aldmar_spear": {
+      "name": "Lance d'Aldmar",
+      "slot": "weapon",
+      "family": "lance",
+      "tier": "T6",
+      "lvl": 28,
+      "atk": 48,
+      "hands": 1,
+      "icon": "aldmar_spear",
+      "sell": 475,
+      "price": 0
+    },
+    "skinning_knife": {
+      "name": "Couteau à dépecer",
+      "slot": "weapon",
+      "family": "dague",
+      "tier": "T1",
+      "lvl": 1,
+      "atk": 3,
+      "hands": 1,
+      "icon": "skinning_knife",
+      "sell": 6,
+      "price": 24
+    },
+    "goblin_dagger": {
+      "name": "Dague gobeline",
+      "slot": "weapon",
+      "family": "dague",
+      "tier": "T2",
+      "lvl": 6,
+      "atk": 9,
+      "hands": 1,
+      "icon": "goblin_dagger",
+      "sell": 27,
+      "price": 108
+    },
+    "gravedigger_stiletto": {
+      "name": "Stylet du fossoyeur",
+      "slot": "weapon",
+      "family": "dague",
+      "tier": "T3",
+      "lvl": 11,
+      "atk": 14,
+      "hands": 1,
+      "icon": "gravedigger_stiletto",
+      "sell": 78,
+      "price": 0
+    },
+    "scorpion_sting": {
+      "name": "Dard de scorpion",
+      "slot": "weapon",
+      "family": "dague",
+      "tier": "T4",
+      "lvl": 16,
+      "atk": 20,
+      "hands": 1,
+      "implicit": [
+        [
+          "res_poison",
+          8
+        ]
+      ],
+      "icon": "scorpion_sting",
+      "sell": 159,
+      "price": 636
+    },
+    "frost_fang": {
+      "name": "Croc de givre",
+      "slot": "weapon",
+      "family": "dague",
+      "tier": "T5",
+      "lvl": 21,
+      "atk": 26,
+      "hands": 1,
+      "implicit": [
+        [
+          "givre",
+          8
+        ]
+      ],
+      "icon": "frost_fang",
+      "sell": 270,
+      "price": 0
+    },
+    "scarlet_misericorde": {
+      "name": "Miséricorde écarlate",
+      "slot": "weapon",
+      "family": "dague",
+      "tier": "T6",
+      "lvl": 26,
+      "atk": 31,
+      "hands": 1,
+      "implicit": [
+        [
+          "vol_de_vie",
+          3
+        ]
+      ],
+      "icon": "scarlet_misericorde",
+      "sell": 411,
+      "price": 0
+    },
+    "apprentice_staff": {
+      "name": "Bâton d'apprenti",
+      "slot": "weapon",
+      "family": "baton",
+      "tier": "T1",
+      "lvl": 1,
+      "atk": 5,
+      "mp": 9,
+      "hands": 2,
+      "icon": "apprentice_staff",
+      "price": 20,
+      "sell": 5,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "common"
+    },
+    "hazel_staff": {
+      "name": "Bâton de coudrier",
+      "slot": "weapon",
+      "family": "baton",
+      "tier": "T1",
+      "lvl": 4,
+      "atk": 10,
+      "mp": 18,
+      "hands": 2,
+      "icon": "hazel_staff",
+      "sell": 15,
+      "price": 60
+    },
+    "arcane_staff": {
+      "name": "Bâton arcanique",
+      "slot": "weapon",
+      "family": "baton",
+      "tier": "T2",
+      "lvl": 6,
+      "atk": 13,
+      "mp": 20,
+      "hands": 2,
+      "icon": "arcane_staff",
+      "price": 180,
+      "sell": 45,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "uncommon",
+      "legacyAffixes": [
+        [
+          "esprit",
+          10
+        ]
+      ]
+    },
+    "ember_staff": {
+      "name": "Bâton des braises",
+      "slot": "weapon",
+      "family": "baton",
+      "tier": "T3",
+      "lvl": 12,
+      "atk": 26,
+      "mp": 40,
+      "hands": 2,
+      "icon": "ember_staff",
+      "price": 0,
+      "sell": 160,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "epic",
+      "legacyAffixes": [
+        [
+          "esprit",
+          15
+        ],
+        [
+          "feu",
+          5
+        ],
+        [
+          "incantation",
+          4
+        ]
+      ]
+    },
+    "peatbog_staff": {
+      "name": "Bâton de la tourbière",
+      "slot": "weapon",
+      "family": "baton",
+      "tier": "T4",
+      "lvl": 17,
+      "atk": 32,
+      "mp": 57,
+      "hands": 2,
+      "icon": "peatbog_staff",
+      "sell": 178,
+      "price": 712
+    },
+    "frostheart_staff": {
+      "name": "Bâton de Cœur-de-givre",
+      "slot": "weapon",
+      "family": "baton",
+      "tier": "T5",
+      "lvl": 22,
+      "atk": 40,
+      "mp": 72,
+      "hands": 2,
+      "implicit": [
+        [
+          "givre",
+          9
+        ]
+      ],
+      "icon": "frostheart_staff",
+      "sell": 295,
+      "price": 0
+    },
+    "aldmar_elder_staff": {
+      "name": "Bâton des Anciens d'Aldmar",
+      "slot": "weapon",
+      "family": "baton",
+      "tier": "T6",
+      "lvl": 27,
+      "atk": 49,
+      "mp": 87,
+      "hands": 2,
+      "implicit": [
+        [
+          "arcane",
+          10
+        ]
+      ],
+      "icon": "aldmar_elder_staff",
+      "sell": 442,
+      "price": 0
+    },
+    "novice_scepter": {
+      "name": "Sceptre du novice",
+      "slot": "weapon",
+      "family": "sceptre",
+      "tier": "T1",
+      "lvl": 3,
+      "atk": 7,
+      "mp": 8,
+      "hands": 1,
+      "icon": "novice_scepter",
+      "sell": 10,
+      "price": 40
+    },
+    "shaman_scepter": {
+      "name": "Sceptre du chaman",
+      "slot": "weapon",
+      "family": "sceptre",
+      "tier": "T2",
+      "lvl": 8,
+      "atk": 13,
+      "mp": 16,
+      "hands": 1,
+      "implicit": [
+        [
+          "feu",
+          4
+        ]
+      ],
+      "icon": "shaman_scepter",
+      "sell": 43,
+      "price": 172
+    },
+    "funeral_scepter": {
+      "name": "Sceptre funéraire",
+      "slot": "weapon",
+      "family": "sceptre",
+      "tier": "T3",
+      "lvl": 13,
+      "atk": 20,
+      "mp": 24,
+      "hands": 1,
+      "icon": "funeral_scepter",
+      "sell": 106,
+      "price": 0
+    },
+    "mirage_scepter": {
+      "name": "Sceptre du mirage",
+      "slot": "weapon",
+      "family": "sceptre",
+      "tier": "T4",
+      "lvl": 18,
+      "atk": 27,
+      "mp": 32,
+      "hands": 1,
+      "icon": "mirage_scepter",
+      "sell": 199,
+      "price": 796
+    },
+    "aurora_scepter": {
+      "name": "Sceptre de l'aurore",
+      "slot": "weapon",
+      "family": "sceptre",
+      "tier": "T5",
+      "lvl": 23,
+      "atk": 34,
+      "mp": 40,
+      "hands": 1,
+      "icon": "aurora_scepter",
+      "sell": 322,
+      "price": 0
+    },
+    "aldmar_onyx_scepter": {
+      "name": "Sceptre d'onyx d'Aldmar",
+      "slot": "weapon",
+      "family": "sceptre",
+      "tier": "T6",
+      "lvl": 28,
+      "atk": 41,
+      "mp": 48,
+      "hands": 1,
+      "icon": "aldmar_onyx_scepter",
+      "sell": 475,
+      "price": 0
+    },
+    "short_bow": {
+      "name": "Arc court",
+      "slot": "weapon",
+      "family": "arc_court",
+      "tier": "T1",
+      "lvl": 1,
+      "atk": 4,
+      "hands": 2,
+      "icon": "short_bow",
+      "price": 20,
+      "sell": 5,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "common"
+    },
+    "poacher_bow": {
+      "name": "Arc du braconnier",
+      "slot": "weapon",
+      "family": "arc_court",
+      "tier": "T1",
+      "lvl": 4,
+      "atk": 8,
+      "hands": 2,
+      "icon": "poacher_bow",
+      "sell": 15,
+      "price": 60
+    },
+    "whisper_bow": {
+      "name": "Arc des Murmures",
+      "slot": "weapon",
+      "family": "arc_court",
+      "tier": "T2",
+      "lvl": 7,
+      "atk": 13,
+      "hands": 2,
+      "icon": "whisper_bow",
+      "sell": 34,
+      "price": 136
+    },
+    "yew_bow": {
+      "name": "Arc d'if du Cimetière",
+      "slot": "weapon",
+      "family": "arc_court",
+      "tier": "T3",
+      "lvl": 12,
+      "atk": 20,
+      "hands": 2,
+      "icon": "yew_bow",
+      "sell": 91,
+      "price": 0
+    },
+    "horn_bow": {
+      "name": "Arc de corne du désert",
+      "slot": "weapon",
+      "family": "arc_court",
+      "tier": "T4",
+      "lvl": 17,
+      "atk": 27,
+      "hands": 2,
+      "icon": "horn_bow",
+      "sell": 178,
+      "price": 712
+    },
+    "trapper_bow": {
+      "name": "Arc du trappeur",
+      "slot": "weapon",
+      "family": "arc_court",
+      "tier": "T5",
+      "lvl": 22,
+      "atk": 34,
+      "hands": 2,
+      "icon": "trapper_bow",
+      "sell": 295,
+      "price": 0
+    },
+    "scarlet_shortbow": {
+      "name": "Arc court écarlate",
+      "slot": "weapon",
+      "family": "arc_court",
+      "tier": "T6",
+      "lvl": 27,
+      "atk": 42,
+      "hands": 2,
+      "icon": "scarlet_shortbow",
+      "sell": 442,
+      "price": 0
+    },
+    "militia_longbow": {
+      "name": "Arc long du milicien",
+      "slot": "weapon",
+      "family": "arc_long",
+      "tier": "T1",
+      "lvl": 5,
+      "atk": 12,
+      "hands": 2,
+      "icon": "militia_longbow",
+      "sell": 20,
+      "price": 80
+    },
+    "long_bow": {
+      "name": "Arc long",
+      "slot": "weapon",
+      "family": "arc_long",
+      "tier": "T2",
+      "lvl": 6,
+      "atk": 12,
+      "hands": 2,
+      "icon": "long_bow",
+      "crit": 0.03,
+      "price": 180,
+      "sell": 45,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "uncommon",
+      "legacyAffixes": [
+        [
+          "precision",
+          2
+        ]
+      ]
+    },
+    "elven_bow": {
+      "name": "Arc elfique",
+      "slot": "weapon",
+      "family": "arc_long",
+      "tier": "T3",
+      "lvl": 12,
+      "atk": 25,
+      "hands": 2,
+      "icon": "elven_bow",
+      "crit": 0.05,
+      "price": 0,
+      "sell": 160,
+      "legacy": true,
+      "legacyNote": "id v0.1 conservé ; stats v0.1 conservées si supérieures à la formule",
+      "legacyRarity": "epic",
+      "legacyAffixes": [
+        [
+          "precision",
+          3
+        ],
+        [
+          "vitesse_attaque",
+          4
+        ],
+        [
+          "force",
+          4
+        ]
+      ]
+    },
+    "marsh_longbow": {
+      "name": "Arc long des marais",
+      "slot": "weapon",
+      "family": "arc_long",
+      "tier": "T4",
+      "lvl": 18,
+      "atk": 35,
+      "hands": 2,
+      "icon": "marsh_longbow",
+      "sell": 199,
+      "price": 796
+    },
+    "givreval_longbow": {
+      "name": "Arc long de Givreval",
+      "slot": "weapon",
+      "family": "arc_long",
+      "tier": "T5",
+      "lvl": 23,
+      "atk": 44,
+      "hands": 2,
+      "icon": "givreval_longbow",
+      "sell": 322,
+      "price": 0
+    },
+    "aldmar_longbow": {
+      "name": "Arc long d'Aldmar",
+      "slot": "weapon",
+      "family": "arc_long",
+      "tier": "T6",
+      "lvl": 28,
+      "atk": 53,
+      "hands": 2,
+      "icon": "aldmar_longbow",
+      "sell": 475,
+      "price": 0
+    },
+    "guard_crossbow": {
+      "name": "Arbalète de garde",
+      "slot": "weapon",
+      "family": "arbalete",
+      "tier": "T1",
+      "lvl": 4,
+      "atk": 13,
+      "hands": 2,
+      "icon": "guard_crossbow",
+      "sell": 15,
+      "price": 60
+    },
+    "goblin_crossbow": {
+      "name": "Arbalète gobeline",
+      "slot": "weapon",
+      "family": "arbalete",
+      "tier": "T2",
+      "lvl": 9,
+      "atk": 24,
+      "hands": 2,
+      "icon": "goblin_crossbow",
+      "sell": 54,
+      "price": 216
+    },
+    "bone_crossbow": {
+      "name": "Arbalète d'os",
+      "slot": "weapon",
+      "family": "arbalete",
+      "tier": "T3",
+      "lvl": 14,
+      "atk": 36,
+      "hands": 2,
+      "icon": "bone_crossbow",
+      "sell": 123,
+      "price": 0
+    },
+    "portsalin_crossbow": {
+      "name": "Arbalète de Port-Salin",
+      "slot": "weapon",
+      "family": "arbalete",
+      "tier": "T4",
+      "lvl": 19,
+      "atk": 47,
+      "hands": 2,
+      "icon": "portsalin_crossbow",
+      "sell": 222,
+      "price": 888
+    },
+    "northern_crossbow": {
+      "name": "Arbalète à cric du Nord",
+      "slot": "weapon",
+      "family": "arbalete",
+      "tier": "T5",
+      "lvl": 24,
+      "atk": 58,
+      "hands": 2,
+      "icon": "northern_crossbow",
+      "sell": 351,
+      "price": 0
+    },
+    "bloodshed_crossbow": {
+      "name": "Arbalète du Sang versé",
+      "slot": "weapon",
+      "family": "arbalete",
+      "tier": "T6",
+      "lvl": 29,
+      "atk": 69,
+      "hands": 2,
+      "icon": "bloodshed_crossbow",
+      "sell": 510,
+      "price": 0
+    },
+    "banded_shield": {
+      "name": "Bouclier de bois cerclé",
+      "slot": "offhand",
+      "family": "bouclier",
+      "tier": "T1",
+      "lvl": 1,
+      "def": 3,
+      "block": 61,
+      "guardStamina": 0.8,
+      "icon": "banded_shield",
+      "sell": 6,
+      "price": 24
+    },
+    "militia_heater": {
+      "name": "Écu du milicien",
+      "slot": "offhand",
+      "family": "bouclier",
+      "tier": "T2",
+      "lvl": 6,
+      "def": 10,
+      "block": 66,
+      "guardStamina": 0.8,
+      "icon": "militia_heater",
+      "sell": 27,
+      "price": 108
+    },
+    "watcher_shield": {
+      "name": "Bouclier du Veilleur",
+      "slot": "offhand",
+      "family": "bouclier",
+      "tier": "T3",
+      "lvl": 11,
+      "def": 16,
+      "block": 71,
+      "guardStamina": 0.8,
+      "icon": "watcher_shield",
+      "sell": 78,
+      "price": 0
+    },
+    "bronze_buckler": {
+      "name": "Rondache de bronze",
+      "slot": "offhand",
+      "family": "bouclier",
+      "tier": "T4",
+      "lvl": 16,
+      "def": 23,
+      "block": 76,
+      "guardStamina": 0.8,
+      "icon": "bronze_buckler",
+      "sell": 159,
+      "price": 636
+    },
+    "frosted_pavise": {
+      "name": "Pavois givré",
+      "slot": "offhand",
+      "family": "bouclier",
+      "tier": "T5",
+      "lvl": 21,
+      "def": 29,
+      "block": 81,
+      "guardStamina": 0.8,
+      "icon": "frosted_pavise",
+      "sell": 270,
+      "price": 0
+    },
+    "aldmar_aegis": {
+      "name": "Égide d'Aldmar",
+      "slot": "offhand",
+      "family": "bouclier",
+      "tier": "T6",
+      "lvl": 26,
+      "def": 36,
+      "block": 86,
+      "guardStamina": 0.8,
+      "icon": "aldmar_aegis",
+      "sell": 411,
+      "price": 0
+    },
+    "apprentice_notebook": {
+      "name": "Carnet de l'apprenti",
+      "slot": "offhand",
+      "family": "grimoire",
+      "tier": "T1",
+      "lvl": 2,
+      "mp": 14,
+      "atk": 1,
+      "icon": "apprentice_notebook",
+      "sell": 7,
+      "price": 28
+    },
+    "whisper_grimoire": {
+      "name": "Grimoire des Murmures",
+      "slot": "offhand",
+      "family": "grimoire",
+      "tier": "T2",
+      "lvl": 7,
+      "mp": 29,
+      "atk": 2,
+      "icon": "whisper_grimoire",
+      "sell": 34,
+      "price": 136
+    },
+    "lament_grimoire": {
+      "name": "Grimoire des lamentations",
+      "slot": "offhand",
+      "family": "grimoire",
+      "tier": "T3",
+      "lvl": 12,
+      "mp": 44,
+      "atk": 3,
+      "icon": "lament_grimoire",
+      "sell": 91,
+      "price": 0
+    },
+    "peatbog_codex": {
+      "name": "Codex de la tourbière",
+      "slot": "offhand",
+      "family": "grimoire",
+      "tier": "T4",
+      "lvl": 17,
+      "mp": 59,
+      "atk": 5,
+      "icon": "peatbog_codex",
+      "sell": 178,
+      "price": 712
+    },
+    "frozen_grimoire": {
+      "name": "Grimoire gelé",
+      "slot": "offhand",
+      "family": "grimoire",
+      "tier": "T5",
+      "lvl": 22,
+      "mp": 74,
+      "atk": 6,
+      "icon": "frozen_grimoire",
+      "sell": 295,
+      "price": 0
+    },
+    "aldmar_codex": {
+      "name": "Codex d'Aldmar",
+      "slot": "offhand",
+      "family": "grimoire",
+      "tier": "T6",
+      "lvl": 27,
+      "mp": 89,
+      "atk": 7,
+      "icon": "aldmar_codex",
+      "sell": 442,
+      "price": 0
+    },
+    "leather_quiver": {
+      "name": "Carquois de cuir",
+      "slot": "offhand",
+      "family": "carquois",
+      "tier": "T1",
+      "lvl": 1,
+      "atk": 1,
+      "crit": 0.02,
+      "icon": "leather_quiver",
+      "sell": 6,
+      "price": 24
+    },
+    "forest_quiver": {
+      "name": "Carquois forestier",
+      "slot": "offhand",
+      "family": "carquois",
+      "tier": "T2",
+      "lvl": 6,
+      "atk": 2,
+      "crit": 0.02,
+      "icon": "forest_quiver",
+      "sell": 27,
+      "price": 108
+    },
+    "bone_quiver": {
+      "name": "Carquois d'os",
+      "slot": "offhand",
+      "family": "carquois",
+      "tier": "T3",
+      "lvl": 11,
+      "atk": 2,
+      "crit": 0.02,
+      "icon": "bone_quiver",
+      "sell": 78,
+      "price": 0
+    },
+    "chitin_quiver": {
+      "name": "Carquois de chitine",
+      "slot": "offhand",
+      "family": "carquois",
+      "tier": "T4",
+      "lvl": 16,
+      "atk": 3,
+      "crit": 0.02,
+      "icon": "chitin_quiver",
+      "sell": 159,
+      "price": 636
+    },
+    "fur_quiver": {
+      "name": "Carquois de fourrure",
+      "slot": "offhand",
+      "family": "carquois",
+      "tier": "T5",
+      "lvl": 21,
+      "atk": 4,
+      "crit": 0.02,
+      "icon": "fur_quiver",
+      "sell": 270,
+      "price": 0
+    },
+    "scarlet_quiver": {
+      "name": "Carquois écarlate",
+      "slot": "offhand",
+      "family": "carquois",
+      "tier": "T6",
+      "lvl": 26,
+      "atk": 5,
+      "crit": 0.02,
+      "icon": "scarlet_quiver",
+      "sell": 411,
+      "price": 0
+    },
+    "copper_ring": {
+      "name": "Anneau de cuivre",
+      "slot": "ring",
+      "tier": "T1",
+      "lvl": 2,
+      "implicit": [
+        [
+          "vitalite",
+          10
+        ]
+      ],
+      "icon": "copper_ring",
+      "sell": 7,
+      "price": 28
+    },
+    "goblin_ring": {
+      "name": "Anneau gobelin",
+      "slot": "ring",
+      "tier": "T2",
+      "lvl": 7,
+      "implicit": [
+        [
+          "precision",
+          2
+        ]
+      ],
+      "icon": "goblin_ring",
+      "sell": 34,
+      "price": 136
+    },
+    "bone_ring": {
+      "name": "Anneau d'os",
+      "slot": "ring",
+      "tier": "T3",
+      "lvl": 12,
+      "implicit": [
+        [
+          "esprit",
+          23
+        ]
+      ],
+      "icon": "bone_ring",
+      "sell": 91,
+      "price": 0
+    },
+    "sand_ring": {
+      "name": "Anneau de sable",
+      "slot": "ring",
+      "tier": "T4",
+      "lvl": 17,
+      "implicit": [
+        [
+          "force",
+          6
+        ]
+      ],
+      "icon": "sand_ring",
+      "sell": 178,
+      "price": 712
+    },
+    "frost_ring": {
+      "name": "Anneau de givre",
+      "slot": "ring",
+      "tier": "T5",
+      "lvl": 22,
+      "implicit": [
+        [
+          "res_givre",
+          10
+        ]
+      ],
+      "icon": "frost_ring",
+      "sell": 295,
+      "price": 0
+    },
+    "aldmar_ring": {
+      "name": "Anneau d'Aldmar",
+      "slot": "ring",
+      "tier": "T6",
+      "lvl": 27,
+      "implicit": [
+        [
+          "force",
+          9
+        ]
+      ],
+      "icon": "aldmar_ring",
+      "sell": 442,
+      "price": 0
+    },
+    "mist_amulet": {
+      "name": "Amulette de brume",
+      "slot": "amulet",
+      "tier": "T1",
+      "lvl": 3,
+      "implicit": [
+        [
+          "endurance",
+          5
+        ]
+      ],
+      "icon": "mist_amulet",
+      "sell": 10,
+      "price": 40
+    },
+    "fang_necklace": {
+      "name": "Collier de crocs",
+      "slot": "amulet",
+      "tier": "T2",
+      "lvl": 8,
+      "implicit": [
+        [
+          "force",
+          4
+        ]
+      ],
+      "icon": "fang_necklace",
+      "sell": 43,
+      "price": 172
+    },
+    "reliquary": {
+      "name": "Reliquaire",
+      "slot": "amulet",
+      "tier": "T3",
+      "lvl": 13,
+      "implicit": [
+        [
+          "esprit",
+          25
+        ]
+      ],
+      "icon": "reliquary",
+      "sell": 106,
+      "price": 0
+    },
+    "amber_scarab": {
+      "name": "Scarabée d'ambre",
+      "slot": "amulet",
+      "tier": "T4",
+      "lvl": 18,
+      "implicit": [
+        [
+          "souffle",
+          8
+        ]
+      ],
+      "icon": "amber_scarab",
+      "sell": 199,
+      "price": 796
+    },
+    "ice_tear": {
+      "name": "Larme de glace",
+      "slot": "amulet",
+      "tier": "T5",
+      "lvl": 23,
+      "implicit": [
+        [
+          "vitalite",
+          59
+        ]
+      ],
+      "icon": "ice_tear",
+      "sell": 322,
+      "price": 0
+    },
+    "aldmar_seal": {
+      "name": "Sceau d'Aldmar",
+      "slot": "amulet",
+      "tier": "T6",
+      "lvl": 28,
+      "implicit": [
+        [
+          "souffle",
+          10
+        ]
+      ],
+      "icon": "aldmar_seal",
+      "sell": 475,
+      "price": 0
+    },
+    "militia_helm": {
+      "name": "Heaume de la Milice",
+      "slot": "head",
+      "armor": "plaques",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "militia",
+      "def": 3,
+      "craftedSet": "militia",
+      "icon": "militia_helm",
+      "sell": 10,
+      "price": 40
+    },
+    "militia_chest": {
+      "name": "Cuirasse de la Milice",
+      "slot": "chest",
+      "armor": "plaques",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "militia",
+      "def": 6,
+      "craftedSet": "militia",
+      "icon": "militia_chest",
+      "sell": 10,
+      "price": 40
+    },
+    "militia_gloves": {
+      "name": "Gantelets de la Milice",
+      "slot": "hands",
+      "armor": "plaques",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "militia",
+      "def": 3,
+      "craftedSet": "militia",
+      "icon": "militia_gloves",
+      "sell": 10,
+      "price": 40
+    },
+    "militia_boots": {
+      "name": "Solerets de la Milice",
+      "slot": "feet",
+      "armor": "plaques",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "militia",
+      "def": 3,
+      "craftedSet": "militia",
+      "icon": "militia_boots",
+      "sell": 10,
+      "price": 40
+    },
+    "wolf_helm": {
+      "name": "Capuche en peau de loup",
+      "slot": "head",
+      "armor": "cuir",
+      "tier": "T1",
+      "lvl": 4,
+      "line": "wolf",
+      "def": 2,
+      "craftedSet": "wolf",
+      "icon": "wolf_helm",
+      "sell": 15,
+      "price": 60
+    },
+    "wolf_chest": {
+      "name": "Veste en peau de loup",
+      "slot": "chest",
+      "armor": "cuir",
+      "tier": "T1",
+      "lvl": 4,
+      "line": "wolf",
+      "def": 5,
+      "craftedSet": "wolf",
+      "icon": "wolf_chest",
+      "sell": 15,
+      "price": 60
+    },
+    "wolf_gloves": {
+      "name": "Gants en peau de loup",
+      "slot": "hands",
+      "armor": "cuir",
+      "tier": "T1",
+      "lvl": 4,
+      "line": "wolf",
+      "def": 2,
+      "craftedSet": "wolf",
+      "icon": "wolf_gloves",
+      "sell": 15,
+      "price": 60
+    },
+    "wolf_boots": {
+      "name": "Bottes en peau de loup",
+      "slot": "feet",
+      "armor": "cuir",
+      "tier": "T1",
+      "lvl": 4,
+      "line": "wolf",
+      "def": 2,
+      "craftedSet": "wolf",
+      "icon": "wolf_boots",
+      "sell": 15,
+      "price": 60
+    },
+    "mistwatch_helm": {
+      "name": "Capuchon du Guetteur des brumes",
+      "slot": "head",
+      "armor": "tissu",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "mistwatch",
+      "def": 1,
+      "mp": 5,
+      "craftedSet": "mistwatch",
+      "icon": "mistwatch_helm",
+      "sell": 10,
+      "price": 40
+    },
+    "mistwatch_chest": {
+      "name": "Robe du Guetteur des brumes",
+      "slot": "chest",
+      "armor": "tissu",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "mistwatch",
+      "def": 2,
+      "mp": 9,
+      "craftedSet": "mistwatch",
+      "icon": "mistwatch_chest",
+      "sell": 10,
+      "price": 40
+    },
+    "mistwatch_gloves": {
+      "name": "Mitaines du Guetteur des brumes",
+      "slot": "hands",
+      "armor": "tissu",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "mistwatch",
+      "def": 1,
+      "mp": 4,
+      "craftedSet": "mistwatch",
+      "icon": "mistwatch_gloves",
+      "sell": 10,
+      "price": 40
+    },
+    "mistwatch_boots": {
+      "name": "Chausses du Guetteur des brumes",
+      "slot": "feet",
+      "armor": "tissu",
+      "tier": "T1",
+      "lvl": 3,
+      "line": "mistwatch",
+      "def": 1,
+      "mp": 4,
+      "craftedSet": "mistwatch",
+      "icon": "mistwatch_boots",
+      "sell": 10,
+      "price": 40
+    },
+    "scrap_helm": {
+      "name": "Heaume en ferraille gobeline",
+      "slot": "head",
+      "armor": "plaques",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "scrap",
+      "def": 6,
+      "craftedSet": "scrap",
+      "icon": "scrap_helm",
+      "sell": 34,
+      "price": 136
+    },
+    "chainmail": {
+      "name": "Cotte de mailles",
+      "slot": "chest",
+      "armor": "plaques",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "scrap",
+      "def": 10,
+      "craftedSet": "scrap",
+      "icon": "chainmail",
+      "price": 200,
+      "sell": 50,
+      "legacy": true,
+      "legacyRarity": "uncommon",
+      "legacyAffixes": [
+        [
+          "vitalite",
+          15
+        ]
+      ]
+    },
+    "scrap_gloves": {
+      "name": "Gantelets en ferraille gobeline",
+      "slot": "hands",
+      "armor": "plaques",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "scrap",
+      "def": 5,
+      "craftedSet": "scrap",
+      "icon": "scrap_gloves",
+      "sell": 34,
+      "price": 136
+    },
+    "scrap_boots": {
+      "name": "Solerets en ferraille gobeline",
+      "slot": "feet",
+      "armor": "plaques",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "scrap",
+      "def": 6,
+      "craftedSet": "scrap",
+      "icon": "scrap_boots",
+      "sell": 34,
+      "price": 136
+    },
+    "boar_helm": {
+      "name": "Capuche en cuir de sanglier",
+      "slot": "head",
+      "armor": "cuir",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "boar",
+      "def": 4,
+      "craftedSet": "boar",
+      "icon": "boar_helm",
+      "sell": 34,
+      "price": 136
+    },
+    "boar_chest": {
+      "name": "Veste en cuir de sanglier",
+      "slot": "chest",
+      "armor": "cuir",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "boar",
+      "def": 7,
+      "craftedSet": "boar",
+      "icon": "boar_chest",
+      "sell": 34,
+      "price": 136
+    },
+    "boar_gloves": {
+      "name": "Gants en cuir de sanglier",
+      "slot": "hands",
+      "armor": "cuir",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "boar",
+      "def": 3,
+      "craftedSet": "boar",
+      "icon": "boar_gloves",
+      "sell": 34,
+      "price": 136
+    },
+    "boar_boots": {
+      "name": "Bottes en cuir de sanglier",
+      "slot": "feet",
+      "armor": "cuir",
+      "tier": "T2",
+      "lvl": 7,
+      "line": "boar",
+      "def": 3,
+      "craftedSet": "boar",
+      "icon": "boar_boots",
+      "sell": 34,
+      "price": 136
+    },
+    "shaman_helm": {
+      "name": "Capuchon du Chaman",
+      "slot": "head",
+      "armor": "tissu",
+      "tier": "T2",
+      "lvl": 9,
+      "line": "shaman",
+      "def": 3,
+      "mp": 10,
+      "set": "shaman_set",
+      "icon": "shaman_helm",
+      "sell": 54,
+      "price": 0
+    },
+    "shaman_chest": {
+      "name": "Robe du Chaman",
+      "slot": "chest",
+      "armor": "tissu",
+      "tier": "T2",
+      "lvl": 9,
+      "line": "shaman",
+      "def": 5,
+      "mp": 18,
+      "set": "shaman_set",
+      "icon": "shaman_chest",
+      "sell": 54,
+      "price": 0
+    },
+    "shaman_gloves": {
+      "name": "Mitaines du Chaman",
+      "slot": "hands",
+      "armor": "tissu",
+      "tier": "T2",
+      "lvl": 9,
+      "line": "shaman",
+      "def": 2,
+      "mp": 8,
+      "set": "shaman_set",
+      "icon": "shaman_gloves",
+      "sell": 54,
+      "price": 0
+    },
+    "shaman_boots": {
+      "name": "Chausses du Chaman",
+      "slot": "feet",
+      "armor": "tissu",
+      "tier": "T2",
+      "lvl": 9,
+      "line": "shaman",
+      "def": 2,
+      "mp": 9,
+      "set": "shaman_set",
+      "icon": "shaman_boots",
+      "sell": 54,
+      "price": 0
+    },
+    "golem_helm": {
+      "name": "Heaume du Golem ancien",
+      "slot": "head",
+      "armor": "plaques",
+      "tier": "T3",
+      "lvl": 14,
+      "line": "golem",
+      "def": 11,
+      "set": "golem_set",
+      "icon": "golem_helm",
+      "sell": 123,
+      "price": 0
+    },
+    "golem_plate": {
+      "name": "Armure du golem",
+      "slot": "chest",
+      "armor": "plaques",
+      "tier": "T3",
+      "lvl": 14,
+      "line": "golem",
+      "def": 22,
+      "set": "golem_set",
+      "icon": "golem_plate",
+      "hp": 60,
+      "price": 0,
+      "sell": 175,
+      "legacy": true,
+      "legacyRarity": "epic",
+      "legacyAffixes": [
+        [
+          "vitalite",
+          30
+        ],
+        [
+          "garde",
+          4
+        ],
+        [
+          "equilibre",
+          10
+        ]
+      ]
+    },
+    "golem_gloves": {
+      "name": "Gantelets du Golem ancien",
+      "slot": "hands",
+      "armor": "plaques",
+      "tier": "T3",
+      "lvl": 14,
+      "line": "golem",
+      "def": 9,
+      "set": "golem_set",
+      "icon": "golem_gloves",
+      "sell": 123,
+      "price": 0
+    },
+    "golem_boots": {
+      "name": "Solerets du Golem ancien",
+      "slot": "feet",
+      "armor": "plaques",
+      "tier": "T3",
+      "lvl": 14,
+      "line": "golem",
+      "def": 10,
+      "set": "golem_set",
+      "icon": "golem_boots",
+      "sell": 123,
+      "price": 0
+    },
+    "bandit_helm": {
+      "name": "Capuche du Brigand",
+      "slot": "head",
+      "armor": "cuir",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "bandit",
+      "def": 6,
+      "craftedSet": "bandit",
+      "icon": "bandit_helm",
+      "sell": 106,
+      "price": 0
+    },
+    "bandit_chest": {
+      "name": "Veste du Brigand",
+      "slot": "chest",
+      "armor": "cuir",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "bandit",
+      "def": 11,
+      "craftedSet": "bandit",
+      "icon": "bandit_chest",
+      "sell": 106,
+      "price": 0
+    },
+    "bandit_gloves": {
+      "name": "Gants du Brigand",
+      "slot": "hands",
+      "armor": "cuir",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "bandit",
+      "def": 5,
+      "craftedSet": "bandit",
+      "icon": "bandit_gloves",
+      "sell": 106,
+      "price": 0
+    },
+    "bandit_boots": {
+      "name": "Bottes du Brigand",
+      "slot": "feet",
+      "armor": "cuir",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "bandit",
+      "def": 6,
+      "craftedSet": "bandit",
+      "icon": "bandit_boots",
+      "sell": 106,
+      "price": 0
+    },
+    "occultist_helm": {
+      "name": "Capuchon de l'Occultiste",
+      "slot": "head",
+      "armor": "tissu",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "occultist",
+      "def": 4,
+      "mp": 14,
+      "set": "occultist_set",
+      "icon": "occultist_helm",
+      "sell": 106,
+      "price": 0
+    },
+    "occultist_chest": {
+      "name": "Robe de l'Occultiste",
+      "slot": "chest",
+      "armor": "tissu",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "occultist",
+      "def": 7,
+      "mp": 25,
+      "set": "occultist_set",
+      "icon": "occultist_chest",
+      "sell": 106,
+      "price": 0
+    },
+    "occultist_gloves": {
+      "name": "Mitaines de l'Occultiste",
+      "slot": "hands",
+      "armor": "tissu",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "occultist",
+      "def": 3,
+      "mp": 11,
+      "set": "occultist_set",
+      "icon": "occultist_gloves",
+      "sell": 106,
+      "price": 0
+    },
+    "occultist_boots": {
+      "name": "Chausses de l'Occultiste",
+      "slot": "feet",
+      "armor": "tissu",
+      "tier": "T3",
+      "lvl": 13,
+      "line": "occultist",
+      "def": 3,
+      "mp": 12,
+      "set": "occultist_set",
+      "icon": "occultist_boots",
+      "sell": 106,
+      "price": 0
+    },
+    "chitin_helm": {
+      "name": "Heaume en chitine du désert",
+      "slot": "head",
+      "armor": "plaques",
+      "tier": "T4",
+      "lvl": 17,
+      "line": "chitin",
+      "def": 13,
+      "craftedSet": "chitin",
+      "icon": "chitin_helm",
+      "sell": 178,
+      "price": 712
+    },
+    "chitin_chest": {
+      "name": "Cuirasse en chitine du désert",
+      "slot": "chest",
+      "armor": "plaques",
+      "tier": "T4",
+      "lvl": 17,
+      "line": "chitin",
+      "def": 24,
+      "craftedSet": "chitin",
+      "icon": "chitin_chest",
+      "sell": 178,
+      "price": 712
+    },
+    "chitin_gloves": {
+      "name": "Gantelets en chitine du désert",
+      "slot": "hands",
+      "armor": "plaques",
+      "tier": "T4",
+      "lvl": 17,
+      "line": "chitin",
+      "def": 11,
+      "craftedSet": "chitin",
+      "icon": "chitin_gloves",
+      "sell": 178,
+      "price": 712
+    },
+    "chitin_boots": {
+      "name": "Solerets en chitine du désert",
+      "slot": "feet",
+      "armor": "plaques",
+      "tier": "T4",
+      "lvl": 17,
+      "line": "chitin",
+      "def": 12,
+      "craftedSet": "chitin",
+      "icon": "chitin_boots",
+      "sell": 178,
+      "price": 712
+    },
+    "lurker_helm": {
+      "name": "Capuche du Rôdeur des marais",
+      "slot": "head",
+      "armor": "cuir",
+      "tier": "T4",
+      "lvl": 18,
+      "line": "lurker",
+      "def": 8,
+      "craftedSet": "lurker",
+      "icon": "lurker_helm",
+      "sell": 199,
+      "price": 796
+    },
+    "lurker_chest": {
+      "name": "Veste du Rôdeur des marais",
+      "slot": "chest",
+      "armor": "cuir",
+      "tier": "T4",
+      "lvl": 18,
+      "line": "lurker",
+      "def": 15,
+      "craftedSet": "lurker",
+      "icon": "lurker_chest",
+      "sell": 199,
+      "price": 796
+    },
+    "lurker_gloves": {
+      "name": "Gants du Rôdeur des marais",
+      "slot": "hands",
+      "armor": "cuir",
+      "tier": "T4",
+      "lvl": 18,
+      "line": "lurker",
+      "def": 7,
+      "craftedSet": "lurker",
+      "icon": "lurker_gloves",
+      "sell": 199,
+      "price": 796
+    },
+    "lurker_boots": {
+      "name": "Bottes du Rôdeur des marais",
+      "slot": "feet",
+      "armor": "cuir",
+      "tier": "T4",
+      "lvl": 18,
+      "line": "lurker",
+      "def": 8,
+      "craftedSet": "lurker",
+      "icon": "lurker_boots",
+      "sell": 199,
+      "price": 796
+    },
+    "hag_helm": {
+      "name": "Capuchon de la Sorcière des marais",
+      "slot": "head",
+      "armor": "tissu",
+      "tier": "T4",
+      "lvl": 19,
+      "line": "hag",
+      "def": 5,
+      "mp": 19,
+      "set": "hag_set",
+      "icon": "hag_helm",
+      "sell": 222,
+      "price": 0
+    },
+    "hag_chest": {
+      "name": "Robe de la Sorcière des marais",
+      "slot": "chest",
+      "armor": "tissu",
+      "tier": "T4",
+      "lvl": 19,
+      "line": "hag",
+      "def": 9,
+      "mp": 34,
+      "set": "hag_set",
+      "icon": "hag_chest",
+      "sell": 222,
+      "price": 0
+    },
+    "hag_gloves": {
+      "name": "Mitaines de la Sorcière des marais",
+      "slot": "hands",
+      "armor": "tissu",
+      "tier": "T4",
+      "lvl": 19,
+      "line": "hag",
+      "def": 4,
+      "mp": 15,
+      "set": "hag_set",
+      "icon": "hag_gloves",
+      "sell": 222,
+      "price": 0
+    },
+    "hag_boots": {
+      "name": "Chausses de la Sorcière des marais",
+      "slot": "feet",
+      "armor": "tissu",
+      "tier": "T4",
+      "lvl": 19,
+      "line": "hag",
+      "def": 5,
+      "mp": 17,
+      "set": "hag_set",
+      "icon": "hag_boots",
+      "sell": 222,
+      "price": 0
+    },
+    "frost_giant_helm": {
+      "name": "Heaume du Géant de givre",
+      "slot": "head",
+      "armor": "plaques",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "frost_giant",
+      "def": 18,
+      "set": "frost_giant_set",
+      "icon": "frost_giant_helm",
+      "sell": 351,
+      "price": 0
+    },
+    "frost_giant_chest": {
+      "name": "Cuirasse du Géant de givre",
+      "slot": "chest",
+      "armor": "plaques",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "frost_giant",
+      "def": 33,
+      "set": "frost_giant_set",
+      "icon": "frost_giant_chest",
+      "sell": 351,
+      "price": 0
+    },
+    "frost_giant_gloves": {
+      "name": "Gantelets du Géant de givre",
+      "slot": "hands",
+      "armor": "plaques",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "frost_giant",
+      "def": 15,
+      "set": "frost_giant_set",
+      "icon": "frost_giant_gloves",
+      "sell": 351,
+      "price": 0
+    },
+    "frost_giant_boots": {
+      "name": "Solerets du Géant de givre",
+      "slot": "feet",
+      "armor": "plaques",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "frost_giant",
+      "def": 17,
+      "set": "frost_giant_set",
+      "icon": "frost_giant_boots",
+      "sell": 351,
+      "price": 0
+    },
+    "icewolf_helm": {
+      "name": "Capuche du Loup de givre",
+      "slot": "head",
+      "armor": "cuir",
+      "tier": "T5",
+      "lvl": 23,
+      "line": "icewolf",
+      "def": 11,
+      "craftedSet": "icewolf",
+      "icon": "icewolf_helm",
+      "sell": 322,
+      "price": 0
+    },
+    "icewolf_chest": {
+      "name": "Veste du Loup de givre",
+      "slot": "chest",
+      "armor": "cuir",
+      "tier": "T5",
+      "lvl": 23,
+      "line": "icewolf",
+      "def": 19,
+      "craftedSet": "icewolf",
+      "icon": "icewolf_chest",
+      "sell": 322,
+      "price": 0
+    },
+    "icewolf_gloves": {
+      "name": "Gants du Loup de givre",
+      "slot": "hands",
+      "armor": "cuir",
+      "tier": "T5",
+      "lvl": 23,
+      "line": "icewolf",
+      "def": 9,
+      "craftedSet": "icewolf",
+      "icon": "icewolf_gloves",
+      "sell": 322,
+      "price": 0
+    },
+    "icewolf_boots": {
+      "name": "Bottes du Loup de givre",
+      "slot": "feet",
+      "armor": "cuir",
+      "tier": "T5",
+      "lvl": 23,
+      "line": "icewolf",
+      "def": 10,
+      "craftedSet": "icewolf",
+      "icon": "icewolf_boots",
+      "sell": 322,
+      "price": 0
+    },
+    "fleece_helm": {
+      "name": "Capuchon en toison de yéti",
+      "slot": "head",
+      "armor": "tissu",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "fleece",
+      "def": 6,
+      "mp": 23,
+      "craftedSet": "fleece",
+      "icon": "fleece_helm",
+      "sell": 351,
+      "price": 0
+    },
+    "fleece_chest": {
+      "name": "Robe en toison de yéti",
+      "slot": "chest",
+      "armor": "tissu",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "fleece",
+      "def": 12,
+      "mp": 42,
+      "craftedSet": "fleece",
+      "icon": "fleece_chest",
+      "sell": 351,
+      "price": 0
+    },
+    "fleece_gloves": {
+      "name": "Mitaines en toison de yéti",
+      "slot": "hands",
+      "armor": "tissu",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "fleece",
+      "def": 5,
+      "mp": 19,
+      "craftedSet": "fleece",
+      "icon": "fleece_gloves",
+      "sell": 351,
+      "price": 0
+    },
+    "fleece_boots": {
+      "name": "Chausses en toison de yéti",
+      "slot": "feet",
+      "armor": "tissu",
+      "tier": "T5",
+      "lvl": 24,
+      "line": "fleece",
+      "def": 6,
+      "mp": 21,
+      "craftedSet": "fleece",
+      "icon": "fleece_boots",
+      "sell": 351,
+      "price": 0
+    },
+    "bloodshed_helm": {
+      "name": "Heaume du Sang versé",
+      "slot": "head",
+      "armor": "plaques",
+      "tier": "T6",
+      "lvl": 28,
+      "line": "bloodshed",
+      "def": 21,
+      "set": "bloodshed_set",
+      "icon": "bloodshed_helm",
+      "sell": 475,
+      "price": 0
+    },
+    "bloodshed_chest": {
+      "name": "Cuirasse du Sang versé",
+      "slot": "chest",
+      "armor": "plaques",
+      "tier": "T6",
+      "lvl": 28,
+      "line": "bloodshed",
+      "def": 38,
+      "set": "bloodshed_set",
+      "icon": "bloodshed_chest",
+      "sell": 475,
+      "price": 0
+    },
+    "bloodshed_gloves": {
+      "name": "Gantelets du Sang versé",
+      "slot": "hands",
+      "armor": "plaques",
+      "tier": "T6",
+      "lvl": 28,
+      "line": "bloodshed",
+      "def": 17,
+      "set": "bloodshed_set",
+      "icon": "bloodshed_gloves",
+      "sell": 475,
+      "price": 0
+    },
+    "bloodshed_boots": {
+      "name": "Solerets du Sang versé",
+      "slot": "feet",
+      "armor": "plaques",
+      "tier": "T6",
+      "lvl": 28,
+      "line": "bloodshed",
+      "def": 19,
+      "set": "bloodshed_set",
+      "icon": "bloodshed_boots",
+      "sell": 475,
+      "price": 0
+    },
+    "scarlet_stalker_helm": {
+      "name": "Capuche du Traqueur écarlate",
+      "slot": "head",
+      "armor": "cuir",
+      "tier": "T6",
+      "lvl": 27,
+      "line": "scarlet_stalker",
+      "def": 12,
+      "set": "scarlet_set",
+      "icon": "scarlet_stalker_helm",
+      "sell": 442,
+      "price": 0
+    },
+    "scarlet_stalker_chest": {
+      "name": "Veste du Traqueur écarlate",
+      "slot": "chest",
+      "armor": "cuir",
+      "tier": "T6",
+      "lvl": 27,
+      "line": "scarlet_stalker",
+      "def": 22,
+      "set": "scarlet_set",
+      "icon": "scarlet_stalker_chest",
+      "sell": 442,
+      "price": 0
+    },
+    "scarlet_stalker_gloves": {
+      "name": "Gants du Traqueur écarlate",
+      "slot": "hands",
+      "armor": "cuir",
+      "tier": "T6",
+      "lvl": 27,
+      "line": "scarlet_stalker",
+      "def": 10,
+      "set": "scarlet_set",
+      "icon": "scarlet_stalker_gloves",
+      "sell": 442,
+      "price": 0
+    },
+    "scarlet_stalker_boots": {
+      "name": "Bottes du Traqueur écarlate",
+      "slot": "feet",
+      "armor": "cuir",
+      "tier": "T6",
+      "lvl": 27,
+      "line": "scarlet_stalker",
+      "def": 11,
+      "set": "scarlet_set",
+      "icon": "scarlet_stalker_boots",
+      "sell": 442,
+      "price": 0
+    },
+    "lich_helm": {
+      "name": "Capuchon du Roi-Liche",
+      "slot": "head",
+      "armor": "tissu",
+      "tier": "T6",
+      "lvl": 29,
+      "line": "lich",
+      "def": 8,
+      "mp": 28,
+      "set": "lich_set",
+      "icon": "lich_helm",
+      "sell": 510,
+      "price": 0
+    },
+    "lich_chest": {
+      "name": "Robe du Roi-Liche",
+      "slot": "chest",
+      "armor": "tissu",
+      "tier": "T6",
+      "lvl": 29,
+      "line": "lich",
+      "def": 14,
+      "mp": 50,
+      "set": "lich_set",
+      "icon": "lich_chest",
+      "sell": 510,
+      "price": 0
+    },
+    "lich_gloves": {
+      "name": "Mitaines du Roi-Liche",
+      "slot": "hands",
+      "armor": "tissu",
+      "tier": "T6",
+      "lvl": 29,
+      "line": "lich",
+      "def": 6,
+      "mp": 23,
+      "set": "lich_set",
+      "icon": "lich_gloves",
+      "sell": 510,
+      "price": 0
+    },
+    "lich_boots": {
+      "name": "Chausses du Roi-Liche",
+      "slot": "feet",
+      "armor": "tissu",
+      "tier": "T6",
+      "lvl": 29,
+      "line": "lich",
+      "def": 7,
+      "mp": 25,
+      "set": "lich_set",
+      "icon": "lich_boots",
+      "sell": 510,
+      "price": 0
+    },
+    "leather_tunic": {
+      "name": "Tunique de cuir",
+      "slot": "chest",
+      "armor": "cuir",
+      "tier": "T1",
+      "lvl": 1,
+      "def": 3,
+      "price": 20,
+      "sell": 5,
+      "icon": "leather_tunic",
+      "legacy": true,
+      "legacyRarity": "common",
+      "line": null,
+      "legacyNote": "tunique de départ ; hors série"
+    },
+    "mage_robe": {
+      "name": "Robe de mage",
+      "slot": "chest",
+      "armor": "tissu",
+      "tier": "T1",
+      "lvl": 5,
+      "def": 6,
+      "mp": 40,
+      "price": 150,
+      "sell": 38,
+      "icon": "mage_robe",
+      "legacy": true,
+      "legacyRarity": "uncommon",
+      "line": null,
+      "legacyNote": "ancienne robe réservée au mage ; désormais pour tous ; hors série",
+      "legacyAffixes": [
+        [
+          "esprit",
+          12
+        ]
+      ]
+    }
+  },
+  "uniques": {
+    "fendroc": {
+      "name": "Fendroc, lame du Golem",
+      "family": "espadon",
+      "lvl": 14,
+      "boss": "golem",
+      "chance": 0.12,
+      "affixes": [
+        [
+          "force",
+          6
+        ],
+        [
+          "vitalite",
+          42
+        ],
+        [
+          "equilibre",
+          15
+        ]
+      ],
+      "effect": "Les attaques chargées libèrent une onde de choc au sol (rayon 3 m, 60 % des dégâts, déséquilibre ×2).",
+      "model": "sword_fendroc",
+      "slot": "weapon",
+      "tier": "T3",
+      "rarity": "legendary",
+      "icon": "fendroc",
+      "atk": 44,
+      "hands": 2,
+      "sell": 2452,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "hag_thorn": {
+      "name": "Épine de la Sorcière",
+      "family": "rapiere",
+      "lvl": 19,
+      "boss": "swamp_hag",
+      "chance": 0.12,
+      "affixes": [
+        [
+          "precision",
+          4
+        ],
+        [
+          "vitesse_attaque",
+          6
+        ],
+        [
+          "res_poison",
+          10
+        ]
+      ],
+      "effect": "Les coups critiques empoisonnent : 40 % des dégâts du coup en 4 s, cumulable 3 fois.",
+      "model": "sword_hag_thorn",
+      "slot": "weapon",
+      "tier": "T4",
+      "rarity": "legendary",
+      "icon": "hag_thorn",
+      "atk": 34,
+      "hands": 1,
+      "sell": 4432,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "wyrm_fang": {
+      "name": "Croc du Ver des sables",
+      "family": "cimeterre",
+      "lvl": 20,
+      "boss": "sand_wyrm",
+      "chance": 0.12,
+      "affixes": [
+        [
+          "force",
+          8
+        ],
+        [
+          "souffle",
+          9
+        ],
+        [
+          "feu",
+          9
+        ]
+      ],
+      "effect": "Après une esquive parfaite (roulade à travers une attaque), le prochain coup inflige +60 % de dégâts et rend 15 d’endurance.",
+      "model": "sword_wyrm_fang",
+      "slot": "weapon",
+      "tier": "T4",
+      "rarity": "legendary",
+      "icon": "wyrm_fang",
+      "atk": 38,
+      "hands": 1,
+      "sell": 4900,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "mountain_breaker": {
+      "name": "Brise-Montagne",
+      "family": "epee_batarde",
+      "lvl": 24,
+      "boss": "frost_giant",
+      "chance": 0.12,
+      "affixes": [
+        [
+          "garde",
+          8
+        ],
+        [
+          "vitalite",
+          68
+        ],
+        [
+          "givre",
+          10
+        ]
+      ],
+      "effect": "Parade parfaite (Garde au dernier instant) : renvoie 100 % des dégâts parés et fait tituber l’attaquant.",
+      "model": "sword_mountain_breaker",
+      "slot": "weapon",
+      "tier": "T5",
+      "rarity": "legendary",
+      "icon": "mountain_breaker",
+      "atk": 57,
+      "hands": 1,
+      "sell": 7012,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "aldmar_runeblade": {
+      "name": "Lame runique d'Aldmar",
+      "family": "epee_runique",
+      "lvl": 29,
+      "boss": "lich",
+      "chance": 0.12,
+      "affixes": [
+        [
+          "force",
+          11
+        ],
+        [
+          "esprit",
+          54
+        ],
+        [
+          "givre",
+          13
+        ]
+      ],
+      "effect": "Les coups critiques gèlent la cible 1 s (boss et joueurs : ralentis de 40 % pendant 2 s). 8 s de recharge par cible.",
+      "model": "sword_aldmar_runeblade",
+      "slot": "weapon",
+      "tier": "T6",
+      "rarity": "legendary",
+      "icon": "aldmar_runeblade",
+      "atk": 59,
+      "mp": 60,
+      "hands": 1,
+      "sell": 10192,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "thirst": {
+      "name": "Soif-de-Sang",
+      "family": "lame_courbe",
+      "lvl": 30,
+      "boss": "scarlet_champion",
+      "chance": 0.1,
+      "affixes": [
+        [
+          "force",
+          11
+        ],
+        [
+          "precision",
+          5
+        ],
+        [
+          "vol_de_vie",
+          4
+        ]
+      ],
+      "effect": "Vol de vie doublé ; chaque ennemi tué rend 8 % des PV et 20 d’endurance. En zone rouge seulement : +10 % de dégâts.",
+      "model": "sword_thirst",
+      "slot": "weapon",
+      "tier": "T6",
+      "rarity": "legendary",
+      "icon": "thirst",
+      "atk": 67,
+      "hands": 2,
+      "sell": 10900,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "golem_rampart": {
+      "name": "Rempart du Golem",
+      "family": "bouclier",
+      "lvl": 14,
+      "boss": "golem",
+      "chance": 0.1,
+      "affixes": [
+        [
+          "garde",
+          6
+        ],
+        [
+          "vitalite",
+          42
+        ],
+        [
+          "equilibre",
+          15
+        ]
+      ],
+      "effect": "Blocage 100 % ; bloquer un coup lourd (télégraphié) ne coûte pas d’endurance une fois toutes les 10 s.",
+      "model": "shield_golem_rampart",
+      "slot": "offhand",
+      "tier": "T3",
+      "rarity": "legendary",
+      "icon": "golem_rampart",
+      "def": 24,
+      "block": 100,
+      "sell": 2452,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "hag_grimoire": {
+      "name": "Grimoire de la Vase",
+      "family": "grimoire",
+      "lvl": 19,
+      "boss": "swamp_hag",
+      "chance": 0.1,
+      "affixes": [
+        [
+          "esprit",
+          38
+        ],
+        [
+          "incantation",
+          6
+        ],
+        [
+          "arcane",
+          9
+        ]
+      ],
+      "effect": "Vos sorts de zone laissent une flaque de vase 4 s (ralentit de 30 %, dégâts arcaniques par seconde).",
+      "model": "offhand_hag_grimoire",
+      "slot": "offhand",
+      "tier": "T4",
+      "rarity": "legendary",
+      "icon": "hag_grimoire",
+      "mp": 78,
+      "atk": 6,
+      "sell": 4432,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "winter_bolt": {
+      "name": "Carreau-d'Hiver",
+      "family": "arbalete",
+      "lvl": 24,
+      "boss": "frost_giant",
+      "chance": 0.1,
+      "affixes": [
+        [
+          "precision",
+          4
+        ],
+        [
+          "givre",
+          10
+        ],
+        [
+          "equilibre",
+          19
+        ]
+      ],
+      "effect": "Chaque 3ᵉ carreau traverse les ennemis et les ralentit de 30 % pendant 2 s.",
+      "model": "crossbow_winter_bolt",
+      "slot": "weapon",
+      "tier": "T5",
+      "rarity": "legendary",
+      "icon": "winter_bolt",
+      "atk": 70,
+      "hands": 2,
+      "sell": 7012,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    },
+    "lich_staff": {
+      "name": "Bâton du Roi-Liche",
+      "family": "baton",
+      "lvl": 29,
+      "boss": "lich",
+      "chance": 0.1,
+      "affixes": [
+        [
+          "esprit",
+          54
+        ],
+        [
+          "incantation",
+          8
+        ],
+        [
+          "arcane",
+          13
+        ]
+      ],
+      "effect": "Tuer un ennemi avec un sort relève un feu follet allié 10 s (attaque les ennemis proches, 30 % de votre attaque).",
+      "model": "staff_lich",
+      "slot": "weapon",
+      "tier": "T6",
+      "rarity": "legendary",
+      "icon": "lich_staff",
+      "atk": 62,
+      "mp": 112,
+      "hands": 2,
+      "sell": 10192,
+      "pity": "+3 % de chance par victoire sans légendaire sur ce boss (remis à zéro quand il tombe) — affiché dans le journal de boss"
+    }
+  },
+  "sets": {
+    "shaman_set": {
+      "name": "Parures du Chaman",
+      "line": "shaman",
+      "tier": "T2",
+      "source": "drop",
+      "rarity": "epic",
+      "affixes": [
+        "esprit",
+        "feu",
+        "incantation"
+      ],
+      "bonus": {
+        "2": "+10 % de mana max.",
+        "4": "Braises sacrées : vos sorts de feu ont 15 % de chances de ne rien coûter."
+      },
+      "pieces": {
+        "head": "shaman_helm",
+        "chest": "shaman_chest",
+        "hands": "shaman_gloves",
+        "feet": "shaman_boots"
+      },
+      "lvl": 9,
+      "armor": "tissu",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    },
+    "golem_set": {
+      "name": "Harnois du Golem ancien",
+      "line": "golem",
+      "tier": "T3",
+      "source": "boss",
+      "rarity": "epic",
+      "affixes": [
+        "vitalite",
+        "garde",
+        "equilibre"
+      ],
+      "bonus": {
+        "2": "+15 % de dégâts de déséquilibre.",
+        "4": "Peau de pierre : la Garde coûte 30 % d’endurance en moins et protège aussi des coups par l’arrière."
+      },
+      "pieces": {
+        "head": "golem_helm",
+        "chest": "golem_plate",
+        "hands": "golem_gloves",
+        "feet": "golem_boots"
+      },
+      "lvl": 14,
+      "armor": "plaques",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    },
+    "occultist_set": {
+      "name": "Linceul de l'Occultiste",
+      "line": "occultist",
+      "tier": "T3",
+      "source": "drop",
+      "rarity": "epic",
+      "affixes": [
+        "esprit",
+        "incantation",
+        "res_arcane"
+      ],
+      "bonus": {
+        "2": "+8 % de vitesse d’incantation.",
+        "4": "Moisson d’âmes : chaque ennemi tué rend 5 % de votre mana."
+      },
+      "pieces": {
+        "head": "occultist_helm",
+        "chest": "occultist_chest",
+        "hands": "occultist_gloves",
+        "feet": "occultist_boots"
+      },
+      "lvl": 13,
+      "armor": "tissu",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    },
+    "hag_set": {
+      "name": "Voiles de la Sorcière",
+      "line": "hag",
+      "tier": "T4",
+      "source": "boss",
+      "rarity": "epic",
+      "affixes": [
+        "esprit",
+        "arcane",
+        "res_poison"
+      ],
+      "bonus": {
+        "2": "+10 % de résistance aux arcanes.",
+        "4": "Maléfice : vos sorts affaiblissent la cible (−10 % de dégâts infligés pendant 5 s)."
+      },
+      "pieces": {
+        "head": "hag_helm",
+        "chest": "hag_chest",
+        "hands": "hag_gloves",
+        "feet": "hag_boots"
+      },
+      "lvl": 19,
+      "armor": "tissu",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    },
+    "frost_giant_set": {
+      "name": "Harnois du Géant de givre",
+      "line": "frost_giant",
+      "tier": "T5",
+      "source": "boss",
+      "rarity": "epic",
+      "affixes": [
+        "vitalite",
+        "garde",
+        "res_givre"
+      ],
+      "bonus": {
+        "2": "+10 % de PV max.",
+        "4": "Parade glaciale : une parade parfaite libère une onde de givre (4 m, ralentit de 40 % pendant 2 s)."
+      },
+      "pieces": {
+        "head": "frost_giant_helm",
+        "chest": "frost_giant_chest",
+        "hands": "frost_giant_gloves",
+        "feet": "frost_giant_boots"
+      },
+      "lvl": 24,
+      "armor": "plaques",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    },
+    "bloodshed_set": {
+      "name": "Harnois du Sang versé",
+      "line": "bloodshed",
+      "tier": "T6",
+      "source": "redzone",
+      "rarity": "epic",
+      "affixes": [
+        "vitalite",
+        "force",
+        "vol_de_vie"
+      ],
+      "bonus": {
+        "2": "+3 % de vol de vie.",
+        "4": "Rage du sang : sous 30 % de PV, +20 % de dégâts et +30 % de régénération d’endurance."
+      },
+      "pieces": {
+        "head": "bloodshed_helm",
+        "chest": "bloodshed_chest",
+        "hands": "bloodshed_gloves",
+        "feet": "bloodshed_boots"
+      },
+      "lvl": 28,
+      "armor": "plaques",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    },
+    "scarlet_set": {
+      "name": "Cuir du Traqueur écarlate",
+      "line": "scarlet_stalker",
+      "tier": "T6",
+      "source": "redzone",
+      "rarity": "epic",
+      "affixes": [
+        "precision",
+        "souffle",
+        "celerite"
+      ],
+      "bonus": {
+        "2": "Roulade : −15 % d’endurance.",
+        "4": "Contre mortel : après une esquive parfaite, votre prochain coup (dans les 2 s) est un critique assuré."
+      },
+      "pieces": {
+        "head": "scarlet_stalker_helm",
+        "chest": "scarlet_stalker_chest",
+        "hands": "scarlet_stalker_gloves",
+        "feet": "scarlet_stalker_boots"
+      },
+      "lvl": 27,
+      "armor": "cuir",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    },
+    "lich_set": {
+      "name": "Robe du Roi-Liche",
+      "line": "lich",
+      "tier": "T6",
+      "source": "boss",
+      "rarity": "epic",
+      "affixes": [
+        "esprit",
+        "incantation",
+        "res_givre"
+      ],
+      "bonus": {
+        "2": "+15 % de mana max.",
+        "4": "Phylactère : une fois toutes les 120 s, un coup mortel vous laisse à 1 PV avec 2 s d’invulnérabilité."
+      },
+      "pieces": {
+        "head": "lich_helm",
+        "chest": "lich_chest",
+        "hands": "lich_gloves",
+        "feet": "lich_boots"
+      },
+      "lvl": 29,
+      "armor": "tissu",
+      "affixRule": "Épique : 3 affixes fixes (valeur médiane du niveau d’objet)."
+    }
+  },
+  "lines": {
+    "militia": {
+      "name": "de la Milice",
+      "type": "plaques",
+      "tier": "T1",
+      "lvl": 3,
+      "source": "artisanat (Forge) · marchand · drop",
+      "set": null,
+      "craftedSet": "militia",
+      "pieces": {
+        "head": "militia_helm",
+        "chest": "militia_chest",
+        "hands": "militia_gloves",
+        "feet": "militia_boots"
+      }
+    },
+    "wolf": {
+      "name": "en peau de loup",
+      "type": "cuir",
+      "tier": "T1",
+      "lvl": 4,
+      "source": "artisanat (Couture, fourrures de loup) · drop",
+      "set": null,
+      "craftedSet": "wolf",
+      "pieces": {
+        "head": "wolf_helm",
+        "chest": "wolf_chest",
+        "hands": "wolf_gloves",
+        "feet": "wolf_boots"
+      }
+    },
+    "mistwatch": {
+      "name": "du Guetteur des brumes",
+      "type": "tissu",
+      "tier": "T1",
+      "lvl": 3,
+      "source": "artisanat (Couture) · marchand · drop",
+      "set": null,
+      "craftedSet": "mistwatch",
+      "pieces": {
+        "head": "mistwatch_helm",
+        "chest": "mistwatch_chest",
+        "hands": "mistwatch_gloves",
+        "feet": "mistwatch_boots"
+      }
+    },
+    "scrap": {
+      "name": "en ferraille gobeline",
+      "type": "plaques",
+      "tier": "T2",
+      "lvl": 7,
+      "source": "artisanat (Forge) · drop",
+      "set": null,
+      "craftedSet": "scrap",
+      "pieces": {
+        "head": "scrap_helm",
+        "chest": "chainmail",
+        "hands": "scrap_gloves",
+        "feet": "scrap_boots"
+      }
+    },
+    "boar": {
+      "name": "en cuir de sanglier",
+      "type": "cuir",
+      "tier": "T2",
+      "lvl": 7,
+      "source": "artisanat (Couture) · drop",
+      "set": null,
+      "craftedSet": "boar",
+      "pieces": {
+        "head": "boar_helm",
+        "chest": "boar_chest",
+        "hands": "boar_gloves",
+        "feet": "boar_boots"
+      }
+    },
+    "shaman": {
+      "name": "du Chaman",
+      "type": "tissu",
+      "tier": "T2",
+      "lvl": 9,
+      "source": "drop (chaman gobelin)",
+      "set": "shaman_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "shaman_helm",
+        "chest": "shaman_chest",
+        "hands": "shaman_gloves",
+        "feet": "shaman_boots"
+      }
+    },
+    "golem": {
+      "name": "du Golem ancien",
+      "type": "plaques",
+      "tier": "T3",
+      "lvl": 14,
+      "source": "boss (Golem) · pièces manquantes par artisanat (cœurs de golem)",
+      "set": "golem_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "golem_helm",
+        "chest": "golem_plate",
+        "hands": "golem_gloves",
+        "feet": "golem_boots"
+      }
+    },
+    "bandit": {
+      "name": "du Brigand",
+      "type": "cuir",
+      "tier": "T3",
+      "lvl": 13,
+      "source": "artisanat (Couture) · drop (bandits)",
+      "set": null,
+      "craftedSet": "bandit",
+      "pieces": {
+        "head": "bandit_helm",
+        "chest": "bandit_chest",
+        "hands": "bandit_gloves",
+        "feet": "bandit_boots"
+      }
+    },
+    "occultist": {
+      "name": "de l'Occultiste",
+      "type": "tissu",
+      "tier": "T3",
+      "lvl": 13,
+      "source": "drop (squelette occultiste)",
+      "set": "occultist_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "occultist_helm",
+        "chest": "occultist_chest",
+        "hands": "occultist_gloves",
+        "feet": "occultist_boots"
+      }
+    },
+    "chitin": {
+      "name": "en chitine du désert",
+      "type": "plaques",
+      "tier": "T4",
+      "lvl": 17,
+      "source": "artisanat (Forge, chitine de scorpion) · drop",
+      "set": null,
+      "craftedSet": "chitin",
+      "pieces": {
+        "head": "chitin_helm",
+        "chest": "chitin_chest",
+        "hands": "chitin_gloves",
+        "feet": "chitin_boots"
+      }
+    },
+    "lurker": {
+      "name": "du Rôdeur des marais",
+      "type": "cuir",
+      "tier": "T4",
+      "lvl": 18,
+      "source": "artisanat (Couture) · drop",
+      "set": null,
+      "craftedSet": "lurker",
+      "pieces": {
+        "head": "lurker_helm",
+        "chest": "lurker_chest",
+        "hands": "lurker_gloves",
+        "feet": "lurker_boots"
+      }
+    },
+    "hag": {
+      "name": "de la Sorcière des marais",
+      "type": "tissu",
+      "tier": "T4",
+      "lvl": 19,
+      "source": "boss (Sorcière des marais)",
+      "set": "hag_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "hag_helm",
+        "chest": "hag_chest",
+        "hands": "hag_gloves",
+        "feet": "hag_boots"
+      }
+    },
+    "frost_giant": {
+      "name": "du Géant de givre",
+      "type": "plaques",
+      "tier": "T5",
+      "lvl": 24,
+      "source": "boss (Géant de givre) · donjon Grotte gelée (v0.4)",
+      "set": "frost_giant_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "frost_giant_helm",
+        "chest": "frost_giant_chest",
+        "hands": "frost_giant_gloves",
+        "feet": "frost_giant_boots"
+      }
+    },
+    "icewolf": {
+      "name": "du Loup de givre",
+      "type": "cuir",
+      "tier": "T5",
+      "lvl": 23,
+      "source": "artisanat (Couture, fourrures de givre) · drop",
+      "set": null,
+      "craftedSet": "icewolf",
+      "pieces": {
+        "head": "icewolf_helm",
+        "chest": "icewolf_chest",
+        "hands": "icewolf_gloves",
+        "feet": "icewolf_boots"
+      }
+    },
+    "fleece": {
+      "name": "en toison de yéti",
+      "type": "tissu",
+      "tier": "T5",
+      "lvl": 24,
+      "source": "artisanat (Couture, toison de yéti) · drop",
+      "set": null,
+      "craftedSet": "fleece",
+      "pieces": {
+        "head": "fleece_helm",
+        "chest": "fleece_chest",
+        "hands": "fleece_gloves",
+        "feet": "fleece_boots"
+      }
+    },
+    "bloodshed": {
+      "name": "du Sang versé",
+      "type": "plaques",
+      "tier": "T6",
+      "lvl": 28,
+      "source": "zones rouges (Marques écarlates, élites)",
+      "set": "bloodshed_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "bloodshed_helm",
+        "chest": "bloodshed_chest",
+        "hands": "bloodshed_gloves",
+        "feet": "bloodshed_boots"
+      }
+    },
+    "scarlet_stalker": {
+      "name": "du Traqueur écarlate",
+      "type": "cuir",
+      "tier": "T6",
+      "lvl": 27,
+      "source": "zones rouges (Marques écarlates, élites)",
+      "set": "scarlet_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "scarlet_stalker_helm",
+        "chest": "scarlet_stalker_chest",
+        "hands": "scarlet_stalker_gloves",
+        "feet": "scarlet_stalker_boots"
+      }
+    },
+    "lich": {
+      "name": "du Roi-Liche",
+      "type": "tissu",
+      "tier": "T6",
+      "lvl": 29,
+      "source": "boss (Liche) · donjon Crypte d'Aldmar (v0.4)",
+      "set": "lich_set",
+      "craftedSet": null,
+      "pieces": {
+        "head": "lich_helm",
+        "chest": "lich_chest",
+        "hands": "lich_gloves",
+        "feet": "lich_boots"
+      }
+    }
+  },
+  "affixes": {
+    "force": {
+      "name": "Force",
+      "stat": "atk",
+      "fmt": "+{v} attaque",
+      "range": {
+        "1": [
+          1,
+          2
+        ],
+        "30": [
+          8,
+          12
+        ]
+      },
+      "slots": [
+        "weapon",
+        "offhand",
+        "hands",
+        "ring",
+        "amulet"
+      ],
+      "w": 10
+    },
+    "garde": {
+      "name": "Garde",
+      "stat": "def",
+      "fmt": "+{v} défense",
+      "range": {
+        "1": [
+          1,
+          2
+        ],
+        "30": [
+          7,
+          11
+        ]
+      },
+      "slots": [
+        "offhand",
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "ring"
+      ],
+      "w": 10
+    },
+    "vitalite": {
+      "name": "Vitalité",
+      "stat": "hp",
+      "fmt": "+{v} PV",
+      "range": {
+        "1": [
+          6,
+          10
+        ],
+        "30": [
+          60,
+          90
+        ]
+      },
+      "slots": [
+        "offhand",
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "ring",
+        "amulet"
+      ],
+      "w": 10
+    },
+    "esprit": {
+      "name": "Esprit",
+      "stat": "mp",
+      "fmt": "+{v} mana",
+      "range": {
+        "1": [
+          5,
+          8
+        ],
+        "30": [
+          40,
+          60
+        ]
+      },
+      "slots": [
+        "weapon:focalisateur",
+        "offhand",
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "ring",
+        "amulet"
+      ],
+      "w": 8
+    },
+    "endurance": {
+      "name": "Endurance",
+      "stat": "mst",
+      "fmt": "+{v} endurance max",
+      "range": {
+        "1": [
+          3,
+          5
+        ],
+        "30": [
+          10,
+          15
+        ]
+      },
+      "slots": [
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "amulet"
+      ],
+      "w": 7
+    },
+    "souffle": {
+      "name": "Souffle",
+      "stat": "stRegenPct",
+      "pct": true,
+      "fmt": "+{v} % régénération d’endurance",
+      "range": {
+        "1": [
+          3,
+          5
+        ],
+        "30": [
+          8,
+          12
+        ]
+      },
+      "slots": [
+        "chest",
+        "feet",
+        "ring",
+        "amulet"
+      ],
+      "w": 6
+    },
+    "precision": {
+      "name": "Précision",
+      "stat": "crit",
+      "pct": true,
+      "fmt": "+{v} % de chances de critique",
+      "range": {
+        "1": [
+          1,
+          2
+        ],
+        "30": [
+          3,
+          5
+        ]
+      },
+      "slots": [
+        "weapon",
+        "hands",
+        "ring",
+        "amulet",
+        "offhand:carquois"
+      ],
+      "w": 8
+    },
+    "vitesse_attaque": {
+      "name": "Vitesse d'attaque",
+      "stat": "atkSpeedPct",
+      "pct": true,
+      "fmt": "+{v} % de vitesse d’attaque",
+      "range": {
+        "1": [
+          2,
+          3
+        ],
+        "30": [
+          6,
+          8
+        ]
+      },
+      "slots": [
+        "weapon",
+        "hands"
+      ],
+      "w": 6
+    },
+    "incantation": {
+      "name": "Incantation",
+      "stat": "castSpeedPct",
+      "pct": true,
+      "fmt": "+{v} % de vitesse d’incantation",
+      "range": {
+        "1": [
+          2,
+          3
+        ],
+        "30": [
+          6,
+          8
+        ]
+      },
+      "slots": [
+        "weapon:focalisateur",
+        "head",
+        "offhand:grimoire",
+        "amulet"
+      ],
+      "w": 6
+    },
+    "vol_de_vie": {
+      "name": "Vol de vie",
+      "stat": "lifestealPct",
+      "pct": true,
+      "fmt": "{v} % des dégâts infligés rendus en PV",
+      "range": {
+        "1": [
+          1,
+          1
+        ],
+        "30": [
+          2,
+          4
+        ]
+      },
+      "slots": [
+        "weapon",
+        "ring",
+        "amulet"
+      ],
+      "w": 4
+    },
+    "equilibre": {
+      "name": "Équilibre",
+      "stat": "poisePct",
+      "pct": true,
+      "fmt": "+{v} % de dégâts de déséquilibre",
+      "range": {
+        "1": [
+          5,
+          8
+        ],
+        "30": [
+          15,
+          25
+        ]
+      },
+      "slots": [
+        "weapon",
+        "hands",
+        "offhand:bouclier"
+      ],
+      "w": 6
+    },
+    "feu": {
+      "name": "Braise",
+      "stat": "fireDmg",
+      "fmt": "+{v} dégâts de feu par coup",
+      "range": {
+        "1": [
+          1,
+          3
+        ],
+        "30": [
+          8,
+          14
+        ]
+      },
+      "slots": [
+        "weapon",
+        "ring"
+      ],
+      "w": 5,
+      "group": "element"
+    },
+    "givre": {
+      "name": "Givre",
+      "stat": "frostDmg",
+      "fmt": "+{v} dégâts de givre par coup",
+      "range": {
+        "1": [
+          1,
+          3
+        ],
+        "30": [
+          8,
+          14
+        ]
+      },
+      "slots": [
+        "weapon",
+        "ring"
+      ],
+      "w": 5,
+      "group": "element"
+    },
+    "arcane": {
+      "name": "Arcane",
+      "stat": "arcaneDmg",
+      "fmt": "+{v} dégâts arcaniques par coup",
+      "range": {
+        "1": [
+          1,
+          3
+        ],
+        "30": [
+          8,
+          14
+        ]
+      },
+      "slots": [
+        "weapon",
+        "ring"
+      ],
+      "w": 5,
+      "group": "element"
+    },
+    "res_feu": {
+      "name": "Résistance au feu",
+      "stat": "resFire",
+      "pct": true,
+      "fmt": "+{v} % de résistance au feu",
+      "range": {
+        "1": [
+          3,
+          5
+        ],
+        "30": [
+          10,
+          15
+        ]
+      },
+      "slots": [
+        "offhand",
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "ring",
+        "amulet"
+      ],
+      "w": 4,
+      "group": "res"
+    },
+    "res_givre": {
+      "name": "Résistance au givre",
+      "stat": "resFrost",
+      "pct": true,
+      "fmt": "+{v} % de résistance au givre",
+      "range": {
+        "1": [
+          3,
+          5
+        ],
+        "30": [
+          10,
+          15
+        ]
+      },
+      "slots": [
+        "offhand",
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "ring",
+        "amulet"
+      ],
+      "w": 4,
+      "group": "res"
+    },
+    "res_arcane": {
+      "name": "Résistance arcanique",
+      "stat": "resArcane",
+      "pct": true,
+      "fmt": "+{v} % de résistance aux arcanes",
+      "range": {
+        "1": [
+          3,
+          5
+        ],
+        "30": [
+          10,
+          15
+        ]
+      },
+      "slots": [
+        "offhand",
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "ring",
+        "amulet"
+      ],
+      "w": 4,
+      "group": "res"
+    },
+    "res_poison": {
+      "name": "Résistance au poison",
+      "stat": "resPoison",
+      "pct": true,
+      "fmt": "+{v} % de résistance au poison",
+      "range": {
+        "1": [
+          3,
+          5
+        ],
+        "30": [
+          10,
+          15
+        ]
+      },
+      "slots": [
+        "offhand",
+        "head",
+        "chest",
+        "hands",
+        "feet",
+        "ring",
+        "amulet"
+      ],
+      "w": 4,
+      "group": "res"
+    },
+    "celerite": {
+      "name": "Célérité",
+      "stat": "moveSpeedPct",
+      "pct": true,
+      "fmt": "+{v} % de vitesse de déplacement",
+      "range": {
+        "1": [
+          2,
+          3
+        ],
+        "30": [
+          5,
+          7
+        ]
+      },
+      "slots": [
+        "feet"
+      ],
+      "w": 5
+    }
+  },
+  "rarities": {
+    "common": {
+      "name": "Commun",
+      "color": "#e8e8e8",
+      "affixes": 0,
+      "baseMult": 1,
+      "sellMult": 1,
+      "order": 0
+    },
+    "uncommon": {
+      "name": "Inhabituel",
+      "color": "#3fd46a",
+      "affixes": 1,
+      "baseMult": 1.05,
+      "sellMult": 2,
+      "order": 1
+    },
+    "rare": {
+      "name": "Rare",
+      "color": "#3f8cff",
+      "affixes": 2,
+      "baseMult": 1.1,
+      "sellMult": 4,
+      "order": 2
+    },
+    "epic": {
+      "name": "Épique",
+      "color": "#b85cff",
+      "affixes": 3,
+      "baseMult": 1.15,
+      "sellMult": 8,
+      "order": 3
+    },
+    "legendary": {
+      "name": "Légendaire",
+      "color": "#ff9f1a",
+      "affixes": 3,
+      "fixedAffixes": true,
+      "baseMult": 1.2,
+      "sellMult": 20,
+      "order": 4,
+      "glow": true,
+      "rule": "Objet unique de boss : nom, 3 affixes et effet spécial fixes (toujours les mêmes)."
+    }
+  },
+  "dropTables": {
+    "tiers": {
+      "T1": {
+        "name": "Brumeval",
+        "lvl": [
+          1,
+          5
+        ],
+        "regions": [
+          "village",
+          "plains_e",
+          "plains_sw",
+          "forest (lisière)"
+        ],
+        "look": "fer rouillé, bois clair, lin brut"
+      },
+      "T2": {
+        "name": "Forêt et camp gobelin",
+        "lvl": [
+          5,
+          10
+        ],
+        "regions": [
+          "forest",
+          "goblins"
+        ],
+        "look": "acier sombre, cuir tanné, plumes, os gravés gobelins"
+      },
+      "T3": {
+        "name": "Cimetière",
+        "lvl": [
+          10,
+          15
+        ],
+        "regions": [
+          "graveyard",
+          "lair"
+        ],
+        "look": "os, fer noirci, suaires, runes pâles"
+      },
+      "T4": {
+        "name": "Marais et désert",
+        "lvl": [
+          15,
+          20
+        ],
+        "regions": [
+          "Marais de Brumenoire",
+          "Désert de Sable-Rouge",
+          "Côte de Port-Salin"
+        ],
+        "look": "bronze, chitine, cuir huilé, vase verdâtre"
+      },
+      "T5": {
+        "name": "Givreval",
+        "lvl": [
+          20,
+          25
+        ],
+        "regions": [
+          "Pics de Givreval",
+          "Grotte gelée (donjon v0.4)"
+        ],
+        "look": "acier bleu, fourrure blanche, givre cristallin"
+      },
+      "T6": {
+        "name": "Aldmar et zones rouges",
+        "lvl": [
+          25,
+          30
+        ],
+        "regions": [
+          "Ruines d'Aldmar",
+          "zones rouges",
+          "Crypte d'Aldmar (donjon v0.4)"
+        ],
+        "look": "or terni, runes ardentes, pourpre et noir"
+      }
+    },
+    "equipment": {
+      "chance": {
+        "normal": 0.06,
+        "elite": 0.3,
+        "boss": "garanti : 2 objets (+1 par tranche de 3 joueurs du groupe au-delà du premier)",
+        "redZoneMult": 2
+      },
+      "rarityWeights": {
+        "normal": {
+          "common": 70,
+          "uncommon": 22,
+          "rare": 7,
+          "epic": 1
+        },
+        "elite": {
+          "common": 40,
+          "uncommon": 38,
+          "rare": 17,
+          "epic": 5
+        },
+        "boss": {
+          "common": 0,
+          "uncommon": 30,
+          "rare": 45,
+          "epic": 25
+        },
+        "redZone": {
+          "common": 45,
+          "uncommon": 33,
+          "rare": 17,
+          "epic": 5
+        },
+        "redZoneElite": {
+          "common": 20,
+          "uncommon": 35,
+          "rare": 30,
+          "epic": 15
+        }
+      },
+      "itemLevel": "niveau du monstre (zones rouges : +2, max 30) ; la base est tirée parmi les bases du palier de ce niveau dont lvl ≤ niveau d’objet",
+      "slotWeights": {
+        "weapon": 26,
+        "offhand": 8,
+        "head": 12,
+        "chest": 12,
+        "hands": 11,
+        "feet": 11,
+        "ring": 12,
+        "amulet": 8
+      },
+      "smartLoot": "40 % des objets tombés correspondent à la famille d’arme ou au type d’armure que porte celui qui ramasse (règle affichée dans le Codex).",
+      "familyWeights": "uniforme entre les bases éligibles ; les épées comptent double (retour « beaucoup plus d’épées »)",
+      "tierBases": {
+        "T1": [
+          "rusty_sword",
+          "militia_gladius",
+          "shepherd_cutlass",
+          "squire_rapier",
+          "brumeval_longsword",
+          "guard_bastard",
+          "woodcutter_hatchet",
+          "studded_club",
+          "hunting_spear",
+          "skinning_knife",
+          "apprentice_staff",
+          "hazel_staff",
+          "novice_scepter",
+          "short_bow",
+          "poacher_bow",
+          "militia_longbow",
+          "guard_crossbow",
+          "banded_shield",
+          "apprentice_notebook",
+          "leather_quiver",
+          "copper_ring",
+          "mist_amulet",
+          "militia_helm",
+          "militia_chest",
+          "militia_gloves",
+          "militia_boots",
+          "wolf_helm",
+          "wolf_chest",
+          "wolf_gloves",
+          "wolf_boots",
+          "mistwatch_helm",
+          "mistwatch_chest",
+          "mistwatch_gloves",
+          "mistwatch_boots",
+          "leather_tunic",
+          "mage_robe"
+        ],
+        "T2": [
+          "steel_sword",
+          "goblin_scimitar",
+          "duelist_rapier",
+          "whisper_blade",
+          "knight_errant_bastard",
+          "mercenary_greatsword",
+          "goblin_axe",
+          "militia_mace",
+          "forest_spear",
+          "goblin_dagger",
+          "arcane_staff",
+          "shaman_scepter",
+          "whisper_bow",
+          "long_bow",
+          "goblin_crossbow",
+          "militia_heater",
+          "whisper_grimoire",
+          "forest_quiver",
+          "goblin_ring",
+          "fang_necklace",
+          "scrap_helm",
+          "chainmail",
+          "scrap_gloves",
+          "scrap_boots",
+          "boar_helm",
+          "boar_chest",
+          "boar_gloves",
+          "boar_boots"
+        ],
+        "T3": [
+          "gravedigger_sword",
+          "runeblade",
+          "bone_needle",
+          "watcher_curved_blade",
+          "sepulchral_greatsword",
+          "mourning_scimitar",
+          "headsman_axe",
+          "chaplain_mace",
+          "sepulchral_pike",
+          "gravedigger_stiletto",
+          "ember_staff",
+          "funeral_scepter",
+          "yew_bow",
+          "elven_bow",
+          "bone_crossbow",
+          "watcher_shield",
+          "lament_grimoire",
+          "bone_quiver",
+          "bone_ring",
+          "reliquary",
+          "bandit_helm",
+          "bandit_chest",
+          "bandit_gloves",
+          "bandit_boots"
+        ],
+        "T4": [
+          "brumenoire_longsword",
+          "redsand_scimitar",
+          "nomad_curved_blade",
+          "portsalin_rapier",
+          "stinger_bastard",
+          "dune_greatsword",
+          "brumenoire_axe",
+          "sandbronze_mace",
+          "portsalin_trident",
+          "scorpion_sting",
+          "peatbog_staff",
+          "mirage_scepter",
+          "horn_bow",
+          "marsh_longbow",
+          "portsalin_crossbow",
+          "bronze_buckler",
+          "peatbog_codex",
+          "chitin_quiver",
+          "sand_ring",
+          "amber_scarab",
+          "chitin_helm",
+          "chitin_chest",
+          "chitin_gloves",
+          "chitin_boots",
+          "lurker_helm",
+          "lurker_chest",
+          "lurker_gloves",
+          "lurker_boots"
+        ],
+        "T5": [
+          "givreval_longsword",
+          "trapper_gladius",
+          "blizzard_runes",
+          "glacier_cleaver",
+          "coldawn_curved_blade",
+          "frozen_sentinel_bastard",
+          "givreval_axe",
+          "glacier_maul",
+          "sentinel_spear",
+          "frost_fang",
+          "frostheart_staff",
+          "aurora_scepter",
+          "trapper_bow",
+          "givreval_longbow",
+          "northern_crossbow",
+          "frosted_pavise",
+          "frozen_grimoire",
+          "fur_quiver",
+          "frost_ring",
+          "ice_tear",
+          "icewolf_helm",
+          "icewolf_chest",
+          "icewolf_gloves",
+          "icewolf_boots",
+          "fleece_helm",
+          "fleece_chest",
+          "fleece_gloves",
+          "fleece_boots"
+        ],
+        "T6": [
+          "aldmar_longsword",
+          "bloodshed_rapier",
+          "scarlet_raider_scimitar",
+          "elder_runesword",
+          "fallen_king_greatsword",
+          "dusk_curved_blade",
+          "scarlet_raider_axe",
+          "fallen_king_mace",
+          "aldmar_spear",
+          "scarlet_misericorde",
+          "aldmar_elder_staff",
+          "aldmar_onyx_scepter",
+          "scarlet_shortbow",
+          "aldmar_longbow",
+          "bloodshed_crossbow",
+          "aldmar_aegis",
+          "aldmar_codex",
+          "scarlet_quiver",
+          "aldmar_ring",
+          "aldmar_seal"
+        ]
+      }
+    },
+    "monsters": {
+      "slime": {
+        "tier": "T1",
+        "since": "0.1",
+        "materials": [
+          [
+            "slime_gel",
+            0.5
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.03
+          ]
+        ],
+        "consumables": [
+          [
+            "potion_hp_s",
+            0.08
+          ]
+        ]
+      },
+      "wolf": {
+        "tier": "T1",
+        "since": "0.1",
+        "materials": [
+          [
+            "wolf_pelt",
+            0.45
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.03
+          ]
+        ],
+        "consumables": [
+          [
+            "potion_hp_s",
+            0.1
+          ]
+        ]
+      },
+      "goblin": {
+        "tier": "T2",
+        "since": "0.1",
+        "materials": [
+          [
+            "goblin_trinket",
+            0.4
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.05
+          ]
+        ],
+        "consumables": [
+          [
+            "potion_hp_s",
+            0.12
+          ],
+          [
+            "potion_mp_s",
+            0.08
+          ]
+        ]
+      },
+      "goblin_shaman": {
+        "tier": "T2",
+        "since": "0.3",
+        "materials": [
+          [
+            "totem_feather",
+            0.4
+          ],
+          [
+            "goblin_trinket",
+            0.2
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.05
+          ]
+        ],
+        "setPieces": [
+          [
+            "shaman_set",
+            0.03
+          ]
+        ]
+      },
+      "boar": {
+        "tier": "T2",
+        "since": "0.3",
+        "materials": [
+          [
+            "boar_hide",
+            0.5
+          ],
+          [
+            "boar_tusk",
+            0.2
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.05
+          ]
+        ]
+      },
+      "spider": {
+        "tier": "T2",
+        "since": "0.3",
+        "materials": [
+          [
+            "spider_silk",
+            0.45
+          ],
+          [
+            "venom_gland",
+            0.15
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.05
+          ]
+        ],
+        "note": "aussi en T3 (lisière du cimetière) aux niveaux 10–12"
+      },
+      "skeleton": {
+        "tier": "T3",
+        "since": "0.1",
+        "materials": [
+          [
+            "ancient_bone",
+            0.45
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.05
+          ],
+          [
+            "forge_stone_cut",
+            0.015
+          ]
+        ],
+        "variants": {
+          "occultist": {
+            "sets": [
+              [
+                "occultist_set",
+                0.04
+              ]
+            ]
+          }
+        },
+        "consumables": [
+          [
+            "potion_hp_l",
+            0.08
+          ]
+        ]
+      },
+      "skeleton_archer": {
+        "tier": "T3",
+        "since": "0.3",
+        "materials": [
+          [
+            "ancient_bone",
+            0.4
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.05
+          ],
+          [
+            "forge_stone_cut",
+            0.015
+          ]
+        ]
+      },
+      "wraith": {
+        "tier": "T3",
+        "since": "0.3",
+        "materials": [
+          [
+            "wraith_veil",
+            0.35
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.05
+          ],
+          [
+            "forge_stone_cut",
+            0.015
+          ]
+        ],
+        "note": "aussi en T6 (Aldmar) en version élite"
+      },
+      "golem": {
+        "tier": "T3",
+        "since": "0.1",
+        "materials": [
+          [
+            "golem_core",
+            1
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            1
+          ],
+          [
+            "forge_stone_ancestral",
+            0.2
+          ]
+        ],
+        "boss": true,
+        "setPieces": [
+          [
+            "golem_set",
+            0.35
+          ]
+        ],
+        "uniques": [
+          [
+            "fendroc",
+            0.12
+          ],
+          [
+            "golem_rampart",
+            0.1
+          ]
+        ]
+      },
+      "bog_lurker": {
+        "tier": "T4",
+        "since": "0.3",
+        "materials": [
+          [
+            "bog_moss",
+            0.4
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.04
+          ],
+          [
+            "forge_stone_cut",
+            0.03
+          ]
+        ]
+      },
+      "scorpion": {
+        "tier": "T4",
+        "since": "0.3",
+        "materials": [
+          [
+            "scorpion_chitin",
+            0.45
+          ],
+          [
+            "scorpion_stinger",
+            0.15
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.04
+          ],
+          [
+            "forge_stone_cut",
+            0.03
+          ]
+        ]
+      },
+      "bandit": {
+        "tier": "T4",
+        "since": "0.3",
+        "materials": [
+          [
+            "bandit_cloth",
+            0.35
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_rough",
+            0.04
+          ],
+          [
+            "forge_stone_cut",
+            0.03
+          ]
+        ],
+        "note": "bandits de T6 en zones rouges"
+      },
+      "swamp_hag": {
+        "tier": "T4",
+        "since": "0.3",
+        "materials": [
+          [
+            "bog_moss",
+            1
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            1
+          ],
+          [
+            "forge_stone_ancestral",
+            0.2
+          ]
+        ],
+        "boss": true,
+        "setPieces": [
+          [
+            "hag_set",
+            0.35
+          ]
+        ],
+        "uniques": [
+          [
+            "hag_thorn",
+            0.12
+          ],
+          [
+            "hag_grimoire",
+            0.1
+          ]
+        ]
+      },
+      "sand_wyrm": {
+        "tier": "T4",
+        "since": "0.3",
+        "materials": [
+          [
+            "wyrm_scale",
+            1
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            1
+          ],
+          [
+            "forge_stone_ancestral",
+            0.2
+          ]
+        ],
+        "boss": true,
+        "uniques": [
+          [
+            "wyrm_fang",
+            0.12
+          ]
+        ]
+      },
+      "ice_wolf": {
+        "tier": "T5",
+        "since": "0.3",
+        "materials": [
+          [
+            "frost_pelt",
+            0.45
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            0.04
+          ],
+          [
+            "forge_stone_ancestral",
+            0.008
+          ]
+        ]
+      },
+      "yeti": {
+        "tier": "T5",
+        "since": "0.3",
+        "materials": [
+          [
+            "yeti_fur",
+            0.45
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            0.04
+          ],
+          [
+            "forge_stone_ancestral",
+            0.008
+          ]
+        ]
+      },
+      "troll": {
+        "tier": "T5",
+        "since": "0.3",
+        "materials": [
+          [
+            "troll_blood",
+            0.35
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            0.04
+          ],
+          [
+            "forge_stone_ancestral",
+            0.008
+          ]
+        ]
+      },
+      "frost_giant": {
+        "tier": "T5",
+        "since": "0.3",
+        "materials": [
+          [
+            "frost_heart",
+            1
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            1
+          ],
+          [
+            "forge_stone_ancestral",
+            0.5
+          ]
+        ],
+        "boss": true,
+        "setPieces": [
+          [
+            "frost_giant_set",
+            0.35
+          ]
+        ],
+        "uniques": [
+          [
+            "mountain_breaker",
+            0.12
+          ],
+          [
+            "winter_bolt",
+            0.1
+          ]
+        ]
+      },
+      "lich": {
+        "tier": "T6",
+        "since": "0.3",
+        "materials": [
+          [
+            "phylactery_shard",
+            1
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            1
+          ],
+          [
+            "forge_stone_ancestral",
+            0.5
+          ]
+        ],
+        "boss": true,
+        "setPieces": [
+          [
+            "lich_set",
+            0.35
+          ]
+        ],
+        "uniques": [
+          [
+            "aldmar_runeblade",
+            0.12
+          ],
+          [
+            "lich_staff",
+            0.1
+          ]
+        ]
+      },
+      "scarlet_champion": {
+        "tier": "T6",
+        "since": "proposé",
+        "materials": [
+          [
+            "scarlet_mark",
+            1
+          ]
+        ],
+        "stones": [
+          [
+            "forge_stone_cut",
+            1
+          ],
+          [
+            "forge_stone_ancestral",
+            0.5
+          ]
+        ],
+        "boss": true,
+        "uniques": [
+          [
+            "thirst",
+            0.1
+          ]
+        ],
+        "note": "PROPOSITION : élite « Champion écarlate » (modèle bandit, échelle 1,3) qui apparaît toutes les 30 min dans chaque zone rouge",
+        "redZoneOnly": true
+      }
+    },
+    "materials": {
+      "slime_gel": {
+        "name": "Gelée de gluant",
+        "legacy": true,
+        "use": "Alchimie : potions de soin / mana"
+      },
+      "wolf_pelt": {
+        "name": "Fourrure de loup",
+        "legacy": true,
+        "use": "Couture : ensemble Peau de loup"
+      },
+      "goblin_trinket": {
+        "name": "Babiole gobeline",
+        "legacy": true,
+        "use": "Forge : anneaux et amulettes T2"
+      },
+      "ancient_bone": {
+        "name": "Os ancien",
+        "legacy": true,
+        "use": "Forge : armes d’os T3 (Aiguille d’os, Arbalète d’os, Carquois d’os)"
+      },
+      "golem_core": {
+        "name": "Cœur de golem",
+        "legacy": true,
+        "use": "Forge : ensemble du Golem ancien, Pierres de forge ancestrales"
+      },
+      "boar_hide": {
+        "name": "Cuir de sanglier",
+        "use": "Couture : série en cuir de sanglier"
+      },
+      "boar_tusk": {
+        "name": "Défense de sanglier",
+        "use": "Forge : masses et haches T2"
+      },
+      "spider_silk": {
+        "name": "Soie d'araignée",
+        "use": "Couture : étoffes"
+      },
+      "venom_gland": {
+        "name": "Glande à venin",
+        "use": "Alchimie : antidotes, huiles"
+      },
+      "totem_feather": {
+        "name": "Plume de totem",
+        "use": "Alchimie : élixir d’esprit ; Couture : tissu T2"
+      },
+      "wraith_veil": {
+        "name": "Voile spectral",
+        "use": "Alchimie : potions de résistance arcanique"
+      },
+      "scorpion_chitin": {
+        "name": "Chitine de scorpion",
+        "use": "Forge : Carapace de scorpion"
+      },
+      "scorpion_stinger": {
+        "name": "Dard de scorpion",
+        "use": "Alchimie : huile de lame (poison)"
+      },
+      "bog_moss": {
+        "name": "Mousse des tourbières",
+        "use": "Alchimie : antidotes"
+      },
+      "bandit_cloth": {
+        "name": "Étoffe de brigand",
+        "use": "Couture : série du Brigand"
+      },
+      "frost_pelt": {
+        "name": "Fourrure de givre",
+        "use": "Couture : série du Loup de givre"
+      },
+      "yeti_fur": {
+        "name": "Toison de yéti",
+        "use": "Couture : série en toison de yéti"
+      },
+      "troll_blood": {
+        "name": "Sang de troll",
+        "use": "Alchimie : potion de régénération"
+      },
+      "frost_heart": {
+        "name": "Cœur de givre éternel",
+        "use": "Forge : Harnois du Géant de givre (pièces manquantes)"
+      },
+      "wyrm_scale": {
+        "name": "Écaille de ver des sables",
+        "use": "Forge : armes T4 supérieures"
+      },
+      "phylactery_shard": {
+        "name": "Éclat de phylactère",
+        "use": "Couture : Robe du Roi-Liche (pièces manquantes)"
+      },
+      "scarlet_mark": {
+        "name": "Marque écarlate",
+        "use": "Monnaie des zones rouges : échangée contre les pièces du Sang versé / Traqueur écarlate"
+      }
+    },
+    "stones": {
+      "forge_stone_rough": {
+        "name": "Pierre de forge brute",
+        "levels": [
+          1,
+          4
+        ],
+        "stack": 99,
+        "sell": 5
+      },
+      "forge_stone_cut": {
+        "name": "Pierre de forge taillée",
+        "levels": [
+          5,
+          7
+        ],
+        "stack": 99,
+        "sell": 25
+      },
+      "forge_stone_ancestral": {
+        "name": "Pierre de forge ancestrale",
+        "levels": [
+          8,
+          10
+        ],
+        "stack": 99,
+        "sell": 80
+      }
+    },
+    "elite": "élites (5 %, v0.2) : chance d’équipement 30 %, raretés « elite », chances de matériaux ×2 (déjà ELITE.drops)"
+  },
+  "forge": {
+    "where": "Forgeron (npc_blacksmith) ou station Forge (forge) — Brumeval puis Port-Salin",
+    "perLevel": 0.04,
+    "appliesTo": "statistique de base de l’objet : attaque (armes), défense (armures, boucliers), mana des grimoires et du tissu. Les affixes ne changent pas.",
+    "display": "le nom devient « Épée d’acier +3 » ; l’infobulle montre la prochaine valeur et le coût",
+    "levels": [
+      {
+        "to": 1,
+        "stone": "forge_stone_rough",
+        "stones": 1,
+        "goldPerItemLevel": 5,
+        "success": 1,
+        "bonus": "+4 %"
+      },
+      {
+        "to": 2,
+        "stone": "forge_stone_rough",
+        "stones": 1,
+        "goldPerItemLevel": 8,
+        "success": 1,
+        "bonus": "+8 %"
+      },
+      {
+        "to": 3,
+        "stone": "forge_stone_rough",
+        "stones": 2,
+        "goldPerItemLevel": 12,
+        "success": 1,
+        "bonus": "+12 %"
+      },
+      {
+        "to": 4,
+        "stone": "forge_stone_rough",
+        "stones": 2,
+        "goldPerItemLevel": 16,
+        "success": 1,
+        "bonus": "+16 %"
+      },
+      {
+        "to": 5,
+        "stone": "forge_stone_cut",
+        "stones": 2,
+        "goldPerItemLevel": 20,
+        "success": 1,
+        "bonus": "+20 %"
+      },
+      {
+        "to": 6,
+        "stone": "forge_stone_cut",
+        "stones": 3,
+        "goldPerItemLevel": 26,
+        "success": 0.9,
+        "bonus": "+24 %"
+      },
+      {
+        "to": 7,
+        "stone": "forge_stone_cut",
+        "stones": 3,
+        "goldPerItemLevel": 32,
+        "success": 0.8,
+        "bonus": "+28 %"
+      },
+      {
+        "to": 8,
+        "stone": "forge_stone_ancestral",
+        "stones": 3,
+        "goldPerItemLevel": 40,
+        "success": 0.7,
+        "bonus": "+32 %"
+      },
+      {
+        "to": 9,
+        "stone": "forge_stone_ancestral",
+        "stones": 4,
+        "goldPerItemLevel": 50,
+        "success": 0.6,
+        "bonus": "+36 %"
+      },
+      {
+        "to": 10,
+        "stone": "forge_stone_ancestral",
+        "stones": 5,
+        "goldPerItemLevel": 60,
+        "success": 0.5,
+        "bonus": "+40 %"
+      }
+    ],
+    "failure": "Échec : les pierres et l’or sont consommés, l’objet reste intact (jamais détruit, jamais rétrogradé). Chaque échec ajoute +10 % de réussite à la tentative suivante sur ce même objet (affiché).",
+    "goldFormula": "or = goldPerItemLevel × niveau requis de l’objet",
+    "legendary": "les légendaires se forgent comme les autres objets",
+    "retemper": {
+      "name": "Retremper",
+      "desc": "Remplace UN affixe choisi par un nouvel affixe aléatoire (même règles de tirage). Les autres affixes sont conservés.",
+      "cost": {
+        "essence": "essence de la rareté de l’objet × 1",
+        "goldPerItemLevel": 10
+      },
+      "notFor": [
+        "legendary",
+        "set pieces"
+      ]
+    }
+  },
+  "salvage": {
+    "where": "Forgeron ou station Forge ; « Recycler » dans le menu de l’objet, avec confirmation pour Rare et plus",
+    "rule": "Donne des matériaux selon le type d’objet et une essence selon la rareté. Un objet forgé rend 50 % des pierres dépensées (arrondi inférieur).",
+    "basic": {
+      "weaponMetal": {
+        "id": "scrap_metal",
+        "name": "Ferraille",
+        "from": [
+          "épées",
+          "haches",
+          "masses",
+          "lances",
+          "dagues",
+          "arbalètes",
+          "boucliers",
+          "plaques",
+          "anneaux",
+          "amulettes"
+        ]
+      },
+      "leather": {
+        "id": "leather_scraps",
+        "name": "Chutes de cuir",
+        "from": [
+          "cuir",
+          "arcs",
+          "carquois"
+        ]
+      },
+      "cloth": {
+        "id": "cloth_scraps",
+        "name": "Chutes d'étoffe",
+        "from": [
+          "tissu",
+          "grimoires"
+        ]
+      },
+      "wood": {
+        "id": "wood_scraps",
+        "name": "Copeaux de bois précieux",
+        "from": [
+          "bâtons",
+          "sceptres"
+        ]
+      },
+      "qty": "common 1–2, uncommon 2–3, rare 3–4, epic 4–5 ; +1 à partir de T4"
+    },
+    "essences": {
+      "uncommon": {
+        "id": "essence_green",
+        "name": "Essence verdoyante",
+        "qty": 1
+      },
+      "rare": {
+        "id": "essence_blue",
+        "name": "Essence azurée",
+        "qty": 1
+      },
+      "epic": {
+        "id": "essence_violet",
+        "name": "Essence violine",
+        "qty": 1
+      }
+    },
+    "stoneChance": {
+      "common": 0.05,
+      "uncommon": 0.1,
+      "rare": 0.2,
+      "epic": 0.4,
+      "stone": "pierre de forge du palier (brute T1–T3, taillée T4–T5, ancestrale T6)"
+    },
+    "legendary": "Les légendaires ne se recyclent pas (on peut les vendre ou les échanger). Évite les pertes irréversibles.",
+    "setPieces": "Les pièces d’ensemble se recyclent en 1 essence violine + leur matériau d’artisanat (ex. 2 Fourrures de loup)."
+  }
+}

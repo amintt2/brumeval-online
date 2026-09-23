@@ -1,0 +1,3873 @@
+{
+ "meta": {
+  "tree": "L'Arbre des Brumes",
+  "part": "Région Rôdeur + passerelle Chasseur (Rôdeur ↔ Guerrier)",
+  "version": "brouillon v0.3",
+  "coords": "Écran : x vers la droite, y vers le BAS ; x = r·cos θ, y = −r·sin θ (θ en degrés, 90° = haut = Guerrier, 210° = Mage, 330° = Rôdeur). Survie r < 400, départs de classe r = 500.",
+  "regionSpan": {
+   "rodeur": {
+    "deg": [
+     297,
+     366
+    ],
+    "r": [
+     500,
+     1480
+    ]
+   },
+   "pont_rg": {
+    "deg": [
+     15,
+     40
+    ],
+    "r": [
+     790,
+     1225
+    ]
+   }
+  },
+  "externalLinks": {
+   "rodeur_origine": "survie:*porte_rodeur — le nœud de Survie le plus proche de (433, 250) ; à renommer par le synthétiseur",
+   "v_cueilleur": "pont_mr:* — premier nœud de la passerelle Arcaniste sylvestre côté Rôdeur (≈ 270°–285°, r ≈ 800–900)",
+   "c_depeceur": "guerrier:* — nœud le plus proche de la région Guerrier (≈ 50°–60°, r ≈ 800–950)"
+  },
+  "costs": "Rôdeur : 1 point partout ici. Guerrier : 1 point sur la passerelle Chasseur, 2 points dans la région Rôdeur (3 pour ses clés de voûte). Mage : 2 / 3 points dans la région Rôdeur, et la passerelle Chasseur n'est pas voisine du Mage (2 points).",
+  "gate": "Les voisins de rodeur_origine ne s'ouvrent qu'avec au moins 3 Fondamentaux appris."
+ },
+ "abilities": [
+  {
+   "id": "shot",
+   "name": "Tir",
+   "kind": "projectile",
+   "auto": true,
+   "base": true,
+   "branch": "origine",
+   "range": 20,
+   "speed": 34,
+   "cd": 1.3,
+   "power": 0.85,
+   "windup": 0,
+   "rec": 0.35,
+   "recSlow": 0.3,
+   "poise": 3,
+   "tags": [
+    "physique",
+    "projectile",
+    "arc"
+   ],
+   "weapon": "arc",
+   "desc": "Tir à l'arc de base.",
+   "charged": {
+    "holdMs": [
+     400,
+     1000
+    ],
+    "power": [
+     1.6,
+     2.4
+    ],
+    "st": 14,
+    "poise": 18,
+    "pierceAtFull": 1,
+    "moveWhileDrawing": 0.25
+   },
+   "souls": "Attaque de base. Ne part qu'en se déplaçant à ≤ 40 % de sa vitesse (COMMIT.rangedMoveMax). Chargée (Fondamental « Attaque chargée ») : on bande l'arc 0,4 à 1 s en marchant à 25 %, ×1,6 → ×2,4, 18 de poise, perce 1 ennemi à pleine charge.",
+   "classOrigin": "rodeur",
+   "stamina": 7,
+   "mana": 0
+  },
+  {
+   "id": "piercing_shot",
+   "name": "Tir perçant",
+   "kind": "projectile",
+   "branch": "tireur",
+   "range": 22,
+   "speed": 40,
+   "cd": 6,
+   "power": 1.9,
+   "windup": 250,
+   "rec": 0.55,
+   "recSlow": 0.25,
+   "poise": 14,
+   "pierce": 1,
+   "armorPen": 0.3,
+   "tags": [
+    "physique",
+    "projectile",
+    "arc",
+    "perforation"
+   ],
+   "weapon": "arc",
+   "desc": "Une flèche lourde qui ignore 30 % de l'armure et transperce un premier ennemi.",
+   "souls": "Compétence v0.2 conservée. 0,25 s de visée visible, puis 0,55 s de relâchement : à lancer pendant la récupération d'un monstre, pas pendant sa préparation.",
+   "classOrigin": "rodeur",
+   "stamina": 14,
+   "mana": 12
+  },
+  {
+   "id": "rapid_fire",
+   "name": "Tir rapide",
+   "kind": "channel",
+   "branch": "tireur",
+   "range": 20,
+   "speed": 34,
+   "cd": 9,
+   "power": 0.8,
+   "hits": 3,
+   "channelMs": 600,
+   "moveDuring": 0.3,
+   "rec": 0.6,
+   "recSlow": 0.3,
+   "poise": 3,
+   "tags": [
+    "physique",
+    "projectile",
+    "arc"
+   ],
+   "weapon": "arc",
+   "desc": "Trois flèches en succession rapide.",
+   "souls": "Compétence v0.2 conservée. Canalisée 0,6 s (marche à 30 %) : une roulade l'interrompt (les flèches restantes sont perdues, pas le coût).",
+   "classOrigin": "rodeur",
+   "stamina": 14,
+   "mana": 15
+  },
+  {
+   "id": "arrow_rain",
+   "name": "Pluie de flèches",
+   "kind": "aoe_target",
+   "branch": "tireur",
+   "range": 20,
+   "radius": 5,
+   "cd": 12,
+   "power": 1.25,
+   "delayMs": 600,
+   "rec": 0.5,
+   "recSlow": 0.3,
+   "poise": 8,
+   "tags": [
+    "physique",
+    "zone",
+    "arc"
+   ],
+   "weapon": "arc",
+   "desc": "Une pluie de flèches sur la zone ciblée.",
+   "souls": "Compétence v0.2 conservée. Les flèches tombent 0,6 s après le tir (cercle visible au sol pour tous) : récompense l'anticipation de la position d'un monstre.",
+   "classOrigin": "rodeur",
+   "stamina": 16,
+   "mana": 22
+  },
+  {
+   "id": "fleche_assommante",
+   "name": "Flèche assommante",
+   "kind": "projectile",
+   "branch": "tireur",
+   "range": 18,
+   "speed": 30,
+   "cd": 10,
+   "power": 1.1,
+   "windup": 450,
+   "rec": 0.6,
+   "recSlow": 0.25,
+   "poise": 55,
+   "teleBonusPoise": 0.5,
+   "tags": [
+    "physique",
+    "projectile",
+    "arc",
+    "contrôle"
+   ],
+   "weapon": "arc",
+   "desc": "Une flèche à tête ronde qui déséquilibre ; +50 % de poise si elle touche un ennemi en pleine préparation d'attaque.",
+   "souls": "Réponse aux télégraphes : 55 de poise déséquilibre en un coup loups (24), gobelins (28) et squelettes (44) ; pas le golem (150). 0,45 s de visée : il faut tirer dès le début de la préparation.",
+   "classOrigin": "rodeur",
+   "stamina": 18,
+   "mana": 10
+  },
+  {
+   "id": "trait_fatal",
+   "name": "Trait fatal",
+   "kind": "channel",
+   "branch": "tireur",
+   "range": 32,
+   "speed": 60,
+   "cd": 40,
+   "power": 5.0,
+   "channelMs": 1500,
+   "moveDuring": 0,
+   "pierce": 99,
+   "rec": 0.8,
+   "recSlow": 0.2,
+   "poise": 70,
+   "tags": [
+    "physique",
+    "projectile",
+    "arc",
+    "perforation"
+   ],
+   "weapon": "arc",
+   "desc": "Vous visez 1,5 s, immobile, puis décochez un trait qui traverse tout sur 32 m.",
+   "souls": "Ultime du Tireur. Immobile pendant la visée : une roulade l'annule et rend 50 % de la mana. Pensé pour la fenêtre de récupération d'un boss (golem : 0,9 s de récupération après son coup au sol « golem_slam »), jamais pour le kiting.",
+   "classOrigin": "rodeur",
+   "stamina": 25,
+   "mana": 35
+  },
+  {
+   "id": "coup_de_dague",
+   "name": "Coup de dague",
+   "kind": "melee",
+   "branch": "traqueur",
+   "range": 2.4,
+   "cd": 4,
+   "power": [
+    0.7,
+    0.9
+   ],
+   "hits": 2,
+   "windup": 150,
+   "rec": 0.3,
+   "recSlow": 0.5,
+   "poise": 14,
+   "tags": [
+    "physique",
+    "mêlée",
+    "dague"
+   ],
+   "weapon": "dague",
+   "desc": "Deux coups de couteau rapides ; votre prochain Tir dans les 2 s inflige +20 % de dégâts.",
+   "souls": "L'option de mêlée du rôdeur : rapide (0,15 s) mais courte (2,4 m). Le couteau de ceinture est toujours là : utilisable avec un arc (dégâts de l'arme ×0,8) ou avec n'importe quelle arme de mêlée à une main.",
+   "classOrigin": "rodeur",
+   "stamina": 12,
+   "mana": 0
+  },
+  {
+   "id": "marque_de_chasse",
+   "name": "Marque du chasseur",
+   "kind": "debuff",
+   "branch": "traqueur",
+   "range": 25,
+   "cd": 12,
+   "power": 0,
+   "duration": 15,
+   "dmgTakenFromYou": 0.1,
+   "pvpFactor": 0.5,
+   "rec": 0.2,
+   "recSlow": 0.6,
+   "poise": 0,
+   "tags": [
+    "marque",
+    "chasse"
+   ],
+   "weapon": null,
+   "desc": "Marque une cible 15 s : elle subit +10 % de vos dégâts et reste visible à travers la brume. Une seule marque à la fois.",
+   "souls": "Instantanée, sans arme requise. En JcJ : +5 %. Plusieurs nœuds du Traqueur et du Chasseur s'appuient sur la cible marquée.",
+   "classOrigin": "rodeur",
+   "stamina": 0,
+   "mana": 10
+  },
+  {
+   "id": "bond_de_retrait",
+   "name": "Bond de retrait",
+   "kind": "dash",
+   "branch": "traqueur",
+   "range": 6,
+   "cd": 10,
+   "power": 0.6,
+   "dashMs": 400,
+   "iframeMs": 150,
+   "rec": 0.35,
+   "recSlow": 0.4,
+   "poise": 3,
+   "tags": [
+    "mobilité",
+    "arc",
+    "projectile"
+   ],
+   "weapon": "arc",
+   "desc": "Un bond de 6 m en arrière, puis un Tir à ×0,6 en retombant.",
+   "souls": "Le seul recul « outillé » du rôdeur, et il coûte cher : 28 d'endurance + 8 de mana, 10 s de recharge, seulement 0,15 s d'invulnérabilité (contre 0,35 s pour la roulade). Impossible dans les 0,5 s qui suivent une roulade (pas de double fuite).",
+   "classOrigin": "rodeur",
+   "stamina": 28,
+   "mana": 8
+  },
+  {
+   "id": "piege_a_machoires",
+   "name": "Piège à mâchoires",
+   "kind": "trap",
+   "branch": "traqueur",
+   "range": 3,
+   "radius": 1.2,
+   "cd": 14,
+   "power": 1.5,
+   "armMs": 1000,
+   "lifetime": 30,
+   "maxActive": 2,
+   "root": 2.0,
+   "rootElite": 1.0,
+   "bossSlow": 0.4,
+   "rec": 0.5,
+   "recSlow": 0,
+   "poise": 30,
+   "tags": [
+    "physique",
+    "piège",
+    "contrôle"
+   ],
+   "weapon": null,
+   "desc": "Pose un piège (armé en 1 s) qui mord le premier ennemi : ×1,5 et immobilisé 2 s (élites 1 s, boss : ralentis de 40 %).",
+   "souls": "On s'agenouille 0,5 s pour le poser (immobile) : il se pose AVANT le combat ou derrière soi, jamais sous un monstre en pleine attaque. 2 pièges maximum. JcJ : immobilisation 1 s.",
+   "classOrigin": "rodeur",
+   "stamina": 10,
+   "mana": 12
+  },
+  {
+   "id": "filet",
+   "name": "Filet lesté",
+   "kind": "projectile",
+   "branch": "traqueur",
+   "range": 12,
+   "speed": 20,
+   "cd": 16,
+   "power": 0.3,
+   "slow": {
+    "pct": 0.6,
+    "dur": 3
+   },
+   "windup": 300,
+   "rec": 0.45,
+   "recSlow": 0.3,
+   "poise": 10,
+   "tags": [
+    "contrôle",
+    "projectile",
+    "chasse"
+   ],
+   "weapon": null,
+   "desc": "Lance un filet qui ralentit de 60 % pendant 3 s ; il brise net la charge d'un ennemi qui s'élance.",
+   "souls": "Contre-télégraphe : touché pendant la préparation d'une charge en ligne (loup, sanglier, troll), l'attaque est annulée et le monstre déséquilibré (sauf boss). Portée courte (12 m) : il faut laisser venir.",
+   "classOrigin": "rodeur",
+   "stamina": 12,
+   "mana": 14
+  },
+  {
+   "id": "hallali",
+   "name": "Hallali",
+   "kind": "buff",
+   "branch": "traqueur",
+   "cd": 60,
+   "power": 0,
+   "duration": 10,
+   "effects": {
+    "dmgVsMarked": 0.2,
+    "rollStCost": -0.3,
+    "stOnHitMarked": 3
+   },
+   "pvpFactor": 0.5,
+   "windup": 300,
+   "rec": 0.4,
+   "recSlow": 0.5,
+   "poise": 0,
+   "tags": [
+    "buff",
+    "chasse",
+    "marque"
+   ],
+   "weapon": null,
+   "desc": "Sonne l'hallali 10 s : +20 % de dégâts contre la cible marquée, roulades −30 % d'endurance, chaque coup sur la proie rend 3 d'endurance.",
+   "souls": "Ultime du Traqueur : une fenêtre d'agression, pas d'invulnérabilité. Le cor se sonne (0,3 s) : à placer pendant la récupération d'un boss.",
+   "classOrigin": "rodeur",
+   "stamina": 0,
+   "mana": 25
+  },
+  {
+   "id": "fleche_empoisonnee",
+   "name": "Flèche empoisonnée",
+   "kind": "projectile",
+   "branch": "venin",
+   "range": 20,
+   "speed": 34,
+   "cd": 5,
+   "power": 0.6,
+   "poison": {
+    "perStackPerS": 0.25,
+    "dur": 6,
+    "maxStacks": 3
+   },
+   "windup": 150,
+   "rec": 0.4,
+   "recSlow": 0.3,
+   "poise": 3,
+   "tags": [
+    "poison",
+    "projectile",
+    "arc"
+   ],
+   "weapon": "arc",
+   "desc": "Une flèche qui ajoute une charge de poison (×0,25 par seconde pendant 6 s, jusqu'à 3 charges).",
+   "souls": "Dégâts dans la durée : laisse le temps d'esquiver au lieu de tirer. Les dégâts de poison n'infligent pas de poise.",
+   "classOrigin": "rodeur",
+   "stamina": 10,
+   "mana": 10
+  },
+  {
+   "id": "fleche_barbelee",
+   "name": "Flèche barbelée",
+   "kind": "projectile",
+   "branch": "venin",
+   "range": 20,
+   "speed": 34,
+   "cd": 7,
+   "power": 1.0,
+   "bleedBuild": 35,
+   "windup": 200,
+   "rec": 0.45,
+   "recSlow": 0.3,
+   "poise": 8,
+   "tags": [
+    "saignement",
+    "projectile",
+    "arc"
+   ],
+   "weapon": "arc",
+   "desc": "Ajoute 35 de saignement. À 100, la plaie éclate : ×1,5 + 6 % des PV max (boss 2 %, joueurs 4 %).",
+   "souls": "Saignement façon soulslike : une jauge sous la barre de vie qui se vide de 10/s après 3 s sans nouvelle entaille. Récompense l'agression continue.",
+   "classOrigin": "rodeur",
+   "stamina": 12,
+   "mana": 12
+  },
+  {
+   "id": "nuage_toxique",
+   "name": "Nuage toxique",
+   "kind": "aoe_target",
+   "branch": "venin",
+   "range": 16,
+   "radius": 4,
+   "cd": 18,
+   "power": 0,
+   "duration": 6,
+   "poisonPerS": 1,
+   "dmgDealtMod": -0.1,
+   "rec": 0.55,
+   "recSlow": 0.3,
+   "poise": 0,
+   "tags": [
+    "poison",
+    "zone"
+   ],
+   "weapon": null,
+   "desc": "Une fiole qui éclate en nuage de 4 m pendant 6 s : 1 charge de poison par seconde, et les ennemis dedans infligent −10 % de dégâts.",
+   "souls": "Zone de contrôle, pas de dégâts directs. La fiole est lancée à la main : pas d'arc requis. Aucun dégât aux alliés.",
+   "classOrigin": "rodeur",
+   "stamina": 14,
+   "mana": 24
+  },
+  {
+   "id": "entaille_venimeuse",
+   "name": "Entaille venimeuse",
+   "kind": "melee",
+   "branch": "venin",
+   "range": 2.6,
+   "arc": 100,
+   "cd": 8,
+   "power": 1.1,
+   "poisonStacks": 2,
+   "bleedBuild": 20,
+   "hopBack": 2,
+   "windup": 200,
+   "rec": 0.35,
+   "recSlow": 0.4,
+   "poise": 12,
+   "tags": [
+    "poison",
+    "saignement",
+    "mêlée",
+    "dague"
+   ],
+   "weapon": "dague",
+   "desc": "Un revers de dague en arc (×1,1) : 2 charges de poison, 20 de saignement, puis un petit saut de 2 m en arrière.",
+   "souls": "Le petit saut n'a PAS d'invulnérabilité : il sort de l'allonge d'un coup léger, pas d'une attaque télégraphiée.",
+   "classOrigin": "rodeur",
+   "stamina": 16,
+   "mana": 8
+  },
+  {
+   "id": "fleau",
+   "name": "Fléau",
+   "kind": "aoe_self",
+   "branch": "venin",
+   "radius": 12,
+   "cd": 35,
+   "power": 0,
+   "detonate": 1.5,
+   "bleedAdd": 50,
+   "spreadR": 4,
+   "windup": 400,
+   "rec": 0.6,
+   "recSlow": 0.3,
+   "poise": 20,
+   "tags": [
+    "poison",
+    "saignement",
+    "zone"
+   ],
+   "weapon": null,
+   "desc": "Tous vos poisons dans un rayon de 12 m éclatent : 150 % des dégâts restants tout de suite, +50 de saignement, et 1 charge se propage à 4 m.",
+   "souls": "Ultime du Venin : 0,4 s de geste visible, puis 0,6 s de récupération. Ne fait rien sans préparation (poisons déjà posés).",
+   "classOrigin": "rodeur",
+   "stamina": 10,
+   "mana": 30
+  },
+  {
+   "id": "javelot",
+   "name": "Javelot de chasse",
+   "kind": "projectile",
+   "branch": "pont_rg",
+   "range": 16,
+   "speed": 26,
+   "cd": 8,
+   "power": 1.8,
+   "windup": 500,
+   "rec": 0.5,
+   "recSlow": 0.3,
+   "poise": 35,
+   "tags": [
+    "physique",
+    "projectile",
+    "lance",
+    "chasse"
+   ],
+   "weapon": "any",
+   "weaponBonus": {
+    "lance": 0.25
+   },
+   "desc": "Lance le javelot de chasse porté au dos (aucune munition) : ×1,8, 35 de poise. +25 % avec une lance équipée.",
+   "souls": "Élan visible de 0,5 s, tir en cloche : un outil d'ouverture pour le rôdeur comme pour le guerrier. Utilisable avec n'importe quelle arme.",
+   "classOrigin": "pont_rg",
+   "stamina": 20,
+   "mana": 0
+  },
+  {
+   "id": "estocade",
+   "name": "Estocade",
+   "kind": "dash",
+   "branch": "pont_rg",
+   "range": 4.5,
+   "cd": 9,
+   "power": 1.6,
+   "dashMs": 300,
+   "iframeMs": 0,
+   "rec": 0.5,
+   "recSlow": 0.3,
+   "poise": 30,
+   "tags": [
+    "physique",
+    "mêlée",
+    "mobilité",
+    "lance"
+   ],
+   "weapon": "melee",
+   "weaponBonus": {
+    "lance_reach": 1.5
+   },
+   "desc": "Une fente de 4,5 m qui se termine par un coup d'estoc (×1,6). Une lance allonge la fente de 1,5 m.",
+   "souls": "Aucune invulnérabilité : c'est une ouverture, pas une esquive. Demande une arme de mêlée (lance, épée, dague).",
+   "classOrigin": "pont_rg",
+   "stamina": 22,
+   "mana": 6
+  },
+  {
+   "id": "appat",
+   "name": "Appât",
+   "kind": "aoe_target",
+   "branch": "pont_rg",
+   "range": 10,
+   "radius": 12,
+   "cd": 30,
+   "power": 0,
+   "duration": 3,
+   "rec": 0.4,
+   "recSlow": 0.5,
+   "poise": 0,
+   "tags": [
+    "contrôle",
+    "chasse"
+   ],
+   "weapon": null,
+   "desc": "Lance un appât : les bêtes à 12 m (loups, sangliers, araignées, yétis…) s'acharnent dessus 3 s (élites 1,5 s, boss insensibles).",
+   "souls": "Un « souffle » pour se replacer ou relever un allié, sans effet en JcJ ni sur les humanoïdes. Les bêtes reprennent leur cible ensuite.",
+   "classOrigin": "pont_rg",
+   "stamina": 5,
+   "mana": 10
+  }
+ ],
+ "nodes": [
+  {
+   "id": "rodeur_origine",
+   "region": "rodeur",
+   "branch": "origine",
+   "type": "skill",
+   "name": "Éveil du Rôdeur",
+   "desc": "Nœud de départ du Rôdeur (gratuit) : donne l'attaque de base Tir. Les nœuds voisins s'ouvrent après 3 Fondamentaux.",
+   "x": 433,
+   "y": 250,
+   "links": [
+    "survie:*porte_rodeur"
+   ],
+   "maxRank": 1,
+   "ability": "shot",
+   "start": true,
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "shot"
+    }
+   ],
+   "polar": {
+    "r": 500,
+    "deg": 330
+   },
+   "minPointsFromStart": 0
+  },
+  {
+   "id": "tir_leste",
+   "region": "rodeur",
+   "branch": "origine",
+   "type": "variant",
+   "name": "Tir lesté",
+   "desc": "Tir : ×0,85 → ×1,1, poise 3 → 8, recharge 1,3 → 1,6 s, récupération 0,35 → 0,45 s.",
+   "x": 401,
+   "y": 361,
+   "links": [
+    "rodeur_origine"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_forme",
+   "ability": "shot",
+   "effects": [
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 1.1
+    },
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 8
+    },
+    {
+     "mod": "cd",
+     "op": "set",
+     "value": 1.6
+    },
+    {
+     "mod": "rec",
+     "op": "set",
+     "value": 0.45
+    }
+   ],
+   "vfx": "Flèche plus épaisse à empennage noir ; impact avec petite gerbe de poussière et léger recul de la cible.",
+   "polar": {
+    "r": 540,
+    "deg": 318
+   },
+   "minPointsFromStart": 1
+  },
+  {
+   "id": "tir_veloce",
+   "region": "rodeur",
+   "branch": "origine",
+   "type": "variant",
+   "name": "Tir véloce",
+   "desc": "Tir : ×0,85 → ×0,68, recharge 1,3 → 1,0 s, endurance 7 → 6. La règle de tir à ≤ 40 % de vitesse est inchangée.",
+   "x": 514,
+   "y": 167,
+   "links": [
+    "rodeur_origine"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_forme",
+   "ability": "shot",
+   "effects": [
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 0.68
+    },
+    {
+     "mod": "cd",
+     "op": "set",
+     "value": 1.0
+    },
+    {
+     "mod": "st",
+     "op": "set",
+     "value": 6
+    }
+   ],
+   "vfx": "Flèche fine, traînée d'air pâle très courte ; corde qui vibre plus vite (animation Attack accélérée ×1,3).",
+   "polar": {
+    "r": 540,
+    "deg": 342
+   },
+   "minPointsFromStart": 1
+  },
+  {
+   "id": "t_main_sure",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "passive",
+   "name": "Main sûre",
+   "desc": "+4 % de dégâts des compétences d'arc par rang.",
+   "x": 537,
+   "y": 310,
+   "links": [
+    "rodeur_origine"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "dmg_tag",
+     "tag": "arc",
+     "value": 0.04,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 620,
+    "deg": 330
+   },
+   "minPointsFromStart": 1
+  },
+  {
+   "id": "t_tir_percant",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "skill",
+   "name": "Tir perçant",
+   "desc": "Une flèche lourde qui ignore 30 % de l'armure et transperce un premier ennemi.",
+   "x": 582,
+   "y": 423,
+   "links": [
+    "t_main_sure"
+   ],
+   "maxRank": 1,
+   "ability": "piercing_shot",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "piercing_shot"
+    }
+   ],
+   "polar": {
+    "r": 720,
+    "deg": 324
+   },
+   "minPointsFromStart": 2
+  },
+  {
+   "id": "t_trait_breche",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Trait de brèche",
+   "desc": "Tir perçant : ne transperce plus, mais la cible perd 25 % de défense pendant 5 s (boss 15 %).",
+   "x": 630,
+   "y": 493,
+   "links": [
+    "t_tir_percant"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_percant",
+   "ability": "piercing_shot",
+   "effects": [
+    {
+     "mod": "pierce",
+     "op": "set",
+     "value": 0
+    },
+    {
+     "mod": "onHit",
+     "debuff": "def",
+     "value": -0.25,
+     "boss": -0.15,
+     "dur": 5
+    }
+   ],
+   "vfx": "Pointe dentelée noire ; à l'impact, éclats de métal et une fissure lumineuse orangée sur l'armure de la cible pendant 5 s.",
+   "polar": {
+    "r": 800,
+    "deg": 322
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "t_tir_traversant",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Tir traversant",
+   "desc": "Tir perçant : traverse TOUS les ennemis en ligne sur 26 m (−10 % de dégâts par ennemi traversé).",
+   "x": 678,
+   "y": 424,
+   "links": [
+    "t_tir_percant"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_percant",
+   "ability": "piercing_shot",
+   "effects": [
+    {
+     "mod": "pierce",
+     "op": "set",
+     "value": 99
+    },
+    {
+     "mod": "range",
+     "op": "set",
+     "value": 26
+    },
+    {
+     "mod": "pierceFalloff",
+     "op": "set",
+     "value": 0.1
+    }
+   ],
+   "vfx": "Longue traînée blanche rectiligne qui persiste 0,4 s, anneau de choc à chaque ennemi traversé.",
+   "polar": {
+    "r": 800,
+    "deg": 328
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "t_tir_rapide",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "skill",
+   "name": "Tir rapide",
+   "desc": "Trois flèches en succession rapide.",
+   "x": 658,
+   "y": 293,
+   "links": [
+    "t_main_sure"
+   ],
+   "maxRank": 1,
+   "ability": "rapid_fire",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "rapid_fire"
+    }
+   ],
+   "polar": {
+    "r": 720,
+    "deg": 336
+   },
+   "minPointsFromStart": 2
+  },
+  {
+   "id": "t_salve_eventail",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Salve en éventail",
+   "desc": "Tir rapide : les 3 flèches partent ensemble en éventail de 30° (×0,7 chacune, 6 de poise chacune), sans canalisation.",
+   "x": 719,
+   "y": 351,
+   "links": [
+    "t_tir_rapide"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_rapide",
+   "ability": "rapid_fire",
+   "effects": [
+    {
+     "mod": "pattern",
+     "op": "set",
+     "value": "fan30"
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 0.7
+    },
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 6
+    },
+    {
+     "mod": "channelMs",
+     "op": "set",
+     "value": 0
+    }
+   ],
+   "vfx": "Trois flèches simultanées, trois traînées fines qui s'écartent ; l'arc est tenu à l'horizontale.",
+   "polar": {
+    "r": 800,
+    "deg": 334
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "t_rafale",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Rafale soutenue",
+   "desc": "Tir rapide : 5 flèches sur 1 s (×0,6 chacune), marche à 20 % pendant la rafale, mana 15 → 20.",
+   "x": 752,
+   "y": 274,
+   "links": [
+    "t_tir_rapide"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_rapide",
+   "ability": "rapid_fire",
+   "effects": [
+    {
+     "mod": "hits",
+     "op": "set",
+     "value": 5
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 0.6
+    },
+    {
+     "mod": "channelMs",
+     "op": "set",
+     "value": 1000
+    },
+    {
+     "mod": "moveDuring",
+     "op": "set",
+     "value": 0.2
+    },
+    {
+     "mod": "mp",
+     "op": "set",
+     "value": 20
+    }
+   ],
+   "vfx": "Rafale : petites étincelles sur la corde à chaque flèche, douilles de plumes qui tombent au sol.",
+   "polar": {
+    "r": 800,
+    "deg": 340
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "t_oeil_exerce",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "passive",
+   "name": "Œil exercé",
+   "desc": "+2 % de chances de coup critique par rang.",
+   "x": 779,
+   "y": 450,
+   "links": [
+    "t_tir_percant",
+    "t_tir_rapide"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "crit",
+     "value": 0.02,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 900,
+    "deg": 330
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "t_pluie",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "skill",
+   "name": "Pluie de flèches",
+   "desc": "Une pluie de flèches sur la zone ciblée.",
+   "x": 801,
+   "y": 582,
+   "links": [
+    "t_oeil_exerce"
+   ],
+   "maxRank": 1,
+   "ability": "arrow_rain",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "arrow_rain"
+    }
+   ],
+   "polar": {
+    "r": 990,
+    "deg": 324
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "t_averse_acier",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Averse d'acier",
+   "desc": "Pluie de flèches : rayon 5 → 3 m, ×1,25 → ×1,9, poise 8 → 28.",
+   "x": 839,
+   "y": 680,
+   "links": [
+    "t_pluie"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_pluie",
+   "ability": "arrow_rain",
+   "effects": [
+    {
+     "mod": "radius",
+     "op": "set",
+     "value": 3
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 1.9
+    },
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 28
+    }
+   ],
+   "vfx": "Colonne serrée de flèches d'acier qui s'abattent d'un coup ; cratère de poussière et éclats.",
+   "polar": {
+    "r": 1080,
+    "deg": 321
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "t_pluie_persistante",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Pluie persistante",
+   "desc": "Pluie de flèches : dure 3 s (4 vagues ×0,45), rayon 5,5 m, ralentit de 30 % tant qu'on reste dedans.",
+   "x": 906,
+   "y": 588,
+   "links": [
+    "t_pluie"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_pluie",
+   "ability": "arrow_rain",
+   "effects": [
+    {
+     "mod": "duration",
+     "op": "set",
+     "value": 3
+    },
+    {
+     "mod": "ticks",
+     "op": "set",
+     "value": 4
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 0.45
+    },
+    {
+     "mod": "radius",
+     "op": "set",
+     "value": 5.5
+    },
+    {
+     "mod": "slow",
+     "op": "set",
+     "value": {
+      "pct": 0.3
+     }
+    }
+   ],
+   "vfx": "Flèches qui restent plantées dans le sol en hérissant la zone ; vagues successives en pluie fine.",
+   "polar": {
+    "r": 1080,
+    "deg": 327
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "t_fleche_assommante",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "skill",
+   "name": "Flèche assommante",
+   "desc": "Une flèche à tête ronde qui déséquilibre ; +50 % de poise si elle touche un ennemi en pleine préparation d'attaque.",
+   "x": 904,
+   "y": 403,
+   "links": [
+    "t_oeil_exerce"
+   ],
+   "maxRank": 1,
+   "ability": "fleche_assommante",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "fleche_assommante"
+    }
+   ],
+   "polar": {
+    "r": 990,
+    "deg": 336
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "t_fracassante",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Flèche fracassante",
+   "desc": "Flèche assommante : poise 55 → 80, ×1,1 → ×1,4, recharge 10 → 14 s.",
+   "x": 954,
+   "y": 507,
+   "links": [
+    "t_fleche_assommante"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_assommante",
+   "ability": "fleche_assommante",
+   "effects": [
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 80
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 1.4
+    },
+    {
+     "mod": "cd",
+     "op": "set",
+     "value": 14
+    }
+   ],
+   "vfx": "Tête de pierre qui éclate à l'impact en fragments ; onde sourde et la cible recule d'un pas.",
+   "polar": {
+    "r": 1080,
+    "deg": 332
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "t_fleche_arret",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Flèche d'arrêt",
+   "desc": "Flèche assommante : si elle touche pendant une préparation télégraphiée, l'attaque est annulée net (hors boss : +100 % de poise au lieu de +50 %). Poise de base 55 → 40.",
+   "x": 1001,
+   "y": 405,
+   "links": [
+    "t_fleche_assommante"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_assommante",
+   "ability": "fleche_assommante",
+   "effects": [
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 40
+    },
+    {
+     "mod": "interruptTele",
+     "op": "set",
+     "value": true
+    },
+    {
+     "mod": "teleBonusPoiseBoss",
+     "op": "set",
+     "value": 1.0
+    }
+   ],
+   "vfx": "Flèche à tête de fer en croissant ; à l'annulation, la zone télégraphiée rouge se brise en éclats de verre.",
+   "polar": {
+    "r": 1080,
+    "deg": 338
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "t_tir_tendu",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "passive",
+   "name": "Tir tendu",
+   "desc": "+8 % de vitesse des projectiles et +1 m de portée des tirs à l'arc par rang.",
+   "x": 1013,
+   "y": 585,
+   "links": [
+    "t_pluie",
+    "t_fleche_assommante"
+   ],
+   "maxRank": 2,
+   "effects": [
+    {
+     "stat": "proj_speed_tag",
+     "tag": "arc",
+     "value": 0.08,
+     "perRank": true
+    },
+    {
+     "stat": "range_tag",
+     "tag": "arc",
+     "value": 1,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 1170,
+    "deg": 330
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "t_tir_ricochet",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Tir ricochet",
+   "desc": "Tir : la flèche rebondit sur 1 ennemi à moins de 6 m (×0,5). Exclusif avec « Pointes enduites » et « Tir à bout portant ».",
+   "x": 926,
+   "y": 723,
+   "links": [
+    "t_tir_tendu"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_approche",
+   "ability": "shot",
+   "effects": [
+    {
+     "mod": "bounce",
+     "op": "set",
+     "value": {
+      "count": 1,
+      "range": 6,
+      "power": 0.5
+     }
+    }
+   ],
+   "vfx": "Étincelle blanche au premier impact puis arc de lumière vers la seconde cible.",
+   "polar": {
+    "r": 1175,
+    "deg": 322
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "t_sang_froid",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "passive",
+   "name": "Sang-froid",
+   "desc": "Tir chargé (Attaque chargée) : charge 25 % plus rapide, et la pleine charge perce 2 ennemis au lieu d'1.",
+   "x": 1089,
+   "y": 440,
+   "links": [
+    "t_tir_tendu"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "mod": "shot.charged.holdMs",
+     "op": "mul",
+     "value": 0.75
+    },
+    {
+     "mod": "shot.charged.pierceAtFull",
+     "op": "set",
+     "value": 2
+    }
+   ],
+   "polar": {
+    "r": 1175,
+    "deg": 338
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "t_carquois_profond",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "passive",
+   "name": "Carquois profond",
+   "desc": "+8 mana max et −6 % de coût en mana des compétences d'arc par rang.",
+   "x": 1010,
+   "y": 761,
+   "links": [
+    "t_tir_tendu"
+   ],
+   "maxRank": 2,
+   "effects": [
+    {
+     "stat": "mp_max",
+     "value": 8,
+     "perRank": true
+    },
+    {
+     "stat": "cost_tag",
+     "tag": "arc",
+     "value": -0.06,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 1265,
+    "deg": 323
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "t_trait_fatal",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "skill",
+   "name": "Trait fatal",
+   "desc": "Vous visez 1,5 s, immobile, puis décochez un trait qui traverse tout sur 32 m. (Demande 10 points dépensés dans la région Rôdeur.)",
+   "x": 1111,
+   "y": 616,
+   "links": [
+    "t_tir_tendu"
+   ],
+   "maxRank": 1,
+   "ability": "trait_fatal",
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 10
+   },
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "trait_fatal"
+    }
+   ],
+   "polar": {
+    "r": 1270,
+    "deg": 331
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "t_visee_eclair",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Visée éclair",
+   "desc": "Trait fatal : visée 1,5 → 0,9 s, ×5,0 → ×3,6.",
+   "x": 1233,
+   "y": 575,
+   "links": [
+    "t_trait_fatal"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_trait_fatal",
+   "ability": "trait_fatal",
+   "effects": [
+    {
+     "mod": "channelMs",
+     "op": "set",
+     "value": 900
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 3.6
+    }
+   ],
+   "vfx": "Viseur réduit, flèche qui s'embrase de blanc très vite ; traînée courte et sèche.",
+   "polar": {
+    "r": 1360,
+    "deg": 335
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "t_perce_coeur",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "variant",
+   "name": "Perce-cœur",
+   "desc": "Trait fatal : contre une cible déséquilibrée, ×1,6 et critique garanti ; visée 1,5 → 1,7 s.",
+   "x": 1153,
+   "y": 721,
+   "links": [
+    "t_trait_fatal"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_trait_fatal",
+   "ability": "trait_fatal",
+   "effects": [
+    {
+     "mod": "vsStaggered",
+     "op": "set",
+     "value": {
+      "mult": 1.6,
+      "crit": true
+     }
+    },
+    {
+     "mod": "channelMs",
+     "op": "set",
+     "value": 1700
+    }
+   ],
+   "vfx": "Pendant la visée, un cœur rouge pulse sur la cible ; à l'impact, gerbe rouge sombre et ralenti de 0,1 s.",
+   "polar": {
+    "r": 1360,
+    "deg": 328
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "t_point_faible",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "passive",
+   "name": "Point faible",
+   "desc": "+12 % de dégâts critiques par rang.",
+   "x": 1193,
+   "y": 434,
+   "links": [
+    "t_sang_froid"
+   ],
+   "maxRank": 2,
+   "effects": [
+    {
+     "stat": "crit_dmg",
+     "value": 0.12,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 1270,
+    "deg": 340
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "t_tir_de_maitre",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "passive",
+   "name": "Tir de maître",
+   "desc": "+10 % de dégâts contre les élites et les boss.",
+   "x": 1049,
+   "y": 881,
+   "links": [
+    "t_carquois_profond"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmg_vs",
+     "target": [
+      "elite",
+      "boss"
+     ],
+     "value": 0.1
+    }
+   ],
+   "polar": {
+    "r": 1370,
+    "deg": 320
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "t_posture_archer",
+   "region": "rodeur",
+   "branch": "tireur",
+   "type": "keystone",
+   "name": "Posture de l'archer",
+   "desc": "Après 0,6 s sans bouger : +30 % de chances de critique et Tir chargé / Trait fatal se chargent 30 % plus vite. (Demande 12 points dépensés dans la région Rôdeur.)",
+   "x": 1281,
+   "y": 710,
+   "links": [
+    "t_trait_fatal"
+   ],
+   "maxRank": 1,
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 12
+   },
+   "effects": [
+    {
+     "stat": "crit",
+     "value": 0.3,
+     "cond": "still_0.6s"
+    },
+    {
+     "stat": "charge_speed",
+     "value": 0.3,
+     "cond": "still_0.6s"
+    },
+    {
+     "stat": "roll_st",
+     "value": 10
+    }
+   ],
+   "drawback": "Bouger annule la posture, et vos roulades coûtent +10 d'endurance.",
+   "polar": {
+    "r": 1465,
+    "deg": 331
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "q_pied_leger",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "passive",
+   "name": "Pied léger",
+   "desc": "+3 % de vitesse de déplacement et −5 % d'endurance dépensée en sprint par rang.",
+   "x": 606,
+   "y": 129,
+   "links": [
+    "rodeur_origine"
+   ],
+   "maxRank": 2,
+   "effects": [
+    {
+     "stat": "move_speed",
+     "value": 0.03,
+     "perRank": true
+    },
+    {
+     "stat": "sprint_st",
+     "value": -0.05,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 620,
+    "deg": 348
+   },
+   "minPointsFromStart": 1
+  },
+  {
+   "id": "q_marque",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "skill",
+   "name": "Marque du chasseur",
+   "desc": "Marque une cible 15 s : elle subit +10 % de vos dégâts et reste visible à travers la brume. Une seule marque à la fois.",
+   "x": 692,
+   "y": 198,
+   "links": [
+    "q_pied_leger"
+   ],
+   "maxRank": 1,
+   "ability": "marque_de_chasse",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "marque_de_chasse"
+    }
+   ],
+   "polar": {
+    "r": 720,
+    "deg": 344
+   },
+   "minPointsFromStart": 2
+  },
+  {
+   "id": "q_marque_sang",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Marque de sang",
+   "desc": "Marque du chasseur : bonus +10 % → +6 %, mais la cible marquée accumule +30 % de saignement.",
+   "x": 781,
+   "y": 195,
+   "links": [
+    "q_marque"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_marque",
+   "ability": "marque_de_chasse",
+   "effects": [
+    {
+     "mod": "dmgTakenFromYou",
+     "op": "set",
+     "value": 0.06
+    },
+    {
+     "mod": "bleedTakenMod",
+     "op": "set",
+     "value": 0.3
+    }
+   ],
+   "vfx": "Marque en forme de griffe rouge sang qui goutte au-dessus de la cible.",
+   "polar": {
+    "r": 805,
+    "deg": 346
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "q_marque_meute",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Marque de la meute",
+   "desc": "Marque du chasseur : les +10 % s'appliquent aussi aux dégâts de vos alliés ; durée 15 → 10 s.",
+   "x": 797,
+   "y": 112,
+   "links": [
+    "q_marque"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_marque",
+   "ability": "marque_de_chasse",
+   "effects": [
+    {
+     "mod": "appliesToAllies",
+     "op": "set",
+     "value": true
+    },
+    {
+     "mod": "duration",
+     "op": "set",
+     "value": 10
+    }
+   ],
+   "vfx": "Marque dorée en tête de loup, visible par tout le groupe, avec un halo au sol autour de la cible.",
+   "polar": {
+    "r": 805,
+    "deg": 352
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "q_coup_de_dague",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "skill",
+   "name": "Coup de dague",
+   "desc": "Deux coups de couteau rapides ; votre prochain Tir dans les 2 s inflige +20 % de dégâts.",
+   "x": 698,
+   "y": 49,
+   "links": [
+    "q_pied_leger"
+   ],
+   "maxRank": 1,
+   "ability": "coup_de_dague",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "coup_de_dague"
+    }
+   ],
+   "polar": {
+    "r": 700,
+    "deg": 356
+   },
+   "minPointsFromStart": 2
+  },
+  {
+   "id": "q_dague_saignante",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Dague saignante",
+   "desc": "Coup de dague : chaque coup ajoute 20 de saignement ; dégâts ×0,7+×0,9 → ×0,6+×0,8.",
+   "x": 785,
+   "y": 14,
+   "links": [
+    "q_coup_de_dague"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_dague",
+   "ability": "coup_de_dague",
+   "effects": [
+    {
+     "mod": "bleedBuild",
+     "op": "set",
+     "value": 20
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": [
+      0.6,
+      0.8
+     ]
+    }
+   ],
+   "vfx": "Lame qui laisse une traînée rouge sombre ; gouttes de sang stylisées à l'impact.",
+   "polar": {
+    "r": 785,
+    "deg": 359
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "q_riposte_couteau",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Riposte au couteau",
+   "desc": "Coup de dague : dans les 0,4 s après une roulade réussie (esquive d'un coup) ou une Garde, critique garanti et +20 de poise.",
+   "x": 781,
+   "y": -82,
+   "links": [
+    "q_coup_de_dague"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_dague",
+   "ability": "coup_de_dague",
+   "effects": [
+    {
+     "mod": "afterDodgeOrGuard",
+     "op": "set",
+     "value": {
+      "windowMs": 400,
+      "crit": true,
+      "poiseAdd": 20
+     }
+    }
+   ],
+   "vfx": "Éclair blanc sur la lame et bref ralenti visuel (0,08 s) quand la riposte est déclenchée.",
+   "polar": {
+    "r": 785,
+    "deg": 366
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "q_bout_portant",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Tir à bout portant",
+   "desc": "Tir : +45 % de dégâts à moins de 6 m, −20 % au-delà de 12 m. Exclusif avec « Tir ricochet » et « Pointes enduites ».",
+   "x": 879,
+   "y": -46,
+   "links": [
+    "q_coup_de_dague"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_approche",
+   "ability": "shot",
+   "effects": [
+    {
+     "mod": "distanceMult",
+     "op": "set",
+     "value": [
+      {
+       "max": 6,
+       "mult": 1.45
+      },
+      {
+       "min": 12,
+       "mult": 0.8
+      }
+     ]
+    }
+   ],
+   "vfx": "À courte distance, bouffée de poussière au départ et impact plus lourd, flèche à peine visible.",
+   "polar": {
+    "r": 880,
+    "deg": 363
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "q_acrobate",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "passive",
+   "name": "Acrobate",
+   "desc": "Saut : +0,1 s en l'air ; un Tir pendant le saut décoche 2 flèches à ×0,6 (tir aérien), suivi de 0,3 s de réception.",
+   "x": 886,
+   "y": 125,
+   "links": [
+    "q_marque",
+    "q_coup_de_dague"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "jump_air",
+     "value": 0.1
+    },
+    {
+     "mod": "shot.airborne",
+     "op": "set",
+     "value": {
+      "arrows": 2,
+      "power": 0.6,
+      "landRec": 0.3
+     }
+    }
+   ],
+   "polar": {
+    "r": 895,
+    "deg": 352
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "q_bond_retrait",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "skill",
+   "name": "Bond de retrait",
+   "desc": "Un bond de 6 m en arrière, puis un Tir à ×0,6 en retombant.",
+   "x": 940,
+   "y": 217,
+   "links": [
+    "q_acrobate"
+   ],
+   "maxRank": 1,
+   "ability": "bond_de_retrait",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "bond_de_retrait"
+    }
+   ],
+   "polar": {
+    "r": 965,
+    "deg": 347
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "q_salto_tireur",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Salto tireur",
+   "desc": "Bond de retrait : le tir final devient un Tir chargé complet (×1,6, 18 de poise) ; endurance 28 → 34.",
+   "x": 1014,
+   "y": 291,
+   "links": [
+    "q_bond_retrait"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_bond",
+   "ability": "bond_de_retrait",
+   "effects": [
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 1.6
+    },
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 18
+    },
+    {
+     "mod": "st",
+     "op": "set",
+     "value": 34
+    }
+   ],
+   "vfx": "Salto arrière complet, l'arc bandé à l'envers ; flèche chargée qui laisse une traînée brillante.",
+   "polar": {
+    "r": 1055,
+    "deg": 344
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "q_bond_lateral",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Bond latéral",
+   "desc": "Bond de retrait : dans n'importe quelle direction, 5 m, plus de tir ; recharge 10 → 8 s.",
+   "x": 1039,
+   "y": 183,
+   "links": [
+    "q_bond_retrait"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_bond",
+   "ability": "bond_de_retrait",
+   "effects": [
+    {
+     "mod": "direction",
+     "op": "set",
+     "value": "any"
+    },
+    {
+     "mod": "range",
+     "op": "set",
+     "value": 5
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 0
+    },
+    {
+     "mod": "cd",
+     "op": "set",
+     "value": 8
+    }
+   ],
+   "vfx": "Glissade basse avec traînée de feuilles mortes et de brume au ras du sol.",
+   "polar": {
+    "r": 1055,
+    "deg": 350
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "q_piege",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "skill",
+   "name": "Piège à mâchoires",
+   "desc": "Pose un piège (armé en 1 s) qui mord le premier ennemi : ×1,5 et immobilisé 2 s (élites 1 s, boss : ralentis de 40 %).",
+   "x": 964,
+   "y": 34,
+   "links": [
+    "q_acrobate"
+   ],
+   "maxRank": 1,
+   "ability": "piege_a_machoires",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "piege_a_machoires"
+    }
+   ],
+   "polar": {
+    "r": 965,
+    "deg": 358
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "q_piege_ronces",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Piège de ronces",
+   "desc": "Piège : n'immobilise plus ; zone de 3 m qui ralentit de 50 % pendant 4 s et ajoute 10 de saignement par seconde.",
+   "x": 1054,
+   "y": 55,
+   "links": [
+    "q_piege"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_piege",
+   "ability": "piege_a_machoires",
+   "effects": [
+    {
+     "mod": "root",
+     "op": "set",
+     "value": 0
+    },
+    {
+     "mod": "radius",
+     "op": "set",
+     "value": 3
+    },
+    {
+     "mod": "slow",
+     "op": "set",
+     "value": {
+      "pct": 0.5,
+      "dur": 4
+     }
+    },
+    {
+     "mod": "bleedPerS",
+     "op": "set",
+     "value": 10
+    }
+   ],
+   "vfx": "Ronces noires qui jaillissent du sol en cercle et s'enroulent autour des jambes.",
+   "polar": {
+    "r": 1055,
+    "deg": 357
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "q_piege_explosif",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Piège à poudre",
+   "desc": "Piège : explose sur 3 m (×2,2, 45 de poise), sans immobilisation.",
+   "x": 1052,
+   "y": -74,
+   "links": [
+    "q_piege"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_piege",
+   "ability": "piege_a_machoires",
+   "effects": [
+    {
+     "mod": "root",
+     "op": "set",
+     "value": 0
+    },
+    {
+     "mod": "radius",
+     "op": "set",
+     "value": 3
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 2.2
+    },
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 45
+    }
+   ],
+   "vfx": "Petit baril de poudre noire ; explosion orangée courte avec fumée grise et éclats de bois.",
+   "polar": {
+    "r": 1055,
+    "deg": 364
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "q_garde_couteau",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "passive",
+   "name": "Garde du couteau",
+   "desc": "Garde avec un arc en main : le couteau de ceinture pare, −20 % d'endurance par coup bloqué ; une parade parfaite (si apprise) enchaîne un Coup de dague à ×2,5.",
+   "x": 1139,
+   "y": 120,
+   "links": [
+    "q_bond_retrait",
+    "q_piege"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "guard_st",
+     "value": -0.2,
+     "cond": "weapon_bow"
+    },
+    {
+     "mod": "parryRiposte",
+     "op": "set",
+     "value": {
+      "ability": "coup_de_dague",
+      "mult": 2.5
+     }
+    }
+   ],
+   "polar": {
+    "r": 1145,
+    "deg": 354
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "q_au_plus_pres",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "keystone",
+   "name": "Au plus près",
+   "desc": "À moins de 3 m, votre Tir devient automatiquement un enchaînement de 2 coups de dague (×0,8 + ×1,0, 12 de poise) et vos compétences « dague » font +30 % de dégâts. (Demande 8 points dépensés dans la région Rôdeur.)",
+   "x": 1146,
+   "y": -100,
+   "links": [
+    "q_garde_couteau"
+   ],
+   "maxRank": 1,
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 8
+   },
+   "effects": [
+    {
+     "mod": "shot.melee_under",
+     "op": "set",
+     "value": {
+      "dist": 3,
+      "power": [
+       0.8,
+       1.0
+      ],
+      "poise": 12
+     }
+    },
+    {
+     "stat": "dmg_tag",
+     "tag": "dague",
+     "value": 0.3
+    },
+    {
+     "stat": "dmg_tag",
+     "tag": "arc",
+     "value": -0.15
+    }
+   ],
+   "drawback": "Vos compétences d'arc infligent −15 % de dégâts.",
+   "polar": {
+    "r": 1150,
+    "deg": 365
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "q_filet",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "skill",
+   "name": "Filet lesté",
+   "desc": "Lance un filet qui ralentit de 60 % pendant 3 s ; il brise net la charge d'un ennemi qui s'élance.",
+   "x": 1212,
+   "y": 236,
+   "links": [
+    "q_garde_couteau"
+   ],
+   "maxRank": 1,
+   "ability": "filet",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "filet"
+    }
+   ],
+   "polar": {
+    "r": 1235,
+    "deg": 349
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "q_filet_acier",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Filet d'acier",
+   "desc": "Filet lesté : immobilise 1,5 s au lieu de ralentir (boss : ralentit seulement), recharge 16 → 22 s.",
+   "x": 1274,
+   "y": 365,
+   "links": [
+    "q_filet"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_filet",
+   "ability": "filet",
+   "effects": [
+    {
+     "mod": "root",
+     "op": "set",
+     "value": 1.5
+    },
+    {
+     "mod": "cd",
+     "op": "set",
+     "value": 22
+    }
+   ],
+   "vfx": "Mailles métalliques qui scintillent ; la cible est plaquée au sol, poids aux coins du filet.",
+   "polar": {
+    "r": 1325,
+    "deg": 344
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "q_filet_collant",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Filet collant",
+   "desc": "Filet lesté : se déploie au sol en zone de 3 m pendant 5 s, ralentit de 50 % tout ce qui y entre.",
+   "x": 1309,
+   "y": 207,
+   "links": [
+    "q_filet"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_filet",
+   "ability": "filet",
+   "effects": [
+    {
+     "mod": "ground",
+     "op": "set",
+     "value": {
+      "radius": 3,
+      "dur": 5,
+      "slow": 0.5
+     }
+    }
+   ],
+   "vfx": "Toile de corde enduite de résine luisante étalée au sol, fils qui s'étirent sous les pas.",
+   "polar": {
+    "r": 1325,
+    "deg": 351
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "q_instinct",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "passive",
+   "name": "Instinct du traqueur",
+   "desc": "La zone télégraphiée des attaques de votre cible marquée apparaît 0,15 s plus tôt.",
+   "x": 1235,
+   "y": 22,
+   "links": [
+    "q_garde_couteau"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "tele_early_marked",
+     "value": 150
+    }
+   ],
+   "polar": {
+    "r": 1235,
+    "deg": 359
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "q_proie_unique",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "keystone",
+   "name": "Proie unique",
+   "desc": "Votre Marque ne s'efface plus avant la mort de la cible et son bonus passe à +24 %. (Demande 12 points dépensés dans la région Rôdeur.)",
+   "x": 1339,
+   "y": 409,
+   "links": [
+    "q_filet"
+   ],
+   "maxRank": 1,
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 12
+   },
+   "effects": [
+    {
+     "mod": "marque_de_chasse.duration",
+     "op": "set",
+     "value": "until_death"
+    },
+    {
+     "mod": "marque_de_chasse.dmgTakenFromYou",
+     "op": "set",
+     "value": 0.24
+    },
+    {
+     "stat": "dmg_vs_unmarked",
+     "value": -0.15
+    },
+    {
+     "mod": "marque_de_chasse.cd",
+     "op": "set",
+     "value": 30
+    }
+   ],
+   "drawback": "−15 % de dégâts contre tout ce qui n'est pas marqué ; changer de proie coûte 30 s de recharge à la Marque.",
+   "polar": {
+    "r": 1400,
+    "deg": 343
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "q_hallali",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "skill",
+   "name": "Hallali",
+   "desc": "Sonne l'hallali 10 s : +20 % de dégâts contre la cible marquée, roulades −30 % d'endurance, chaque coup sur la proie rend 3 d'endurance. (Demande 10 points dépensés dans la région Rôdeur.)",
+   "x": 1365,
+   "y": 119,
+   "links": [
+    "q_filet",
+    "q_instinct"
+   ],
+   "maxRank": 1,
+   "ability": "hallali",
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 10
+   },
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "hallali"
+    }
+   ],
+   "polar": {
+    "r": 1370,
+    "deg": 355
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "q_hallali_sanglant",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Hallali sanglant",
+   "desc": "Hallali : +30 % d'accumulation de saignement pendant l'effet ; durée 10 → 8 s.",
+   "x": 1423,
+   "y": 303,
+   "links": [
+    "q_hallali"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_hallali",
+   "ability": "hallali",
+   "effects": [
+    {
+     "mod": "bleedBuildMod",
+     "op": "set",
+     "value": 0.3
+    },
+    {
+     "mod": "duration",
+     "op": "set",
+     "value": 8
+    }
+   ],
+   "vfx": "Cor en corne noire ; halo rouge autour des armes du rôdeur pendant l'effet.",
+   "polar": {
+    "r": 1455,
+    "deg": 348
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "q_hallali_meute",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "variant",
+   "name": "Hallali de meute",
+   "desc": "Hallali : les alliés à 15 m reçoivent la moitié des effets.",
+   "x": 1455,
+   "y": 0,
+   "links": [
+    "q_hallali"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_hallali",
+   "ability": "hallali",
+   "effects": [
+    {
+     "mod": "allyRadius",
+     "op": "set",
+     "value": 15
+    },
+    {
+     "mod": "allyFactor",
+     "op": "set",
+     "value": 0.5
+    }
+   ],
+   "vfx": "Onde sonore dorée qui s'étend en anneau ; petite icône de cor au-dessus des alliés touchés.",
+   "polar": {
+    "r": 1455,
+    "deg": 360
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "q_fantome_brumes",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "type": "keystone",
+   "name": "Fantôme des brumes",
+   "desc": "Une roulade qui évite un coup (esquive parfaite) vous rend invisible 1,5 s : les monstres perdent votre trace (JcJ : 0,8 s, silhouette visible à 5 m). Recharge interne 8 s. (Demande 14 points dépensés dans la région Rôdeur.)",
+   "x": 1472,
+   "y": 155,
+   "links": [
+    "q_hallali"
+   ],
+   "maxRank": 1,
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 14
+   },
+   "effects": [
+    {
+     "mod": "onPerfectDodge",
+     "op": "set",
+     "value": {
+      "stealth": 1.5,
+      "stealthPvp": 0.8,
+      "icd": 8
+     }
+    },
+    {
+     "stat": "hp_max_pct",
+     "value": -0.15
+    }
+   ],
+   "drawback": "−15 % de PV max.",
+   "polar": {
+    "r": 1480,
+    "deg": 354
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "v_herboriste",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "passive",
+   "name": "Herboriste",
+   "desc": "+5 % de dégâts de poison et de saignement par rang.",
+   "x": 415,
+   "y": 461,
+   "links": [
+    "rodeur_origine"
+   ],
+   "maxRank": 2,
+   "effects": [
+    {
+     "stat": "dmg_tag",
+     "tag": "poison",
+     "value": 0.05,
+     "perRank": true
+    },
+    {
+     "stat": "dmg_tag",
+     "tag": "saignement",
+     "value": 0.05,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 620,
+    "deg": 312
+   },
+   "minPointsFromStart": 1
+  },
+  {
+   "id": "v_fleche_empoisonnee",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "skill",
+   "name": "Flèche empoisonnée",
+   "desc": "Une flèche qui ajoute une charge de poison (×0,25 par seconde pendant 6 s, jusqu'à 3 charges).",
+   "x": 387,
+   "y": 595,
+   "links": [
+    "v_herboriste"
+   ],
+   "maxRank": 1,
+   "ability": "fleche_empoisonnee",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "fleche_empoisonnee"
+    }
+   ],
+   "polar": {
+    "r": 710,
+    "deg": 303
+   },
+   "minPointsFromStart": 2
+  },
+  {
+   "id": "v_venin_paralysant",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Venin paralysant",
+   "desc": "Flèche empoisonnée : chaque charge ralentit de 8 % (24 % à 3 charges), dégâts du poison −20 %.",
+   "x": 363,
+   "y": 713,
+   "links": [
+    "v_fleche_empoisonnee"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_fleche_empoisonnee",
+   "ability": "fleche_empoisonnee",
+   "effects": [
+    {
+     "mod": "slowPerStack",
+     "op": "set",
+     "value": 0.08
+    },
+    {
+     "mod": "poison.perStackPerS",
+     "op": "mul",
+     "value": 0.8
+    }
+   ],
+   "vfx": "Poison bleu-violet ; la cible laisse des traînées de brume lente derrière elle.",
+   "polar": {
+    "r": 800,
+    "deg": 297
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "v_venin_corrosif",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Venin corrosif",
+   "desc": "Flèche empoisonnée : chaque charge retire 5 % de défense à la cible, dégâts du poison −10 %.",
+   "x": 436,
+   "y": 671,
+   "links": [
+    "v_fleche_empoisonnee"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_fleche_empoisonnee",
+   "ability": "fleche_empoisonnee",
+   "effects": [
+    {
+     "mod": "defPerStack",
+     "op": "set",
+     "value": -0.05
+    },
+    {
+     "mod": "poison.perStackPerS",
+     "op": "mul",
+     "value": 0.9
+    }
+   ],
+   "vfx": "Poison vert acide qui fume et ronge : petites bulles et taches corrodées sur l'armure.",
+   "polar": {
+    "r": 800,
+    "deg": 303
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "v_fleche_barbelee",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "skill",
+   "name": "Flèche barbelée",
+   "desc": "Ajoute 35 de saignement. À 100, la plaie éclate : ×1,5 + 6 % des PV max (boss 2 %, joueurs 4 %).",
+   "x": 493,
+   "y": 511,
+   "links": [
+    "v_herboriste"
+   ],
+   "maxRank": 1,
+   "ability": "fleche_barbelee",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "fleche_barbelee"
+    }
+   ],
+   "polar": {
+    "r": 710,
+    "deg": 314
+   },
+   "minPointsFromStart": 2
+  },
+  {
+   "id": "v_barbes_profondes",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Barbes profondes",
+   "desc": "Flèche barbelée : saignement 35 → 50, dégâts ×1,0 → ×0,8.",
+   "x": 514,
+   "y": 613,
+   "links": [
+    "v_fleche_barbelee"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_fleche_barbelee",
+   "ability": "fleche_barbelee",
+   "effects": [
+    {
+     "mod": "bleedBuild",
+     "op": "set",
+     "value": 50
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 0.8
+    }
+   ],
+   "vfx": "Pointe à crochets multiples ; la flèche reste plantée et suinte.",
+   "polar": {
+    "r": 800,
+    "deg": 310
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "v_plaie_ouverte",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Plaie ouverte",
+   "desc": "Flèche barbelée : quand la plaie éclate, la cible subit +12 % de dégâts pendant 6 s.",
+   "x": 575,
+   "y": 556,
+   "links": [
+    "v_fleche_barbelee"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_fleche_barbelee",
+   "ability": "fleche_barbelee",
+   "effects": [
+    {
+     "mod": "onBleedBurst",
+     "op": "set",
+     "value": {
+      "dmgTaken": 0.12,
+      "dur": 6
+     }
+    }
+   ],
+   "vfx": "À l'éclatement, entaille rouge lumineuse qui reste visible 6 s sur la cible.",
+   "polar": {
+    "r": 800,
+    "deg": 316
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "v_mithridatisation",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "passive",
+   "name": "Mithridatisation",
+   "desc": "Les poisons et saignements que vous subissez durent 30 % moins longtemps ; +5 % de résistance aux dégâts de poison.",
+   "x": 560,
+   "y": 692,
+   "links": [
+    "v_fleche_empoisonnee",
+    "v_fleche_barbelee"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dot_taken_dur",
+     "value": -0.3
+    },
+    {
+     "stat": "res_poison",
+     "value": 0.05
+    }
+   ],
+   "polar": {
+    "r": 890,
+    "deg": 309
+   },
+   "minPointsFromStart": 3
+  },
+  {
+   "id": "v_cueilleur",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "passive",
+   "name": "Cueilleur de brume",
+   "desc": "Récolte : +20 % de chances d'herbe en plus ; vos potions de soin rendent +10 %. (Point d'accroche vers la passerelle Arcaniste sylvestre.)",
+   "x": 436,
+   "y": 787,
+   "links": [
+    "v_mithridatisation",
+    "pont_mr:*"
+   ],
+   "maxRank": 1,
+   "anchor": "pont_mr",
+   "effects": [
+    {
+     "stat": "gather_herb_extra",
+     "value": 0.2
+    },
+    {
+     "stat": "potion_heal",
+     "value": 0.1
+    }
+   ],
+   "polar": {
+    "r": 900,
+    "deg": 299
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "v_entaille",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "skill",
+   "name": "Entaille venimeuse",
+   "desc": "Un revers de dague en arc (×1,1) : 2 charges de poison, 20 de saignement, puis un petit saut de 2 m en arrière.",
+   "x": 505,
+   "y": 840,
+   "links": [
+    "v_mithridatisation"
+   ],
+   "maxRank": 1,
+   "ability": "entaille_venimeuse",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "entaille_venimeuse"
+    }
+   ],
+   "polar": {
+    "r": 980,
+    "deg": 301
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "v_entaille_profonde",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Entaille profonde",
+   "desc": "Entaille venimeuse : plus de poison, mais saignement 20 → 45.",
+   "x": 502,
+   "y": 945,
+   "links": [
+    "v_entaille"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_entaille",
+   "ability": "entaille_venimeuse",
+   "effects": [
+    {
+     "mod": "poisonStacks",
+     "op": "set",
+     "value": 0
+    },
+    {
+     "mod": "bleedBuild",
+     "op": "set",
+     "value": 45
+    }
+   ],
+   "vfx": "Revers large avec trainée rouge épaisse ; pas de brume verte.",
+   "polar": {
+    "r": 1070,
+    "deg": 298
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "v_entaille_fuyante",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Entaille fuyante",
+   "desc": "Entaille venimeuse : saut arrière 2 → 4 m avec 0,15 s d'invulnérabilité, recharge 8 → 10 s.",
+   "x": 583,
+   "y": 897,
+   "links": [
+    "v_entaille"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_entaille",
+   "ability": "entaille_venimeuse",
+   "effects": [
+    {
+     "mod": "hopBack",
+     "op": "set",
+     "value": 4
+    },
+    {
+     "mod": "iframeMs",
+     "op": "set",
+     "value": 150
+    },
+    {
+     "mod": "cd",
+     "op": "set",
+     "value": 10
+    }
+   ],
+   "vfx": "Nuage de brume verte laissé à l'endroit du coup pendant que le rôdeur bondit en arrière.",
+   "polar": {
+    "r": 1070,
+    "deg": 303
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "v_nuage",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "skill",
+   "name": "Nuage toxique",
+   "desc": "Une fiole qui éclate en nuage de 4 m pendant 6 s : 1 charge de poison par seconde, et les ennemis dedans infligent −10 % de dégâts.",
+   "x": 656,
+   "y": 728,
+   "links": [
+    "v_mithridatisation"
+   ],
+   "maxRank": 1,
+   "ability": "nuage_toxique",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "nuage_toxique"
+    }
+   ],
+   "polar": {
+    "r": 980,
+    "deg": 312
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "v_brume_etouffante",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Brume étouffante",
+   "desc": "Nuage toxique : les ennemis dedans attaquent 25 % plus lentement (préparations allongées d'autant) ; durée 6 → 4 s.",
+   "x": 673,
+   "y": 832,
+   "links": [
+    "v_nuage"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_nuage",
+   "ability": "nuage_toxique",
+   "effects": [
+    {
+     "mod": "enemyAtkSpeed",
+     "op": "set",
+     "value": -0.25
+    },
+    {
+     "mod": "duration",
+     "op": "set",
+     "value": 4
+    }
+   ],
+   "vfx": "Nuage plus dense, gris-vert, presque opaque ; les silhouettes des monstres dedans toussent.",
+   "polar": {
+    "r": 1070,
+    "deg": 309
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "v_nuage_rampant",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Nuage rampant",
+   "desc": "Nuage toxique : dérive à 1,5 m/s vers l'ennemi empoisonné le plus proche ; rayon 4 → 3 m.",
+   "x": 743,
+   "y": 770,
+   "links": [
+    "v_nuage"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_nuage",
+   "ability": "nuage_toxique",
+   "effects": [
+    {
+     "mod": "drift",
+     "op": "set",
+     "value": 1.5
+    },
+    {
+     "mod": "radius",
+     "op": "set",
+     "value": 3
+    }
+   ],
+   "vfx": "Nuage qui avance en volutes, laissant une traînée d'herbe flétrie au sol.",
+   "polar": {
+    "r": 1070,
+    "deg": 314
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "v_pointes_enduites",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Pointes enduites",
+   "desc": "Tir : un tir sur trois ajoute une charge de poison. Exclusif avec « Tir ricochet » et « Tir à bout portant ».",
+   "x": 834,
+   "y": 806,
+   "links": [
+    "v_nuage"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_tir_approche",
+   "ability": "shot",
+   "effects": [
+    {
+     "mod": "everyNth",
+     "op": "set",
+     "value": {
+      "n": 3,
+      "poisonStacks": 1
+     }
+    }
+   ],
+   "vfx": "Une flèche sur trois a une pointe verte luisante et laisse une petite traînée de brume.",
+   "polar": {
+    "r": 1160,
+    "deg": 316
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "v_saigneur",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "passive",
+   "name": "Saigneur",
+   "desc": "+8 % d'accumulation de saignement par rang.",
+   "x": 632,
+   "y": 973,
+   "links": [
+    "v_entaille"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "bleed_build",
+     "value": 0.08,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 1160,
+    "deg": 303
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "v_contagion",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "passive",
+   "name": "Contagion",
+   "desc": "Quand un ennemi empoisonné meurt, ses charges de poison passent à un ennemi à moins de 5 m.",
+   "x": 730,
+   "y": 901,
+   "links": [
+    "v_entaille",
+    "v_nuage"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "mod": "onPoisonedDeath",
+     "op": "set",
+     "value": {
+      "spreadR": 5,
+      "targets": 1
+     }
+    }
+   ],
+   "polar": {
+    "r": 1160,
+    "deg": 309
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "v_virulence",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "passive",
+   "name": "Virulence",
+   "desc": "+10 % de dégâts par seconde du poison par rang.",
+   "x": 787,
+   "y": 971,
+   "links": [
+    "v_contagion"
+   ],
+   "maxRank": 2,
+   "effects": [
+    {
+     "stat": "poison_tick",
+     "value": 0.1,
+     "perRank": true
+    }
+   ],
+   "polar": {
+    "r": 1250,
+    "deg": 309
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "v_fleau",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "skill",
+   "name": "Fléau",
+   "desc": "Tous vos poisons dans un rayon de 12 m éclatent : 150 % des dégâts restants tout de suite, +50 de saignement, et 1 charge se propage à 4 m. (Demande 10 points dépensés dans la région Rôdeur.)",
+   "x": 825,
+   "y": 1056,
+   "links": [
+    "v_virulence"
+   ],
+   "maxRank": 1,
+   "ability": "fleau",
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 10
+   },
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "fleau"
+    }
+   ],
+   "polar": {
+    "r": 1340,
+    "deg": 308
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "v_fleau_devorant",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Fléau dévorant",
+   "desc": "Fléau : vous soigne de 20 % des dégâts qu'il inflige ; recharge 35 → 45 s.",
+   "x": 938,
+   "y": 1079,
+   "links": [
+    "v_fleau"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_fleau",
+   "ability": "fleau",
+   "effects": [
+    {
+     "mod": "lifesteal",
+     "op": "set",
+     "value": 0.2
+    },
+    {
+     "mod": "cd",
+     "op": "set",
+     "value": 45
+    }
+   ],
+   "vfx": "Filaments verts qui remontent des cibles jusqu'au rôdeur.",
+   "polar": {
+    "r": 1430,
+    "deg": 311
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "v_fleau_propage",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "variant",
+   "name": "Fléau propagé",
+   "desc": "Fléau : propagation 4 → 7 m, dégâts immédiats 150 % → 100 %.",
+   "x": 800,
+   "y": 1186,
+   "links": [
+    "v_fleau"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_fleau",
+   "ability": "fleau",
+   "effects": [
+    {
+     "mod": "spreadR",
+     "op": "set",
+     "value": 7
+    },
+    {
+     "mod": "detonate",
+     "op": "set",
+     "value": 1.0
+    }
+   ],
+   "vfx": "Chaque cible éclate en spores vertes qui volent vers les ennemis voisins.",
+   "polar": {
+    "r": 1430,
+    "deg": 304
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "v_veneneux",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "keystone",
+   "name": "Vénéneux",
+   "desc": "Le poison se cumule jusqu'à 6 charges au lieu de 3, et le saignement s'accumule 30 % plus vite. (Demande 14 points dépensés dans la région Rôdeur.)",
+   "x": 1065,
+   "y": 1028,
+   "links": [
+    "v_fleau"
+   ],
+   "maxRank": 1,
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 14
+   },
+   "effects": [
+    {
+     "stat": "poison_max_stacks",
+     "value": 6
+    },
+    {
+     "stat": "bleed_build",
+     "value": 0.3
+    },
+    {
+     "stat": "dmg_direct",
+     "value": -0.2
+    }
+   ],
+   "drawback": "Vos dégâts directs (hors poison et saignement) sont réduits de 20 %.",
+   "polar": {
+    "r": 1480,
+    "deg": 316
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "v_sang_pour_sang",
+   "region": "rodeur",
+   "branch": "venin",
+   "type": "keystone",
+   "name": "Sang pour sang",
+   "desc": "Chaque plaie qui éclate sous vos coups vous rend 8 % de vos PV max. (Demande 8 points dépensés dans la région Rôdeur.)",
+   "x": 630,
+   "y": 1091,
+   "links": [
+    "v_saigneur"
+   ],
+   "maxRank": 1,
+   "reqPoints": {
+    "zone": "rodeur",
+    "min": 8
+   },
+   "effects": [
+    {
+     "mod": "onBleedBurst",
+     "op": "set",
+     "value": {
+      "healSelfPct": 0.08
+     }
+    },
+    {
+     "stat": "potion_heal",
+     "value": -0.5
+    }
+   ],
+   "drawback": "Vos potions de soin rendent 50 % de moins.",
+   "polar": {
+    "r": 1260,
+    "deg": 300
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "c_instinct_chasseur",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "passive",
+   "name": "Instinct du chasseur",
+   "desc": "+8 % de dégâts contre les bêtes (loups, sangliers, araignées, scorpions, yétis…).",
+   "x": 755,
+   "y": -231,
+   "links": [
+    "q_acrobate"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmg_vs_family",
+     "family": "bete",
+     "value": 0.08
+    }
+   ],
+   "polar": {
+    "r": 790,
+    "deg": 17
+   },
+   "minPointsFromStart": 4
+  },
+  {
+   "id": "c_javelot",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "skill",
+   "name": "Javelot de chasse",
+   "desc": "Lance le javelot de chasse porté au dos (aucune munition) : ×1,8, 35 de poise. +25 % avec une lance équipée.",
+   "x": 810,
+   "y": -344,
+   "links": [
+    "c_instinct_chasseur"
+   ],
+   "maxRank": 1,
+   "ability": "javelot",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "javelot"
+    }
+   ],
+   "polar": {
+    "r": 880,
+    "deg": 23
+   },
+   "minPointsFromStart": 5
+  },
+  {
+   "id": "c_javelot_harpon",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "variant",
+   "name": "Javelot harpon",
+   "desc": "Javelot : attire une cible non-boss de 4 m vers vous (ou vous tire de 4 m vers une grande cible) ; ×1,8 → ×1,2.",
+   "x": 746,
+   "y": -466,
+   "links": [
+    "c_javelot"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_javelot",
+   "ability": "javelot",
+   "effects": [
+    {
+     "mod": "pull",
+     "op": "set",
+     "value": 4
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 1.2
+    }
+   ],
+   "vfx": "Corde tendue visible entre le rôdeur et la cible, qui claque en se rétractant.",
+   "polar": {
+    "r": 880,
+    "deg": 32
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "c_javelot_leste",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "variant",
+   "name": "Javelot lesté",
+   "desc": "Javelot : poise 35 → 60, dégâts +20 %, élan 0,5 → 0,7 s.",
+   "x": 918,
+   "y": -298,
+   "links": [
+    "c_javelot"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_javelot",
+   "ability": "javelot",
+   "effects": [
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 60
+    },
+    {
+     "mod": "power",
+     "op": "mul",
+     "value": 1.2
+    },
+    {
+     "mod": "windup",
+     "op": "set",
+     "value": 700
+    }
+   ],
+   "vfx": "Javelot à tête de pierre cerclée de fer ; impact lourd qui soulève terre et herbe.",
+   "polar": {
+    "r": 965,
+    "deg": 18
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "c_estocade",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "skill",
+   "name": "Estocade",
+   "desc": "Une fente de 4,5 m qui se termine par un coup d'estoc (×1,6). Une lance allonge la fente de 1,5 m.",
+   "x": 861,
+   "y": -458,
+   "links": [
+    "c_javelot"
+   ],
+   "maxRank": 1,
+   "ability": "estocade",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "estocade"
+    }
+   ],
+   "polar": {
+    "r": 975,
+    "deg": 28
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "c_estocade_balayante",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "variant",
+   "name": "Estocade balayante",
+   "desc": "Estocade : se termine par un balayage à 180° (rayon 3 m) ; ×1,6 → ×1,2.",
+   "x": 976,
+   "y": -414,
+   "links": [
+    "c_estocade"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_estocade",
+   "ability": "estocade",
+   "effects": [
+    {
+     "mod": "finisher",
+     "op": "set",
+     "value": {
+      "arc": 180,
+      "radius": 3
+     }
+    },
+    {
+     "mod": "power",
+     "op": "set",
+     "value": 1.2
+    }
+   ],
+   "vfx": "Arc de lumière pâle en demi-cercle au bout de la fente.",
+   "polar": {
+    "r": 1060,
+    "deg": 23
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "c_estocade_sanglier",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "variant",
+   "name": "Charge du sanglier",
+   "desc": "Estocade : fente 4,5 → 7 m, poise 30 → 50, endurance 22 → 30.",
+   "x": 889,
+   "y": -577,
+   "links": [
+    "c_estocade"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_estocade",
+   "ability": "estocade",
+   "effects": [
+    {
+     "mod": "range",
+     "op": "set",
+     "value": 7
+    },
+    {
+     "mod": "poise",
+     "op": "set",
+     "value": 50
+    },
+    {
+     "mod": "st",
+     "op": "set",
+     "value": 30
+    }
+   ],
+   "vfx": "Traînée de poussière et silhouette fantomatique de sanglier pendant la charge.",
+   "polar": {
+    "r": 1060,
+    "deg": 33
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "c_depeceur",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "passive",
+   "name": "Dépeceur",
+   "desc": "+20 % de chances d'obtenir un matériau de plus sur les bêtes (fourrures, crocs, chitine). (Point d'accroche côté Guerrier.)",
+   "x": 689,
+   "y": -579,
+   "links": [
+    "c_javelot",
+    "guerrier:*"
+   ],
+   "maxRank": 1,
+   "anchor": "guerrier",
+   "effects": [
+    {
+     "stat": "beast_material_extra",
+     "value": 0.2
+    }
+   ],
+   "polar": {
+    "r": 900,
+    "deg": 40
+   },
+   "minPointsFromStart": 6
+  },
+  {
+   "id": "c_appat",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "skill",
+   "name": "Appât",
+   "desc": "Lance un appât : les bêtes à 12 m (loups, sangliers, araignées, yétis…) s'acharnent dessus 3 s (élites 1,5 s, boss insensibles).",
+   "x": 1087,
+   "y": -374,
+   "links": [
+    "c_estocade"
+   ],
+   "maxRank": 1,
+   "ability": "appat",
+   "effects": [
+    {
+     "mod": "unlock",
+     "ability": "appat"
+    }
+   ],
+   "polar": {
+    "r": 1150,
+    "deg": 19
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "c_appat_piege",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "variant",
+   "name": "Appât piégé",
+   "desc": "Appât : explose au bout des 3 s (×1,2, 3 m) et ajoute 2 charges de poison.",
+   "x": 1119,
+   "y": -498,
+   "links": [
+    "c_appat"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_appat",
+   "ability": "appat",
+   "effects": [
+    {
+     "mod": "explode",
+     "op": "set",
+     "value": {
+      "power": 1.2,
+      "radius": 3,
+      "poisonStacks": 2
+     }
+    }
+   ],
+   "vfx": "Carcasse ficelée qui gonfle puis éclate en nuage verdâtre.",
+   "polar": {
+    "r": 1225,
+    "deg": 24
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "c_appat_sanglant",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "variant",
+   "name": "Appât sanglant",
+   "desc": "Appât : les bêtes qui s'y acharnent subissent +15 % de dégâts pendant 6 s.",
+   "x": 1183,
+   "y": -317,
+   "links": [
+    "c_appat"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "var_appat",
+   "ability": "appat",
+   "effects": [
+    {
+     "mod": "onFixate",
+     "op": "set",
+     "value": {
+      "dmgTaken": 0.15,
+      "dur": 6
+     }
+    }
+   ],
+   "vfx": "Morceau de viande sanglante ; les bêtes attirées ont des yeux rouges luisants.",
+   "polar": {
+    "r": 1225,
+    "deg": 15
+   },
+   "minPointsFromStart": 8
+  },
+  {
+   "id": "c_ambidextrie",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "passive",
+   "name": "Ambidextrie",
+   "desc": "Avec une arme de mêlée à une main en main gauche (dague, épée courte) : vos attaques de base de mêlée ajoutent un coup à ×0,35. −10 % de régénération d'endurance.",
+   "x": 906,
+   "y": -708,
+   "links": [
+    "c_estocade"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "mod": "dualWield",
+     "op": "set",
+     "value": {
+      "extraHit": 0.35
+     }
+    },
+    {
+     "stat": "st_regen",
+     "value": -0.1
+    }
+   ],
+   "polar": {
+    "r": 1150,
+    "deg": 38
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "c_frere_armes",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "passive",
+   "name": "Frère d'armes",
+   "desc": "Rôdeur : l'Inaptitude de vos compétences Guerrier « mêlée » passe de 25 % à 10 %. Guerrier : idem pour les compétences Rôdeur « arc ».",
+   "x": 962,
+   "y": -533,
+   "links": [
+    "c_estocade"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "inaptitude_reduce",
+     "value": 0.15,
+     "forClass": {
+      "rodeur": {
+       "region": "guerrier",
+       "tag": "mêlée"
+      },
+      "guerrier": {
+       "region": "rodeur",
+       "tag": "arc"
+      }
+     }
+    }
+   ],
+   "polar": {
+    "r": 1100,
+    "deg": 29
+   },
+   "minPointsFromStart": 7
+  },
+  {
+   "id": "c_frenesie",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "type": "keystone",
+   "name": "Frénésie du chasseur",
+   "desc": "Chaque coup de mêlée qui touche rend 4 d'endurance (une fois par attaque). (Demande 5 points dépensés dans la passerelle Chasseur.)",
+   "x": 1050,
+   "y": -582,
+   "links": [
+    "c_frere_armes"
+   ],
+   "maxRank": 1,
+   "reqPoints": {
+    "zone": "pont_rg",
+    "min": 5
+   },
+   "effects": [
+    {
+     "stat": "st_on_melee_hit",
+     "value": 4
+    },
+    {
+     "stat": "st_cost_ranged",
+     "value": 0.4
+    }
+   ],
+   "drawback": "Vos compétences à distance coûtent 40 % d'endurance en plus.",
+   "polar": {
+    "r": 1200,
+    "deg": 29
+   },
+   "minPointsFromStart": 8
+  }
+ ],
+ "keystones": [
+  {
+   "id": "t_posture_archer",
+   "name": "Posture de l'archer",
+   "region": "rodeur",
+   "branch": "tireur",
+   "effect": "Après 0,6 s sans bouger : +30 % de chances de critique et Tir chargé / Trait fatal se chargent 30 % plus vite. (Demande 12 points dépensés dans la région Rôdeur.)",
+   "drawback": "Bouger annule la posture, et vos roulades coûtent +10 d'endurance."
+  },
+  {
+   "id": "q_au_plus_pres",
+   "name": "Au plus près",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "effect": "À moins de 3 m, votre Tir devient automatiquement un enchaînement de 2 coups de dague (×0,8 + ×1,0, 12 de poise) et vos compétences « dague » font +30 % de dégâts. (Demande 8 points dépensés dans la région Rôdeur.)",
+   "drawback": "Vos compétences d'arc infligent −15 % de dégâts."
+  },
+  {
+   "id": "q_proie_unique",
+   "name": "Proie unique",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "effect": "Votre Marque ne s'efface plus avant la mort de la cible et son bonus passe à +24 %. (Demande 12 points dépensés dans la région Rôdeur.)",
+   "drawback": "−15 % de dégâts contre tout ce qui n'est pas marqué ; changer de proie coûte 30 s de recharge à la Marque."
+  },
+  {
+   "id": "q_fantome_brumes",
+   "name": "Fantôme des brumes",
+   "region": "rodeur",
+   "branch": "traqueur",
+   "effect": "Une roulade qui évite un coup (esquive parfaite) vous rend invisible 1,5 s : les monstres perdent votre trace (JcJ : 0,8 s, silhouette visible à 5 m). Recharge interne 8 s. (Demande 14 points dépensés dans la région Rôdeur.)",
+   "drawback": "−15 % de PV max."
+  },
+  {
+   "id": "v_veneneux",
+   "name": "Vénéneux",
+   "region": "rodeur",
+   "branch": "venin",
+   "effect": "Le poison se cumule jusqu'à 6 charges au lieu de 3, et le saignement s'accumule 30 % plus vite. (Demande 14 points dépensés dans la région Rôdeur.)",
+   "drawback": "Vos dégâts directs (hors poison et saignement) sont réduits de 20 %."
+  },
+  {
+   "id": "v_sang_pour_sang",
+   "name": "Sang pour sang",
+   "region": "rodeur",
+   "branch": "venin",
+   "effect": "Chaque plaie qui éclate sous vos coups vous rend 8 % de vos PV max. (Demande 8 points dépensés dans la région Rôdeur.)",
+   "drawback": "Vos potions de soin rendent 50 % de moins."
+  },
+  {
+   "id": "c_frenesie",
+   "name": "Frénésie du chasseur",
+   "region": "pont_rg",
+   "branch": "chasseur",
+   "effect": "Chaque coup de mêlée qui touche rend 4 d'endurance (une fois par attaque). (Demande 5 points dépensés dans la passerelle Chasseur.)",
+   "drawback": "Vos compétences à distance coûtent 40 % d'endurance en plus."
+  }
+ ],
+ "exclusiveGroups": [
+  {
+   "id": "var_tir_forme",
+   "ability": "shot",
+   "nodes": [
+    "tir_leste",
+    "tir_veloce"
+   ]
+  },
+  {
+   "id": "var_tir_percant",
+   "ability": "piercing_shot",
+   "nodes": [
+    "t_trait_breche",
+    "t_tir_traversant"
+   ]
+  },
+  {
+   "id": "var_tir_rapide",
+   "ability": "rapid_fire",
+   "nodes": [
+    "t_salve_eventail",
+    "t_rafale"
+   ]
+  },
+  {
+   "id": "var_pluie",
+   "ability": "arrow_rain",
+   "nodes": [
+    "t_averse_acier",
+    "t_pluie_persistante"
+   ]
+  },
+  {
+   "id": "var_assommante",
+   "ability": "fleche_assommante",
+   "nodes": [
+    "t_fracassante",
+    "t_fleche_arret"
+   ]
+  },
+  {
+   "id": "var_tir_approche",
+   "ability": "shot",
+   "nodes": [
+    "t_tir_ricochet",
+    "q_bout_portant",
+    "v_pointes_enduites"
+   ]
+  },
+  {
+   "id": "var_trait_fatal",
+   "ability": "trait_fatal",
+   "nodes": [
+    "t_visee_eclair",
+    "t_perce_coeur"
+   ]
+  },
+  {
+   "id": "var_marque",
+   "ability": "marque_de_chasse",
+   "nodes": [
+    "q_marque_sang",
+    "q_marque_meute"
+   ]
+  },
+  {
+   "id": "var_dague",
+   "ability": "coup_de_dague",
+   "nodes": [
+    "q_dague_saignante",
+    "q_riposte_couteau"
+   ]
+  },
+  {
+   "id": "var_bond",
+   "ability": "bond_de_retrait",
+   "nodes": [
+    "q_salto_tireur",
+    "q_bond_lateral"
+   ]
+  },
+  {
+   "id": "var_piege",
+   "ability": "piege_a_machoires",
+   "nodes": [
+    "q_piege_ronces",
+    "q_piege_explosif"
+   ]
+  },
+  {
+   "id": "var_filet",
+   "ability": "filet",
+   "nodes": [
+    "q_filet_acier",
+    "q_filet_collant"
+   ]
+  },
+  {
+   "id": "var_hallali",
+   "ability": "hallali",
+   "nodes": [
+    "q_hallali_sanglant",
+    "q_hallali_meute"
+   ]
+  },
+  {
+   "id": "var_fleche_empoisonnee",
+   "ability": "fleche_empoisonnee",
+   "nodes": [
+    "v_venin_paralysant",
+    "v_venin_corrosif"
+   ]
+  },
+  {
+   "id": "var_fleche_barbelee",
+   "ability": "fleche_barbelee",
+   "nodes": [
+    "v_barbes_profondes",
+    "v_plaie_ouverte"
+   ]
+  },
+  {
+   "id": "var_entaille",
+   "ability": "entaille_venimeuse",
+   "nodes": [
+    "v_entaille_profonde",
+    "v_entaille_fuyante"
+   ]
+  },
+  {
+   "id": "var_nuage",
+   "ability": "nuage_toxique",
+   "nodes": [
+    "v_brume_etouffante",
+    "v_nuage_rampant"
+   ]
+  },
+  {
+   "id": "var_fleau",
+   "ability": "fleau",
+   "nodes": [
+    "v_fleau_devorant",
+    "v_fleau_propage"
+   ]
+  },
+  {
+   "id": "var_javelot",
+   "ability": "javelot",
+   "nodes": [
+    "c_javelot_harpon",
+    "c_javelot_leste"
+   ]
+  },
+  {
+   "id": "var_estocade",
+   "ability": "estocade",
+   "nodes": [
+    "c_estocade_balayante",
+    "c_estocade_sanglier"
+   ]
+  },
+  {
+   "id": "var_appat",
+   "ability": "appat",
+   "nodes": [
+    "c_appat_piege",
+    "c_appat_sanglant"
+   ]
+  }
+ ]
+}

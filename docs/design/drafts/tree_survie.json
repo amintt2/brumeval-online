@@ -1,0 +1,1525 @@
+{
+ "meta": {
+  "draft": "tree_survie",
+  "version": 1,
+  "tree": "L'Arbre des Brumes",
+  "frame": "x vers la droite, y vers le HAUT (convention mathématique) ; angles en degrés dans le sens trigonométrique depuis +x. L'interface inverse y pour l'affichage. Guerrier à 90° (haut), Mage à 210°, Rôdeur à 330°.",
+  "externalLinks": {
+   "guerrier_depart": {
+    "x": 0,
+    "y": 500
+   },
+   "mage_depart": {
+    "x": -433,
+    "y": -250
+   },
+   "rodeur_depart": {
+    "x": 433,
+    "y": -250
+   },
+   "note": "Nœuds de départ de classe définis par les brouillons de classe (rayon 500) ; ids proposés."
+  },
+  "gating": "Les nœuds 'fondamental: true' s'allouent sans adjacence (ils sont reliés à la racine 'coeur', toujours acquise). Tout autre nœud de la région survie exige ≥ 3 Fondamentaux et l'adjacence à un nœud acquis.",
+  "effectVocabulary": "Voir docs/design/drafts/tree_rules.md §7 : { stat | mod, op: add|pct|mul|set, value, perRank?, atRank?, cap?, final? }"
+ },
+ "abilities": [
+  {
+   "id": "roulade",
+   "name": "Roulade",
+   "kind": "dash",
+   "home": null,
+   "desc": "Une roulade d'esquive : invulnérable un court instant, elle traverse les coups télégraphiés.",
+   "st": 30,
+   "mp": 0,
+   "cd": 0.6,
+   "dist": 5,
+   "ms": 550,
+   "iframeMs": 350,
+   "iframeStartMs": 0,
+   "actAfterMs": 550,
+   "power": 0,
+   "poise": 0,
+   "tags": [
+    "mobilite",
+    "defense"
+   ],
+   "defaultKey": "Space",
+   "weapon": null,
+   "souls": "Engagement total pendant 0,55 s (aucune action, direction fixée). Les i-frames annulent tout coup résolu dans la fenêtre (télégraphes, projectiles, coups légers). Aucune résistance au vacillement pendant la roulade. 3 roulades d'affilée vident une jauge de 100."
+  },
+  {
+   "id": "sprint",
+   "name": "Sprint",
+   "kind": "toggle",
+   "home": null,
+   "desc": "Courir plus vite tant que l'endurance le permet.",
+   "stPerS": 18,
+   "stMin": 8,
+   "mult": 1.45,
+   "mp": 0,
+   "cd": 0,
+   "power": 0,
+   "poise": 0,
+   "tags": [
+    "mobilite"
+   ],
+   "defaultKey": "ShiftLeft",
+   "weapon": null,
+   "souls": "Utilisable en combat. Toute attaque, garde, charge ou saut coupe le sprint. La régénération d'endurance est bloquée pendant le sprint. Les attaques de base à distance restent impossibles en sprint (règle v0.2 : moins de 40 % de la vitesse)."
+  },
+  {
+   "id": "saut",
+   "name": "Saut",
+   "kind": "jump",
+   "home": null,
+   "desc": "Un petit saut qui passe au-dessus des ondes de choc au sol et permet une attaque sautée.",
+   "st": 15,
+   "mp": 0,
+   "cd": 0.5,
+   "takeoffMs": 50,
+   "airMs": 350,
+   "landMs": 100,
+   "landSlow": 0.5,
+   "height": 0.6,
+   "horizMult": 1,
+   "power": 0,
+   "poise": 0,
+   "tags": [
+    "mobilite",
+    "defense"
+   ],
+   "defaultKey": "KeyC",
+   "weapon": null,
+   "souls": "Aucune i-frame : en l'air, on esquive seulement les attaques marquées « rasantes » (lo). Direction et vitesse figées au décollage (pas de contrôle en l'air). Pas d'escalade : le saut ne franchit ni mur, ni clôture, ni falaise (aucune composante verticale côté serveur). Touché en l'air = vacillement 0,4 s à l'atterrissage."
+  },
+  {
+   "id": "attaque_sautee",
+   "name": "Attaque sautée",
+   "kind": "melee",
+   "home": null,
+   "derivedFrom": "saut",
+   "desc": "Appuyer sur l'attaque de base en l'air : le coup tombe à l'atterrissage.",
+   "st": 5,
+   "stNote": "en plus du coût de l'attaque de base",
+   "mp": 0,
+   "cd": "base",
+   "powerMult": 1.3,
+   "poiseMult": 1.5,
+   "radius": 1.5,
+   "rangedPowerMult": 1.1,
+   "rangedHorizMult": 0.5,
+   "tags": [
+    "physique",
+    "zone"
+   ],
+   "weapon": "arme de l'attaque de base",
+   "souls": "Mêlée : zone de 1,5 m au point d'atterrissage, ×1,3 dégâts, ×1,5 poise. Distance (tir, trait) : un seul projectile ×1,1 tiré au sommet du saut ; la distance horizontale du saut est alors divisée par deux (pas de kite aérien). Relance la recharge de l'attaque de base. Récupération 0,3 s à 30 % de vitesse après l'atterrissage."
+  },
+  {
+   "id": "garde",
+   "name": "Garde",
+   "kind": "guard",
+   "home": null,
+   "desc": "Lever son arme ou son bouclier pour encaisser les coups de face au prix d'endurance.",
+   "raiseMs": 150,
+   "arcDeg": 120,
+   "moveMult": 0.55,
+   "regenMult": 0.4,
+   "mp": 0,
+   "cd": 0,
+   "power": 0,
+   "poise": 0,
+   "reduce": {
+    "bouclier": 1,
+    "melee": 0.7,
+    "autre": 0.5
+   },
+   "blockSt": "min(60, 8 + 60 × dégâtsBruts / PVmax) × (1,5 si télégraphé)",
+   "breakMs": 1000,
+   "tags": [
+    "defense"
+   ],
+   "defaultKey": "KeyE (maintenir)",
+   "weapon": null,
+   "souls": "Bloque les coups de face (120°) : mêlée, projectiles physiques, télégraphes cône/ligne/cercle-bond. Ne bloque PAS les attaques rasantes (lo, à sauter) ni les imparables (nb : sorts, empoignades, séismes de boss). À 0 d'endurance : garde brisée, vacillement 1 s et le reste des dégâts passe. Pas de vacillement sur un coup bloqué."
+  },
+  {
+   "id": "attaque_chargee",
+   "name": "Attaque chargée",
+   "kind": "charge",
+   "home": null,
+   "modifies": "attaque de base",
+   "desc": "Maintenir l'attaque de base pour la charger : plus de dégâts et un gros déséquilibre.",
+   "st": 10,
+   "stNote": "en plus du coût de l'attaque de base",
+   "mp": 0,
+   "cd": "base",
+   "minMs": 400,
+   "fullMs": 1200,
+   "maxHoldMs": 2000,
+   "powerMax": 1.8,
+   "poiseMax": 2,
+   "moveMult": 0.4,
+   "rec": 0.5,
+   "recSlow": 0.3,
+   "hyperArmorMs": 300,
+   "rangeBonusMelee": 0.5,
+   "projSpeedBonus": 0.3,
+   "tags": [
+    "physique"
+   ],
+   "defaultKey": "maintenir la touche de l'attaque de base",
+   "weapon": "arme de l'attaque de base",
+   "souls": "Charge possible seulement quand l'attaque de base est prête ; la recharge repart au relâchement, donc le DPS reste celui de l'attaque automatique : c'est un outil de rupture de posture (poise ×2) et de punition, pas un gain de DPS. Relâché avant 0,4 s = attaque normale. Puissance linéaire de ×1,0 à ×1,8 entre 0,4 et 1,2 s. Plein : éclat visuel + super-armure les 0,3 dernières secondes. Touché pendant la charge (hors super-armure) = charge perdue, sans coût. Relâche automatique à 2 s."
+  },
+  {
+   "id": "riposte",
+   "name": "Riposte",
+   "kind": "buff",
+   "home": null,
+   "derivedFrom": [
+    "sv_esquive_parfaite",
+    "sv_parade"
+   ],
+   "desc": "Après une esquive parfaite ou une parade, le coup suivant est renforcé.",
+   "tags": [
+    "physique"
+   ],
+   "souls": "État temporaire (icône dorée). Consommé par la première compétence qui inflige des dégâts."
+  }
+ ],
+ "nodes": [
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 0,
+   "effects": [],
+   "id": "coeur",
+   "branch": "coeur",
+   "type": "root",
+   "name": "Cœur des Brumes",
+   "desc": "Racine de l'arbre, toujours acquise. Les Fondamentaux s'y rattachent.",
+   "x": 0,
+   "y": 0,
+   "links": [
+    "fond_garde",
+    "fond_charge",
+    "fond_roulade",
+    "fond_saut",
+    "fond_sprint"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "unlock",
+     "value": "garde"
+    }
+   ],
+   "id": "fond_garde",
+   "branch": "fondamentaux",
+   "type": "skill",
+   "ability": "garde",
+   "name": "Garde",
+   "desc": "Débloque la Garde : bloquer de face au prix d'endurance.",
+   "x": 0,
+   "y": 110,
+   "fondamental": true,
+   "links": [
+    "coeur",
+    "sv_bras"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "unlock",
+     "value": "attaque_chargee"
+    }
+   ],
+   "id": "fond_charge",
+   "branch": "fondamentaux",
+   "type": "skill",
+   "ability": "attaque_chargee",
+   "name": "Attaque chargée",
+   "desc": "Débloque l'Attaque chargée : maintenir l'attaque de base.",
+   "x": -105,
+   "y": 34,
+   "fondamental": true,
+   "links": [
+    "coeur",
+    "sv_concentration"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "unlock",
+     "value": "roulade"
+    }
+   ],
+   "id": "fond_roulade",
+   "branch": "fondamentaux",
+   "type": "skill",
+   "ability": "roulade",
+   "name": "Roulade",
+   "desc": "Débloque la Roulade d'esquive (Espace).",
+   "x": -65,
+   "y": -89,
+   "fondamental": true,
+   "migrationGift": true,
+   "links": [
+    "coeur",
+    "sv_souplesse"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "unlock",
+     "value": "saut"
+    },
+    {
+     "mod": "unlock",
+     "value": "attaque_sautee"
+    }
+   ],
+   "id": "fond_saut",
+   "branch": "fondamentaux",
+   "type": "skill",
+   "ability": "saut",
+   "name": "Saut",
+   "desc": "Débloque le Saut et l'Attaque sautée.",
+   "x": 65,
+   "y": -89,
+   "fondamental": true,
+   "links": [
+    "coeur",
+    "sv_jarret"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "unlock",
+     "value": "sprint"
+    }
+   ],
+   "id": "fond_sprint",
+   "branch": "fondamentaux",
+   "type": "skill",
+   "ability": "sprint",
+   "name": "Sprint",
+   "desc": "Débloque le Sprint (Maj).",
+   "x": 105,
+   "y": 34,
+   "fondamental": true,
+   "migrationGift": true,
+   "links": [
+    "coeur",
+    "sv_foulee"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "sprint.stPerS",
+     "op": "add",
+     "value": -1.5,
+     "perRank": true
+    }
+   ],
+   "id": "sv_foulee",
+   "branch": "sprint",
+   "type": "passive",
+   "name": "Foulée légère",
+   "desc": "Le sprint consomme 1,5 endurance/s de moins par rang.",
+   "x": 190,
+   "y": 62,
+   "links": [
+    "sv_peau",
+    "sv_souffle",
+    "fond_sprint",
+    "sv_elan",
+    "sv_course_feutree",
+    "sv_course_vent"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "garde.blockSt",
+     "op": "mul",
+     "value": -0.06,
+     "perRank": true
+    },
+    {
+     "mod": "garde.reduce",
+     "op": "add",
+     "value": 0.03,
+     "perRank": true,
+     "cap": 1
+    }
+   ],
+   "id": "sv_bras",
+   "branch": "garde",
+   "type": "passive",
+   "name": "Bras solide",
+   "desc": "Par rang : −6 % d'endurance par coup bloqué et +3 points de réduction (sans dépasser 100 %).",
+   "x": 0,
+   "y": 200,
+   "links": [
+    "sv_souffle",
+    "sv_vigueur",
+    "fond_garde",
+    "sv_parade",
+    "sv_garde_fer",
+    "sv_egide"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 2,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "attaque_chargee.fullMs",
+     "op": "mul",
+     "value": -0.1,
+     "perRank": true
+    }
+   ],
+   "id": "sv_concentration",
+   "branch": "charge",
+   "type": "passive",
+   "name": "Concentration",
+   "desc": "Temps de charge −10 % par rang.",
+   "x": -190,
+   "y": 62,
+   "links": [
+    "sv_vigueur",
+    "sv_recuperation",
+    "fond_charge",
+    "sv_charge_vive",
+    "sv_charge_ecrasante",
+    "sv_eventail"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "roulade.st",
+     "op": "add",
+     "value": -2,
+     "perRank": true
+    }
+   ],
+   "id": "sv_souplesse",
+   "branch": "roulade",
+   "type": "passive",
+   "name": "Souplesse",
+   "desc": "La roulade coûte 2 endurance de moins par rang (toutes variantes).",
+   "x": -118,
+   "y": -162,
+   "links": [
+    "sv_recuperation",
+    "sv_aplomb",
+    "fond_roulade",
+    "sv_pas_ombre",
+    "sv_roulade_lourde",
+    "sv_esquive_parfaite"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 2,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "saut.st",
+     "op": "add",
+     "value": -3,
+     "perRank": true
+    },
+    {
+     "mod": "saut.landMs",
+     "op": "add",
+     "value": -25,
+     "perRank": true
+    }
+   ],
+   "id": "sv_jarret",
+   "branch": "saut",
+   "type": "passive",
+   "name": "Jarret d'acier",
+   "desc": "Par rang : le saut coûte 3 endurance de moins et l'atterrissage dure 25 ms de moins.",
+   "x": 118,
+   "y": -162,
+   "links": [
+    "sv_aplomb",
+    "sv_peau",
+    "fond_saut",
+    "sv_frappe_plongeante",
+    "sv_envol"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "mst",
+     "op": "add",
+     "value": 8,
+     "perRank": true
+    }
+   ],
+   "id": "sv_souffle",
+   "branch": "endurance",
+   "type": "passive",
+   "name": "Souffle profond",
+   "desc": "+8 endurance maximale par rang.",
+   "x": 118,
+   "y": 162,
+   "links": [
+    "sv_foulee",
+    "sv_bras",
+    "sv_alchimiste"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "mhp",
+     "op": "pct",
+     "value": 4,
+     "perRank": true
+    }
+   ],
+   "id": "sv_vigueur",
+   "branch": "endurance",
+   "type": "passive",
+   "name": "Vigueur",
+   "desc": "+4 % de points de vie maximum par rang.",
+   "x": -118,
+   "y": 162,
+   "links": [
+    "sv_bras",
+    "sv_concentration",
+    "sv_appel_echo"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "stRegen",
+     "op": "add",
+     "value": 3,
+     "perRank": true
+    },
+    {
+     "stat": "stRegenDelayMs",
+     "op": "add",
+     "value": -150,
+     "atRank": 3
+    }
+   ],
+   "id": "sv_recuperation",
+   "branch": "endurance",
+   "type": "passive",
+   "name": "Récupération",
+   "desc": "+3 endurance régénérée par seconde par rang ; au rang 3, la régénération reprend 0,15 s plus tôt.",
+   "x": -190,
+   "y": -62,
+   "links": [
+    "sv_concentration",
+    "sv_souplesse",
+    "sv_seuil_arcanes"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "equilibre",
+     "op": "add",
+     "value": 10,
+     "perRank": true
+    }
+   ],
+   "id": "sv_aplomb",
+   "branch": "endurance",
+   "type": "passive",
+   "name": "Aplomb",
+   "desc": "+10 d'Équilibre par rang (réduit la durée des vacillements).",
+   "x": 0,
+   "y": -200,
+   "links": [
+    "sv_souplesse",
+    "sv_jarret",
+    "sv_longue_esquive"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 3,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "resFeu",
+     "op": "add",
+     "value": 4,
+     "perRank": true
+    },
+    {
+     "stat": "resGivre",
+     "op": "add",
+     "value": 4,
+     "perRank": true
+    },
+    {
+     "stat": "resArcane",
+     "op": "add",
+     "value": 4,
+     "perRank": true
+    },
+    {
+     "stat": "resPoison",
+     "op": "add",
+     "value": 4,
+     "perRank": true
+    }
+   ],
+   "id": "sv_peau",
+   "branch": "endurance",
+   "type": "passive",
+   "name": "Peau de brume",
+   "desc": "+4 % de résistance au feu, au givre, aux arcanes et au poison par rang.",
+   "x": 190,
+   "y": -62,
+   "links": [
+    "sv_jarret",
+    "sv_foulee",
+    "sv_seuil_bois"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "roulade.style",
+     "op": "set",
+     "value": "blink"
+    },
+    {
+     "mod": "roulade.dist",
+     "op": "set",
+     "value": 3
+    },
+    {
+     "mod": "roulade.ms",
+     "op": "set",
+     "value": 150
+    },
+    {
+     "mod": "roulade.iframeMs",
+     "op": "set",
+     "value": 200
+    },
+    {
+     "mod": "roulade.st",
+     "op": "set",
+     "value": 22
+    },
+    {
+     "mod": "roulade.cd",
+     "op": "set",
+     "value": 0.5
+    },
+    {
+     "mod": "roulade.actAfterMs",
+     "op": "set",
+     "value": 250
+    }
+   ],
+   "id": "sv_pas_ombre",
+   "branch": "roulade",
+   "type": "variant",
+   "ability": "roulade",
+   "exclusiveGroup": "roulade_style",
+   "name": "Pas de l'ombre",
+   "desc": "La roulade devient un bond d'ombre de 3 m, quasi instantané, moins protégé.",
+   "x": -230,
+   "y": -193,
+   "links": [
+    "sv_souplesse"
+   ],
+   "vfx": "Le corps se dissout en brume noir-violet (0,1 s), réapparaît 3 m plus loin dans une bouffée de fumée ; une silhouette fantôme reste 0,3 s au point de départ. Pas de clip Roll : clip Idle + fondu du matériau."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "roulade.dist",
+     "op": "set",
+     "value": 4
+    },
+    {
+     "mod": "roulade.ms",
+     "op": "set",
+     "value": 650
+    },
+    {
+     "mod": "roulade.iframeStartMs",
+     "op": "set",
+     "value": 50
+    },
+    {
+     "mod": "roulade.st",
+     "op": "set",
+     "value": 34
+    },
+    {
+     "mod": "roulade.equilibreBonus",
+     "op": "set",
+     "value": 50,
+     "untilMsAfter": 400
+    },
+    {
+     "mod": "roulade.ignoreArmorWeight",
+     "op": "set",
+     "value": true
+    },
+    {
+     "mod": "roulade.landingPoise",
+     "op": "set",
+     "value": 15,
+     "radius": 1.5
+    }
+   ],
+   "id": "sv_roulade_lourde",
+   "branch": "roulade",
+   "type": "variant",
+   "ability": "roulade",
+   "exclusiveGroup": "roulade_style",
+   "name": "Roulade lourde",
+   "desc": "Une roulade d'épaule plus courte qui garde l'équilibre et bouscule à l'arrivée.",
+   "x": -176,
+   "y": -243,
+   "links": [
+    "sv_souplesse"
+   ],
+   "vfx": "Roulade d'épaule lourde ; à l'arrivée, anneau de poussière de 1,5 m et marque d'impact au sol ; léger tremblement de caméra pour le lanceur."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "roulade.perfectWindowMs",
+     "op": "set",
+     "value": 150
+    },
+    {
+     "mod": "roulade.perfectRefundSt",
+     "op": "set",
+     "value": 15
+    },
+    {
+     "mod": "riposte.grant",
+     "op": "set",
+     "value": {
+      "ms": 1000,
+      "powerMult": 1.5,
+      "poiseAdd": 20
+     }
+    }
+   ],
+   "id": "sv_esquive_parfaite",
+   "branch": "roulade",
+   "type": "variant",
+   "ability": "roulade",
+   "exclusiveGroup": "roulade_style",
+   "name": "Esquive parfaite",
+   "desc": "Esquiver un coup au dernier moment rend de l'endurance et renforce la riposte.",
+   "x": -112,
+   "y": -278,
+   "links": [
+    "sv_souplesse"
+   ],
+   "vfx": "Sur esquive parfaite : image rémanente dorée à l'endroit du coup, éclair de brume blanche et tintement cristallin ; l'arme luit d'or tant que la Riposte est active."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "sprint.assault",
+     "op": "set",
+     "value": {
+      "minSprintMs": 800,
+      "lunge": 3,
+      "towardTargetOnly": true,
+      "powerMult": 1.4,
+      "poiseAdd": 25,
+      "stAdd": 10,
+      "rec": 0.45
+     }
+    }
+   ],
+   "id": "sv_elan",
+   "branch": "sprint",
+   "type": "variant",
+   "ability": "sprint",
+   "exclusiveGroup": "sprint_style",
+   "name": "Élan",
+   "desc": "Après 0,8 s de sprint, l'attaque de base devient un Assaut : bond de 3 m vers la cible et coup renforcé.",
+   "x": 299,
+   "y": 21,
+   "links": [
+    "sv_foulee"
+   ],
+   "vfx": "Traînée de poussière derrière les pieds pendant le sprint, puis bond en avant avec stries de vitesse et impact en éventail d'étincelles."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "sprint.mult",
+     "op": "set",
+     "value": 1.35
+    },
+    {
+     "mod": "sprint.stPerS",
+     "op": "mul",
+     "value": -0.3
+    },
+    {
+     "mod": "sprint.aggroRadiusMult",
+     "op": "set",
+     "value": 0.6
+    }
+   ],
+   "id": "sv_course_feutree",
+   "branch": "sprint",
+   "type": "variant",
+   "ability": "sprint",
+   "exclusiveGroup": "sprint_style",
+   "name": "Course feutrée",
+   "desc": "Sprint un peu moins rapide mais économe et discret : les monstres vous remarquent de moins loin.",
+   "x": 285,
+   "y": 93,
+   "links": [
+    "sv_foulee"
+   ],
+   "vfx": "Fine brume basse qui s'enroule autour des pieds ; plus aucune particule de pas."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "sprint.multOutOfCombat",
+     "op": "set",
+     "value": 1.65,
+     "outOfCombatMs": 5000
+    }
+   ],
+   "id": "sv_course_vent",
+   "branch": "sprint",
+   "type": "variant",
+   "ability": "sprint",
+   "exclusiveGroup": "sprint_style",
+   "name": "Course du vent",
+   "desc": "Hors combat, le sprint est bien plus rapide (voyage). En combat, sprint normal.",
+   "x": 254,
+   "y": 159,
+   "links": [
+    "sv_foulee"
+   ],
+   "vfx": "Stries de vent blanches le long du corps, cape et cheveux plaqués vers l'arrière (hors combat seulement)."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "attaque_sautee.powerMult",
+     "op": "set",
+     "value": 1.7
+    },
+    {
+     "mod": "attaque_sautee.radius",
+     "op": "set",
+     "value": 2.5
+    },
+    {
+     "mod": "attaque_sautee.poiseMult",
+     "op": "set",
+     "value": 2.5
+    },
+    {
+     "mod": "attaque_sautee.rangedBurstR",
+     "op": "set",
+     "value": 1.5
+    },
+    {
+     "mod": "attaque_sautee.rec",
+     "op": "set",
+     "value": 0.45
+    },
+    {
+     "mod": "attaque_sautee.recSlow",
+     "op": "set",
+     "value": 0.2
+    }
+   ],
+   "id": "sv_frappe_plongeante",
+   "branch": "saut",
+   "type": "variant",
+   "ability": "saut",
+   "exclusiveGroup": "saut_style",
+   "name": "Frappe plongeante",
+   "desc": "L'attaque sautée frappe bien plus fort et en zone, mais la réception est plus longue.",
+   "x": 145,
+   "y": -262,
+   "links": [
+    "sv_jarret"
+   ],
+   "vfx": "Arc de lame vers le bas avec traînée lumineuse, fissure au sol (décal 2,5 m) et anneau de poussière ; pour un projectile : petite explosion de 1,5 m à l'impact."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "saut.airMs",
+     "op": "set",
+     "value": 550
+    },
+    {
+     "mod": "saut.horizMult",
+     "op": "set",
+     "value": 1.4
+    },
+    {
+     "mod": "saut.landMs",
+     "op": "set",
+     "value": 50
+    },
+    {
+     "mod": "saut.st",
+     "op": "add",
+     "value": 3
+    }
+   ],
+   "id": "sv_envol",
+   "branch": "saut",
+   "type": "variant",
+   "ability": "saut",
+   "exclusiveGroup": "saut_style",
+   "name": "Envol",
+   "desc": "Un saut plus long et plus haut, avec une réception presque immédiate.",
+   "x": 205,
+   "y": -219,
+   "links": [
+    "sv_jarret"
+   ],
+   "vfx": "Tourbillon d'air et de brume sous les pieds au décollage, légère traînée pendant le vol."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "garde.parryWindowMs",
+     "op": "set",
+     "value": 180
+    },
+    {
+     "mod": "garde.parryPoise",
+     "op": "set",
+     "value": 60
+    },
+    {
+     "mod": "garde.raiseMs",
+     "op": "set",
+     "value": 250
+    },
+    {
+     "mod": "riposte.grant",
+     "op": "set",
+     "value": {
+      "ms": 1500,
+      "powerMult": 2,
+      "powerMultNonMelee": 1.5
+     }
+    }
+   ],
+   "id": "sv_parade",
+   "branch": "garde",
+   "type": "variant",
+   "ability": "garde",
+   "exclusiveGroup": "garde_style",
+   "name": "Parade parfaite",
+   "desc": "Lever la garde juste avant l'impact annule le coup, déséquilibre l'attaquant et ouvre une riposte.",
+   "x": 73,
+   "y": 291,
+   "links": [
+    "sv_bras"
+   ],
+   "vfx": "Gerbe d'étincelles dorées et onde de choc circulaire au point de contact, « clang » métallique ; l'attaquant clignote et recule d'un pas."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "garde.blockSt",
+     "op": "mul",
+     "value": -0.35
+    },
+    {
+     "mod": "garde.reduce",
+     "op": "add",
+     "value": 0.15,
+     "cap": 1
+    },
+    {
+     "mod": "garde.moveMult",
+     "op": "set",
+     "value": 0.35
+    }
+   ],
+   "id": "sv_garde_fer",
+   "branch": "garde",
+   "type": "variant",
+   "ability": "garde",
+   "exclusiveGroup": "garde_style",
+   "name": "Garde de fer",
+   "desc": "Une garde plus solide et moins coûteuse, mais presque immobile.",
+   "x": 0,
+   "y": 300,
+   "links": [
+    "sv_bras"
+   ],
+   "vfx": "Reflet gris acier sur l'arme ou le bouclier, posture plus basse ; étincelles grises à chaque blocage."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "garde.style",
+     "op": "set",
+     "value": "ward"
+    },
+    {
+     "mod": "garde.reduceAll",
+     "op": "set",
+     "value": 0.75
+    },
+    {
+     "mod": "garde.blocksMagic",
+     "op": "set",
+     "value": true
+    },
+    {
+     "mod": "garde.arcDeg",
+     "op": "set",
+     "value": 180
+    },
+    {
+     "mod": "garde.blockSt",
+     "op": "mul",
+     "value": -0.2
+    },
+    {
+     "mod": "garde.mpPerBlock",
+     "op": "set",
+     "value": 6
+    }
+   ],
+   "id": "sv_egide",
+   "branch": "garde",
+   "type": "variant",
+   "ability": "garde",
+   "exclusiveGroup": "garde_style",
+   "name": "Égide arcanique",
+   "desc": "La garde devient un bouclier magique qui arrête aussi les sorts, au prix de mana.",
+   "x": -73,
+   "y": 291,
+   "links": [
+    "sv_bras"
+   ],
+   "vfx": "Demi-dôme translucide bleu pâle couvert de runes hexagonales devant le personnage ; il se fissure et scintille à chaque impact."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "attaque_chargee.fullMs",
+     "op": "set",
+     "value": 800
+    },
+    {
+     "mod": "attaque_chargee.powerMax",
+     "op": "set",
+     "value": 1.55
+    },
+    {
+     "mod": "attaque_chargee.poiseMax",
+     "op": "set",
+     "value": 1.6
+    }
+   ],
+   "id": "sv_charge_vive",
+   "branch": "charge",
+   "type": "variant",
+   "ability": "attaque_chargee",
+   "exclusiveGroup": "charge_style",
+   "name": "Charge vive",
+   "desc": "Se charge bien plus vite, pour un peu moins de puissance.",
+   "x": -254,
+   "y": 159,
+   "links": [
+    "sv_concentration"
+   ],
+   "vfx": "Pulsations lumineuses rapides sur l'arme (3 éclats courts au lieu d'une montée lente)."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "attaque_chargee.fullMs",
+     "op": "set",
+     "value": 1600
+    },
+    {
+     "mod": "attaque_chargee.powerMax",
+     "op": "set",
+     "value": 2.2
+    },
+    {
+     "mod": "attaque_chargee.poiseMax",
+     "op": "set",
+     "value": 3
+    },
+    {
+     "mod": "attaque_chargee.rec",
+     "op": "set",
+     "value": 0.7
+    },
+    {
+     "mod": "attaque_chargee.hyperArmorMs",
+     "op": "set",
+     "value": 500
+    }
+   ],
+   "id": "sv_charge_ecrasante",
+   "branch": "charge",
+   "type": "variant",
+   "ability": "attaque_chargee",
+   "exclusiveGroup": "charge_style",
+   "name": "Frappe écrasante",
+   "desc": "Une charge longue et dévastatrice qui brise les postures.",
+   "x": -285,
+   "y": 93,
+   "links": [
+    "sv_concentration"
+   ],
+   "vfx": "Lueur rouge-or profonde, air qui ondule de chaleur ; à pleine charge, fissures au sol autour des pieds ; impact avec onde de choc."
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "attaque_chargee.meleeArcDeg",
+     "op": "set",
+     "value": 180
+    },
+    {
+     "mod": "attaque_chargee.projCount",
+     "op": "set",
+     "value": 3,
+     "spreadDeg": 30,
+     "powerEach": 0.6
+    },
+    {
+     "mod": "attaque_chargee.poisePerTarget",
+     "op": "mul",
+     "value": -0.4
+    }
+   ],
+   "id": "sv_eventail",
+   "branch": "charge",
+   "type": "variant",
+   "ability": "attaque_chargee",
+   "exclusiveGroup": "charge_style",
+   "name": "Éventail",
+   "desc": "L'attaque chargée balaie large : arc de 180° au corps à corps, 3 projectiles en éventail à distance.",
+   "x": -299,
+   "y": 21,
+   "links": [
+    "sv_concentration"
+   ],
+   "vfx": "Arc d'étincelles en demi-cercle devant le personnage ; à distance, trois traînées lumineuses en éventail."
+  },
+  {
+   "region": "survie",
+   "maxRank": 2,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "potionPct",
+     "op": "add",
+     "value": 15,
+     "perRank": true
+    }
+   ],
+   "id": "sv_alchimiste",
+   "branch": "soutien",
+   "type": "passive",
+   "name": "Alchimiste de fortune",
+   "desc": "Les potions sont 15 % plus efficaces par rang.",
+   "x": 194,
+   "y": 267,
+   "links": [
+    "sv_souffle",
+    "sv_seuil_acier",
+    "ks_dernier_souffle"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "echoPickupR",
+     "op": "set",
+     "value": 4
+    },
+    {
+     "stat": "echoOnMap",
+     "op": "set",
+     "value": true
+    }
+   ],
+   "id": "sv_appel_echo",
+   "branch": "soutien",
+   "type": "passive",
+   "name": "Appel de l'écho",
+   "desc": "Votre écho se ramasse à 4 m, apparaît sur la carte et la minicarte et brille à travers la brume.",
+   "x": -194,
+   "y": 267,
+   "links": [
+    "sv_vigueur",
+    "sv_seuil_acier",
+    "sv_echo_tenace"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "echoKeepOld",
+     "op": "set",
+     "value": 0.5
+    },
+    {
+     "stat": "echoMax",
+     "op": "set",
+     "value": 2
+    }
+   ],
+   "id": "sv_echo_tenace",
+   "branch": "soutien",
+   "type": "passive",
+   "name": "Écho tenace",
+   "desc": "Mourir avant d'avoir récupéré son écho ne le détruit plus : il garde la moitié de son XP (2 échos au maximum).",
+   "x": -355,
+   "y": 205,
+   "links": [
+    "sv_appel_echo"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 2,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "roulade.iframeMs",
+     "op": "add",
+     "value": 40,
+     "perRank": true
+    }
+   ],
+   "id": "sv_longue_esquive",
+   "branch": "roulade",
+   "type": "passive",
+   "name": "Longue esquive",
+   "desc": "+40 ms d'invulnérabilité par rang, pour toutes les variantes de roulade.",
+   "x": 0,
+   "y": -330,
+   "links": [
+    "sv_aplomb",
+    "ks_danseur"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "mod": "roulade.st",
+     "op": "set",
+     "value": 0,
+     "final": true
+    },
+    {
+     "mod": "roulade.cd",
+     "op": "set",
+     "value": 1.8,
+     "final": true
+    },
+    {
+     "stat": "mst",
+     "op": "add",
+     "value": -25
+    }
+   ],
+   "id": "ks_danseur",
+   "branch": "roulade",
+   "type": "keystone",
+   "minLevel": 10,
+   "name": "Danseur des brumes",
+   "desc": "Les roulades ne coûtent plus d'endurance, mais on ne peut rouler qu'une fois toutes les 1,8 s et l'endurance maximale baisse de 25.",
+   "x": 0,
+   "y": -430,
+   "links": [
+    "sv_longue_esquive"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "cheatDeath",
+     "op": "set",
+     "value": {
+      "cdS": 120,
+      "iframeMs": 600,
+      "st": 30
+     }
+    },
+    {
+     "stat": "mhp",
+     "op": "pct",
+     "value": -12
+    }
+   ],
+   "id": "ks_dernier_souffle",
+   "branch": "soutien",
+   "type": "keystone",
+   "minLevel": 15,
+   "name": "Dernier souffle",
+   "desc": "Une fois toutes les 120 s, un coup mortel vous laisse à 1 PV avec 0,6 s d'invulnérabilité et 30 d'endurance. En contrepartie : −12 % de PV maximum.",
+   "x": 340,
+   "y": 247,
+   "links": [
+    "sv_alchimiste"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "inaptitudeMult",
+     "op": "mul",
+     "value": -0.5
+    },
+    {
+     "stat": "ownClassPowerPct",
+     "op": "add",
+     "value": -8
+    }
+   ],
+   "id": "ks_touche_a_tout",
+   "branch": "soutien",
+   "type": "keystone",
+   "minLevel": 10,
+   "name": "Touche-à-tout",
+   "desc": "Les pénalités d'Inaptitude sont réduites de moitié ; en contrepartie, les compétences de votre propre classe perdent 8 % de puissance.",
+   "x": 457,
+   "y": -48,
+   "links": [
+    "sv_seuil_bois"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "mhp",
+     "op": "pct",
+     "value": 5
+    }
+   ],
+   "id": "sv_seuil_acier",
+   "branch": "seuil",
+   "type": "passive",
+   "name": "Seuil de l'Acier",
+   "desc": "Passage vers la région du Guerrier. +5 % de points de vie maximum.",
+   "x": 0,
+   "y": 410,
+   "links": [
+    "sv_alchimiste",
+    "sv_appel_echo",
+    "guerrier_depart"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "mmp",
+     "op": "pct",
+     "value": 6
+    }
+   ],
+   "id": "sv_seuil_arcanes",
+   "branch": "seuil",
+   "type": "passive",
+   "name": "Seuil des Arcanes",
+   "desc": "Passage vers la région du Mage. +6 % de mana maximum.",
+   "x": -355,
+   "y": -205,
+   "links": [
+    "sv_recuperation",
+    "mage_depart"
+   ]
+  },
+  {
+   "region": "survie",
+   "maxRank": 1,
+   "cost": 1,
+   "effects": [
+    {
+     "stat": "crit",
+     "op": "add",
+     "value": 0.02
+    }
+   ],
+   "id": "sv_seuil_bois",
+   "branch": "seuil",
+   "type": "passive",
+   "name": "Seuil des Bois",
+   "desc": "Passage vers la région du Rôdeur. +2 % de chances de coup critique.",
+   "x": 355,
+   "y": -205,
+   "links": [
+    "sv_peau",
+    "rodeur_depart",
+    "ks_touche_a_tout"
+   ]
+  }
+ ],
+ "keystones": [
+  {
+   "id": "ks_danseur",
+   "name": "Danseur des brumes",
+   "region": "survie",
+   "cost": 1,
+   "minLevel": 10,
+   "upside": "Roulades gratuites en endurance (toutes variantes).",
+   "drawback": "Recharge de roulade 1,8 s au lieu de 0,6 s ; −25 endurance maximale.",
+   "intent": "Pour les joueurs qui maîtrisent le timing : une seule esquive, mais toujours disponible. Empêche les chaînes de 3 roulades."
+  },
+  {
+   "id": "ks_dernier_souffle",
+   "name": "Dernier souffle",
+   "region": "survie",
+   "cost": 1,
+   "minLevel": 15,
+   "upside": "Survit à un coup mortel toutes les 120 s (1 PV, 0,6 s d'invulnérabilité, 30 d'endurance).",
+   "drawback": "−12 % de PV maximum en permanence.",
+   "intent": "Filet de sécurité pour apprendre un boss ; ne protège pas d'un second coup. Désactivé en JcJ ? (question ouverte)"
+  },
+  {
+   "id": "ks_touche_a_tout",
+   "name": "Touche-à-tout",
+   "region": "survie",
+   "cost": 1,
+   "minLevel": 10,
+   "upside": "Pénalités d'Inaptitude divisées par deux (−12,5 % puissance, +12,5 % coût, +10 % recharge).",
+   "drawback": "−8 % de puissance pour toutes les compétences de votre propre classe.",
+   "intent": "Réservée aux vrais hybrides : un personnage « pur » n'a aucune raison de la prendre."
+  }
+ ]
+}

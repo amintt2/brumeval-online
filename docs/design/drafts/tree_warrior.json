@@ -1,0 +1,3448 @@
+{
+ "meta": {
+  "draft": "tree_warrior",
+  "version": 1,
+  "lang": "fr",
+  "coords": "Repère global unique. x vers la droite, y vers le HAUT (angle 90° = haut). L’interface doit inverser y pour l’écran (screenY = -y). Centre de l’Arbre des Brumes en (0,0).",
+  "layout": {
+   "stem": "g_depart en (0,500)",
+   "branches": {
+    "gardien": "90°",
+    "berserker": "66°",
+    "maitre": "114°"
+   },
+   "rings": "rayon 820 + 95·k (k = 0..7), écart latéral 74 unités",
+   "bridge": "pont_gm entre 134° et 166°, rayon 770–1180"
+  },
+  "links": "Liens non orientés, stockés une seule fois (sur le nœud le plus éloigné du départ). externalLinks = liens vers des nœuds d’autres brouillons (Survie, Mage), à raccorder par le synthétiseur.",
+  "costs": "guerrier/survie/pont_gm/pont_rg : 1 point pour un Guerrier ; guerrier pour Mage/Rôdeur : 2 points (clés de voûte 3) ; pont_gm : 1 pour Guerrier et Mage, 2 pour Rôdeur (3 pour sa clé de voûte).",
+  "inaptitude": "Capacités cls \"warrior\" utilisées par un Mage/Rôdeur : −25 % puissance, +25 % coût (mana et endurance), +20 % recharge. Capacités cls \"hybrid_gm\" : aucune Inaptitude pour Guerrier et Mage ; Rôdeur : Inaptitude pleine.",
+  "effectsSchema": "{stat, value, perRank?, when?, tag?, abilities?} = passif ; {mod:\"set\"|\"add\"|\"mul\", ability, key, value, when?} = modification d’une capacité. when.weaponFamily ∈ courte|longue|batarde|rapiere|cimeterre|lame_courbe|espadon|runique."
+ },
+ "weaponFamilies": {
+  "courte": {
+   "name": "Épée courte",
+   "hands": 1,
+   "speedPct": 0.15,
+   "rangeAdd": -0.3,
+   "critAdd": 0.03,
+   "poiseMult": 0.8,
+   "shield": true
+  },
+  "longue": {
+   "name": "Épée longue",
+   "hands": 1,
+   "speedPct": 0,
+   "rangeAdd": 0,
+   "critAdd": 0,
+   "poiseMult": 1,
+   "shield": true
+  },
+  "batarde": {
+   "name": "Épée bâtarde",
+   "hands": "1 ou 2",
+   "twoHanded": {
+    "dmgPct": 0.12,
+    "speedPct": -0.05,
+    "poiseMult": 1.2
+   },
+   "oneHanded": {
+    "dmgPct": 0,
+    "speedPct": -0.05
+   },
+   "shield": "à une main seulement"
+  },
+  "rapiere": {
+   "name": "Rapière",
+   "hands": 1,
+   "dmgPct": -0.1,
+   "rangeAdd": 0.4,
+   "critAdd": 0.08,
+   "poiseMult": 0.6,
+   "shield": true
+  },
+  "cimeterre": {
+   "name": "Cimeterre",
+   "hands": 1,
+   "speedPct": 0.08,
+   "critAdd": 0.04,
+   "bleedOnHit": 0.05,
+   "shield": true
+  },
+  "lame_courbe": {
+   "name": "Lame courbe",
+   "hands": 2,
+   "dmgPct": 0.05,
+   "speedPct": 0.05,
+   "critAdd": 0.05,
+   "poiseMult": 0.9,
+   "shield": false
+  },
+  "espadon": {
+   "name": "Espadon",
+   "hands": 2,
+   "dmgPct": 0.3,
+   "speedPct": -0.25,
+   "rangeAdd": 0.6,
+   "poiseMult": 1.6,
+   "attackStaminaPct": 0.3,
+   "shield": false
+  },
+  "runique": {
+   "name": "Épée runique",
+   "hands": 1,
+   "elementalPct": 0.1,
+   "mp": 15,
+   "focus": "sert de focus à −10 % (au lieu de −20 %)",
+   "shield": true
+  },
+  "_note": "Profils SUGGÉRÉS, à harmoniser avec docs/design/OBJETS_ARTISANAT.md (qui fait foi pour les objets)."
+ },
+ "abilities": [
+  {
+   "cls": "warrior",
+   "id": "strike",
+   "name": "Frappe",
+   "desc": "Attaque de base au corps à corps, rapide et sûre.",
+   "kind": "melee",
+   "auto": true,
+   "base": true,
+   "range": 2.8,
+   "cd": 1.3,
+   "mp": 0,
+   "st": 5,
+   "power": 1.2,
+   "poise": 12,
+   "windup": 0.15,
+   "rec": 0.25,
+   "recSlow": 0.5,
+   "tags": [
+    "physique",
+    "melee"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Coup court : sûr contre les brutes après leur attaque, trop faible pour déséquilibrer seul. Se charge (Fondamental « Attaque chargée ») : ×2,2 et poise 40 après 0,8 s de charge."
+  },
+  {
+   "cls": "warrior",
+   "id": "heavy_blow",
+   "name": "Coup puissant",
+   "desc": "Un coup lourd, lent à armer, qui fait vaciller presque tout.",
+   "kind": "melee",
+   "v02": true,
+   "range": 2.8,
+   "cd": 6,
+   "mp": 12,
+   "st": 16,
+   "power": 2.8,
+   "poise": 42,
+   "windup": 0.35,
+   "rec": 0.5,
+   "recSlow": 0.3,
+   "tags": [
+    "physique",
+    "melee",
+    "lourd"
+   ],
+   "weapon": "arme_melee",
+   "souls": "L’outil de punition : à placer dans la fenêtre de récupération d’un monstre. 42 de poise : un loup (24) titube d’un coup, un squelette (44) presque ; il en faut 4 pour le golem (150)."
+  },
+  {
+   "cls": "warrior",
+   "id": "whirlwind",
+   "name": "Tourbillon",
+   "desc": "Une rotation complète qui frappe tous les ennemis proches.",
+   "kind": "aoe_self",
+   "v02": true,
+   "radius": 4.5,
+   "cd": 10,
+   "mp": 20,
+   "st": 18,
+   "power": 1.7,
+   "poise": 24,
+   "windup": 0.2,
+   "rec": 0.55,
+   "recSlow": 0.35,
+   "tags": [
+    "physique",
+    "melee",
+    "zone"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Anti-meute (loups, gobelins). 0,55 s de récupération : lancé au mauvais moment, on mange la charge suivante."
+  },
+  {
+   "cls": "warrior",
+   "id": "war_cry",
+   "name": "Cri de guerre",
+   "desc": "Un rugissement qui rend 30 % des PV.",
+   "kind": "self_heal",
+   "v02": true,
+   "heal": 0.3,
+   "cd": 25,
+   "mp": 15,
+   "st": 0,
+   "windup": 0.3,
+   "rec": 0.4,
+   "recSlow": 0.5,
+   "tags": [
+    "soin",
+    "cri"
+   ],
+   "weapon": null,
+   "souls": "Soin d’urgence non interruptible mais avec 0,7 s d’engagement total : à placer après une roulade, pas sous un télégraphe."
+  },
+  {
+   "cls": "warrior",
+   "id": "taunt",
+   "name": "Provocation",
+   "desc": "Force les monstres proches à vous attaquer et durcit votre défense.",
+   "kind": "aoe_self",
+   "radius": 8,
+   "cd": 14,
+   "mp": 10,
+   "st": 0,
+   "dur": 4,
+   "buff": {
+    "defPct": 0.15
+   },
+   "windup": 0.2,
+   "rec": 0.3,
+   "recSlow": 0.5,
+   "tags": [
+    "cri",
+    "defense",
+    "groupe"
+   ],
+   "weapon": null,
+   "souls": "Les monstres provoqués changent de cible APRÈS leur attaque en cours (jamais d’annulation de télégraphe). Boss : 2 s seulement."
+  },
+  {
+   "cls": "warrior",
+   "id": "shield_bash",
+   "name": "Coup de bouclier",
+   "desc": "Un coup sec qui interrompt une attaque légère en préparation.",
+   "kind": "melee",
+   "range": 2.2,
+   "cd": 10,
+   "mp": 8,
+   "st": 18,
+   "power": 1,
+   "poise": 55,
+   "windup": 0.12,
+   "rec": 0.35,
+   "recSlow": 0.4,
+   "tags": [
+    "physique",
+    "melee",
+    "defense",
+    "interruption"
+   ],
+   "weapon": "arme_melee",
+   "note": "Avec un bouclier en main gauche ; sinon coup de pommeau : puissance ×0,7, poise 40.",
+   "souls": "Interrompt la préparation d’une attaque LÉGÈRE (kind melee) d’un monstre non-boss. Les attaques télégraphiées ne sont interrompues que si la poise casse."
+  },
+  {
+   "cls": "warrior",
+   "id": "riposte",
+   "name": "Riposte",
+   "desc": "Juste après avoir bloqué un coup, une contre-attaque critique.",
+   "kind": "melee",
+   "range": 2.8,
+   "cd": 3,
+   "mp": 0,
+   "st": 12,
+   "power": 2.2,
+   "poise": 30,
+   "windup": 0.1,
+   "rec": 0.3,
+   "recSlow": 0.5,
+   "window": 1,
+   "guaranteedCrit": true,
+   "tags": [
+    "physique",
+    "melee",
+    "contre"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Utilisable 1 s après un coup bloqué avec la Garde (ou une parade parfaite). Récompense la lecture du rythme ennemi, sans jamais rendre invulnérable."
+  },
+  {
+   "cls": "warrior",
+   "id": "bastion",
+   "name": "Bastion",
+   "desc": "Vous plantez vos pieds : dégâts subis fortement réduits, mais vous êtes lent.",
+   "kind": "buff",
+   "cd": 30,
+   "mp": 20,
+   "st": 0,
+   "dur": 6,
+   "buff": {
+    "dmgTakenPct": -0.4,
+    "speedPct": -0.4,
+    "noRoll": true
+   },
+   "windup": 0.2,
+   "rec": 0.3,
+   "recSlow": 0.5,
+   "tags": [
+    "defense"
+   ],
+   "weapon": null,
+   "souls": "Pas d’invulnérabilité : −40 % seulement, pas de roulade pendant 6 s. Pensé pour encaisser une phase de boss en groupe."
+  },
+  {
+   "cls": "warrior",
+   "id": "rage",
+   "name": "Rage sanguinaire",
+   "desc": "Vous sacrifiez du sang pour frapper plus fort et plus vite.",
+   "kind": "buff",
+   "cd": 35,
+   "mp": 0,
+   "st": 0,
+   "hpCost": 0.1,
+   "dur": 10,
+   "buff": {
+    "dmgPct": 0.25,
+    "attackSpeedPct": 0.1,
+    "defPct": -0.2
+   },
+   "windup": 0.3,
+   "rec": 0.3,
+   "recSlow": 0.5,
+   "tags": [
+    "rage"
+   ],
+   "weapon": null,
+   "souls": "Coûte 10 % des PV actuels (jamais mortel). −20 % de défense : une erreur coûte plus cher."
+  },
+  {
+   "cls": "warrior",
+   "id": "leap_slam",
+   "name": "Bond fracassant",
+   "desc": "Un bond de 7 m qui retombe en onde de choc.",
+   "kind": "dash",
+   "range": 7,
+   "radius": 3,
+   "cd": 12,
+   "mp": 10,
+   "st": 25,
+   "power": 1.6,
+   "poise": 50,
+   "airborne": 0.45,
+   "windup": 0.15,
+   "rec": 0.7,
+   "recSlow": 0.2,
+   "tags": [
+    "physique",
+    "zone",
+    "mobilite",
+    "saut"
+   ],
+   "weapon": "arme_melee",
+   "souls": "En l’air 0,45 s : passe au-dessus des ondes de choc au sol comme le Saut, mais ce n’est PAS une invulnérabilité (projectiles et coups hauts touchent). 0,7 s de récupération à l’atterrissage."
+  },
+  {
+   "cls": "warrior",
+   "id": "rend",
+   "name": "Entaille",
+   "desc": "Une taille qui ouvre une plaie : saignement pendant 6 s.",
+   "kind": "melee",
+   "range": 2.8,
+   "cd": 8,
+   "mp": 8,
+   "st": 14,
+   "power": 0.9,
+   "poise": 18,
+   "dot": {
+    "type": "saignement",
+    "total": 1.2,
+    "dur": 6
+   },
+   "windup": 0.15,
+   "rec": 0.3,
+   "recSlow": 0.45,
+   "tags": [
+    "physique",
+    "melee",
+    "saignement"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Dégâts différés : permet de rouler immédiatement après. Le saignement ignore la défense mais pas la garde frontale des squelettes (le coup initial y est soumis)."
+  },
+  {
+   "cls": "warrior",
+   "id": "execute",
+   "name": "Exécution",
+   "desc": "Un coup d’achèvement dévastateur contre un ennemi affaibli.",
+   "kind": "melee",
+   "range": 2.8,
+   "cd": 15,
+   "mp": 15,
+   "st": 22,
+   "power": 2,
+   "poise": 35,
+   "lowHp": {
+    "under": 0.3,
+    "mult": 2,
+    "bossMult": 1.5
+   },
+   "windup": 0.3,
+   "rec": 0.8,
+   "recSlow": 0.2,
+   "tags": [
+    "physique",
+    "melee",
+    "lourd"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Très engageant (0,3 s d’armement + 0,8 s de récupération) : ne se place que sur un monstre déséquilibré ou en récupération."
+  },
+  {
+   "cls": "warrior",
+   "id": "lunge",
+   "name": "Estocade",
+   "desc": "Une fente de 4 m qui transperce en ligne droite.",
+   "kind": "dash",
+   "range": 4,
+   "cd": 7,
+   "mp": 8,
+   "st": 15,
+   "power": 1.6,
+   "poise": 25,
+   "critAdd": 0.1,
+   "line": {
+    "len": 4.5,
+    "wid": 1
+   },
+   "windup": 0.1,
+   "rec": 0.4,
+   "recSlow": 0.35,
+   "tags": [
+    "physique",
+    "melee",
+    "mobilite",
+    "estoc"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Déplacement offensif SANS invulnérabilité : sert à combler une distance, pas à esquiver."
+  },
+  {
+   "cls": "warrior",
+   "id": "blade_dance",
+   "name": "Danse des lames",
+   "desc": "Trois tailles rapides enchaînées ; on peut se déplacer entre les coups.",
+   "kind": "channel",
+   "range": 2.8,
+   "cd": 10,
+   "mp": 12,
+   "st": 20,
+   "power": 0.9,
+   "hits": 3,
+   "interval": 0.3,
+   "poise": 12,
+   "windup": 0.1,
+   "rec": 0.45,
+   "recSlow": 0.4,
+   "moveDuring": 0.5,
+   "tags": [
+    "physique",
+    "melee",
+    "combo"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Annulable par une roulade entre deux coups (les coups restants sont perdus) : pas de verrouillage, mais pas d’esquive gratuite non plus."
+  },
+  {
+   "cls": "warrior",
+   "id": "sunder",
+   "name": "Brise-garde",
+   "desc": "Un coup qui ouvre la garde : défense ennemie −25 % pendant 6 s.",
+   "kind": "melee",
+   "range": 2.8,
+   "cd": 12,
+   "mp": 10,
+   "st": 16,
+   "power": 1.1,
+   "poise": 70,
+   "debuff": {
+    "defPct": -0.25,
+    "dur": 6,
+    "breakGuard": true
+   },
+   "windup": 0.25,
+   "rec": 0.4,
+   "recSlow": 0.35,
+   "tags": [
+    "physique",
+    "melee",
+    "lourd"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Supprime la garde frontale (squelettes, boucliers) pendant 6 s. 70 de poise : l’ouverture idéale d’un combo."
+  },
+  {
+   "cls": "warrior",
+   "id": "sidestep",
+   "name": "Pas de lame",
+   "desc": "Un pas de côté vif ; le prochain coup dans 1,5 s est critique.",
+   "kind": "dash",
+   "range": 3,
+   "cd": 6,
+   "mp": 0,
+   "st": 18,
+   "dur": 0.25,
+   "nextHitCrit": 1.5,
+   "iframes": 0,
+   "rec": 0.1,
+   "recSlow": 0.8,
+   "tags": [
+    "mobilite"
+   ],
+   "weapon": "arme_melee",
+   "souls": "AUCUNE invulnérabilité (contrairement à la roulade) : un pas bien lu évite le coup, un pas mal lu le prend en pleine face."
+  },
+  {
+   "cls": "hybrid_gm",
+   "id": "enchant_blade",
+   "name": "Lame enchantée",
+   "desc": "Votre lame s’embrase d’énergie : chaque coup de mêlée ajoute des dégâts arcaniques.",
+   "kind": "buff",
+   "cd": 20,
+   "mp": 25,
+   "st": 0,
+   "dur": 12,
+   "buff": {
+    "meleeBonusDmg": 0.35,
+    "element": "arcane"
+   },
+   "windup": 0.4,
+   "rec": 0.3,
+   "recSlow": 0.5,
+   "tags": [
+    "arcane",
+    "enchantement"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Préparation 0,4 s bien visible : on l’active avant le combat ou pendant une ouverture."
+  },
+  {
+   "cls": "hybrid_gm",
+   "id": "blade_wave",
+   "name": "Onde tranchante",
+   "desc": "Une taille qui projette une lame d’énergie traversant les ennemis.",
+   "kind": "projectile",
+   "range": 10,
+   "speed": 24,
+   "pierce": true,
+   "cd": 8,
+   "mp": 18,
+   "st": 12,
+   "power": 1.3,
+   "poise": 14,
+   "windup": 0.3,
+   "rec": 0.5,
+   "recSlow": 0.25,
+   "tags": [
+    "arcane",
+    "projectile"
+   ],
+   "weapon": "arme_melee",
+   "souls": "Un outil à mi-distance, pas un kite : 10 m, 8 s de recharge, 0,5 s de récupération à 25 % de vitesse."
+  },
+  {
+   "cls": "hybrid_gm",
+   "id": "rune_aegis",
+   "name": "Égide runique",
+   "desc": "Un bouclier de runes absorbe les dégâts pendant 6 s.",
+   "kind": "buff",
+   "cd": 25,
+   "mp": 30,
+   "st": 0,
+   "dur": 6,
+   "shield": {
+    "hpPct": 0.12,
+    "mpPct": 0.25
+   },
+   "windup": 0.3,
+   "rec": 0.3,
+   "recSlow": 0.5,
+   "tags": [
+    "arcane",
+    "defense"
+   ],
+   "weapon": null,
+   "souls": "Absorbe 12 % des PV max + 25 % du mana max ; se brise d’un seul coup lourd de boss."
+  }
+ ],
+ "nodes": [
+  {
+   "id": "g_depart",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "skill",
+   "name": "Frappe",
+   "desc": "Point de départ du Guerrier : l’attaque de base, acquise au niveau 1.",
+   "x": 0,
+   "y": 500,
+   "links": [],
+   "maxRank": 1,
+   "start": true,
+   "cost": 0,
+   "ability": "strike",
+   "effects": [],
+   "externalLinks": [
+    "survie:porte_guerrier"
+   ]
+  },
+  {
+   "id": "g_frappe_tournoyante",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "variant",
+   "name": "Frappe tournoyante",
+   "desc": "La Frappe balaie un arc de 200° devant vous (rayon 3 m) ; puissance ×1,2 → ×0,95.",
+   "x": -149,
+   "y": 487,
+   "links": [
+    "g_depart"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "frappe_forme",
+   "ability": "strike",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "shape",
+     "value": {
+      "arc": 200,
+      "r": 3
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "power",
+     "value": 0.95
+    },
+    {
+     "mod": "add",
+     "ability": "strike",
+     "key": "st",
+     "value": 1
+    }
+   ],
+   "vfx": "Traînée d’acier large et pâle en demi-lune, poussière soulevée au sol."
+  },
+  {
+   "id": "g_frappe_saignante",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "variant",
+   "name": "Frappe saignante",
+   "desc": "La Frappe ouvre une plaie : saignement de 30 % de l’attaque sur 4 s (cumul jusqu’à 3).",
+   "x": -141,
+   "y": 551,
+   "links": [
+    "g_depart"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "frappe_forme",
+   "ability": "strike",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "dot",
+     "value": {
+      "type": "saignement",
+      "total": 0.3,
+      "dur": 4,
+      "maxStacks": 3
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "power",
+     "value": 1.1
+    }
+   ],
+   "vfx": "Traînée rouge sombre, gerbe de gouttes à l’impact, petites marques rouges sur la cible par cumul."
+  },
+  {
+   "id": "g_frappe_eclair",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "variant",
+   "name": "Frappe éclair",
+   "desc": "Frappe plus vive : recharge 1,3 → 1,0 s, puissance 1,2 → 1,0, endurance 5 → 4, récupération 0,25 → 0,18 s.",
+   "x": -106,
+   "y": 606,
+   "links": [
+    "g_depart"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "frappe_forme",
+   "ability": "strike",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "cd",
+     "value": 1
+    },
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "power",
+     "value": 1
+    },
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "st",
+     "value": 4
+    },
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "rec",
+     "value": 0.18
+    }
+   ],
+   "vfx": "Traînée fine et blanche très courte, légère distorsion d’air derrière la lame."
+  },
+  {
+   "id": "g_coup_puissant",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "skill",
+   "name": "Coup puissant",
+   "desc": "Débloque Coup puissant (compétence de la v0.2).",
+   "x": 0,
+   "y": 640,
+   "links": [
+    "g_depart"
+   ],
+   "maxRank": 1,
+   "ability": "heavy_blow",
+   "effects": []
+  },
+  {
+   "id": "g_coup_fendoir",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "variant",
+   "name": "Coup fendoir",
+   "desc": "Coup puissant brise les gardes : poise 42 → 65 et ignore la garde frontale ; puissance 2,8 → 2,5.",
+   "x": 148,
+   "y": 614,
+   "links": [
+    "g_coup_puissant"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "coup_puissant_forme",
+   "ability": "heavy_blow",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "poise",
+     "value": 65
+    },
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "ignoreGuard",
+     "value": true
+    },
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "power",
+     "value": 2.5
+    }
+   ],
+   "vfx": "Coup vertical, étincelles orange à l’impact et fissure brève au sol."
+  },
+  {
+   "id": "g_coup_ascendant",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "variant",
+   "name": "Coup ascendant",
+   "desc": "Coup puissant projette la cible de 3 m en arrière (non-boss) ; recharge 6 → 8 s.",
+   "x": 123,
+   "y": 554,
+   "links": [
+    "g_coup_puissant"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "coup_puissant_forme",
+   "ability": "heavy_blow",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "knockback",
+     "value": 3
+    },
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "cd",
+     "value": 8
+    }
+   ],
+   "vfx": "Arc de bas en haut, souffle de vent qui repousse la brume."
+  },
+  {
+   "id": "g_coup_pommeau",
+   "region": "guerrier",
+   "branch": "tronc",
+   "type": "variant",
+   "name": "Coup de pommeau",
+   "desc": "Plus court et plus sûr : armement 0,35 → 0,15 s, récupération 0,5 → 0,3 s, recharge 6 → 4 s, puissance 2,8 → 1,9.",
+   "x": 75,
+   "y": 510,
+   "links": [
+    "g_coup_puissant"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "coup_puissant_forme",
+   "ability": "heavy_blow",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "windup",
+     "value": 0.15
+    },
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "rec",
+     "value": 0.3
+    },
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "cd",
+     "value": 4
+    },
+    {
+     "mod": "set",
+     "ability": "heavy_blow",
+     "key": "power",
+     "value": 1.9
+    }
+   ],
+   "vfx": "Coup sec et court, onde de choc ronde et blanche à l’impact."
+  },
+  {
+   "id": "gd_cri",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "skill",
+   "name": "Cri de guerre",
+   "desc": "Débloque Cri de guerre (compétence de la v0.2). Racine du Gardien.",
+   "x": 0,
+   "y": 820,
+   "links": [
+    "g_coup_puissant"
+   ],
+   "maxRank": 1,
+   "ability": "war_cry",
+   "effects": []
+  },
+  {
+   "id": "gd_cri_ralliement",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Cri de ralliement",
+   "desc": "Soigne aussi les membres du groupe à moins de 10 m de 15 % de leurs PV ; votre soin passe de 30 % à 22 %.",
+   "x": 74,
+   "y": 817,
+   "links": [
+    "gd_cri"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "cri_forme",
+   "ability": "war_cry",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "heal",
+     "value": 0.22
+    },
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "groupHeal",
+     "value": {
+      "pct": 0.15,
+      "r": 10
+     }
+    }
+   ],
+   "vfx": "Onde dorée qui s’étend sur 10 m, halo doux sur les alliés touchés."
+  },
+  {
+   "id": "gd_cri_effroi",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Cri d’effroi",
+   "desc": "Soin 30 % → 15 % ; les monstres à moins de 6 m infligent −20 % de dégâts pendant 6 s (boss −10 %).",
+   "x": -74,
+   "y": 817,
+   "links": [
+    "gd_cri"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "cri_forme",
+   "ability": "war_cry",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "heal",
+     "value": 0.15
+    },
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "aura",
+     "value": {
+      "r": 6,
+      "enemyDmgPct": -0.2,
+      "bossDmgPct": -0.1,
+      "dur": 6
+     }
+    }
+   ],
+   "vfx": "Onde rouge sombre, les ennemis touchés émettent une fumée noire brève."
+  },
+  {
+   "id": "gd_cri_souffle",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Second souffle",
+   "desc": "Rend 15 % des PV tout de suite puis 15 % sur 5 s, et 40 d’endurance ; recharge 25 → 22 s.",
+   "x": 0,
+   "y": 915,
+   "links": [
+    "gd_cri"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "cri_forme",
+   "ability": "war_cry",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "heal",
+     "value": 0.15
+    },
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "hot",
+     "value": {
+      "pct": 0.15,
+      "dur": 5
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "stRestore",
+     "value": 40
+    },
+    {
+     "mod": "set",
+     "ability": "war_cry",
+     "key": "cd",
+     "value": 22
+    }
+   ],
+   "vfx": "Buée blanche expirée, fines volutes vertes qui remontent le long du corps pendant 5 s."
+  },
+  {
+   "id": "gd_garde_de_fer",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Garde de fer",
+   "desc": "Les coups bloqués par la Garde coûtent 10 % d’endurance en moins par rang.",
+   "x": 74,
+   "y": 912,
+   "links": [
+    "gd_cri"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "guardStaminaPct",
+     "value": -0.1,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "gd_constitution",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Constitution",
+   "desc": "+4 % de PV max par rang.",
+   "x": -74,
+   "y": 912,
+   "links": [
+    "gd_cri"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "hpPct",
+     "value": 0.04,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "gd_coup_bouclier",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "skill",
+   "name": "Coup de bouclier",
+   "desc": "Débloque Coup de bouclier.",
+   "x": 74,
+   "y": 1007,
+   "links": [
+    "gd_garde_de_fer"
+   ],
+   "maxRank": 1,
+   "ability": "shield_bash",
+   "effects": []
+  },
+  {
+   "id": "gd_charge_bouclier",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Charge au bouclier",
+   "desc": "Vous chargez 6 m avant l’impact ; poise 55 → 45, recharge 10 → 12 s.",
+   "x": 148,
+   "y": 1095,
+   "links": [
+    "gd_coup_bouclier"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "bouclier_forme",
+   "ability": "shield_bash",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "shield_bash",
+     "key": "dash",
+     "value": 6
+    },
+    {
+     "mod": "set",
+     "ability": "shield_bash",
+     "key": "poise",
+     "value": 45
+    },
+    {
+     "mod": "set",
+     "ability": "shield_bash",
+     "key": "cd",
+     "value": 12
+    }
+   ],
+   "vfx": "Traînée de poussière derrière le guerrier, choc métallique avec éclats blancs."
+  },
+  {
+   "id": "gd_bouclier_ecrasant",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Bouclier écrasant",
+   "desc": "Puissance 1,0 → 1,6, étourdit 1,2 s les non-boss ; recharge 10 → 14 s.",
+   "x": 74,
+   "y": 1103,
+   "links": [
+    "gd_coup_bouclier"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "bouclier_forme",
+   "ability": "shield_bash",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "shield_bash",
+     "key": "power",
+     "value": 1.6
+    },
+    {
+     "mod": "set",
+     "ability": "shield_bash",
+     "key": "stun",
+     "value": 1.2
+    },
+    {
+     "mod": "set",
+     "ability": "shield_bash",
+     "key": "cd",
+     "value": 14
+    }
+   ],
+   "vfx": "Impact lourd, étoiles/étincelles tournoyant au-dessus de la cible étourdie."
+  },
+  {
+   "id": "gd_riposte",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "skill",
+   "name": "Riposte",
+   "desc": "Débloque Riposte.",
+   "x": 0,
+   "y": 1010,
+   "links": [
+    "gd_garde_de_fer",
+    "gd_constitution"
+   ],
+   "maxRank": 1,
+   "ability": "riposte",
+   "effects": []
+  },
+  {
+   "id": "gd_riposte_vengeresse",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Riposte vengeresse",
+   "desc": "Ajoute 60 % des dégâts bloqués par le dernier coup ; puissance 2,2 → 1,8.",
+   "x": 0,
+   "y": 1105,
+   "links": [
+    "gd_riposte"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "riposte_forme",
+   "ability": "riposte",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "riposte",
+     "key": "power",
+     "value": 1.8
+    },
+    {
+     "mod": "set",
+     "ability": "riposte",
+     "key": "addBlocked",
+     "value": 0.6
+    }
+   ],
+   "vfx": "La lame se couvre d’un reflet rouge-or au moment du blocage, décharge à l’impact."
+  },
+  {
+   "id": "gd_riposte_desequilibre",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Riposte déséquilibrante",
+   "desc": "Plus de critique garanti, mais poise 30 → 90 : déséquilibre la plupart des monstres.",
+   "x": -74,
+   "y": 1103,
+   "links": [
+    "gd_riposte"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "riposte_forme",
+   "ability": "riposte",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "riposte",
+     "key": "guaranteedCrit",
+     "value": false
+    },
+    {
+     "mod": "set",
+     "ability": "riposte",
+     "key": "poise",
+     "value": 90
+    }
+   ],
+   "vfx": "Coup d’épaule + lame, onde grise concentrique, la cible titube."
+  },
+  {
+   "id": "gd_provocation",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "skill",
+   "name": "Provocation",
+   "desc": "Débloque Provocation.",
+   "x": -74,
+   "y": 1007,
+   "links": [
+    "gd_constitution"
+   ],
+   "maxRank": 1,
+   "ability": "taunt",
+   "effects": []
+  },
+  {
+   "id": "gd_defi",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Défi",
+   "desc": "Une seule cible à 15 m, provoquée 6 s ; elle subit +10 % de dégâts de vos alliés.",
+   "x": -148,
+   "y": 1095,
+   "links": [
+    "gd_provocation"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "provocation_forme",
+   "ability": "taunt",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "taunt",
+     "key": "single",
+     "value": {
+      "range": 15,
+      "dur": 6
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "taunt",
+     "key": "mark",
+     "value": {
+      "dmgTakenPct": 0.1
+     }
+    }
+   ],
+   "vfx": "Rayon rouge du guerrier à la cible, marque d’épée flottant au-dessus d’elle."
+  },
+  {
+   "id": "gd_rempart_vivant",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Rempart vivant",
+   "desc": "Défense +15 % → −25 % de dégâts subis pendant 4 s, mais vitesse −30 %.",
+   "x": -147,
+   "y": 999,
+   "links": [
+    "gd_provocation"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "provocation_forme",
+   "ability": "taunt",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "taunt",
+     "key": "buff",
+     "value": {
+      "dmgTakenPct": -0.25,
+      "speedPct": -0.3
+     }
+    }
+   ],
+   "vfx": "Aura de pierre grise autour du corps, anneau de runes au sol."
+  },
+  {
+   "id": "gd_maitrise_courte",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Épée et bouclier",
+   "desc": "Épée courte ou longue + bouclier : blocage +10 % de réduction et Frappe −10 % de recharge.",
+   "x": 74,
+   "y": 1198,
+   "links": [
+    "gd_bouclier_ecrasant",
+    "gd_charge_bouclier",
+    "gd_riposte_vengeresse"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "guardReducePct",
+     "value": 0.1,
+     "when": {
+      "weaponFamily": [
+       "courte",
+       "longue"
+      ],
+      "offhand": "bouclier"
+     }
+    },
+    {
+     "mod": "mul",
+     "ability": "strike",
+     "key": "cd",
+     "value": 0.9,
+     "when": {
+      "weaponFamily": [
+       "courte",
+       "longue"
+      ],
+      "offhand": "bouclier"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gd_peau_de_pierre",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Peau de pierre",
+   "desc": "+5 % de défense par rang.",
+   "x": 0,
+   "y": 1200,
+   "links": [
+    "gd_riposte_vengeresse",
+    "gd_riposte_desequilibre"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "defPct",
+     "value": 0.05,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "gd_sentinelle",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Sentinelle",
+   "desc": "Quand vous bloquez un coup, 3 % des PV max rendus (au plus une fois toutes les 2 s).",
+   "x": -74,
+   "y": 1198,
+   "links": [
+    "gd_riposte_desequilibre",
+    "gd_defi",
+    "gd_peau_de_pierre"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "onBlockHealPct",
+     "value": 0.03,
+     "icd": 2
+    }
+   ]
+  },
+  {
+   "id": "gd_maitrise_longue",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Maîtrise de l’épée longue",
+   "desc": "Épée longue : +8 % de dégâts et +0,3 m de portée de mêlée.",
+   "x": 74,
+   "y": 1293,
+   "links": [
+    "gd_maitrise_courte"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.08,
+     "when": {
+      "weaponFamily": "longue"
+     }
+    },
+    {
+     "stat": "meleeRange",
+     "value": 0.3,
+     "when": {
+      "weaponFamily": "longue"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gd_bastion",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "skill",
+   "name": "Bastion",
+   "desc": "Débloque Bastion.",
+   "x": 0,
+   "y": 1295,
+   "links": [
+    "gd_peau_de_pierre"
+   ],
+   "maxRank": 1,
+   "ability": "bastion",
+   "effects": []
+  },
+  {
+   "id": "gd_bastion_mobile",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Bastion mobile",
+   "desc": "−40 % → −25 % de dégâts subis, mais plus de ralentissement et la roulade reste permise.",
+   "x": 74,
+   "y": 1388,
+   "links": [
+    "gd_bastion"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "bastion_forme",
+   "ability": "bastion",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "bastion",
+     "key": "buff",
+     "value": {
+      "dmgTakenPct": -0.25
+     }
+    }
+   ],
+   "vfx": "Fines plaques de lumière grise qui suivent le corps au lieu d’un anneau au sol."
+  },
+  {
+   "id": "gd_bastion_epineux",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "variant",
+   "name": "Bastion épineux",
+   "desc": "Renvoie 30 % des dégâts de mêlée subis à l’attaquant pendant la durée.",
+   "x": -74,
+   "y": 1388,
+   "links": [
+    "gd_bastion"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "bastion_forme",
+   "ability": "bastion",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "bastion",
+     "key": "reflectMelee",
+     "value": 0.3
+    }
+   ],
+   "vfx": "Épines de fer spectrales jaillissant de l’armure à chaque coup reçu."
+  },
+  {
+   "id": "gd_endurci",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Souffle de vétéran",
+   "desc": "+5 d’endurance max par rang.",
+   "x": -74,
+   "y": 1293,
+   "links": [
+    "gd_sentinelle"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "staminaMax",
+     "value": 5,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "gd_inebranlable",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "passive",
+   "name": "Inébranlable",
+   "desc": "Durée des étourdissements et renversements subis −30 %.",
+   "x": 0,
+   "y": 1390,
+   "links": [
+    "gd_bastion"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "ccDurationPct",
+     "value": -0.3
+    }
+   ]
+  },
+  {
+   "id": "gd_ks_mur_vivant",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "keystone",
+   "name": "Mur vivant",
+   "desc": "Avec un bouclier, la Garde bloque 100 % des dégâts frontaux (85 % contre un boss). CONTREPARTIE : coups bloqués +30 % d’endurance, sprint impossible, roulade −40 % de distance.",
+   "x": 74,
+   "y": 1483,
+   "links": [
+    "gd_inebranlable"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "guardReduce",
+     "value": 1,
+     "bossValue": 0.85,
+     "when": {
+      "offhand": "bouclier"
+     }
+    },
+    {
+     "stat": "guardStaminaPct",
+     "value": 0.3
+    },
+    {
+     "stat": "noSprint",
+     "value": true
+    },
+    {
+     "stat": "rollDistPct",
+     "value": -0.4
+    }
+   ]
+  },
+  {
+   "id": "gd_ks_serment",
+   "region": "guerrier",
+   "branch": "gardien",
+   "type": "keystone",
+   "name": "Serment du protecteur",
+   "desc": "20 % des dégâts subis par les membres du groupe à moins de 8 m sont redirigés vers vous ; +20 % de défense. CONTREPARTIE : −15 % de dégâts infligés.",
+   "x": -74,
+   "y": 1483,
+   "links": [
+    "gd_inebranlable"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "redirectGroupDmg",
+     "value": 0.2,
+     "r": 8
+    },
+    {
+     "stat": "defPct",
+     "value": 0.2
+    },
+    {
+     "stat": "dmgPct",
+     "value": -0.15
+    }
+   ]
+  },
+  {
+   "id": "bk_tourbillon",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "skill",
+   "name": "Tourbillon",
+   "desc": "Débloque Tourbillon (compétence de la v0.2). Racine du Berserker.",
+   "x": 334,
+   "y": 749,
+   "links": [
+    "g_coup_puissant"
+   ],
+   "maxRank": 1,
+   "ability": "whirlwind",
+   "effects": []
+  },
+  {
+   "id": "bk_tourbillon_sanglant",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Tourbillon sanglant",
+   "desc": "Chaque ennemi touché saigne (60 % de l’attaque sur 5 s) ; puissance 1,7 → 1,4.",
+   "x": 400,
+   "y": 716,
+   "links": [
+    "bk_tourbillon"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "tourbillon_forme",
+   "ability": "whirlwind",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "power",
+     "value": 1.4
+    },
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "dot",
+     "value": {
+      "type": "saignement",
+      "total": 0.6,
+      "dur": 5
+     }
+    }
+   ],
+   "vfx": "Cercle de traînées rouge sombre, gouttes projetées en spirale."
+  },
+  {
+   "id": "bk_tourbillon_ambulant",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Tourbillon ambulant",
+   "desc": "Devient canalisé 2 s : 4 coups ×0,55, déplacement à 60 %, 10 d’endurance par seconde en plus.",
+   "x": 438,
+   "y": 803,
+   "links": [
+    "bk_tourbillon"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "tourbillon_forme",
+   "ability": "whirlwind",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "kind",
+     "value": "channel"
+    },
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "hits",
+     "value": 4
+    },
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "power",
+     "value": 0.55
+    },
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "channel",
+     "value": {
+      "dur": 2,
+      "moveMult": 0.6,
+      "stPerS": 10
+     }
+    }
+   ],
+   "vfx": "Tornade d’acier grise continue, feuilles et brume aspirées."
+  },
+  {
+   "id": "bk_tourbillon_aspirant",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Tourbillon aspirant",
+   "desc": "Rayon 4,5 → 5,5 m et attire les ennemis de 2 m vers vous ; puissance 1,7 → 1,4.",
+   "x": 265,
+   "y": 776,
+   "links": [
+    "bk_tourbillon"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "tourbillon_forme",
+   "ability": "whirlwind",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "radius",
+     "value": 5.5
+    },
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "pull",
+     "value": 2
+    },
+    {
+     "mod": "set",
+     "ability": "whirlwind",
+     "key": "power",
+     "value": 1.4
+    }
+   ],
+   "vfx": "Spirale de vent convergente, lignes d’air tirées vers le centre."
+  },
+  {
+   "id": "bk_soif",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Soif de sang",
+   "desc": "+2 % de vol de vie sur les dégâts de mêlée par rang.",
+   "x": 372,
+   "y": 836,
+   "links": [
+    "bk_tourbillon"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "lifestealMelee",
+     "value": 0.02,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "bk_chair",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Chair endurcie",
+   "desc": "+4 % de PV max par rang.",
+   "x": 303,
+   "y": 863,
+   "links": [
+    "bk_tourbillon"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "hpPct",
+     "value": 0.04,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "bk_rage",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "skill",
+   "name": "Rage sanguinaire",
+   "desc": "Débloque Rage sanguinaire.",
+   "x": 411,
+   "y": 923,
+   "links": [
+    "bk_soif"
+   ],
+   "maxRank": 1,
+   "ability": "rage",
+   "effects": []
+  },
+  {
+   "id": "bk_rage_froide",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Rage froide",
+   "desc": "Ne coûte plus de PV ni de défense : +15 % de dégâts et +10 % de critique.",
+   "x": 449,
+   "y": 1009,
+   "links": [
+    "bk_rage"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "rage_forme",
+   "ability": "rage",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "rage",
+     "key": "hpCost",
+     "value": 0
+    },
+    {
+     "mod": "set",
+     "ability": "rage",
+     "key": "buff",
+     "value": {
+      "dmgPct": 0.15,
+      "critAdd": 0.1
+     }
+    }
+   ],
+   "vfx": "Aura bleu-gris glacée, yeux qui luisent blanc."
+  },
+  {
+   "id": "bk_frenesie",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Frénésie",
+   "desc": "Chaque ennemi tué prolonge la Rage de 3 s (20 s au plus).",
+   "x": 381,
+   "y": 1037,
+   "links": [
+    "bk_rage"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "rage_forme",
+   "ability": "rage",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "rage",
+     "key": "extendOnKill",
+     "value": {
+      "s": 3,
+      "max": 20
+     }
+    }
+   ],
+   "vfx": "Aura rouge qui s’intensifie à chaque élimination, braises qui tombent."
+  },
+  {
+   "id": "bk_entaille",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "skill",
+   "name": "Entaille",
+   "desc": "Débloque Entaille.",
+   "x": 477,
+   "y": 890,
+   "links": [
+    "bk_soif"
+   ],
+   "maxRank": 1,
+   "ability": "rend",
+   "effects": []
+  },
+  {
+   "id": "bk_entaille_profonde",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Entaille profonde",
+   "desc": "Saignement ×1,5 et 8 s au lieu de 6 s.",
+   "x": 580,
+   "y": 940,
+   "links": [
+    "bk_entaille"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "entaille_forme",
+   "ability": "rend",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "rend",
+     "key": "dot",
+     "value": {
+      "type": "saignement",
+      "total": 1.8,
+      "dur": 8
+     }
+    }
+   ],
+   "vfx": "Plaie rouge plus épaisse, filets de sang qui persistent au sol."
+  },
+  {
+   "id": "bk_hemorragie",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Hémorragie",
+   "desc": "Sur une cible qui saigne déjà : consomme le saignement et inflige tout le reste d’un coup, +30 %.",
+   "x": 516,
+   "y": 977,
+   "links": [
+    "bk_entaille"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "entaille_forme",
+   "ability": "rend",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "rend",
+     "key": "detonateBleed",
+     "value": 1.3
+    }
+   ],
+   "vfx": "Explosion de gouttes rouges en éventail à l’impact."
+  },
+  {
+   "id": "bk_bond",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "skill",
+   "name": "Bond fracassant",
+   "desc": "Débloque Bond fracassant.",
+   "x": 342,
+   "y": 950,
+   "links": [
+    "bk_chair"
+   ],
+   "maxRank": 1,
+   "ability": "leap_slam",
+   "effects": []
+  },
+  {
+   "id": "bk_bond_predateur",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Bond du prédateur",
+   "desc": "Portée 7 → 10 m, vise un ennemi et le fait saigner (50 % de l’attaque sur 4 s) ; rayon 3 → 2 m.",
+   "x": 272,
+   "y": 973,
+   "links": [
+    "bk_bond"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "bond_forme",
+   "ability": "leap_slam",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "leap_slam",
+     "key": "range",
+     "value": 10
+    },
+    {
+     "mod": "set",
+     "ability": "leap_slam",
+     "key": "radius",
+     "value": 2
+    },
+    {
+     "mod": "set",
+     "ability": "leap_slam",
+     "key": "dot",
+     "value": {
+      "type": "saignement",
+      "total": 0.5,
+      "dur": 4
+     }
+    }
+   ],
+   "vfx": "Trajectoire en arc avec traînée rouge, griffures au sol à l’impact."
+  },
+  {
+   "id": "bk_onde_choc",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Onde de choc",
+   "desc": "Rayon 3 → 4,5 m, ralentit de 40 % pendant 2 s ; puissance 1,6 → 1,3.",
+   "x": 311,
+   "y": 1060,
+   "links": [
+    "bk_bond"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "bond_forme",
+   "ability": "leap_slam",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "leap_slam",
+     "key": "radius",
+     "value": 4.5
+    },
+    {
+     "mod": "set",
+     "ability": "leap_slam",
+     "key": "power",
+     "value": 1.3
+    },
+    {
+     "mod": "set",
+     "ability": "leap_slam",
+     "key": "slow",
+     "value": {
+      "pct": 0.4,
+      "dur": 2
+     }
+    }
+   ],
+   "vfx": "Anneau de terre soulevée, fissures radiales et nuage de poussière."
+  },
+  {
+   "id": "bk_maitrise_batarde",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Maîtrise de la bâtarde",
+   "desc": "Épée bâtarde à deux mains : +12 % de dégâts, +10 % de poise.",
+   "x": 619,
+   "y": 1028,
+   "links": [
+    "bk_entaille_profonde",
+    "bk_plaie"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.12,
+     "when": {
+      "weaponFamily": "batarde",
+      "grip": "deux_mains"
+     }
+    },
+    {
+     "stat": "poiseDmgPct",
+     "value": 0.1,
+     "when": {
+      "weaponFamily": "batarde",
+      "grip": "deux_mains"
+     }
+    }
+   ]
+  },
+  {
+   "id": "bk_plaie",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Plaies béantes",
+   "desc": "+10 % de dégâts de saignement par rang.",
+   "x": 555,
+   "y": 1064,
+   "links": [
+    "bk_hemorragie",
+    "bk_entaille_profonde"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.1,
+     "perRank": true,
+     "tag": "saignement"
+    }
+   ]
+  },
+  {
+   "id": "bk_fureur",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Fureur montante",
+   "desc": "Chaque coup subi donne +3 % de dégâts pendant 5 s (5 cumuls).",
+   "x": 488,
+   "y": 1096,
+   "links": [
+    "bk_rage_froide",
+    "bk_frenesie"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "onHitTakenDmgPct",
+     "value": 0.03,
+     "dur": 5,
+     "maxStacks": 5
+    }
+   ]
+  },
+  {
+   "id": "bk_maitrise_espadon",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Maîtrise de l’espadon",
+   "desc": "Espadon : +15 % de poise infligée, Coup puissant et Bond fracassant +15 % de dégâts, endurance des attaques −10 %.",
+   "x": 420,
+   "y": 1124,
+   "links": [
+    "bk_frenesie",
+    "bk_onde_choc",
+    "bk_fureur"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "poiseDmgPct",
+     "value": 0.15,
+     "when": {
+      "weaponFamily": "espadon"
+     }
+    },
+    {
+     "stat": "dmgPct",
+     "value": 0.15,
+     "abilities": [
+      "heavy_blow",
+      "leap_slam"
+     ],
+     "when": {
+      "weaponFamily": "espadon"
+     }
+    },
+    {
+     "stat": "attackStaminaPct",
+     "value": -0.1,
+     "when": {
+      "weaponFamily": "espadon"
+     }
+    }
+   ]
+  },
+  {
+   "id": "bk_execution",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "skill",
+   "name": "Exécution",
+   "desc": "Débloque Exécution.",
+   "x": 527,
+   "y": 1183,
+   "links": [
+    "bk_fureur",
+    "bk_plaie"
+   ],
+   "maxRank": 1,
+   "ability": "execute",
+   "effects": []
+  },
+  {
+   "id": "bk_couperet",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Couperet",
+   "desc": "Si Exécution tue, sa recharge est remise à zéro et vous regagnez 15 d’endurance.",
+   "x": 632,
+   "y": 1238,
+   "links": [
+    "bk_execution"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "execution_forme",
+   "ability": "execute",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "execute",
+     "key": "onKill",
+     "value": {
+      "resetCd": true,
+      "st": 15
+     }
+    }
+   ],
+   "vfx": "Lame qui laisse une traînée noire-rouge, flash rouge au sol quand la recharge se réinitialise."
+  },
+  {
+   "id": "bk_decapitation",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "variant",
+   "name": "Décapitation",
+   "desc": "Armement 0,3 → 0,6 s bien visible, puissance 2,0 → 3,2, poise 35 → 90.",
+   "x": 497,
+   "y": 1298,
+   "links": [
+    "bk_execution"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "execution_forme",
+   "ability": "execute",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "execute",
+     "key": "windup",
+     "value": 0.6
+    },
+    {
+     "mod": "set",
+     "ability": "execute",
+     "key": "power",
+     "value": 3.2
+    },
+    {
+     "mod": "set",
+     "ability": "execute",
+     "key": "poise",
+     "value": 90
+    }
+   ],
+   "vfx": "Lame levée au-dessus de la tête qui s’embrase de rouge pendant l’armement, impact en croissant géant."
+  },
+  {
+   "id": "bk_instinct",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Instinct de survie",
+   "desc": "Sous 30 % de PV : +25 % de régénération d’endurance.",
+   "x": 458,
+   "y": 1211,
+   "links": [
+    "bk_maitrise_espadon"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "staminaRegenPct",
+     "value": 0.25,
+     "when": {
+      "hpUnder": 0.3
+     }
+    }
+   ]
+  },
+  {
+   "id": "bk_carnage",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Carnage",
+   "desc": "+3 % de dégâts de mêlée par rang.",
+   "x": 593,
+   "y": 1151,
+   "links": [
+    "bk_maitrise_batarde"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.03,
+     "perRank": true,
+     "tag": "melee"
+    }
+   ]
+  },
+  {
+   "id": "bk_briseur",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "passive",
+   "name": "Briseur d’os",
+   "desc": "Les monstres déséquilibrés subissent +15 % de dégâts de vos coups.",
+   "x": 565,
+   "y": 1270,
+   "links": [
+    "bk_execution"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmgVsStaggeredPct",
+     "value": 0.15
+    }
+   ]
+  },
+  {
+   "id": "bk_ks_rasoir",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "keystone",
+   "name": "Au fil du rasoir",
+   "desc": "+3 % de dégâts par tranche de 10 % de PV manquants (max +27 %) et +3 % de vol de vie. CONTREPARTIE : soins reçus −30 % et plus de régénération de PV hors combat.",
+   "x": 671,
+   "y": 1325,
+   "links": [
+    "bk_briseur"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmgPerMissingHp10",
+     "value": 0.03
+    },
+    {
+     "stat": "lifestealMelee",
+     "value": 0.03
+    },
+    {
+     "stat": "healReceivedPct",
+     "value": -0.3
+    },
+    {
+     "stat": "noOocHpRegen",
+     "value": true
+    }
+   ]
+  },
+  {
+   "id": "bk_ks_dechaine",
+   "region": "guerrier",
+   "branch": "berserker",
+   "type": "keystone",
+   "name": "Déchaîné",
+   "desc": "+20 % de dégâts et +15 % de vitesse d’attaque. CONTREPARTIE : la Garde est impossible (ni blocage ni parade) et −10 % de défense.",
+   "x": 536,
+   "y": 1385,
+   "links": [
+    "bk_briseur"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.2
+    },
+    {
+     "stat": "attackSpeedPct",
+     "value": 0.15
+    },
+    {
+     "stat": "noGuard",
+     "value": true
+    },
+    {
+     "stat": "defPct",
+     "value": -0.1
+    }
+   ]
+  },
+  {
+   "id": "ma_estocade",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "skill",
+   "name": "Estocade",
+   "desc": "Débloque Estocade. Racine du Maître d’armes.",
+   "x": -334,
+   "y": 749,
+   "links": [
+    "g_coup_puissant"
+   ],
+   "maxRank": 1,
+   "ability": "lunge",
+   "effects": []
+  },
+  {
+   "id": "ma_estocade_double",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Estocade double",
+   "desc": "Deux estocs rapides ×1,0 au lieu d’un seul ×1,6 ; poise 25 → 2×15.",
+   "x": -400,
+   "y": 716,
+   "links": [
+    "ma_estocade"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "estocade_forme",
+   "ability": "lunge",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "lunge",
+     "key": "hits",
+     "value": 2
+    },
+    {
+     "mod": "set",
+     "ability": "lunge",
+     "key": "power",
+     "value": 1
+    },
+    {
+     "mod": "set",
+     "ability": "lunge",
+     "key": "poise",
+     "value": 15
+    }
+   ],
+   "vfx": "Deux lignes de lumière blanche parallèles et fines."
+  },
+  {
+   "id": "ma_fente_foudroyante",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Fente foudroyante",
+   "desc": "Portée 4 → 6 m, critique +10 % → +25 % ; recharge 7 → 9 s.",
+   "x": -438,
+   "y": 803,
+   "links": [
+    "ma_estocade"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "estocade_forme",
+   "ability": "lunge",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "lunge",
+     "key": "range",
+     "value": 6
+    },
+    {
+     "mod": "set",
+     "ability": "lunge",
+     "key": "critAdd",
+     "value": 0.25
+    },
+    {
+     "mod": "set",
+     "ability": "lunge",
+     "key": "cd",
+     "value": 9
+    }
+   ],
+   "vfx": "Image rémanente du guerrier le long de la fente, éclair doré à la pointe."
+  },
+  {
+   "id": "ma_precision",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Précision",
+   "desc": "+2 % de chances de critique par rang.",
+   "x": -372,
+   "y": 836,
+   "links": [
+    "ma_estocade"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "critAdd",
+     "value": 0.02,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "ma_velocite",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Vélocité",
+   "desc": "+4 % de vitesse d’attaque par rang (recharge de la Frappe).",
+   "x": -265,
+   "y": 776,
+   "links": [
+    "ma_estocade"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "attackSpeedPct",
+     "value": 0.04,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "ma_cadence",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "skill",
+   "name": "Cadence",
+   "desc": "Ouvre les variantes de rythme de la Frappe (voir ci-dessous) et +5 % de dégâts de la Frappe.",
+   "x": -303,
+   "y": 863,
+   "links": [
+    "ma_velocite"
+   ],
+   "maxRank": 1,
+   "ability": "strike",
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.05,
+     "abilities": [
+      "strike"
+     ]
+    }
+   ],
+   "note": "Nœud « porte » de type skill sans nouvelle capacité : améliore la Frappe."
+  },
+  {
+   "id": "ma_troisieme_temps",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Troisième temps",
+   "desc": "Chaque 3ᵉ Frappe enchaînée en 2 s inflige ×1,8 et 30 de poise.",
+   "x": -272,
+   "y": 973,
+   "links": [
+    "ma_cadence"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "frappe_cadence",
+   "ability": "strike",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "finisher",
+     "value": {
+      "every": 3,
+      "window": 2,
+      "mult": 1.8,
+      "poise": 30
+     }
+    }
+   ],
+   "vfx": "3ᵉ coup : grande taille horizontale avec un éclat argenté et un son de cloche."
+  },
+  {
+   "id": "ma_taille_pointe",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Taille et pointe",
+   "desc": "La Frappe alterne taille et estoc : l’estoc a +0,8 m de portée et +15 % de critique.",
+   "x": -342,
+   "y": 950,
+   "links": [
+    "ma_cadence"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "frappe_cadence",
+   "ability": "strike",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "strike",
+     "key": "alternate",
+     "value": {
+      "thrust": {
+       "range": 0.8,
+       "critAdd": 0.15
+      }
+     }
+    }
+   ],
+   "vfx": "Alternance de traînées en arc et de fines lignes droites."
+  },
+  {
+   "id": "ma_danse",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "skill",
+   "name": "Danse des lames",
+   "desc": "Débloque Danse des lames.",
+   "x": -411,
+   "y": 923,
+   "links": [
+    "ma_precision",
+    "ma_cadence"
+   ],
+   "maxRank": 1,
+   "ability": "blade_dance",
+   "effects": []
+  },
+  {
+   "id": "ma_tempete_acier",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Tempête d’acier",
+   "desc": "5 coups ×0,6 au lieu de 3 ×0,9 ; endurance 20 → 26.",
+   "x": -449,
+   "y": 1009,
+   "links": [
+    "ma_danse"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "danse_forme",
+   "ability": "blade_dance",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "blade_dance",
+     "key": "hits",
+     "value": 5
+    },
+    {
+     "mod": "set",
+     "ability": "blade_dance",
+     "key": "power",
+     "value": 0.6
+    },
+    {
+     "mod": "set",
+     "ability": "blade_dance",
+     "key": "st",
+     "value": 26
+    }
+   ],
+   "vfx": "Multitude de traînées fines et blanches, étincelles continues."
+  },
+  {
+   "id": "ma_lame_finale",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Lame finale",
+   "desc": "Le 3ᵉ coup inflige ×1,8 et 40 de poise.",
+   "x": -381,
+   "y": 1037,
+   "links": [
+    "ma_danse"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "danse_forme",
+   "ability": "blade_dance",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "blade_dance",
+     "key": "lastHit",
+     "value": {
+      "power": 1.8,
+      "poise": 40
+     }
+    }
+   ],
+   "vfx": "Dernier coup : large croissant doré qui reste 0,3 s dans l’air."
+  },
+  {
+   "id": "ma_brise_garde",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "skill",
+   "name": "Brise-garde",
+   "desc": "Débloque Brise-garde.",
+   "x": -477,
+   "y": 890,
+   "links": [
+    "ma_precision",
+    "ma_fente_foudroyante"
+   ],
+   "maxRank": 1,
+   "ability": "sunder",
+   "effects": []
+  },
+  {
+   "id": "ma_point_faible",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Point faible",
+   "desc": "La cible subit en plus +15 % de chances de critique de toutes les sources pendant 6 s.",
+   "x": -580,
+   "y": 940,
+   "links": [
+    "ma_brise_garde"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "brise_garde_forme",
+   "ability": "sunder",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "sunder",
+     "key": "debuffCritTaken",
+     "value": 0.15
+    }
+   ],
+   "vfx": "Marque lumineuse en losange sur la cible, qui clignote."
+  },
+  {
+   "id": "ma_coup_de_taille",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Coup de taille",
+   "desc": "Frappe un arc de 120° (plusieurs cibles) ; poise 70 → 50.",
+   "x": -516,
+   "y": 977,
+   "links": [
+    "ma_brise_garde"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "brise_garde_forme",
+   "ability": "sunder",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "sunder",
+     "key": "shape",
+     "value": {
+      "arc": 120,
+      "r": 3
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "sunder",
+     "key": "poise",
+     "value": 50
+    }
+   ],
+   "vfx": "Grand arc gris acier, éclats de métal projetés."
+  },
+  {
+   "id": "ma_maitrise_rapiere",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Maîtrise de la rapière",
+   "desc": "Rapière : +8 % de critique ; Estocade +1 m de portée.",
+   "x": -350,
+   "y": 1148,
+   "links": [
+    "ma_lame_finale",
+    "ma_troisieme_temps"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "critAdd",
+     "value": 0.08,
+     "when": {
+      "weaponFamily": "rapiere"
+     }
+    },
+    {
+     "mod": "add",
+     "ability": "lunge",
+     "key": "range",
+     "value": 1,
+     "when": {
+      "weaponFamily": "rapiere"
+     }
+    }
+   ]
+  },
+  {
+   "id": "ma_coup_critique",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Coups mortels",
+   "desc": "+10 % de dégâts critiques par rang.",
+   "x": -420,
+   "y": 1124,
+   "links": [
+    "ma_lame_finale",
+    "ma_tempete_acier"
+   ],
+   "maxRank": 3,
+   "effects": [
+    {
+     "stat": "critDmgPct",
+     "value": 0.1,
+     "perRank": true
+    }
+   ]
+  },
+  {
+   "id": "ma_elan",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Élan",
+   "desc": "Chaque coup porté dans les 2 s du précédent : +2 % de dégâts (5 cumuls).",
+   "x": -488,
+   "y": 1096,
+   "links": [
+    "ma_tempete_acier",
+    "ma_coup_de_taille"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "comboDmgPct",
+     "value": 0.02,
+     "window": 2,
+     "maxStacks": 5
+    }
+   ]
+  },
+  {
+   "id": "ma_maitrise_cimeterre",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Maîtrise du cimeterre",
+   "desc": "Cimeterre : les critiques font saigner (40 % de l’attaque sur 4 s).",
+   "x": -555,
+   "y": 1064,
+   "links": [
+    "ma_point_faible",
+    "ma_coup_de_taille"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "onCritBleed",
+     "value": 0.4,
+     "dur": 4,
+     "when": {
+      "weaponFamily": "cimeterre"
+     }
+    }
+   ]
+  },
+  {
+   "id": "ma_pas_de_lame",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "skill",
+   "name": "Pas de lame",
+   "desc": "Débloque Pas de lame.",
+   "x": -527,
+   "y": 1183,
+   "links": [
+    "ma_elan",
+    "ma_coup_critique",
+    "ma_maitrise_cimeterre"
+   ],
+   "maxRank": 1,
+   "ability": "sidestep",
+   "effects": []
+  },
+  {
+   "id": "ma_pas_fantome",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Pas fantôme",
+   "desc": "Ne coûte plus d’endurance ; recharge 6 → 10 s.",
+   "x": -497,
+   "y": 1298,
+   "links": [
+    "ma_pas_de_lame"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "pas_forme",
+   "ability": "sidestep",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "sidestep",
+     "key": "st",
+     "value": 0
+    },
+    {
+     "mod": "set",
+     "ability": "sidestep",
+     "key": "cd",
+     "value": 10
+    }
+   ],
+   "vfx": "Silhouette translucide laissée à la position de départ, qui se dissipe."
+  },
+  {
+   "id": "ma_pas_tranchant",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "variant",
+   "name": "Pas tranchant",
+   "desc": "Inflige ×0,8 aux ennemis traversés ; distance 3 → 4 m.",
+   "x": -632,
+   "y": 1238,
+   "links": [
+    "ma_pas_de_lame"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "pas_forme",
+   "ability": "sidestep",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "sidestep",
+     "key": "passDmg",
+     "value": 0.8
+    },
+    {
+     "mod": "set",
+     "ability": "sidestep",
+     "key": "range",
+     "value": 4
+    }
+   ],
+   "vfx": "Ligne de coupe horizontale sur le trajet, étincelles."
+  },
+  {
+   "id": "ma_maitrise_courbe",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Maîtrise de la lame courbe",
+   "desc": "Lame courbe : Frappe −10 % de recharge, Danse des lames +1 coup.",
+   "x": -458,
+   "y": 1211,
+   "links": [
+    "ma_coup_critique",
+    "ma_maitrise_rapiere"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "mod": "mul",
+     "ability": "strike",
+     "key": "cd",
+     "value": 0.9,
+     "when": {
+      "weaponFamily": "lame_courbe"
+     }
+    },
+    {
+     "mod": "add",
+     "ability": "blade_dance",
+     "key": "hits",
+     "value": 1,
+     "when": {
+      "weaponFamily": "lame_courbe"
+     }
+    }
+   ]
+  },
+  {
+   "id": "ma_jeu_jambes",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Jeu de jambes",
+   "desc": "Une roulade dans les 1,5 s après avoir touché coûte 20 % d’endurance en moins.",
+   "x": -593,
+   "y": 1151,
+   "links": [
+    "ma_maitrise_cimeterre"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "rollStaminaPct",
+     "value": -0.2,
+     "when": {
+      "hitWithin": 1.5
+     }
+    }
+   ]
+  },
+  {
+   "id": "ma_lecture",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "passive",
+   "name": "Lecture du combat",
+   "desc": "Les coups critiques infligent +25 % de poise.",
+   "x": -565,
+   "y": 1270,
+   "links": [
+    "ma_pas_de_lame"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "critPoisePct",
+     "value": 0.25
+    }
+   ]
+  },
+  {
+   "id": "ma_ks_duelliste",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "keystone",
+   "name": "Duelliste",
+   "desc": "Si un seul ennemi est à moins de 8 m : +20 % de dégâts et +10 % de critique. CONTREPARTIE : −20 % de dégâts dès que 3 ennemis ou plus sont à moins de 8 m.",
+   "x": -536,
+   "y": 1385,
+   "links": [
+    "ma_lecture"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.2,
+     "when": {
+      "enemiesWithin8": 1
+     }
+    },
+    {
+     "stat": "critAdd",
+     "value": 0.1,
+     "when": {
+      "enemiesWithin8": 1
+     }
+    },
+    {
+     "stat": "dmgPct",
+     "value": -0.2,
+     "when": {
+      "enemiesWithin8Min": 3
+     }
+    }
+   ]
+  },
+  {
+   "id": "ma_ks_coups_mesures",
+   "region": "guerrier",
+   "branch": "maitre",
+   "type": "keystone",
+   "name": "Coups mesurés",
+   "desc": "Chaque 4ᵉ coup est un critique garanti avec +50 % de dégâts critiques. CONTREPARTIE : vos autres coups ne sont jamais critiques.",
+   "x": -671,
+   "y": 1325,
+   "links": [
+    "ma_lecture"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "critMode",
+     "value": "every4",
+     "critDmgPct": 0.5
+    }
+   ]
+  },
+  {
+   "id": "pg_flux_martial",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "passive",
+   "name": "Flux martial",
+   "desc": "Chaque coup de mêlée qui touche rend 1 point de mana (au plus 4 par seconde).",
+   "x": -611,
+   "y": 633,
+   "links": [
+    "ma_brise_garde"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "manaOnMeleeHit",
+     "value": 1,
+     "maxPerS": 4
+    }
+   ]
+  },
+  {
+   "id": "pg_lame_enchantee",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "skill",
+   "name": "Lame enchantée",
+   "desc": "Débloque Lame enchantée.",
+   "x": -762,
+   "y": 617,
+   "links": [
+    "pg_flux_martial"
+   ],
+   "maxRank": 1,
+   "ability": "enchant_blade",
+   "effects": []
+  },
+  {
+   "id": "pg_lame_ardente",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "variant",
+   "name": "Lame ardente",
+   "desc": "Élément feu : les coups brûlent (20 % de l’attaque sur 3 s, 3 cumuls).",
+   "x": -794,
+   "y": 740,
+   "links": [
+    "pg_lame_enchantee"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "lame_enchantee_element",
+   "ability": "enchant_blade",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "enchant_blade",
+     "key": "element",
+     "value": "feu"
+    },
+    {
+     "mod": "set",
+     "ability": "enchant_blade",
+     "key": "dot",
+     "value": {
+      "type": "brulure",
+      "total": 0.2,
+      "dur": 3,
+      "maxStacks": 3
+     }
+    }
+   ],
+   "vfx": "Flammes orange léchant le tranchant, braises à chaque taille."
+  },
+  {
+   "id": "pg_lame_givre",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "variant",
+   "name": "Lame de givre",
+   "desc": "Élément givre : chaque coup ralentit de 10 % pendant 3 s (2 cumuls, 20 %).",
+   "x": -884,
+   "y": 654,
+   "links": [
+    "pg_lame_enchantee"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "lame_enchantee_element",
+   "ability": "enchant_blade",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "enchant_blade",
+     "key": "element",
+     "value": "givre"
+    },
+    {
+     "mod": "set",
+     "ability": "enchant_blade",
+     "key": "slowPerHit",
+     "value": {
+      "pct": 0.1,
+      "dur": 3,
+      "maxStacks": 2
+     }
+    }
+   ],
+   "vfx": "Givre cristallin sur la lame, éclats de glace et buée bleue à l’impact."
+  },
+  {
+   "id": "pg_lame_arcanique",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "variant",
+   "name": "Lame arcanique",
+   "desc": "Élément arcane : bonus 35 % → 25 %, mais chaque coup rend 2 mana.",
+   "x": -931,
+   "y": 537,
+   "links": [
+    "pg_lame_enchantee"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "lame_enchantee_element",
+   "ability": "enchant_blade",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "enchant_blade",
+     "key": "buff",
+     "value": {
+      "meleeBonusDmg": 0.25,
+      "element": "arcane"
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "enchant_blade",
+     "key": "manaPerHit",
+     "value": 2
+    }
+   ],
+   "vfx": "Runes violettes qui glissent le long de la lame, étincelles violettes."
+  },
+  {
+   "id": "pg_onde_tranchante",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "skill",
+   "name": "Onde tranchante",
+   "desc": "Débloque Onde tranchante.",
+   "x": -745,
+   "y": 430,
+   "links": [
+    "pg_flux_martial"
+   ],
+   "maxRank": 1,
+   "ability": "blade_wave",
+   "effects": []
+  },
+  {
+   "id": "pg_croissant",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "variant",
+   "name": "Croissant de lune",
+   "desc": "Onde en cône de 90° sur 7 m qui touche tout ; puissance 1,3 → 1,1.",
+   "x": -627,
+   "y": 464,
+   "links": [
+    "pg_onde_tranchante"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "onde_forme",
+   "ability": "blade_wave",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "blade_wave",
+     "key": "shape",
+     "value": {
+      "cone": 90,
+      "r": 7
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "blade_wave",
+     "key": "power",
+     "value": 1.1
+    }
+   ],
+   "vfx": "Croissant bleu pâle qui s’élargit en avançant."
+  },
+  {
+   "id": "pg_lance_spectrale",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "variant",
+   "name": "Lance spectrale",
+   "desc": "Portée 10 → 16 m, puissance 1,3 → 1,6 ; recharge 8 → 12 s.",
+   "x": -695,
+   "y": 331,
+   "links": [
+    "pg_onde_tranchante"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "onde_forme",
+   "ability": "blade_wave",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "blade_wave",
+     "key": "range",
+     "value": 16
+    },
+    {
+     "mod": "set",
+     "ability": "blade_wave",
+     "key": "power",
+     "value": 1.6
+    },
+    {
+     "mod": "set",
+     "ability": "blade_wave",
+     "key": "cd",
+     "value": 12
+    }
+   ],
+   "vfx": "Longue lame fantôme violette et fine, traînée de particules."
+  },
+  {
+   "id": "pg_maitrise_runique",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "passive",
+   "name": "Maîtrise de l’épée runique",
+   "desc": "Épée runique : +10 % de dégâts élémentaires, et elle sert de focus sans pénalité aux sorts (au lieu de −20 %).",
+   "x": -978,
+   "y": 660,
+   "links": [
+    "pg_lame_arcanique",
+    "pg_lame_givre",
+    "pg_lame_ardente"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "dmgPct",
+     "value": 0.1,
+     "tag": [
+      "feu",
+      "givre",
+      "arcane"
+     ],
+     "when": {
+      "weaponFamily": "runique"
+     }
+    },
+    {
+     "stat": "focusPenaltyRemoved",
+     "value": true,
+     "when": {
+      "weaponFamily": "runique"
+     }
+    }
+   ]
+  },
+  {
+   "id": "pg_egide",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "skill",
+   "name": "Égide runique",
+   "desc": "Débloque Égide runique.",
+   "x": -896,
+   "y": 344,
+   "links": [
+    "pg_onde_tranchante",
+    "pg_lame_arcanique"
+   ],
+   "maxRank": 1,
+   "ability": "rune_aegis",
+   "effects": [],
+   "externalLinks": [
+    "mage:pont_gm_entree"
+   ]
+  },
+  {
+   "id": "pg_egide_renvoi",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "variant",
+   "name": "Égide éclatante",
+   "desc": "Quand le bouclier se brise, il explose : ×1,2 de dégâts arcaniques dans un rayon de 4 m.",
+   "x": -1014,
+   "y": 310,
+   "links": [
+    "pg_egide"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "egide_forme",
+   "ability": "rune_aegis",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "rune_aegis",
+     "key": "onBreak",
+     "value": {
+      "power": 1.2,
+      "r": 4,
+      "element": "arcane"
+     }
+    }
+   ],
+   "vfx": "Sphère de runes qui se fissure puis éclate en éclats violets."
+  },
+  {
+   "id": "pg_egide_mana",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "variant",
+   "name": "Égide du savant",
+   "desc": "Absorbe 12 % PV + 25 % mana → 40 % du mana max, et rend 20 % des dégâts absorbés en mana.",
+   "x": -873,
+   "y": 218,
+   "links": [
+    "pg_egide"
+   ],
+   "maxRank": 1,
+   "exclusiveGroup": "egide_forme",
+   "ability": "rune_aegis",
+   "effects": [
+    {
+     "mod": "set",
+     "ability": "rune_aegis",
+     "key": "shield",
+     "value": {
+      "hpPct": 0,
+      "mpPct": 0.4
+     }
+    },
+    {
+     "mod": "set",
+     "ability": "rune_aegis",
+     "key": "absorbToMana",
+     "value": 0.2
+    }
+   ],
+   "vfx": "Sphère bleue translucide, les coups reçus y laissent des ondulations."
+  },
+  {
+   "id": "pg_ks_serment",
+   "region": "pont_gm",
+   "branch": "lame_spirituelle",
+   "type": "keystone",
+   "name": "Serment de la lame spirituelle",
+   "desc": "La pénalité d’Inaptitude des compétences de Guerrier ET de Mage est divisée par deux. CONTREPARTIE : −10 % de PV max et −10 % de mana max.",
+   "x": -1094,
+   "y": 442,
+   "links": [
+    "pg_maitrise_runique",
+    "pg_egide_renvoi"
+   ],
+   "maxRank": 1,
+   "effects": [
+    {
+     "stat": "inaptitudeMult",
+     "value": 0.5,
+     "classes": [
+      "warrior",
+      "mage"
+     ]
+    },
+    {
+     "stat": "hpPct",
+     "value": -0.1
+    },
+    {
+     "stat": "mpPct",
+     "value": -0.1
+    }
+   ]
+  }
+ ],
+ "keystones": [
+  {
+   "id": "gd_ks_mur_vivant",
+   "region": "guerrier",
+   "name": "Mur vivant",
+   "desc": "Avec un bouclier, la Garde bloque 100 % des dégâts frontaux (85 % contre un boss). CONTREPARTIE : coups bloqués +30 % d’endurance, sprint impossible, roulade −40 % de distance.",
+   "costOwnClass": 1,
+   "costOtherClass": 3
+  },
+  {
+   "id": "gd_ks_serment",
+   "region": "guerrier",
+   "name": "Serment du protecteur",
+   "desc": "20 % des dégâts subis par les membres du groupe à moins de 8 m sont redirigés vers vous ; +20 % de défense. CONTREPARTIE : −15 % de dégâts infligés.",
+   "costOwnClass": 1,
+   "costOtherClass": 3
+  },
+  {
+   "id": "bk_ks_rasoir",
+   "region": "guerrier",
+   "name": "Au fil du rasoir",
+   "desc": "+3 % de dégâts par tranche de 10 % de PV manquants (max +27 %) et +3 % de vol de vie. CONTREPARTIE : soins reçus −30 % et plus de régénération de PV hors combat.",
+   "costOwnClass": 1,
+   "costOtherClass": 3
+  },
+  {
+   "id": "bk_ks_dechaine",
+   "region": "guerrier",
+   "name": "Déchaîné",
+   "desc": "+20 % de dégâts et +15 % de vitesse d’attaque. CONTREPARTIE : la Garde est impossible (ni blocage ni parade) et −10 % de défense.",
+   "costOwnClass": 1,
+   "costOtherClass": 3
+  },
+  {
+   "id": "ma_ks_duelliste",
+   "region": "guerrier",
+   "name": "Duelliste",
+   "desc": "Si un seul ennemi est à moins de 8 m : +20 % de dégâts et +10 % de critique. CONTREPARTIE : −20 % de dégâts dès que 3 ennemis ou plus sont à moins de 8 m.",
+   "costOwnClass": 1,
+   "costOtherClass": 3
+  },
+  {
+   "id": "ma_ks_coups_mesures",
+   "region": "guerrier",
+   "name": "Coups mesurés",
+   "desc": "Chaque 4ᵉ coup est un critique garanti avec +50 % de dégâts critiques. CONTREPARTIE : vos autres coups ne sont jamais critiques.",
+   "costOwnClass": 1,
+   "costOtherClass": 3
+  },
+  {
+   "id": "pg_ks_serment",
+   "region": "pont_gm",
+   "name": "Serment de la lame spirituelle",
+   "desc": "La pénalité d’Inaptitude des compétences de Guerrier ET de Mage est divisée par deux. CONTREPARTIE : −10 % de PV max et −10 % de mana max.",
+   "costOwnClass": 1,
+   "costOtherClass": "pont : 1 pour Guerrier/Mage, 3 pour Rôdeur"
+  }
+ ]
+}
