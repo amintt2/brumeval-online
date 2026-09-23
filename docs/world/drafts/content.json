@@ -1,0 +1,3716 @@
+{
+ "version": "draft-v0.3",
+ "author": "world-content (brouillon)",
+ "note": "Contenu du monde v0.3 région par région. Coordonnées en mètres, nord = -Z, monde de 4 × 4 km ([-2000, 2000]). Aucun brouillon carto.* n’existait : les ids de région sont définis ici et devront être alignés avec la carte topographique du cartographe. Altitudes relatives au niveau de la mer (0 m) : indicatives.",
+ "worldSize": {
+  "half": 2000,
+  "legacyHalf": 180
+ },
+ "heightClasses": [
+  {
+   "id": "A0",
+   "name": "Fonds",
+   "alt": [
+    -40,
+    0
+   ],
+   "desc": "Mer, lagons, lits de lac. Nage interdite en v0.3 (eau profonde = non praticable), gués ≤ 0,8 m praticables."
+  },
+  {
+   "id": "A1",
+   "name": "Littoral et berges",
+   "alt": [
+    0,
+    8
+   ],
+   "desc": "Plages, deltas, rives, pilotis. Brouillard bas le matin, marées visuelles."
+  },
+  {
+   "id": "A2",
+   "name": "Basses terres",
+   "alt": [
+    8,
+    40
+   ],
+   "desc": "Plaines, prairies, marais, fonds de vallée. Grand ciel, vent fort sur l’herbe, routes principales."
+  },
+  {
+   "id": "A3",
+   "name": "Collines et bois",
+   "alt": [
+    40,
+    120
+   ],
+   "desc": "Relief ondulé, forêts, landes. Lignes de vue coupées : embuscades, surprises."
+  },
+  {
+   "id": "A4",
+   "name": "Plateaux et mesas",
+   "alt": [
+    120,
+    250
+   ],
+   "desc": "Dessus plats bordés de falaises (cliff_a/cliff_b). Accès par rampes, cols et escaliers taillés. Belvédères."
+  },
+  {
+   "id": "A5",
+   "name": "Montagne",
+   "alt": [
+    250,
+    500
+   ],
+   "desc": "Pentes raides, éboulis, cols. Au-dessus de 350 m en Givreval : neige au sol et « Froid mordant »."
+  },
+  {
+   "id": "A6",
+   "name": "Hauts sommets",
+   "alt": [
+    500,
+    750
+   ],
+   "desc": "Pics de Givreval (≈ 680 m), cône de Cendremont (≈ 720 m), cime de l’Arbre-Brume (repère, pas du terrain). Non praticables sauf chemins balisés."
+  }
+ ],
+ "reliefTypes": {
+  "cuvette": "Bassin doux entouré de collines (sert de « salle de départ » lisible).",
+  "plaine": "Grandes étendues quasi plates, pentes < 5 %.",
+  "vallonne": "Collines douces, pentes 5–15 %, vallons cachés.",
+  "plateau": "Dessus plat + ceinture de falaises, accès par 2–4 rampes.",
+  "mesa": "Plateaux isolés en colonnes, séparés par des ravines ; ponts de corde.",
+  "canyon": "Gorges étroites (30–80 m de profondeur), corniches, arches naturelles.",
+  "falaise_cotiere": "Falaises de 20–60 m sur la mer, criques en contrebas.",
+  "dunes": "Dunes ondulées 5–25 m, crêtes vives, cuvettes d’oasis.",
+  "delta": "Chenaux, îlots, eau peu profonde, pilotis.",
+  "massif": "Montagne en arêtes, cols, cirques glaciaires.",
+  "cone_volcanique": "Cône + caldeira, coulées de lave figée en terrasses, fissures.",
+  "archipel": "Îles basses reliées par bancs de sable et passerelles."
+ },
+ "regions": [
+  {
+   "id": "val_brumeval",
+   "name": "Val de Brumeval",
+   "x": 0,
+   "z": 0,
+   "r": 400,
+   "levels": [
+    1,
+    8
+   ],
+   "tier": "T1",
+   "security": "jaune (village vert)",
+   "heightClass": "A2",
+   "altitude": {
+    "min": 6,
+    "max": 70,
+    "typical": 20
+   },
+   "relief": [
+    "cuvette",
+    "vallonne"
+   ],
+   "note": "Contient toute la carte v0.1/v0.2 (360 × 360 m) aux mêmes coordonnées : les positions sauvegardées des joueurs restent valides. Les sous-zones existantes (Plaines d’Émeraude, Prairie du Sud, Forêt des Murmures sud, Camp gobelin, Cimetière oublié, Antre du Golem) sont conservées.",
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.5
+    },
+    {
+     "kind": "brume_matinale",
+     "p": 0.3
+    },
+    {
+     "kind": "pluie",
+     "p": 0.2
+    }
+   ],
+   "ambiance": "Brume dorée au lever du soleil, champs, moulins, fumée des cheminées.",
+   "monsters": [
+    {
+     "key": "slime",
+     "lvl": [
+      1,
+      3
+     ],
+     "archetype": "pack"
+    },
+    {
+     "key": "wolf",
+     "lvl": [
+      3,
+      6
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "boar",
+     "lvl": [
+      4,
+      7
+     ],
+     "archetype": "brute",
+     "note": "lisière est"
+    },
+    {
+     "key": "goblin",
+     "lvl": [
+      5,
+      8
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "goblin_shaman",
+     "lvl": [
+      6,
+      8
+     ],
+     "archetype": "caster"
+    },
+    {
+     "key": "skeleton",
+     "lvl": [
+      8,
+      11
+     ],
+     "archetype": "brute",
+     "note": "Cimetière oublié (hérité)"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Gluant-Roi",
+     "model": "slime",
+     "scale": 2.4,
+     "lvl": 4,
+     "desc": "Se divise en 3 gluants à 50 % PV. Premier « vrai » combat télégraphié."
+    },
+    {
+     "name": "Chef Gorgrat",
+     "model": "goblin",
+     "scale": 1.4,
+     "lvl": 9,
+     "desc": "Chef du camp gobelin, sonne le cor (renforts) à 60 % PV."
+    }
+   ],
+   "worldBoss": {
+    "key": "golem",
+    "name": "Golem ancien",
+    "lvl": 14,
+    "where": "Antre du Golem (118, -132)",
+    "desc": "Boss hérité, premier jalon soulslike ; reste niv. 14 : on y revient après les Prairies/Forêt."
+   },
+   "towns": [
+    {
+     "id": "brumeval",
+     "name": "Brumeval",
+     "x": 0,
+     "z": 0,
+     "services": [
+      "forge",
+      "alchimie",
+      "couture",
+      "etals_marche",
+      "banque",
+      "auberge",
+      "maitre_des_arts",
+      "pierre_de_passage",
+      "arene_duel"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "vb_moulin",
+     "type": "hameau",
+     "name": "Moulin des Trois-Ailes",
+     "x": 160,
+     "z": 120,
+     "desc": "Moulin (windmill), meunier qui donne des quêtes de récolte.",
+     "version": "v0.3"
+    },
+    {
+     "id": "vb_tour_guet",
+     "type": "belvedere",
+     "name": "Tour de guet du Val",
+     "x": -180,
+     "z": -150,
+     "desc": "Watchtower : première tour à gravir, révèle la carte du Val.",
+     "version": "v0.3"
+    },
+    {
+     "id": "vb_mine",
+     "type": "donjon",
+     "name": "Mine de Cuivrefond",
+     "x": -260,
+     "z": 120,
+     "desc": "Petit donjon ouvert (niv. 6–8), gobelins mineurs, filons de cuivre.",
+     "version": "v0.4"
+    },
+    {
+     "id": "vb_pont",
+     "type": "repere",
+     "name": "Pont de la Brumeline",
+     "x": -120,
+     "z": 260,
+     "desc": "Pont (bridge) sur la rivière qui part vers le Lac de Verre-Lune.",
+     "version": "v0.3"
+    },
+    {
+     "id": "vb_autel",
+     "type": "sanctuaire",
+     "name": "Stèle d’Éveil du Val",
+     "x": 60,
+     "z": -230,
+     "desc": "Tutoriel du collectible et des Stèles d’Éveil.",
+     "version": "v0.3"
+    },
+    {
+     "id": "vb_ruine",
+     "type": "ruine",
+     "name": "Chapelle effondrée",
+     "x": 230,
+     "z": -240,
+     "desc": "Ruines (ruins_arch) et coffre, 2 squelettes de garde.",
+     "version": "v0.3"
+    },
+    {
+     "id": "vb_ferme",
+     "type": "camp",
+     "name": "Ferme pillée",
+     "x": 300,
+     "z": 40,
+     "desc": "Sangliers et coffre caché dans la grange.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_copper",
+    "node_herb_brume"
+   ],
+   "collectibles": 12,
+   "traversal": [
+    "routes pavées",
+    "sprint",
+    "saut (v0.3)",
+    "pierres de passage"
+   ],
+   "quests": [
+    "Chaîne d’Aldric (hérité, 5 quêtes)",
+    "Les Ailes du moulin (récolte)",
+    "Le Roi des gluants",
+    "Chapitre I de la trame"
+   ]
+  },
+  {
+   "id": "prairies_dorees",
+   "name": "Prairies Dorées",
+   "x": 350,
+   "z": 700,
+   "r": 380,
+   "levels": [
+    4,
+    9
+   ],
+   "tier": "T1-T2",
+   "security": "jaune",
+   "heightClass": "A2",
+   "altitude": {
+    "min": 10,
+    "max": 55,
+    "typical": 25
+   },
+   "relief": [
+    "plaine",
+    "vallonne"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.55
+    },
+    {
+     "kind": "vent_fort",
+     "p": 0.25
+    },
+    {
+     "kind": "orage_d_ete",
+     "p": 0.2
+    }
+   ],
+   "ambiance": "Herbes hautes dorées ondulant au vent, arbres roux (réf. prairie d’automne), meules, grands ciels.",
+   "monsters": [
+    {
+     "key": "boar",
+     "lvl": [
+      4,
+      8
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "wolf",
+     "lvl": [
+      5,
+      8
+     ],
+     "archetype": "pack"
+    },
+    {
+     "key": "bandit",
+     "lvl": [
+      7,
+      9
+     ],
+     "archetype": "rusher",
+     "note": "embuscades sur la route du Sud"
+    },
+    {
+     "key": "slime",
+     "lvl": [
+      4,
+      6
+     ],
+     "archetype": "pack",
+     "note": "variante dorée"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Vieille-Hure",
+     "model": "boar",
+     "scale": 1.8,
+     "lvl": 9,
+     "desc": "Charges en ligne droite télégraphiées, se cogne aux rochers (étourdie 2 s)."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [
+    {
+     "id": "relais_epis",
+     "name": "Relais des Épis",
+     "x": 380,
+     "z": 650,
+     "services": [
+      "alchimie",
+      "auberge",
+      "pierre_de_passage"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "pd_menhirs",
+     "type": "ruine",
+     "name": "Cercle des Sept Menhirs",
+     "x": 520,
+     "z": 560,
+     "desc": "Obelisks : puzzle d’ombres à midi (collectible).",
+     "version": "v0.3"
+    },
+    {
+     "id": "pd_meules",
+     "type": "camp",
+     "name": "Meules des bandits",
+     "x": 250,
+     "z": 880,
+     "desc": "Camp de bandits caché dans les meules, coffre.",
+     "version": "v0.3"
+    },
+    {
+     "id": "pd_colline",
+     "type": "belvedere",
+     "name": "Butte du Vent",
+     "x": 600,
+     "z": 820,
+     "desc": "Colline isolée, vue sur la mer au sud.",
+     "version": "v0.3"
+    },
+    {
+     "id": "pd_ferme",
+     "type": "hameau",
+     "name": "Ferme Bellegrange",
+     "x": 150,
+     "z": 600,
+     "desc": "Quête de la fermière : sangliers et épouvantails.",
+     "version": "v0.3"
+    },
+    {
+     "id": "pd_arbre",
+     "type": "repere",
+     "name": "Chêne des Pendus",
+     "x": 480,
+     "z": 950,
+     "desc": "Vieux chêne mort, coffre enterré à ses racines.",
+     "version": "v0.3"
+    },
+    {
+     "id": "pd_riviere",
+     "type": "repere",
+     "name": "Gué de la Brumeline",
+     "x": 100,
+     "z": 900,
+     "desc": "Gué praticable, filons de cuivre sur les berges.",
+     "version": "v0.3"
+    },
+    {
+     "id": "pd_vigie",
+     "type": "camp",
+     "name": "Vigie abandonnée",
+     "x": 700,
+     "z": 600,
+     "desc": "Watchtower en ruine, vue vers la Plaine des Stèles.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_copper",
+    "node_herb_brume"
+   ],
+   "collectibles": 14,
+   "traversal": [
+    "route du Sud vers Port-Salin",
+    "sprint",
+    "monture (v0.4)"
+   ],
+   "quests": [
+    "La moisson volée (bandits)",
+    "Vieille-Hure",
+    "Les menhirs qui chantent"
+   ]
+  },
+  {
+   "id": "lac_verrelune",
+   "name": "Lac de Verre-Lune",
+   "x": -500,
+   "z": 450,
+   "r": 330,
+   "levels": [
+    6,
+    11
+   ],
+   "tier": "T2",
+   "security": "jaune",
+   "heightClass": "A1",
+   "altitude": {
+    "min": -12,
+    "max": 60,
+    "typical": 8
+   },
+   "relief": [
+    "cuvette",
+    "delta"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.4
+    },
+    {
+     "kind": "brume_matinale",
+     "p": 0.35
+    },
+    {
+     "kind": "pluie",
+     "p": 0.25
+    }
+   ],
+   "ambiance": "Grand lac clair, roseaux, saules, îlot central avec un temple à demi englouti, reflets de lune la nuit.",
+   "monsters": [
+    {
+     "key": "slime",
+     "lvl": [
+      6,
+      8
+     ],
+     "archetype": "pack",
+     "note": "gluants d’eau"
+    },
+    {
+     "key": "spider",
+     "lvl": [
+      7,
+      10
+     ],
+     "archetype": "ranged",
+     "note": "toiles dans les saules"
+    },
+    {
+     "key": "toad_brute",
+     "lvl": [
+      8,
+      11
+     ],
+     "archetype": "brute",
+     "new": true
+    },
+    {
+     "key": "bandit",
+     "lvl": [
+      8,
+      10
+     ],
+     "archetype": "rusher"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Mère-Crapaud",
+     "model": "toad_brute",
+     "scale": 2,
+     "lvl": 11,
+     "desc": "Langue en ligne (attire), saut écrasant en cercle."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [
+    {
+     "id": "hameau_saules",
+     "name": "Hameau des Saules",
+     "x": -420,
+     "z": 330,
+     "services": [
+      "alchimie",
+      "pierre_de_passage",
+      "pecheur (v0.5)"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "lv_temple",
+     "type": "donjon",
+     "name": "Temple englouti de Verre-Lune",
+     "x": -560,
+     "z": 480,
+     "desc": "Îlot central, donjon niv. 12–15 (eau qui monte et descend).",
+     "version": "v0.4"
+    },
+    {
+     "id": "lv_ponton",
+     "type": "repere",
+     "name": "Pontons des pêcheurs",
+     "x": -380,
+     "z": 380,
+     "desc": "Barque décorative (port_rowboat), quête du pêcheur.",
+     "version": "v0.3"
+    },
+    {
+     "id": "lv_cascade",
+     "type": "belvedere",
+     "name": "Chute de la Brumeline",
+     "x": -700,
+     "z": 250,
+     "desc": "Cascade depuis le plateau ouest, grotte derrière la chute (coffre).",
+     "version": "v0.3"
+    },
+    {
+     "id": "lv_saules",
+     "type": "camp",
+     "name": "Saules tisseurs",
+     "x": -650,
+     "z": 600,
+     "desc": "Nid d’araignées dans les saules pleureurs.",
+     "version": "v0.3"
+    },
+    {
+     "id": "lv_phare",
+     "type": "ruine",
+     "name": "Lanterne des Noyés",
+     "x": -300,
+     "z": 650,
+     "desc": "Petit phare lacustre en ruine : puzzle de lanternes (collectible).",
+     "version": "v0.3"
+    },
+    {
+     "id": "lv_ile",
+     "type": "tresor",
+     "name": "Îlot aux Hérons",
+     "x": -480,
+     "z": 600,
+     "desc": "Accessible par un banc de sable à gué, coffre.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_herb_brume",
+    "node_copper",
+    "reeds"
+   ],
+   "collectibles": 12,
+   "traversal": [
+    "gués",
+    "bancs de sable",
+    "barque (v0.5)"
+   ],
+   "quests": [
+    "La lanterne des noyés",
+    "Mère-Crapaud",
+    "Le temple qui respire (préquête donjon)"
+   ]
+  },
+  {
+   "id": "grande_foret",
+   "name": "Grande Forêt des Murmures",
+   "x": 100,
+   "z": -850,
+   "r": 450,
+   "levels": [
+    6,
+    12
+   ],
+   "tier": "T2",
+   "security": "jaune",
+   "heightClass": "A3",
+   "altitude": {
+    "min": 30,
+    "max": 140,
+    "typical": 70
+   },
+   "relief": [
+    "vallonne"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.35
+    },
+    {
+     "kind": "pluie",
+     "p": 0.35
+    },
+    {
+     "kind": "brume_matinale",
+     "p": 0.3
+    }
+   ],
+   "ambiance": "Futaie dense, rayons de lumière (god rays) dans le feuillage, mousse, souches, cerfs (décor).",
+   "monsters": [
+    {
+     "key": "wolf",
+     "lvl": [
+      6,
+      9
+     ],
+     "archetype": "pack"
+    },
+    {
+     "key": "spider",
+     "lvl": [
+      8,
+      12
+     ],
+     "archetype": "ranged"
+    },
+    {
+     "key": "boar",
+     "lvl": [
+      6,
+      8
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "goblin",
+     "lvl": [
+      8,
+      10
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "goblin_shaman",
+     "lvl": [
+      9,
+      11
+     ],
+     "archetype": "caster"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Croc-Pâle",
+     "model": "wolf",
+     "scale": 1.6,
+     "lvl": 11,
+     "desc": "Loup alpha albinos, hurle pour rameuter 3 loups, bond télégraphié."
+    },
+    {
+     "name": "La Tisseuse",
+     "model": "spider",
+     "scale": 2.2,
+     "lvl": 12,
+     "desc": "Arène de toiles : les toiles ralentissent, crachat de venin en cône."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [
+    {
+     "id": "poste_veilleuse",
+     "name": "Poste de la Veilleuse",
+     "x": 60,
+     "z": -700,
+     "services": [
+      "couture",
+      "pierre_de_passage",
+      "marchande_ambulante"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "gf_scierie",
+     "type": "camp",
+     "name": "Scierie gobeline",
+     "x": 300,
+     "z": -700,
+     "desc": "Camp gobelin, chaman et totem à détruire.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gf_souche",
+     "type": "repere",
+     "name": "Souche du Géant",
+     "x": -50,
+     "z": -1000,
+     "desc": "Souche énorme creuse : escalier intérieur jusqu’à un belvédère.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gf_source",
+     "type": "sanctuaire",
+     "name": "Source aux Lucioles",
+     "x": 250,
+     "z": -1050,
+     "desc": "Point d’eau, collectible la nuit seulement.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gf_nid",
+     "type": "camp",
+     "name": "Antre de la Tisseuse",
+     "x": 420,
+     "z": -950,
+     "desc": "Arène de mini-boss.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gf_ruine",
+     "type": "ruine",
+     "name": "Arche des Anciens",
+     "x": -200,
+     "z": -800,
+     "desc": "ruins_arch envahie de lierre, coffre.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gf_clairiere",
+     "type": "belvedere",
+     "name": "Clairière aux Cerfs",
+     "x": 150,
+     "z": -1150,
+     "desc": "Grande clairière lumineuse, vue sur l’Arbre-Brume.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gf_pont",
+     "type": "repere",
+     "name": "Pont des Racines",
+     "x": -100,
+     "z": -600,
+     "desc": "Pont naturel de racines au-dessus d’un ruisseau.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_herb_brume",
+    "node_copper",
+    "node_iron",
+    "mushrooms"
+   ],
+   "collectibles": 16,
+   "traversal": [
+    "sentiers",
+    "troncs couchés (log_fallen) en passerelle",
+    "saut"
+   ],
+   "quests": [
+    "Les crocs de la forêt (étendue)",
+    "Le totem du chaman",
+    "Chapitre II : la Veilleuse"
+   ]
+  },
+  {
+   "id": "plaine_steles",
+   "name": "Plaine des Stèles",
+   "x": 800,
+   "z": -100,
+   "r": 380,
+   "levels": [
+    9,
+    14
+   ],
+   "tier": "T2-T3",
+   "security": "jaune",
+   "heightClass": "A2",
+   "altitude": {
+    "min": 15,
+    "max": 80,
+    "typical": 35
+   },
+   "relief": [
+    "plaine",
+    "vallonne"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.4
+    },
+    {
+     "kind": "brume_doree",
+     "p": 0.35
+    },
+    {
+     "kind": "orage",
+     "p": 0.25
+    }
+   ],
+   "ambiance": "Champ doré semé de ruines d’Aldmar et de stèles qui luisent au crépuscule (réf. champ de ruines dorées).",
+   "monsters": [
+    {
+     "key": "skeleton",
+     "lvl": [
+      9,
+      12
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "skeleton_archer",
+     "lvl": [
+      10,
+      13
+     ],
+     "archetype": "ranged"
+    },
+    {
+     "key": "wraith",
+     "lvl": [
+      12,
+      14
+     ],
+     "archetype": "caster",
+     "note": "la nuit seulement"
+    },
+    {
+     "key": "boar",
+     "lvl": [
+      9,
+      11
+     ],
+     "archetype": "brute"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Colosse des Stèles",
+     "model": "troll",
+     "scale": 1.5,
+     "lvl": 14,
+     "desc": "Géant endormi au milieu du champ (réf. grand monstre dans les prairies) : se réveille si on le frappe ; massue en arc, jet de rocher."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [],
+   "poi": [
+    {
+     "id": "ps_stele",
+     "type": "sanctuaire",
+     "name": "Grande Stèle d’Aldmar",
+     "x": 820,
+     "z": -120,
+     "desc": "Obélisque lumineux (réf. pierre dressée), déclenche le Chapitre III.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ps_champ",
+     "type": "ruine",
+     "name": "Champ des Colonnes",
+     "x": 700,
+     "z": 50,
+     "desc": "Forêt de ruins_pillar, squelettes archers en hauteur.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ps_camp",
+     "type": "camp",
+     "name": "Camp des pilleurs de tombes",
+     "x": 950,
+     "z": 100,
+     "desc": "Bandits qui fouillent les ruines, coffre.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ps_crypte",
+     "type": "ruine",
+     "name": "Caveau scellé",
+     "x": 1000,
+     "z": -250,
+     "desc": "Puzzle : allumer 3 braseros dans l’ordre des stèles.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ps_colosse",
+     "type": "boss",
+     "name": "Lit du Colosse",
+     "x": 780,
+     "z": -300,
+     "desc": "Arène à ciel ouvert.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ps_tour",
+     "type": "belvedere",
+     "name": "Tour penchée",
+     "x": 600,
+     "z": -250,
+     "desc": "Belvédère sur le marais et le plateau d’Aldmar.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_iron",
+    "node_herb_brume",
+    "node_crystal"
+   ],
+   "collectibles": 14,
+   "traversal": [
+    "vieille voie pavée d’Aldmar",
+    "sprint"
+   ],
+   "quests": [
+    "Les stèles qui brillent",
+    "Le Colosse endormi",
+    "Chapitre III : la mémoire d’Aldmar"
+   ]
+  },
+  {
+   "id": "marches_couchant",
+   "name": "Marches du Couchant",
+   "x": -1050,
+   "z": -300,
+   "r": 420,
+   "levels": [
+    11,
+    15
+   ],
+   "tier": "T3",
+   "security": "jaune",
+   "heightClass": "A3",
+   "altitude": {
+    "min": 50,
+    "max": 220,
+    "typical": 110
+   },
+   "relief": [
+    "vallonne",
+    "plateau"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.35
+    },
+    {
+     "kind": "vent_fort",
+     "p": 0.35
+    },
+    {
+     "kind": "pluie",
+     "p": 0.3
+    }
+   ],
+   "ambiance": "Landes venteuses, bruyère, tours de guet, lacs de crête ; territoire des bandits et des chasseurs.",
+   "monsters": [
+    {
+     "key": "bandit",
+     "lvl": [
+      11,
+      15
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "bandit_archer",
+     "lvl": [
+      12,
+      15
+     ],
+     "archetype": "ranged",
+     "new": true,
+     "note": "variante du modèle bandit"
+    },
+    {
+     "key": "wolf",
+     "lvl": [
+      11,
+      13
+     ],
+     "archetype": "pack"
+    },
+    {
+     "key": "goblin",
+     "lvl": [
+      11,
+      13
+     ],
+     "archetype": "rusher"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Maraude la Borgne",
+     "model": "bandit",
+     "scale": 1.2,
+     "lvl": 15,
+     "desc": "Cheffe des brigands : feintes, bombe fumigène (télégraphe en cercle), appelle 2 archers."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [
+    {
+     "id": "fort_couchant",
+     "name": "Fort du Couchant",
+     "x": -950,
+     "z": -350,
+     "services": [
+      "forge",
+      "pierre_de_passage",
+      "intendant (quêtes journalières v0.4)"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "mc_tours",
+     "type": "belvedere",
+     "name": "Tour des Quatre-Vents",
+     "x": -1200,
+     "z": -450,
+     "desc": "Plus haute tour du pays, belvédère majeur (futur point de vol plané).",
+     "version": "v0.3"
+    },
+    {
+     "id": "mc_repaire",
+     "type": "camp",
+     "name": "Repaire de Maraude",
+     "x": -1250,
+     "z": -150,
+     "desc": "Forteresse de bandits sur plateau, 3 accès.",
+     "version": "v0.3"
+    },
+    {
+     "id": "mc_lacs",
+     "type": "repere",
+     "name": "Lacs Jumeaux",
+     "x": -900,
+     "z": -500,
+     "desc": "Deux lacs de crête, pêche (v0.5).",
+     "version": "v0.3"
+    },
+    {
+     "id": "mc_arene",
+     "type": "arene",
+     "name": "Arène des Marches",
+     "x": -1000,
+     "z": -250,
+     "desc": "Arène JcJ secondaire (duels, classement).",
+     "version": "v0.3"
+    },
+    {
+     "id": "mc_pendus",
+     "type": "ruine",
+     "name": "Gibet du Col",
+     "x": -850,
+     "z": -100,
+     "desc": "Col avec gibet, coffre piégé.",
+     "version": "v0.3"
+    },
+    {
+     "id": "mc_chasse",
+     "type": "camp",
+     "name": "Pavillon de chasse",
+     "x": -1300,
+     "z": -550,
+     "desc": "Chasseur PNJ : primes sur les loups et les bandits.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_iron",
+    "node_copper",
+    "node_herb_brume"
+   ],
+   "collectibles": 15,
+   "traversal": [
+    "routes de crête",
+    "rampes vers les plateaux"
+   ],
+   "quests": [
+    "Primes du Couchant (répétables)",
+    "La Borgne",
+    "Les signaux des tours"
+   ]
+  },
+  {
+   "id": "bois_egares",
+   "name": "Bois des Égarés",
+   "x": -650,
+   "z": -1300,
+   "r": 380,
+   "levels": [
+    12,
+    16
+   ],
+   "tier": "T3",
+   "security": "jaune",
+   "heightClass": "A3",
+   "altitude": {
+    "min": 60,
+    "max": 180,
+    "typical": 110
+   },
+   "relief": [
+    "vallonne"
+   ],
+   "weather": [
+    {
+     "kind": "brouillard_epais",
+     "p": 0.6
+    },
+    {
+     "kind": "pluie_fine",
+     "p": 0.25
+    },
+    {
+     "kind": "clair",
+     "p": 0.15
+    }
+   ],
+   "ambiance": "Brouillard permanent, arbres tordus, lanternes flottantes (réf. bois perdus). Au centre : l’Arbre-Brume (CX-10).",
+   "monsters": [
+    {
+     "key": "wraith",
+     "lvl": [
+      12,
+      16
+     ],
+     "archetype": "caster"
+    },
+    {
+     "key": "treant",
+     "lvl": [
+      13,
+      16
+     ],
+     "archetype": "brute",
+     "new": true
+    },
+    {
+     "key": "wisp",
+     "lvl": [
+      12,
+      15
+     ],
+     "archetype": "ranged",
+     "new": true
+    },
+    {
+     "key": "spider",
+     "lvl": [
+      12,
+      14
+     ],
+     "archetype": "ranged"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "L’Écorce-Mère",
+     "model": "treant",
+     "scale": 1.8,
+     "lvl": 16,
+     "desc": "Racines qui jaillissent du sol en ligne (télégraphe), bouclier d’écorce à briser au feu."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [
+    {
+     "id": "sanctuaire_arbre",
+     "name": "Sanctuaire de l’Arbre-Brume",
+     "x": -650,
+     "z": -1320,
+     "services": [
+      "pierre_de_passage",
+      "echange_brumillons",
+      "maitre_des_arts"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "be_arbre",
+     "type": "repere",
+     "name": "L’Arbre-Brume",
+     "x": -650,
+     "z": -1320,
+     "desc": "Repère colossal (≈ 120 m) visible de partout ; cœur de la trame.",
+     "version": "v0.3"
+    },
+    {
+     "id": "be_racines",
+     "type": "donjon",
+     "name": "Racines de l’Arbre-Brume",
+     "x": -600,
+     "z": -1250,
+     "desc": "Donjon niv. 14–16 sous l’arbre.",
+     "version": "v0.4"
+    },
+    {
+     "id": "be_labyrinthe",
+     "type": "puzzle",
+     "name": "Sentier des Lanternes",
+     "x": -800,
+     "z": -1150,
+     "desc": "Labyrinthe de brume : suivre les lanternes, sinon on est ramené à l’entrée.",
+     "version": "v0.3"
+    },
+    {
+     "id": "be_cercle",
+     "type": "sanctuaire",
+     "name": "Cercle des Fées grises",
+     "x": -450,
+     "z": -1400,
+     "desc": "Champignons (mushrooms) en cercle : collectible.",
+     "version": "v0.3"
+    },
+    {
+     "id": "be_cabane",
+     "type": "hameau",
+     "name": "Cabane de l’Ermite",
+     "x": -850,
+     "z": -1400,
+     "desc": "PNJ ermite, alchimiste des brumes.",
+     "version": "v0.3"
+    },
+    {
+     "id": "be_tombe",
+     "type": "ruine",
+     "name": "Tombe du Chevalier égaré",
+     "x": -500,
+     "z": -1150,
+     "desc": "Épée plantée, coffre, spectre gardien.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_herb_brume",
+    "node_crystal",
+    "mushrooms"
+   ],
+   "collectibles": 18,
+   "traversal": [
+    "navigation au son et aux lanternes",
+    "brouillard qui réduit la vue à 25 m"
+   ],
+   "quests": [
+    "Chapitre II/IV : la Veilleuse et les quatre Sceaux",
+    "Le Chevalier égaré",
+    "L’Écorce-Mère"
+   ]
+  },
+  {
+   "id": "gorges_faille",
+   "name": "Gorges de la Faille-Rouge",
+   "x": -900,
+   "z": 950,
+   "r": 330,
+   "levels": [
+    14,
+    18
+   ],
+   "tier": "T3-T4",
+   "security": "jaune",
+   "heightClass": "A4",
+   "altitude": {
+    "min": 40,
+    "max": 230,
+    "typical": 140
+   },
+   "relief": [
+    "canyon",
+    "plateau"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.6
+    },
+    {
+     "kind": "vent_sec",
+     "p": 0.3
+    },
+    {
+     "kind": "orage",
+     "p": 0.1
+    }
+   ],
+   "ambiance": "Canyon ocre et rouge, arches naturelles, corniches, ponts de corde ; porte entre le centre vert et le désert.",
+   "monsters": [
+    {
+     "key": "scorpion",
+     "lvl": [
+      14,
+      16
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "rift_lizard",
+     "lvl": [
+      14,
+      18
+     ],
+     "archetype": "rusher",
+     "new": true
+    },
+    {
+     "key": "bandit",
+     "lvl": [
+      15,
+      17
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "harpy",
+     "lvl": [
+      16,
+      18
+     ],
+     "archetype": "ranged",
+     "new": true,
+     "note": "nids sur les corniches"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Gardien de la Faille",
+     "model": "golem",
+     "scale": 1.2,
+     "lvl": 18,
+     "desc": "Golem de grès qui bloque le pont principal ; éboulements télégraphiés."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [],
+   "poi": [
+    {
+     "id": "gr_pont",
+     "type": "repere",
+     "name": "Pont suspendu de la Faille",
+     "x": -900,
+     "z": 900,
+     "desc": "Long pont de corde, gardé par le mini-boss.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gr_arche",
+     "type": "belvedere",
+     "name": "Arche du Couchant",
+     "x": -1050,
+     "z": 1050,
+     "desc": "Arche naturelle, vue sur le désert.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gr_mine",
+     "type": "camp",
+     "name": "Mine de fer des Gorges",
+     "x": -800,
+     "z": 1100,
+     "desc": "Filons de fer, lézards.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gr_peintures",
+     "type": "ruine",
+     "name": "Parois peintes",
+     "x": -700,
+     "z": 850,
+     "desc": "Fresques d’Aldmar : indice du Sceau d’Ambre.",
+     "version": "v0.3"
+    },
+    {
+     "id": "gr_eboulis",
+     "type": "tresor",
+     "name": "Corniche aux Harpies",
+     "x": -1000,
+     "z": 800,
+     "desc": "Coffre en haut d’une corniche (sauts).",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_iron",
+    "node_crystal",
+    "node_herb_braise"
+   ],
+   "collectibles": 12,
+   "traversal": [
+    "corniches et sauts",
+    "ponts de corde",
+    "rampes"
+   ],
+   "quests": [
+    "Le pont gardé",
+    "Les fresques",
+    "Route des caravanes (escorte, v0.4)"
+   ]
+  },
+  {
+   "id": "marais_brumenoire",
+   "name": "Marais de Brumenoire",
+   "x": 1400,
+   "z": -300,
+   "r": 450,
+   "levels": [
+    15,
+    19
+   ],
+   "tier": "T4",
+   "security": "jaune",
+   "heightClass": "A1",
+   "altitude": {
+    "min": -3,
+    "max": 30,
+    "typical": 4
+   },
+   "relief": [
+    "delta",
+    "plaine"
+   ],
+   "weather": [
+    {
+     "kind": "brouillard_epais",
+     "p": 0.4
+    },
+    {
+     "kind": "pluie",
+     "p": 0.35
+    },
+    {
+     "kind": "orage",
+     "p": 0.25
+    }
+   ],
+   "ambiance": "Eaux noires, cyprès, pilotis, feux follets, bulles de gaz ; la Salise traverse le marais vers la mer.",
+   "monsters": [
+    {
+     "key": "bog_lurker",
+     "lvl": [
+      15,
+      19
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "spider",
+     "lvl": [
+      15,
+      17
+     ],
+     "archetype": "ranged"
+    },
+    {
+     "key": "wraith",
+     "lvl": [
+      16,
+      18
+     ],
+     "archetype": "caster"
+    },
+    {
+     "key": "goblin_shaman",
+     "lvl": [
+      15,
+      17
+     ],
+     "archetype": "caster",
+     "note": "tribu des vasards"
+    },
+    {
+     "key": "toad_brute",
+     "lvl": [
+      15,
+      18
+     ],
+     "archetype": "brute"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Le Noyeur",
+     "model": "bog_lurker",
+     "scale": 1.6,
+     "lvl": 18,
+     "desc": "Plonge et resurgit sous le joueur (cercle télégraphié)."
+    }
+   ],
+   "worldBoss": {
+    "key": "swamp_hag",
+    "name": "La Sorcière des marais",
+    "lvl": 19,
+    "where": "Îlot de la Sorcière (1550, -350)",
+    "desc": "Garde le Sceau de Vase. Phases : invocations de rôdeurs → marée de vase qui monte."
+   },
+   "towns": [
+    {
+     "id": "pilotis_brumenoire",
+     "name": "Pilotis de Brumenoire",
+     "x": 1200,
+     "z": -150,
+     "services": [
+      "alchimie",
+      "pierre_de_passage",
+      "guerisseuse"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "mb_ilot",
+     "type": "boss",
+     "name": "Îlot de la Sorcière",
+     "x": 1550,
+     "z": -350,
+     "desc": "Hutte de la sorcière sur pilotis, arène entourée d’eau.",
+     "version": "v0.3"
+    },
+    {
+     "id": "mb_epave",
+     "type": "ruine",
+     "name": "Péniche engloutie",
+     "x": 1300,
+     "z": -450,
+     "desc": "Coffre dans la cale, rôdeurs.",
+     "version": "v0.3"
+    },
+    {
+     "id": "mb_arbre",
+     "type": "belvedere",
+     "name": "Cyprès-Géant",
+     "x": 1450,
+     "z": -100,
+     "desc": "Plateforme de chasseur au sommet.",
+     "version": "v0.3"
+    },
+    {
+     "id": "mb_village",
+     "type": "camp",
+     "name": "Village vasard",
+     "x": 1650,
+     "z": -150,
+     "desc": "Gobelins des marais, totems, chaman.",
+     "version": "v0.3"
+    },
+    {
+     "id": "mb_bulles",
+     "type": "puzzle",
+     "name": "Mares aux Feux",
+     "x": 1250,
+     "z": -600,
+     "desc": "Allumer les bulles de gaz dans l’ordre (collectible).",
+     "version": "v0.3"
+    },
+    {
+     "id": "mb_ponts",
+     "type": "repere",
+     "name": "Chemin de planches",
+     "x": 1150,
+     "z": -300,
+     "desc": "Passerelles qui s’effondrent derrière soi.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_herb_brume",
+    "node_iron",
+    "bog_moss (mousse des tourbières)"
+   ],
+   "collectibles": 15,
+   "traversal": [
+    "passerelles de planches",
+    "eau peu profonde (ralentit de 20 %)"
+   ],
+   "quests": [
+    "Chapitre IV-a : le Sceau de Vase",
+    "Le Noyeur",
+    "Remèdes de la guérisseuse"
+   ]
+  },
+  {
+   "id": "cote_salins",
+   "name": "Côte des Salins",
+   "x": 750,
+   "z": 1550,
+   "r": 420,
+   "levels": [
+    15,
+    19
+   ],
+   "tier": "T4",
+   "security": "jaune (Port-Salin vert)",
+   "heightClass": "A1",
+   "altitude": {
+    "min": -20,
+    "max": 60,
+    "typical": 5
+   },
+   "relief": [
+    "falaise_cotiere",
+    "plaine"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.55
+    },
+    {
+     "kind": "embruns",
+     "p": 0.25
+    },
+    {
+     "kind": "tempete",
+     "p": 0.2
+    }
+   ],
+   "ambiance": "Plages de sable clair, lagons turquoise, palmiers et pins parasols, phare, Port-Salin au creux d’une baie (réf. plages tropicales).",
+   "monsters": [
+    {
+     "key": "crab",
+     "lvl": [
+      15,
+      18
+     ],
+     "archetype": "brute",
+     "new": true
+    },
+    {
+     "key": "pirate",
+     "lvl": [
+      16,
+      19
+     ],
+     "archetype": "rusher",
+     "new": true
+    },
+    {
+     "key": "pirate_harpooner",
+     "lvl": [
+      16,
+      19
+     ],
+     "archetype": "ranged",
+     "new": true
+    },
+    {
+     "key": "bandit",
+     "lvl": [
+      15,
+      17
+     ],
+     "archetype": "rusher",
+     "note": "contrebandiers"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Capitaine Sel-Amer",
+     "model": "pirate",
+     "scale": 1.25,
+     "lvl": 19,
+     "desc": "Sabre + pistolet à silex remplacé par un harpon ; barils explosifs télégraphiés."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [
+    {
+     "id": "port_salin",
+     "name": "Port-Salin",
+     "x": 900,
+     "z": 1650,
+     "services": [
+      "forge",
+      "alchimie",
+      "couture",
+      "etals_marche",
+      "banque",
+      "auberge",
+      "pierre_de_passage",
+      "capitainerie (bateaux v0.5)"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "cs_phare",
+     "type": "belvedere",
+     "name": "Phare de la Pointe-Salée",
+     "x": 1150,
+     "z": 1750,
+     "desc": "port_lighthouse : belvédère, quête du gardien.",
+     "version": "v0.3"
+    },
+    {
+     "id": "cs_grotte",
+     "type": "donjon",
+     "name": "Grotte des Contrebandiers",
+     "x": 500,
+     "z": 1700,
+     "desc": "Donjon niv. 16–18 sous la falaise, marée.",
+     "version": "v0.4"
+    },
+    {
+     "id": "cs_lagon",
+     "type": "repere",
+     "name": "Lagon Turquoise",
+     "x": 300,
+     "z": 1800,
+     "desc": "Lagon peu profond, collectibles sous les palmiers.",
+     "version": "v0.3"
+    },
+    {
+     "id": "cs_epave",
+     "type": "tresor",
+     "name": "Épave de la Mouette-Grise",
+     "x": 650,
+     "z": 1900,
+     "desc": "Coffre à marée basse (cycle jour/nuit).",
+     "version": "v0.3"
+    },
+    {
+     "id": "cs_salines",
+     "type": "hameau",
+     "name": "Marais salants",
+     "x": 1000,
+     "z": 1450,
+     "desc": "Sauniers PNJ, quêtes de livraison.",
+     "version": "v0.3"
+    },
+    {
+     "id": "cs_camp",
+     "type": "camp",
+     "name": "Crique des Pillards",
+     "x": 1300,
+     "z": 1550,
+     "desc": "Camp de pirates, canons décoratifs.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_iron",
+    "sel_marin",
+    "corail (node_crystal teinté)"
+   ],
+   "collectibles": 14,
+   "traversal": [
+    "plages",
+    "passerelles de port",
+    "barque et voilier (v0.5)"
+   ],
+   "quests": [
+    "Arrivée à Port-Salin (tutoriel du marché)",
+    "Capitaine Sel-Amer",
+    "Le gardien du phare"
+   ]
+  },
+  {
+   "id": "archipel_ecume",
+   "name": "Archipel de l’Écume",
+   "x": 1650,
+   "z": 1600,
+   "r": 350,
+   "levels": [
+    19,
+    23
+   ],
+   "tier": "T4-T5",
+   "security": "jaune + rouge (Îlots des Naufrageurs)",
+   "heightClass": "A1",
+   "altitude": {
+    "min": -30,
+    "max": 90,
+    "typical": 6
+   },
+   "relief": [
+    "archipel"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.45
+    },
+    {
+     "kind": "tempete",
+     "p": 0.35
+    },
+    {
+     "kind": "embruns",
+     "p": 0.2
+    }
+   ],
+   "ambiance": "Îles de sable blanc, palmiers, eau cristalline, récifs ; au loin, des épaves et un îlot rocheux où gronde quelque chose.",
+   "monsters": [
+    {
+     "key": "crab",
+     "lvl": [
+      19,
+      22
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "pirate",
+     "lvl": [
+      19,
+      23
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "pirate_harpooner",
+     "lvl": [
+      20,
+      23
+     ],
+     "archetype": "ranged"
+    },
+    {
+     "key": "sea_serpent_whelp",
+     "lvl": [
+      21,
+      23
+     ],
+     "archetype": "ranged",
+     "new": true,
+     "note": "crache depuis l’eau"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Amiral Crève-Voile",
+     "model": "pirate",
+     "scale": 1.4,
+     "lvl": 23,
+     "desc": "Élite de zone rouge, boucle sur 3 îles."
+    }
+   ],
+   "worldBoss": {
+    "key": "crab_king",
+    "name": "Le Roi-Carapace",
+    "lvl": 23,
+    "where": "Atoll du Roi (1800, 1750)",
+    "desc": "Crabe colossal : pince en cône, carapace à briser (dégâts réduits tant qu’elle tient), vagues en anneau.",
+    "new": true
+   },
+   "towns": [],
+   "poi": [
+    {
+     "id": "ae_atoll",
+     "type": "boss",
+     "name": "Atoll du Roi",
+     "x": 1800,
+     "z": 1750,
+     "desc": "Arène du boss mondial, annoncée 5 min avant son réveil.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ae_naufrageurs",
+     "type": "zone_rouge",
+     "name": "Îlots des Naufrageurs",
+     "x": 1700,
+     "z": 1450,
+     "desc": "Zone rouge des pirates, butin rouge.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ae_banc",
+     "type": "repere",
+     "name": "Banc de sable du Passeur",
+     "x": 1450,
+     "z": 1600,
+     "desc": "Relie la côte aux îles à gué (v0.3, sans bateau).",
+     "version": "v0.3"
+    },
+    {
+     "id": "ae_temple",
+     "type": "ruine",
+     "name": "Autel des Marées",
+     "x": 1550,
+     "z": 1800,
+     "desc": "Ruine immergée à moitié, collectible à marée basse.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ae_palmiers",
+     "type": "tresor",
+     "name": "Île aux Cocotiers",
+     "x": 1900,
+     "z": 1500,
+     "desc": "Coffre gardé par les crabes.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_crystal",
+    "corail",
+    "sel_marin"
+   ],
+   "collectibles": 12,
+   "traversal": [
+    "bancs de sable à gué (v0.3)",
+    "passerelles de planches",
+    "bateaux (v0.5)"
+   ],
+   "quests": [
+    "Le Passeur",
+    "Le Roi-Carapace",
+    "Primes sur l’Amiral"
+   ]
+  },
+  {
+   "id": "cote_embruns",
+   "name": "Falaises des Embruns",
+   "x": 1750,
+   "z": 500,
+   "r": 330,
+   "levels": [
+    17,
+    21
+   ],
+   "tier": "T4",
+   "security": "jaune",
+   "heightClass": "A4",
+   "altitude": {
+    "min": 0,
+    "max": 160,
+    "typical": 90
+   },
+   "relief": [
+    "falaise_cotiere",
+    "plateau"
+   ],
+   "weather": [
+    {
+     "kind": "vent_fort",
+     "p": 0.45
+    },
+    {
+     "kind": "pluie",
+     "p": 0.35
+    },
+    {
+     "kind": "clair",
+     "p": 0.2
+    }
+   ],
+   "ambiance": "Hautes falaises battues par la mer de l’Est, landes rases, nids de harpies, criques en contrebas.",
+   "monsters": [
+    {
+     "key": "harpy",
+     "lvl": [
+      17,
+      21
+     ],
+     "archetype": "ranged"
+    },
+    {
+     "key": "crab",
+     "lvl": [
+      17,
+      19
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "bandit",
+     "lvl": [
+      18,
+      20
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "troll",
+     "lvl": [
+      20,
+      21
+     ],
+     "archetype": "brute",
+     "note": "rare, caverne"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Reine des Harpies",
+     "model": "harpy",
+     "scale": 1.5,
+     "lvl": 21,
+     "desc": "Piqués télégraphiés en ligne, bourrasques qui repoussent vers le bord."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [],
+   "poi": [
+    {
+     "id": "ce_nid",
+     "type": "boss",
+     "name": "Aire de la Reine",
+     "x": 1850,
+     "z": 350,
+     "desc": "Plateau venteux au bord du vide.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ce_crique",
+     "type": "tresor",
+     "name": "Crique cachée",
+     "x": 1900,
+     "z": 650,
+     "desc": "Escalier taillé dans la falaise.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ce_phare",
+     "type": "ruine",
+     "name": "Vigie des Embruns",
+     "x": 1650,
+     "z": 450,
+     "desc": "Tour en ruine, belvédère sur l’archipel.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ce_grotte",
+     "type": "camp",
+     "name": "Caverne du Troll",
+     "x": 1700,
+     "z": 700,
+     "desc": "Troll solitaire, coffre.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_iron",
+    "node_crystal",
+    "sel_marin"
+   ],
+   "collectibles": 10,
+   "traversal": [
+    "escaliers de falaise",
+    "vol plané (v0.5)"
+   ],
+   "quests": [
+    "La Reine des Harpies",
+    "Les feux de la vigie"
+   ]
+  },
+  {
+   "id": "desert_sablerouge",
+   "name": "Désert de Sable-Rouge",
+   "x": -1350,
+   "z": 1400,
+   "r": 550,
+   "levels": [
+    16,
+    21
+   ],
+   "tier": "T4",
+   "security": "jaune (Ambrefont vert)",
+   "heightClass": "A2",
+   "altitude": {
+    "min": 10,
+    "max": 90,
+    "typical": 35
+   },
+   "relief": [
+    "dunes",
+    "mesa"
+   ],
+   "weather": [
+    {
+     "kind": "canicule",
+     "p": 0.5
+    },
+    {
+     "kind": "tempete_de_sable",
+     "p": 0.3
+    },
+    {
+     "kind": "clair_nuit_froide",
+     "p": 0.2
+    }
+   ],
+   "ambiance": "Dunes ocre-rouge, mirages, palmiers autour des oasis, ruines ensablées ; la ville d’Ambrefont nichée dans un canyon à cascades (réf. ville du désert).",
+   "monsters": [
+    {
+     "key": "scorpion",
+     "lvl": [
+      16,
+      20
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "husk",
+     "lvl": [
+      17,
+      21
+     ],
+     "archetype": "brute",
+     "new": true,
+     "note": "momies ensablées, sortent du sable"
+    },
+    {
+     "key": "bandit_desert",
+     "lvl": [
+      16,
+      20
+     ],
+     "archetype": "rusher",
+     "new": true,
+     "note": "variante bandit"
+    },
+    {
+     "key": "rift_lizard",
+     "lvl": [
+      16,
+      19
+     ],
+     "archetype": "rusher"
+    },
+    {
+     "key": "sand_wyrm",
+     "lvl": [
+      20,
+      20
+     ],
+     "archetype": "boss"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Scorpion-Empereur",
+     "model": "scorpion",
+     "scale": 2,
+     "lvl": 20,
+     "desc": "Dard en ligne télégraphié, s’enfouit et ressort."
+    }
+   ],
+   "worldBoss": {
+    "key": "sand_wyrm",
+    "name": "Le Ver des sables",
+    "lvl": 20,
+    "where": "Mer des Dunes (-1500, 1600)",
+    "desc": "Garde le Sceau d’Ambre. Plonge sous le sable (onde en ligne), jaillit (cercle), tempête à 30 % PV."
+   },
+   "towns": [
+    {
+     "id": "ambrefont",
+     "name": "Ambrefont",
+     "x": -1150,
+     "z": 1250,
+     "services": [
+      "forge",
+      "alchimie",
+      "etals_marche",
+      "auberge",
+      "pierre_de_passage",
+      "loueur_de_chars_a_voile (v0.4)"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "ds_mer",
+     "type": "boss",
+     "name": "Mer des Dunes",
+     "x": -1500,
+     "z": 1600,
+     "desc": "Arène ouverte du ver (sable meuble).",
+     "version": "v0.3"
+    },
+    {
+     "id": "ds_oasis",
+     "type": "hameau",
+     "name": "Oasis des Sept-Palmes",
+     "x": -1300,
+     "z": 1600,
+     "desc": "Point d’eau, marchand nomade, palmiers.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ds_temple",
+     "type": "ruine",
+     "name": "Temple ensablé d’Ambre",
+     "x": -1600,
+     "z": 1300,
+     "desc": "desert_ruin : puzzle de miroirs solaires (collectible).",
+     "version": "v0.3"
+    },
+    {
+     "id": "ds_carcasse",
+     "type": "repere",
+     "name": "Carcasse du Léviathan",
+     "x": -1200,
+     "z": 1550,
+     "desc": "Squelette géant, repère visuel.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ds_mirage",
+     "type": "puzzle",
+     "name": "Palais-Mirage",
+     "x": -1700,
+     "z": 1700,
+     "desc": "Visible seulement à midi.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ds_caravane",
+     "type": "camp",
+     "name": "Caravane pillée",
+     "x": -1000,
+     "z": 1500,
+     "desc": "Bandits du désert.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ds_terrier",
+     "type": "donjon",
+     "name": "Terrier du Ver",
+     "x": -1550,
+     "z": 1650,
+     "desc": "Donjon niv. 20–22 dans les galeries du ver.",
+     "version": "v0.5"
+    }
+   ],
+   "gathering": [
+    "node_iron",
+    "node_herb_braise",
+    "cactus (pulpe)"
+   ],
+   "collectibles": 18,
+   "traversal": [
+    "char à voile sur les dunes (v0.4)",
+    "tempêtes de sable qui masquent la carte",
+    "oasis = points de repos"
+   ],
+   "quests": [
+    "Chapitre IV-b : le Sceau d’Ambre",
+    "Le temple aux miroirs",
+    "Les eaux d’Ambrefont"
+   ]
+  },
+  {
+   "id": "hauts_ocres",
+   "name": "Hauts-Plateaux Ocres",
+   "x": -1600,
+   "z": 450,
+   "r": 380,
+   "levels": [
+    19,
+    23
+   ],
+   "tier": "T4-T5",
+   "security": "jaune",
+   "heightClass": "A4",
+   "altitude": {
+    "min": 120,
+    "max": 420,
+    "typical": 220
+   },
+   "relief": [
+    "mesa",
+    "plateau"
+   ],
+   "weather": [
+    {
+     "kind": "clair",
+     "p": 0.4
+    },
+    {
+     "kind": "vent_fort",
+     "p": 0.35
+    },
+    {
+     "kind": "neige_legere",
+     "p": 0.25
+    }
+   ],
+   "ambiance": "Mesas et plateaux au nord du désert, herbes rases, arbres tordus ; froid la nuit, premières neiges au sommet.",
+   "monsters": [
+    {
+     "key": "harpy",
+     "lvl": [
+      19,
+      23
+     ],
+     "archetype": "ranged"
+    },
+    {
+     "key": "troll",
+     "lvl": [
+      21,
+      23
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "ice_wolf",
+     "lvl": [
+      20,
+      22
+     ],
+     "archetype": "pack",
+     "note": "sommets"
+    },
+    {
+     "key": "rift_lizard",
+     "lvl": [
+      19,
+      21
+     ],
+     "archetype": "rusher"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Troll des Mesas",
+     "model": "troll",
+     "scale": 1.3,
+     "lvl": 23,
+     "desc": "Arrache des rochers et les lance (cercles), régénère si on ne le brûle pas."
+    }
+   ],
+   "worldBoss": null,
+   "towns": [
+    {
+     "id": "camp_nomade",
+     "name": "Camp des Vents",
+     "x": -1500,
+     "z": 500,
+     "services": [
+      "couture",
+      "pierre_de_passage"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "ho_mesa",
+     "type": "belvedere",
+     "name": "Mesa du Guetteur",
+     "x": -1700,
+     "z": 350,
+     "desc": "Plus haut point des plateaux, vue sur le désert et Givreval.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ho_pont",
+     "type": "repere",
+     "name": "Ponts de corde des Mesas",
+     "x": -1550,
+     "z": 600,
+     "desc": "Chaîne de ponts entre mesas.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ho_nids",
+     "type": "camp",
+     "name": "Falaise des Nids",
+     "x": -1800,
+     "z": 550,
+     "desc": "Harpies en nombre.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ho_obelisque",
+     "type": "sanctuaire",
+     "name": "Obélisque du Vent",
+     "x": -1450,
+     "z": 300,
+     "desc": "Puzzle de vent (collectible).",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_iron",
+    "node_mithril",
+    "node_herb_givre"
+   ],
+   "collectibles": 12,
+   "traversal": [
+    "ponts de corde",
+    "vol plané depuis les mesas (v0.5)"
+   ],
+   "quests": [
+    "Le troll des Mesas",
+    "La route des Vents"
+   ]
+  },
+  {
+   "id": "pics_givreval",
+   "name": "Pics de Givreval",
+   "x": -1400,
+   "z": -1450,
+   "r": 520,
+   "levels": [
+    20,
+    25
+   ],
+   "tier": "T5",
+   "security": "jaune",
+   "heightClass": "A5",
+   "altitude": {
+    "min": 180,
+    "max": 680,
+    "typical": 380
+   },
+   "relief": [
+    "massif"
+   ],
+   "weather": [
+    {
+     "kind": "neige",
+     "p": 0.45
+    },
+    {
+     "kind": "blizzard",
+     "p": 0.25
+    },
+    {
+     "kind": "clair_glace",
+     "p": 0.3
+    }
+   ],
+   "ambiance": "Pics enneigés, sapins chargés de neige, lacs gelés, aurores la nuit.",
+   "monsters": [
+    {
+     "key": "ice_wolf",
+     "lvl": [
+      20,
+      24
+     ],
+     "archetype": "pack"
+    },
+    {
+     "key": "yeti",
+     "lvl": [
+      22,
+      25
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "troll",
+     "lvl": [
+      22,
+      24
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "wraith",
+     "lvl": [
+      21,
+      23
+     ],
+     "archetype": "caster",
+     "note": "âmes gelées"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Crinière-de-Givre",
+     "model": "yeti",
+     "scale": 1.4,
+     "lvl": 24,
+     "desc": "Gifle en cône, avalanche télégraphiée en ligne."
+    }
+   ],
+   "worldBoss": {
+    "key": "frost_giant",
+    "name": "Le Géant de givre",
+    "lvl": 24,
+    "where": "Cirque du Géant (-1550, -1650)",
+    "desc": "Garde le Sceau de Givre. Coups de massue, sol gelé glissant, blizzard en phase 2."
+   },
+   "towns": [
+    {
+     "id": "refuge_givreval",
+     "name": "Refuge de Givreval",
+     "x": -1150,
+     "z": -1250,
+     "services": [
+      "forge",
+      "auberge",
+      "pierre_de_passage"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "pg_grotte",
+     "type": "donjon",
+     "name": "Grotte gelée",
+     "x": -1350,
+     "z": -1500,
+     "desc": "Donjon (CX-11), niv. 22–25.",
+     "version": "v0.4"
+    },
+    {
+     "id": "pg_cirque",
+     "type": "boss",
+     "name": "Cirque du Géant",
+     "x": -1550,
+     "z": -1650,
+     "desc": "Arène glaciaire.",
+     "version": "v0.3"
+    },
+    {
+     "id": "pg_lac",
+     "type": "repere",
+     "name": "Lac Miroir-de-Givre",
+     "x": -1250,
+     "z": -1600,
+     "desc": "Lac gelé praticable, glace qui craque (télégraphe).",
+     "version": "v0.3"
+    },
+    {
+     "id": "pg_col",
+     "type": "belvedere",
+     "name": "Col des Aurores",
+     "x": -1600,
+     "z": -1350,
+     "desc": "Point le plus haut accessible (≈ 600 m).",
+     "version": "v0.3"
+    },
+    {
+     "id": "pg_guerrier",
+     "type": "ruine",
+     "name": "Veilleurs pris dans la glace",
+     "x": -1450,
+     "z": -1300,
+     "desc": "Guerriers gelés, coffre.",
+     "version": "v0.3"
+    },
+    {
+     "id": "pg_cabane",
+     "type": "hameau",
+     "name": "Cabane du Trappeur",
+     "x": -1000,
+     "z": -1500,
+     "desc": "snow_cabin, quête des peaux.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_mithril",
+    "node_crystal",
+    "node_herb_givre"
+   ],
+   "collectibles": 16,
+   "traversal": [
+    "sentiers balisés",
+    "glace glissante",
+    "froid au-dessus de 350 m (soupe ou feu de camp)"
+   ],
+   "quests": [
+    "Chapitre IV-c : le Sceau de Givre",
+    "Crinière-de-Givre",
+    "Le trappeur"
+   ]
+  },
+  {
+   "id": "plateau_aldmar",
+   "name": "Ruines d’Aldmar",
+   "x": 650,
+   "z": -1400,
+   "r": 450,
+   "levels": [
+    24,
+    29
+   ],
+   "tier": "T6",
+   "security": "jaune (bordure) + rouge (Cœur d’Aldmar)",
+   "heightClass": "A4",
+   "altitude": {
+    "min": 120,
+    "max": 260,
+    "typical": 180
+   },
+   "relief": [
+    "plateau"
+   ],
+   "weather": [
+    {
+     "kind": "brume_doree",
+     "p": 0.4
+    },
+    {
+     "kind": "orage",
+     "p": 0.3
+    },
+    {
+     "kind": "clair",
+     "p": 0.3
+    }
+   ],
+   "ambiance": "Capitale déchue sur un plateau : remparts écroulés, statues, runes d’or qui palpitent, ciel d’orage (Elden Ring au plus fort).",
+   "monsters": [
+    {
+     "key": "skeleton",
+     "lvl": [
+      24,
+      27
+     ],
+     "archetype": "brute",
+     "note": "chevaliers d’Aldmar"
+    },
+    {
+     "key": "skeleton_archer",
+     "lvl": [
+      24,
+      27
+     ],
+     "archetype": "ranged"
+    },
+    {
+     "key": "wraith",
+     "lvl": [
+      25,
+      28
+     ],
+     "archetype": "caster"
+    },
+    {
+     "key": "troll",
+     "lvl": [
+      25,
+      29
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "golem",
+     "lvl": [
+      26,
+      27
+     ],
+     "archetype": "brute",
+     "note": "golems gardiens (non-boss, version élite)"
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Sénéchal Vorn",
+     "model": "skeleton",
+     "scale": 1.5,
+     "lvl": 28,
+     "desc": "Chevalier squelette à deux phases, parade possible sur ses coups rouges."
+    }
+   ],
+   "worldBoss": {
+    "key": "scarlet_champion",
+    "name": "Le Champion écarlate",
+    "lvl": 30,
+    "where": "Arène Écarlate (700, -1500)",
+    "desc": "Boss de zone rouge (proposé par items.md), pic JcJ + JcE.",
+    "new": true
+   },
+   "towns": [],
+   "poi": [
+    {
+     "id": "ra_crypte",
+     "type": "donjon",
+     "name": "Crypte d’Aldmar",
+     "x": 550,
+     "z": -1450,
+     "desc": "Donjon final niv. 27–30 (kit dng_* CX-4), boss : le Roi-Liche.",
+     "version": "v0.4"
+    },
+    {
+     "id": "ra_arene",
+     "type": "zone_rouge",
+     "name": "Arène Écarlate",
+     "x": 700,
+     "z": -1500,
+     "desc": "Cœur de la zone rouge.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ra_portes",
+     "type": "repere",
+     "name": "Grandes Portes d’Aldmar",
+     "x": 650,
+     "z": -1050,
+     "desc": "Entrée monumentale, rampe d’accès depuis la forêt.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ra_bibliotheque",
+     "type": "ruine",
+     "name": "Bibliothèque effondrée",
+     "x": 800,
+     "z": -1350,
+     "desc": "Recettes rares, coffre.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ra_statue",
+     "type": "belvedere",
+     "name": "Statue du Roi sans tête",
+     "x": 450,
+     "z": -1300,
+     "desc": "Statue colossale gravissable.",
+     "version": "v0.3"
+    },
+    {
+     "id": "ra_forge",
+     "type": "ruine",
+     "name": "Forge royale",
+     "x": 900,
+     "z": -1550,
+     "desc": "Forge en ruine : amélioration +8 à +10 possible ici (bonus).",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_mithril",
+    "node_crystal",
+    "node_herb_braise",
+    "rune_shard (élites rouges)"
+   ],
+   "collectibles": 16,
+   "traversal": [
+    "rampes",
+    "remparts praticables",
+    "escaliers"
+   ],
+   "quests": [
+    "Chapitre V : le Roi-Liche",
+    "Le Sénéchal",
+    "Les archives d’Aldmar"
+   ]
+  },
+  {
+   "id": "cendremont",
+   "name": "Cendremont",
+   "x": 1500,
+   "z": -1500,
+   "r": 450,
+   "levels": [
+    26,
+    30
+   ],
+   "tier": "T6",
+   "security": "rouge (tout le cône) ; camp de base jaune",
+   "heightClass": "A6",
+   "altitude": {
+    "min": 120,
+    "max": 720,
+    "typical": 350
+   },
+   "relief": [
+    "cone_volcanique"
+   ],
+   "weather": [
+    {
+     "kind": "pluie_de_cendres",
+     "p": 0.5
+    },
+    {
+     "kind": "braises",
+     "p": 0.3
+    },
+    {
+     "kind": "orage_sec",
+     "p": 0.2
+    }
+   ],
+   "ambiance": "Volcan actif, coulées de lave figée, rivières de magma émissives, ciel rouge, cendres qui tombent.",
+   "monsters": [
+    {
+     "key": "salamander",
+     "lvl": [
+      26,
+      30
+     ],
+     "archetype": "caster",
+     "new": true
+    },
+    {
+     "key": "magma_golem",
+     "lvl": [
+      27,
+      30
+     ],
+     "archetype": "brute",
+     "new": true,
+     "note": "variante émissive du golem"
+    },
+    {
+     "key": "troll",
+     "lvl": [
+      26,
+      28
+     ],
+     "archetype": "brute"
+    },
+    {
+     "key": "ember_wisp",
+     "lvl": [
+      26,
+      29
+     ],
+     "archetype": "ranged",
+     "new": true
+    }
+   ],
+   "miniBosses": [
+    {
+     "name": "Forgeron des Cendres",
+     "model": "magma_golem",
+     "scale": 1.3,
+     "lvl": 29,
+     "desc": "Marteau à 3 frappes, flaques de lave persistantes."
+    }
+   ],
+   "worldBoss": {
+    "key": "ember_matriarch",
+    "name": "La Brasier-Mère",
+    "lvl": 30,
+    "where": "Caldeira (1550, -1600)",
+    "desc": "Garde le Sceau de Braise. Salamandre colossale : souffle en cône, pluie de lave (cercles), phase 2 : la caldeira se remplit.",
+    "new": true
+   },
+   "towns": [
+    {
+     "id": "camp_cendres",
+     "name": "Camp de la Cendre",
+     "x": 1250,
+     "z": -1250,
+     "services": [
+      "forge",
+      "pierre_de_passage",
+      "banque_de_campagne"
+     ]
+    }
+   ],
+   "poi": [
+    {
+     "id": "cm_caldeira",
+     "type": "boss",
+     "name": "Caldeira",
+     "x": 1550,
+     "z": -1600,
+     "desc": "Arène du boss mondial.",
+     "version": "v0.3"
+    },
+    {
+     "id": "cm_forge",
+     "type": "donjon",
+     "name": "Forge Engloutie",
+     "x": 1400,
+     "z": -1650,
+     "desc": "Donjon niv. 29–30.",
+     "version": "v0.5"
+    },
+    {
+     "id": "cm_coulee",
+     "type": "repere",
+     "name": "Escalier de lave",
+     "x": 1350,
+     "z": -1400,
+     "desc": "Terrasses de lave figée, chemin principal.",
+     "version": "v0.3"
+    },
+    {
+     "id": "cm_fumerolles",
+     "type": "puzzle",
+     "name": "Fumerolles",
+     "x": 1650,
+     "z": -1350,
+     "desc": "Geysers de vapeur qui projettent (saut en hauteur).",
+     "version": "v0.3"
+    },
+    {
+     "id": "cm_camp",
+     "type": "camp",
+     "name": "Fonderie des Salamandres",
+     "x": 1700,
+     "z": -1500,
+     "desc": "Élites rouges, filons de mithril doubles.",
+     "version": "v0.3"
+    }
+   ],
+   "gathering": [
+    "node_mithril",
+    "node_crystal",
+    "node_herb_braise",
+    "obsidienne"
+   ],
+   "collectibles": 12,
+   "traversal": [
+    "terrasses",
+    "fumerolles (propulsion, v0.4)",
+    "chaleur : résistance au feu conseillée"
+   ],
+   "quests": [
+    "Chapitre IV-d : le Sceau de Braise",
+    "Le Forgeron des Cendres",
+    "Chasse aux élites (rouge)"
+   ]
+  }
+ ],
+ "newMonsters": [
+  {
+   "key": "toad_brute",
+   "name": "Crapaud-buffle",
+   "archetype": "brute",
+   "levels": [
+    8,
+    18
+   ],
+   "regions": [
+    "lac_verrelune",
+    "marais_brumenoire"
+   ],
+   "clips": "standard + Attack2 (saut écrasant)",
+   "drops": "Peau de crapaud, glande",
+   "note": "Nouveau modèle (bête)."
+  },
+  {
+   "key": "treant",
+   "name": "Écorcier",
+   "archetype": "brute",
+   "levels": [
+    13,
+    16
+   ],
+   "regions": [
+    "bois_egares"
+   ],
+   "clips": "standard + Attack2 (racines en ligne)",
+   "drops": "Écorce ancienne, sève de brume",
+   "note": "Nouveau modèle ; faible au feu."
+  },
+  {
+   "key": "wisp",
+   "name": "Feu-Brume",
+   "archetype": "ranged",
+   "levels": [
+    12,
+    15
+   ],
+   "regions": [
+    "bois_egares"
+   ],
+   "clips": "Idle Walk Shoot Hit Death",
+   "drops": "Essence de brume",
+   "note": "Petite créature émissive, se téléporte ; peut être un VFX + mesh simple."
+  },
+  {
+   "key": "bandit_archer",
+   "name": "Archer brigand",
+   "archetype": "ranged",
+   "levels": [
+    12,
+    17
+   ],
+   "regions": [
+    "marches_couchant",
+    "gorges_faille"
+   ],
+   "clips": "modèle bandit + Shoot",
+   "drops": "Étoffe de brigand, flèches",
+   "note": "Variante d’équipement du modèle bandit."
+  },
+  {
+   "key": "rift_lizard",
+   "name": "Varan des failles",
+   "archetype": "rusher",
+   "levels": [
+    14,
+    21
+   ],
+   "regions": [
+    "gorges_faille",
+    "desert_sablerouge",
+    "hauts_ocres"
+   ],
+   "clips": "standard + Run",
+   "drops": "Écaille de varan",
+   "note": "Nouveau quadrupède (peut réutiliser le rig loup)."
+  },
+  {
+   "key": "harpy",
+   "name": "Harpie des mesas",
+   "archetype": "ranged",
+   "levels": [
+    16,
+    23
+   ],
+   "regions": [
+    "gorges_faille",
+    "cote_embruns",
+    "hauts_ocres"
+   ],
+   "clips": "standard + Shoot (plumes) + Attack2 (piqué en ligne)",
+   "drops": "Plumes de harpie, serre",
+   "note": "Vole bas (hauteur ≤ 4 m) pour rester ciblable au corps à corps pendant le piqué."
+  },
+  {
+   "key": "husk",
+   "name": "Dessiccé",
+   "archetype": "brute",
+   "levels": [
+    17,
+    21
+   ],
+   "regions": [
+    "desert_sablerouge"
+   ],
+   "clips": "standard + Special (sortie du sable)",
+   "drops": "Bandelettes, os ancien",
+   "note": "Mort-vivant du désert, réutilise le rig humanoïde."
+  },
+  {
+   "key": "bandit_desert",
+   "name": "Pillard des dunes",
+   "archetype": "rusher",
+   "levels": [
+    16,
+    20
+   ],
+   "regions": [
+    "desert_sablerouge"
+   ],
+   "clips": "modèle bandit",
+   "drops": "Étoffe de brigand, cimeterre",
+   "note": "Variante de teinte et turban."
+  },
+  {
+   "key": "crab",
+   "name": "Crabe-Rocher",
+   "archetype": "brute",
+   "levels": [
+    15,
+    22
+   ],
+   "regions": [
+    "cote_salins",
+    "archipel_ecume",
+    "cote_embruns"
+   ],
+   "clips": "standard + Attack2 (pince lourde)",
+   "drops": "Carapace, chair de crabe (cuisine v0.5)",
+   "note": "Dos blindé : dégâts réduits de face, faible de dos (apprend à contourner)."
+  },
+  {
+   "key": "pirate",
+   "name": "Pillard des Salins",
+   "archetype": "rusher",
+   "levels": [
+    16,
+    23
+   ],
+   "regions": [
+    "cote_salins",
+    "archipel_ecume"
+   ],
+   "clips": "rig humanoïde (bandit)",
+   "drops": "Doublons (or), rhum, étoffe",
+   "note": "Nouveau costume sur la base bandit."
+  },
+  {
+   "key": "pirate_harpooner",
+   "name": "Harponneur",
+   "archetype": "ranged",
+   "levels": [
+    16,
+    23
+   ],
+   "regions": [
+    "cote_salins",
+    "archipel_ecume"
+   ],
+   "clips": "rig humanoïde + Shoot",
+   "drops": "Corde, harpon",
+   "note": "Harpon qui attire la cible (esquivable)."
+  },
+  {
+   "key": "sea_serpent_whelp",
+   "name": "Serpenteau des récifs",
+   "archetype": "ranged",
+   "levels": [
+    21,
+    23
+   ],
+   "regions": [
+    "archipel_ecume"
+   ],
+   "clips": "Idle Shoot Hit Death (émerge de l’eau)",
+   "drops": "Écaille marine",
+   "note": "Immobile dans l’eau peu profonde, crache en arc."
+  },
+  {
+   "key": "crab_king",
+   "name": "Le Roi-Carapace",
+   "archetype": "boss",
+   "levels": [
+    23,
+    23
+   ],
+   "regions": [
+    "archipel_ecume"
+   ],
+   "clips": "boss + Special",
+   "drops": "Carapace royale, légendaire à définir",
+   "note": "Boss mondial ; peut réutiliser le rig crabe à l’échelle 4."
+  },
+  {
+   "key": "salamander",
+   "name": "Salamandre de braise",
+   "archetype": "caster",
+   "levels": [
+    26,
+    30
+   ],
+   "regions": [
+    "cendremont"
+   ],
+   "clips": "standard + Shoot (crachat de feu)",
+   "drops": "Peau ignifuge, glande de feu",
+   "note": "Nouveau quadrupède."
+  },
+  {
+   "key": "magma_golem",
+   "name": "Golem de lave",
+   "archetype": "brute",
+   "levels": [
+    27,
+    30
+   ],
+   "regions": [
+    "cendremont"
+   ],
+   "clips": "rig golem",
+   "drops": "Cœur de magma, obsidienne",
+   "note": "Variante émissive du golem (matériaux)."
+  },
+  {
+   "key": "ember_wisp",
+   "name": "Braisillon",
+   "archetype": "ranged",
+   "levels": [
+    26,
+    29
+   ],
+   "regions": [
+    "cendremont"
+   ],
+   "clips": "comme wisp",
+   "drops": "Braise vive",
+   "note": "Variante rouge du Feu-Brume."
+  },
+  {
+   "key": "ember_matriarch",
+   "name": "La Brasier-Mère",
+   "archetype": "boss",
+   "levels": [
+    30,
+    30
+   ],
+   "regions": [
+    "cendremont"
+   ],
+   "clips": "boss + Special",
+   "drops": "Cœur de braise éternelle, légendaire à définir",
+   "note": "Boss mondial ; rig salamandre à grande échelle."
+  }
+ ],
+ "bosses": [
+  {
+   "key": "golem",
+   "name": "Golem ancien",
+   "lvl": 14,
+   "region": "val_brumeval",
+   "kind": "boss de zone (existant)",
+   "milestone": "Jalon 1 : fin de l’apprentissage"
+  },
+  {
+   "key": "swamp_hag",
+   "name": "La Sorcière des marais",
+   "lvl": 19,
+   "region": "marais_brumenoire",
+   "kind": "boss de Sceau",
+   "milestone": "Jalon 2 (un des 4 Sceaux)"
+  },
+  {
+   "key": "sand_wyrm",
+   "name": "Le Ver des sables",
+   "lvl": 20,
+   "region": "desert_sablerouge",
+   "kind": "boss de Sceau / mondial",
+   "milestone": "Jalon 2 (un des 4 Sceaux)"
+  },
+  {
+   "key": "crab_king",
+   "name": "Le Roi-Carapace",
+   "lvl": 23,
+   "region": "archipel_ecume",
+   "kind": "boss mondial annoncé",
+   "milestone": "Optionnel"
+  },
+  {
+   "key": "frost_giant",
+   "name": "Le Géant de givre",
+   "lvl": 24,
+   "region": "pics_givreval",
+   "kind": "boss de Sceau",
+   "milestone": "Jalon 3"
+  },
+  {
+   "key": "ember_matriarch",
+   "name": "La Brasier-Mère",
+   "lvl": 30,
+   "region": "cendremont",
+   "kind": "boss de Sceau / mondial (zone rouge)",
+   "milestone": "Jalon 4 (groupe conseillé)"
+  },
+  {
+   "key": "lich",
+   "name": "Le Roi-Liche d’Aldmar",
+   "lvl": 30,
+   "region": "plateau_aldmar",
+   "kind": "boss final de la Crypte d’Aldmar (donjon)",
+   "milestone": "Fin de la trame v0.3/v0.4"
+  },
+  {
+   "key": "scarlet_champion",
+   "name": "Le Champion écarlate",
+   "lvl": 30,
+   "region": "plateau_aldmar",
+   "kind": "boss de zone rouge",
+   "milestone": "Fin de jeu JcJ/JcE"
+  }
+ ],
+ "dungeons": [
+  {
+   "id": "mine_cuivrefond",
+   "name": "Mine de Cuivrefond",
+   "region": "val_brumeval",
+   "levels": [
+    6,
+    8
+   ],
+   "size": "petit (10 min)",
+   "boss": "Contremaître gobelin",
+   "kit": "dng_* + node_copper",
+   "version": "v0.4"
+  },
+  {
+   "id": "temple_verrelune",
+   "name": "Temple englouti de Verre-Lune",
+   "region": "lac_verrelune",
+   "levels": [
+    12,
+    15
+   ],
+   "size": "moyen",
+   "boss": "La Nixe du lac (nouveau, caster)",
+   "kit": "dng_* + eau",
+   "version": "v0.4"
+  },
+  {
+   "id": "racines_arbre",
+   "name": "Racines de l’Arbre-Brume",
+   "region": "bois_egares",
+   "levels": [
+    14,
+    16
+   ],
+   "size": "moyen",
+   "boss": "Le Ver-Racine (treant géant)",
+   "kit": "nouveau kit racines",
+   "version": "v0.4"
+  },
+  {
+   "id": "grotte_contrebandiers",
+   "name": "Grotte des Contrebandiers",
+   "region": "cote_salins",
+   "levels": [
+    16,
+    18
+   ],
+   "size": "moyen",
+   "boss": "Capitaine Sel-Amer (version donjon)",
+   "kit": "dng_* + port_*",
+   "version": "v0.4"
+  },
+  {
+   "id": "terrier_ver",
+   "name": "Terrier du Ver",
+   "region": "desert_sablerouge",
+   "levels": [
+    20,
+    22
+   ],
+   "size": "grand",
+   "boss": "Couvée du Ver",
+   "kit": "nouveau kit sable",
+   "version": "v0.5"
+  },
+  {
+   "id": "grotte_gelee",
+   "name": "Grotte gelée",
+   "region": "pics_givreval",
+   "levels": [
+    22,
+    25
+   ],
+   "size": "grand",
+   "boss": "Yéti ancestral puis Écho du Géant",
+   "kit": "ice_* (CX-11)",
+   "version": "v0.4"
+  },
+  {
+   "id": "crypte_aldmar",
+   "name": "Crypte d’Aldmar",
+   "region": "plateau_aldmar",
+   "levels": [
+    27,
+    30
+   ],
+   "size": "grand (raid 5)",
+   "boss": "Le Roi-Liche d’Aldmar",
+   "kit": "dng_* (CX-4)",
+   "version": "v0.4"
+  },
+  {
+   "id": "forge_engloutie",
+   "name": "Forge Engloutie",
+   "region": "cendremont",
+   "levels": [
+    29,
+    30
+   ],
+   "size": "grand",
+   "boss": "Le Premier Forgeron",
+   "kit": "dng_* + lave",
+   "version": "v0.5"
+  }
+ ],
+ "mainStory": [
+  {
+   "chapter": "I",
+   "name": "La Brume se lève",
+   "regions": [
+    "val_brumeval"
+   ],
+   "levels": [
+    1,
+    14
+   ],
+   "summary": "Chaîne d’Aldric (existante). La mort du Golem révèle une rune d’or dans son cœur : « l’Arbre se meurt »."
+  },
+  {
+   "chapter": "II",
+   "name": "La Veilleuse",
+   "regions": [
+    "grande_foret",
+    "bois_egares"
+   ],
+   "levels": [
+    10,
+    15
+   ],
+   "summary": "On traverse la forêt jusqu’au Poste de la Veilleuse, puis on suit les lanternes jusqu’à l’Arbre-Brume. L’esprit de l’arbre (la Veilleuse) explique : la Brume-Noire suinte d’Aldmar, retenue autrefois par quatre Sceaux dont les gardiens ont été corrompus."
+  },
+  {
+   "chapter": "III",
+   "name": "La mémoire d’Aldmar",
+   "regions": [
+    "plaine_steles"
+   ],
+   "levels": [
+    11,
+    15
+   ],
+   "summary": "Les stèles projettent des souvenirs (dialogues) de la chute d’Aldmar et indiquent où se trouvent les Sceaux. Débloque les 4 quêtes de Sceau."
+  },
+  {
+   "chapter": "IV",
+   "name": "Les quatre Sceaux (ordre libre)",
+   "regions": [
+    "marais_brumenoire",
+    "desert_sablerouge",
+    "pics_givreval",
+    "cendremont"
+   ],
+   "levels": [
+    15,
+    30
+   ],
+   "summary": "Sceau de Vase (Sorcière, 19), Sceau d’Ambre (Ver, 20), Sceau de Givre (Géant, 24), Sceau de Braise (Brasier-Mère, 30). Chaque Sceau rallumé ouvre un pan des Grandes Portes d’Aldmar et donne un pouvoir de traversée (voir traversal)."
+  },
+  {
+   "chapter": "V",
+   "name": "Le Roi-Liche",
+   "regions": [
+    "plateau_aldmar"
+   ],
+   "levels": [
+    27,
+    30
+   ],
+   "summary": "Avec au moins 3 Sceaux, les Grandes Portes s’ouvrent ; la Crypte d’Aldmar (donjon v0.4) mène au Roi-Liche. En v0.3, la trame s’arrête aux Portes (cinématique + « à suivre »)."
+  }
+ ],
+ "collectible": {
+  "id": "brumillon",
+  "name": "Brumillon",
+  "plural": "Brumillons",
+  "total": 238,
+  "desc": "Petits esprits de brume, ronds et timides, cachés dans le monde. On les trouve en résolvant de micro-énigmes (soulever une pierre, allumer une lanterne, finir une course, viser une cible, suivre un feu follet, atteindre un sommet).",
+  "where": "Répartis par région (voir regions[].collectibles), toujours hors du chemin principal.",
+  "rewards": [
+   {
+    "count": 5,
+    "reward": "+2 emplacements de sac"
+   },
+   {
+    "count": 15,
+    "reward": "+2 emplacements de sac"
+   },
+   {
+    "count": 30,
+    "reward": "+10 emplacements de banque"
+   },
+   {
+    "count": 60,
+    "reward": "Titre « Ami des Brumillons »"
+   },
+   {
+    "count": 100,
+    "reward": "Cape de brume (cosmétique, matériau Cloth au vent)"
+   },
+   {
+    "count": 150,
+    "reward": "Familier Brumillon (cosmétique, v0.5)"
+   },
+   {
+    "count": 238,
+    "reward": "Titre « Gardien de l’Arbre » + teinture dorée"
+   }
+  ],
+  "exchange": "Au Sanctuaire de l’Arbre-Brume (Bois des Égarés), auprès de la Veilleuse.",
+  "tech": "Entité statique par joueur (comme les filons personnels) ; persistance : liste d’ids trouvés dans le compte."
+ },
+ "redZones": [
+  {
+   "id": "rz_naufrageurs",
+   "name": "Îlots des Naufrageurs",
+   "region": "archipel_ecume",
+   "levels": [
+    19,
+    23
+   ],
+   "rewards": "Butin T4/T5 +2 niv. d’objet, doublons, ensemble « Pillard des mers » (à définir), filons de cristal doubles",
+   "note": "Première zone rouge, petite et optionnelle : goûter au risque avant le niveau 25."
+  },
+  {
+   "id": "rz_coeur_aldmar",
+   "name": "Cœur d’Aldmar",
+   "region": "plateau_aldmar",
+   "levels": [
+    25,
+    30
+   ],
+   "rewards": "T6, fragments runiques d’Aldmar, ensembles runiques, Champion écarlate (Soif-de-Sang)",
+   "note": "Autour de l’Arène Écarlate ; les Grandes Portes restent en zone jaune."
+  },
+  {
+   "id": "rz_cendremont",
+   "name": "Cône de Cendremont",
+   "region": "cendremont",
+   "levels": [
+    26,
+    30
+   ],
+   "rewards": "T6, mithril double, obsidienne, Brasier-Mère",
+   "note": "Le camp de base est jaune (5 s de protection en sortant)."
+  }
+ ],
+ "traversal": [
+  {
+   "name": "Pierres de passage (voyage rapide)",
+   "version": "v0.3",
+   "desc": "1–2 par région + chaque ville (modèle waypoint). Activer = découvrir."
+  },
+  {
+   "name": "Belvédères (tours, sommets)",
+   "version": "v0.3",
+   "desc": "Grimper révèle la région sur la carte (brouillard de guerre)."
+  },
+  {
+   "name": "Saut, sprint, roulade",
+   "version": "v0.3",
+   "desc": "Fondamentaux ; corniches et gués conçus pour le saut."
+  },
+  {
+   "name": "Gués et bancs de sable",
+   "version": "v0.3",
+   "desc": "Traversées d’eau sans bateau (archipel, lac)."
+  },
+  {
+   "name": "Monture (Destrier de brume)",
+   "version": "v0.4",
+   "desc": "CX-7 ; interdite en donjon et en zone rouge ? (à décider)."
+  },
+  {
+   "name": "Char à voile des dunes",
+   "version": "v0.4",
+   "desc": "Loué à Ambrefont, seulement sur le sable du désert ; très rapide, suit le vent."
+  },
+  {
+   "name": "Fumerolles et geysers",
+   "version": "v0.4",
+   "desc": "Propulsent vers le haut (Cendremont, marais)."
+  },
+  {
+   "name": "Barque et voilier",
+   "version": "v0.5",
+   "desc": "Port-Salin ↔ archipel, lac de Verre-Lune."
+  },
+  {
+   "name": "Vol plané (Aile de toile)",
+   "version": "v0.5",
+   "desc": "Depuis les tours et mesas (A4+). Récompense du Sceau de Givre ou achat."
+  }
+ ],
+ "difficulty": {
+  "curve": [
+   {
+    "levels": [
+     1,
+     8
+    ],
+    "rule": "Un seul type de télégraphe par monstre ; mobs isolés ou par 2."
+   },
+   {
+    "levels": [
+     8,
+     15
+    ],
+    "rule": "Packs de 3, un attaquant à distance par pack, premiers combos (2 coups)."
+   },
+   {
+    "levels": [
+     15,
+     22
+    ],
+    "rule": "Terrain qui compte (eau qui ralentit, bords de falaise), casters + brutes mélangés, élites 8 %."
+   },
+   {
+    "levels": [
+     22,
+     30
+    ],
+    "rule": "Combos 3 coups, feintes, zones rouges, boss à 3 phases."
+   }
+  ],
+  "rules": [
+   "Toujours une pierre de passage et un feu de repos avant une arène de boss (« dur mais juste »).",
+   "Voile de brume à l’entrée des arènes de boss : on sait qu’on entre ; l’écho de mort tombe devant le voile.",
+   "Un mini-boss « gardien » à l’entrée de chaque région de palier supérieur : si on le bat, on est prêt.",
+   "Les monstres de bord de route sont au niveau min de la région ; les niveaux montent en s’éloignant des routes.",
+   "Chaque boss a un télégraphe signature appris sur un monstre normal de la région (ex. l’onde du Ver est déjà faite par les Dessiccés)."
+  ]
+ },
+ "gatheringExtra": [
+  {
+   "id": "reeds",
+   "name": "Roseaux",
+   "region": [
+    "lac_verrelune",
+    "marais_brumenoire"
+   ],
+   "use": "Couture (fibres)"
+  },
+  {
+   "id": "mushrooms",
+   "name": "Champignons de brume",
+   "region": [
+    "grande_foret",
+    "bois_egares"
+   ],
+   "use": "Alchimie"
+  },
+  {
+   "id": "bog_moss",
+   "name": "Mousse des tourbières",
+   "region": [
+    "marais_brumenoire"
+   ],
+   "use": "Alchimie, Couture (déjà dans crafting)"
+  },
+  {
+   "id": "sel_marin",
+   "name": "Sel marin",
+   "region": [
+    "cote_salins",
+    "archipel_ecume",
+    "cote_embruns"
+   ],
+   "use": "Alchimie, conserves (cuisine v0.5)"
+  },
+  {
+   "id": "corail",
+   "name": "Corail d’écume",
+   "region": [
+    "cote_salins",
+    "archipel_ecume"
+   ],
+   "use": "Bijoux"
+  },
+  {
+   "id": "cactus",
+   "name": "Pulpe de cactus",
+   "region": [
+    "desert_sablerouge"
+   ],
+   "use": "Potion de fraîcheur (résistance chaleur)"
+  },
+  {
+   "id": "obsidienne",
+   "name": "Obsidienne",
+   "region": [
+    "cendremont"
+   ],
+   "use": "Forge T6"
+  }
+ ]
+}
