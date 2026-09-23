@@ -18,6 +18,7 @@ import { PLAYER_RADIUS } from '../../shared/protocol.js';
 import { MOVE_SPEED_FACTOR, MOVE_SLACK_M, MOVE_MAX_ELAPSED_S, MAX_PENETRATION, MOVE_STATE_MS } from './config.js';
 import { checkDialogDistance } from './systems/npc.js';
 import { isNum, normAngle } from './util.js';
+import { trackMoveSpeed } from './systems/stamina.js'; // [combat-souls]
 
 /** Long-term speed tolerance (clock drift between client and server, rounding). */
 export const RATE_TOLERANCE = 1.1;
@@ -125,6 +126,11 @@ export class MoveValidator {
     return peak;
   }
 
+  /** [combat-souls] Called every tick with player.maxSpeedAt: records roll/sprint bursts between move messages. */
+  advance(now, speed) {
+    if (isNum(speed) && speed > 0) this.peakSpeed(now, speed);
+  }
+
   capacity(peak) { return peak * BURST_S + BURST_SLACK_M; }
 
   /** Budget available at `now` for this peak speed. */
@@ -212,7 +218,9 @@ export function handleMoveMsg(game, p, msg) {
     }
     return game.sendCorrect(p);
   }
-  if (Math.hypot(to.x - p.x, to.z - p.z) > 0.01) p.moveUntil = now + MOVE_STATE_MS;
+  const stepD = Math.hypot(to.x - p.x, to.z - p.z);
+  trackMoveSpeed(p, stepD, now - mv.last.t); // [combat-souls] ranged autos need a (nearly) standing caster
+  if (stepD > 0.01) p.moveUntil = now + MOVE_STATE_MS;
   p.x = to.x;
   p.z = to.z;
   if (isNum(msg.ry)) p.ry = normAngle(msg.ry);

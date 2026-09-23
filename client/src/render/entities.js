@@ -114,7 +114,9 @@ export class EntityView {
     else if (rec.k === KIND.PLAYER) color = '#8fd3ff';
     else if (rec.k === KIND.NPC) color = '#ffd24a';
     else if (rec.k === KIND.MONSTER) color = levelColor(rec.lv || 1, selfLevel || 1);
+    if (rec.el) color = '#ffcf45'; // [combat-souls] elites: gold nameplate
     p.setColor(color);
+    p.toggle('elite', !!rec.el);
     p.toggle('boss', isBoss);
     p.toggle('friendly', rec.k === KIND.PLAYER);
     p.toggle('targeted', targeted);
@@ -309,6 +311,7 @@ export class EntityRenderer {
     let v = this.views.get(rec.id);
     if (!v) {
       if (!rec.k) return null; // not enough info yet
+      if (rec.k === KIND.ECHO) return null; // [combat-souls] death echoes are drawn by render/echo.js
       v = new EntityView(rec, this.ctx);
       rec.view = v;
       this.views.set(rec.id, v);
@@ -362,9 +365,9 @@ export class EntityRenderer {
     }
   }
 
-  playAnim(id, name) {
+  playAnim(id, name, opts) {
     const v = this.views.get(id);
-    if (v) v.animator.play(name);
+    if (v) v.animator.play(name, opts); // [combat-souls] opts: { timeScale, force }
     return v;
   }
 

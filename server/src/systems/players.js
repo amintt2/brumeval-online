@@ -6,6 +6,11 @@ import { applyXp } from '../progression.js';
 import { addItem, formatItem } from '../inventory.js';
 import { round2 } from '../util.js';
 import { closeDialog } from './npc.js';
+// [combat-souls]
+import { KIND } from '../../../shared/protocol.js';
+import { dropEcho } from './echo.js';
+import { inIframes } from './telegraph.js';
+import { initCombatState } from './stamina.js';
 
 /** Give XP (handles several level-ups at once; no XP at max level). */
 export function grantXp(game, p, amount) {
@@ -49,6 +54,11 @@ export function healPlayer(game, p, amount, abId) {
 /** Monster (or other source) damages a player. */
 export function damagePlayer(game, p, src, amount, crit, abId) {
   if (p.dead) return;
+  // [combat-souls] dodge roll i-frames negate monster attacks
+  if (src && src.kind === KIND.MONSTER && inIframes(p, game.now())) {
+    game.broadcastNear(p.x, p.z, { t: S2C.FX, k: FX.DODGE, tg: p.id });
+    return;
+  }
   p.hp -= amount;
   p.lastCombat = game.now();
   p.markDirty('hp');
@@ -66,6 +76,7 @@ export function killPlayer(game, p, killer) {
   p.markDirty('dead', 'hp');
   game.broadcastNear(p.x, p.z, { t: S2C.DEATH, id: p.id, by: killer ? killer.id : 0 });
   game.notify(p, 'error', killer ? `Vous avez été vaincu par ${killer.name}.` : 'Vous êtes mort.');
+  dropEcho(game, p); // [combat-souls]
   closeDialog(game, p);
   for (const m of game.monsters.values()) {
     m.threat.delete(p.id);
@@ -86,7 +97,8 @@ export function handleRespawn(game, p) {
   p.mv.reset(p.x, p.z, now);
   p.moveUntil = 0;
   p.lastCombat = -Infinity;
-  p.markDirty('dead', 'hp', 'mp', 'x', 'z', 'ry');
+  initCombatState(p); // [combat-souls] full stamina, no roll / recovery in progress
+  p.markDirty('dead', 'hp', 'mp', 'x', 'z', 'ry', 'st');
   game.sendCorrect(p, true);
   game.broadcastNear(p.x, p.z, { t: S2C.FX, k: FX.RESPAWN, src: p.id });
   game.notify(p, 'info', 'Vous êtes de retour au village de Brumeval.');

@@ -156,7 +156,8 @@ test('area abilities: whirlwind radius, frost nova slow, arrow rain ground targe
   const near1 = spawnAt(game, 'slime', 50, 30);
   const near2 = spawnAt(game, 'slime', 53, 30);
   const far = spawnAt(game, 'slime', 60, 30);
-  for (const m of [near1, near2, far]) m.hp = m.mhp = 5000;
+  // provoked slimes must stay in place for the geometry checks (no steps, no leaps)
+  for (const m of [near1, near2, far]) { m.hp = m.mhp = 5000; m.speed = 0; m.atkReady = Infinity; }
   place(game, w, 50, 32);
   game.handleMessage(w, { t: 'ability', slot: 2 });
   const aoe = w.session.last('fx', (f) => f.k === 'aoe');
@@ -302,11 +303,15 @@ test('AI: aggressive monsters aggro, chase, attack; passive ones do not', () => 
   place(game, p, zone.x + 8, zone.z);
   place(game, q, 59.5, 30);
   advance(game, 100);
-  assert.equal(wolf.ai, 'chase');
+  // [combat-souls] the wolf first notices the player (alert: "!" FX, facing it), then attacks
+  assert.equal(wolf.ai, 'alert');
   assert.equal(wolf.target, p.id);
+  assert.ok(p.session.of('fx', (f) => f.k === 'notice' && f.src === wolf.id).length === 1);
+  advance(game, 800);
+  assert.equal(wolf.ai, 'chase');
   assert.equal(slime.ai, 'idle');
-  advance(game, 3000);
-  assert.ok(Math.hypot(wolf.x - p.x, wolf.z - p.z) <= MONSTERS.wolf.range);
+  for (let i = 0; i < 160 && !p.session.of('dmg', (d) => d.src === wolf.id && d.tg === p.id).length; i++) advance(game, 50);
+  assert.ok(Math.hypot(wolf.x - p.x, wolf.z - p.z) <= 9);
   assert.ok(p.session.of('dmg', (d) => d.src === wolf.id && d.tg === p.id).length >= 1);
   assert.ok(p.hp < p.mhp);
   assert.equal(slime.ai, 'idle');
@@ -413,26 +418,40 @@ test('player death blocks actions; respawn restores hp/mp at the spawn point', (
   assert.equal(p.session.msgs.length, 0);
 });
 
-test('golem slam hits every player within its radius periodically', () => {
+test('golem slam is telegraphed and resolved at impact against the positions of that moment', () => {
   const game = makeGame();
   const zone = zoneOf('golem');
   const golem = spawnAt(game, 'golem', zone.x, zone.z);
   const near = addPlayer(game, { cls: 'warrior' });
   const edge = addPlayer(game, { cls: 'mage' });
   const far = addPlayer(game, { cls: 'ranger' });
-  for (const p of [near, edge, far]) { p.mhp = p.hp = 1e7; }
+  const leaver = addPlayer(game, { cls: 'warrior' });
+  for (const p of [near, edge, far, leaver]) { p.mhp = p.hp = 1e7; }
   place(game, near, zone.x + 2, zone.z);
-  place(game, edge, zone.x, zone.z + 5.5);
+  place(game, edge, zone.x, zone.z + 5.8);
   place(game, far, zone.x - 12, zone.z);
-  damageMonster(game, golem, far, 1, false); // aggro onto the far player (golem walks towards it)
+  place(game, leaver, zone.x - 2, zone.z);
+  damageMonster(game, golem, near, 1, false);
   golem.speed = 0; // keep the geometry fixed for the test
-  advance(game, MONSTERS.golem.slam.cd * 1000 + 100);
-  const slams = near.session.of('fx', (f) => f.k === 'aoe' && f.src === golem.id && f.ab === 'slam');
-  assert.equal(slams.length, 1);
-  assert.equal(slams[0].r, MONSTERS.golem.slam.radius);
-  assert.ok(near.session.of('dmg', (d) => d.tg === near.id && d.ab === 'slam').length === 1);
-  assert.ok(edge.session.of('dmg', (d) => d.tg === edge.id && d.ab === 'slam').length === 1);
-  assert.equal(far.session.of('dmg', (d) => d.tg === far.id && d.ab === 'slam').length, 0);
+  golem.brain.attacks = golem.brain.attacks.filter((a) => a.id === 'golem_slam');
+  let tele = null;
+  for (let i = 0; i < 100 && !tele; i++) {
+    advance(game, 50);
+    tele = near.session.last('tele', (t) => t.src === golem.id && t.ab === 'golem_slam');
+  }
+  assert.ok(tele, 'slam telegraphed');
+  assert.equal(tele.shape, 'circle');
+  assert.equal(tele.r, MONSTERS.golem.ai.attacks.find((a) => a.id === 'golem_slam').r);
+  assert.deepEqual([tele.x, tele.z], [Math.round(golem.x * 100) / 100, Math.round(golem.z * 100) / 100]);
+  assert.ok(tele.ms >= 900 && tele.clip === 'Attack2');
+  assert.equal(near.session.of('dmg', (d) => d.ab === 'golem_slam').length, 0, 'no damage before the impact');
+  place(game, leaver, zone.x - 9, zone.z); // walks out of the circle during the wind-up
+  advance(game, tele.ms + 100);
+  const slamOn = (p) => p.session.of('dmg', (d) => d.tg === p.id && d.ab === 'golem_slam').length;
+  assert.equal(slamOn(near), 1);
+  assert.equal(slamOn(edge), 1);
+  assert.equal(slamOn(far), 0);
+  assert.equal(slamOn(leaver), 0);
   assert.equal(golem.staticState().b, 1);
 });
 

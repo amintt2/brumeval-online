@@ -21,6 +21,10 @@ import { has, isNum, normAngle, randInt, round4 } from './util.js';
 import { aoiOf } from './aoi.js'; // [netcode-perf]
 import { Security } from './security/index.js'; // [anticheat]
 import { handleMoveMsg } from './movement.js'; // [anticheat]
+// [combat-souls]
+import { handleDodge, handleSprint, updateStamina, trackMoveSpeed } from './systems/stamina.js';
+import { setupMonster } from './systems/ai/brain.js';
+import { updateEchoes, restoreEcho, removeEchoEntity } from './systems/echo.js';
 
 const TICK_MS = 1000 / TICK_RATE;
 const EVENT_R2 = (VIEW_RADIUS + AOI_EXIT_MARGIN) ** 2;
@@ -109,6 +113,7 @@ export class Game {
     const now = this.now();
     const m = new Monster(this.allocId(), zone.monster, level, zone, pt.x, pt.z, this.rng() * Math.PI * 2 - Math.PI, now);
     m.aiUntil = now + this.rng() * 5000;
+    setupMonster(this, m); // [combat-souls] variant, elite, temperament, seeded AI
     this.addEntity(m);
     this.broadcastNear(m.x, m.z, { t: S2C.FX, k: FX.RESPAWN, src: m.id });
     return m;
@@ -123,6 +128,7 @@ export class Game {
     p.dirty.clear();
     this.broadcastNear(p.x, p.z, { t: S2C.FX, k: FX.RESPAWN, src: p.id }, p);
     this.systemChat(`${p.name} a rejoint Brumeval.`, { except: p });
+    restoreEcho(this, p); // [combat-souls] persisted death echo
     account.lastSeen = Date.now();
     this.store?.markDirty();
     return p;
@@ -132,6 +138,7 @@ export class Game {
   removePlayer(p) {
     if (this.players.get(p.id) !== p) return;
     p.syncAccount();
+    removeEchoEntity(this, p); // [combat-souls]
     this.removeEntity(p);
     this.byName.delete(nameKey(p.name));
     for (const m of this.monsters.values()) {
@@ -258,6 +265,8 @@ export class Game {
     this.guard('combat', () => updateAutoAttacks(this, now));
     this.guard('regen', () => updateRegen(this, dt, now));
     this.guard('security', () => this.security?.tick(now)); // [anticheat]
+    this.guard('stamina', () => updateStamina(this, dt, now)); // [combat-souls]
+    this.guard('echo', () => updateEchoes(this, now)); // [combat-souls]
     if (this.tickCount % SNAPSHOT_EVERY === 0) this.guard('snapshot', () => sendSnapshots(this, now));
     for (const p of this.players.values()) this.guard('self', () => this.flushSelf(p));
     this.inTick = false; // [netcode-perf]
@@ -328,3 +337,6 @@ const HANDLERS = {
   [C2S.DROP]: handleDrop,
   [C2S.RESPAWN]: (g, p) => handleRespawn(g, p),
 };
+// [combat-souls]
+HANDLERS[C2S.DODGE] = handleDodge;
+HANDLERS[C2S.SPRINT] = handleSprint;

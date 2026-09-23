@@ -16,21 +16,21 @@ export const CLASSES = {
   warrior: {
     name: 'Guerrier', model: 'warrior', color: '#c0392b',
     desc: 'Combattant au corps à corps, robuste et redoutable.',
-    hp: 130, hpLvl: 18, mp: 40, mpLvl: 4, atk: 10, atkLvl: 2.2, def: 4, defLvl: 1.2, crit: 0.08, speed: 6.5,
+    hp: 130, hpLvl: 18, mp: 40, mpLvl: 4, atk: 11, atkLvl: 2.2, def: 4, defLvl: 1.2, crit: 0.08, speed: 6.5,
     abilities: ['strike', 'heavy_blow', 'whirlwind', 'war_cry'],
     start: { weapon: 'rusty_sword', armor: 'leather_tunic', items: [['potion_hp_s', 3]] },
   },
   mage: {
     name: 'Mage', model: 'mage', color: '#2e6fd8',
     desc: 'Maître des arcanes : sorts puissants à distance, mais fragile.',
-    hp: 85, hpLvl: 11, mp: 120, mpLvl: 12, atk: 11, atkLvl: 2.5, def: 2, defLvl: 0.7, crit: 0.1, speed: 6.3,
+    hp: 85, hpLvl: 11, mp: 95, mpLvl: 12, atk: 9, atkLvl: 2.7, def: 2, defLvl: 0.7, crit: 0.1, speed: 6.3,
     abilities: ['firebolt', 'fireball', 'frost_nova', 'heal'],
     start: { weapon: 'apprentice_staff', armor: 'leather_tunic', items: [['potion_hp_s', 2], ['potion_mp_s', 2]] },
   },
   ranger: {
     name: 'Rôdeur', model: 'ranger', color: '#2e9e4f',
     desc: 'Archer agile qui frappe de loin avec précision.',
-    hp: 100, hpLvl: 14, mp: 70, mpLvl: 7, atk: 10, atkLvl: 2.3, def: 3, defLvl: 0.9, crit: 0.15, speed: 6.8,
+    hp: 100, hpLvl: 14, mp: 80, mpLvl: 7, atk: 10, atkLvl: 2.3, def: 3, defLvl: 0.9, crit: 0.15, speed: 6.8,
     abilities: ['shot', 'piercing_shot', 'arrow_rain', 'rapid_fire'],
     start: { weapon: 'short_bow', armor: 'leather_tunic', items: [['potion_hp_s', 3]] },
   },
@@ -41,21 +41,43 @@ export const CLASSES = {
 // slot 0 of every class is the auto-attack (auto: true).
 // power = multiplier on attacker atk. range/radius in metres. cd in seconds.
 export const ABILITIES = {
-  strike: { name: 'Frappe', kind: 'melee', auto: true, range: 2.8, cd: 1.4, mp: 0, power: 1.0, desc: 'Attaque de base au corps à corps.' },
-  heavy_blow: { name: 'Coup puissant', kind: 'melee', range: 2.8, cd: 6, mp: 12, power: 2.3, desc: 'Un coup dévastateur infligeant de lourds dégâts.' },
-  whirlwind: { name: 'Tourbillon', kind: 'aoe_self', radius: 4.5, cd: 10, mp: 20, power: 1.4, desc: 'Frappe tous les ennemis proches.' },
+  strike: { name: 'Frappe', kind: 'melee', auto: true, range: 2.8, cd: 1.3, mp: 0, power: 1.2, desc: 'Attaque de base au corps à corps.' },
+  heavy_blow: { name: 'Coup puissant', kind: 'melee', range: 2.8, cd: 6, mp: 12, power: 2.8, desc: 'Un coup dévastateur infligeant de lourds dégâts.' },
+  whirlwind: { name: 'Tourbillon', kind: 'aoe_self', radius: 4.5, cd: 10, mp: 20, power: 1.7, desc: 'Frappe tous les ennemis proches.' },
   war_cry: { name: 'Cri de guerre', kind: 'self_heal', cd: 25, mp: 15, heal: 0.3, desc: 'Récupère 30 % de vos points de vie.' },
 
-  firebolt: { name: 'Trait de feu', kind: 'projectile', auto: true, range: 18, cd: 1.6, mp: 0, power: 0.95, speed: 22, desc: 'Projectile de feu de base.' },
-  fireball: { name: 'Boule de feu', kind: 'projectile', range: 18, cd: 5, mp: 18, power: 2.5, speed: 16, desc: 'Une boule de feu explosive.' },
+  firebolt: { name: 'Trait de feu', kind: 'projectile', auto: true, range: 18, cd: 1.6, mp: 0, power: 0.8, speed: 22, desc: 'Projectile de feu de base.' },
+  fireball: { name: 'Boule de feu', kind: 'projectile', range: 18, cd: 6, mp: 20, power: 2.0, speed: 16, desc: 'Une boule de feu explosive.' },
   frost_nova: { name: 'Nova de givre', kind: 'aoe_self', radius: 6, cd: 12, mp: 25, power: 1.1, slow: { pct: 0.5, dur: 3 }, desc: 'Gèle les ennemis proches et les ralentit de 50 %.' },
   heal: { name: 'Soin', kind: 'self_heal', cd: 8, mp: 20, heal: 0.35, desc: 'Restaure 35 % de vos points de vie.' },
 
-  shot: { name: 'Tir', kind: 'projectile', auto: true, range: 20, cd: 1.3, mp: 0, power: 0.95, speed: 34, desc: 'Tir à l\'arc de base.' },
-  piercing_shot: { name: 'Tir perçant', kind: 'projectile', range: 22, cd: 6, mp: 12, power: 2.1, speed: 40, desc: 'Une flèche qui transperce les armures.' },
+  shot: { name: 'Tir', kind: 'projectile', auto: true, range: 20, cd: 1.3, mp: 0, power: 0.85, speed: 34, desc: 'Tir à l\'arc de base.' },
+  piercing_shot: { name: 'Tir perçant', kind: 'projectile', range: 22, cd: 6, mp: 12, power: 1.9, speed: 40, desc: 'Une flèche qui transperce les armures.' },
   arrow_rain: { name: 'Pluie de flèches', kind: 'aoe_target', range: 20, radius: 5, cd: 12, mp: 22, power: 1.25, desc: 'Une pluie de flèches sur la zone ciblée.' },
   rapid_fire: { name: 'Tir rapide', kind: 'projectile', range: 20, cd: 9, mp: 15, power: 0.8, hits: 3, speed: 34, desc: 'Trois flèches en succession rapide.' },
 };
+
+// [combat-souls] Soulslike tuning of the abilities (see docs/EQUILIBRAGE.md):
+//   st      = stamina cost (the ability is refused below it)
+//   rec     = recovery in seconds after the cast, during which the caster moves at recSlow × speed
+//             (attack commitment: no more free kiting)
+//   recSlow = speed factor during the recovery
+//   poise   = poise damage dealt to monsters (enough of it within POISE.windowMs staggers them)
+const ABILITY_SOULS = {
+  strike: { st: 5, rec: 0.25, recSlow: 0.5, poise: 12 },
+  heavy_blow: { st: 16, rec: 0.5, recSlow: 0.3, poise: 42 },
+  whirlwind: { st: 18, rec: 0.55, recSlow: 0.35, poise: 24 },
+  war_cry: { st: 0, rec: 0.4, recSlow: 0.5, poise: 0 },
+  firebolt: { st: 7, rec: 0.35, recSlow: 0.3, poise: 3 },
+  fireball: { st: 14, rec: 0.6, recSlow: 0.25, poise: 16 },
+  frost_nova: { st: 16, rec: 0.45, recSlow: 0.3, poise: 10 },
+  heal: { st: 0, rec: 0.6, recSlow: 0.3, poise: 0 },
+  shot: { st: 7, rec: 0.35, recSlow: 0.3, poise: 3 },
+  piercing_shot: { st: 14, rec: 0.55, recSlow: 0.25, poise: 14 },
+  arrow_rain: { st: 16, rec: 0.5, recSlow: 0.3, poise: 8 },
+  rapid_fire: { st: 14, rec: 0.6, recSlow: 0.3, poise: 3 },
+};
+for (const [id, v] of Object.entries(ABILITY_SOULS)) Object.assign(ABILITIES[id], v);
 
 // ------------------------------------------------------------------ monsters
 // level: [min, max]; stats grow per level above 1. aggro/leash/range in metres. respawn in seconds.
@@ -87,12 +109,110 @@ export const MONSTERS = {
   },
   golem: {
     name: 'Golem ancien', model: 'golem', level: [14, 14], radius: 1.4, scale: 1, boss: true,
-    hp: 2600, hpLvl: 0, atk: 42, atkLvl: 0, def: 20, defLvl: 0, speed: 3.6,
+    hp: 3000, hpLvl: 0, atk: 46, atkLvl: 0, def: 20, defLvl: 0, speed: 3.6,
     aggro: 14, range: 3.4, atkCd: 2.2, leash: 30, xp: 1500, xpLvl: 0, respawn: 180, gold: [120, 220],
-    slam: { radius: 6, cd: 9, power: 1.6 },   // periodic area attack around the golem
     drops: [{ id: 'golem_core', ch: 1 }, { id: 'runeblade', ch: 0.25 }, { id: 'ember_staff', ch: 0.25 }, { id: 'elven_bow', ch: 0.25 }, { id: 'golem_plate', ch: 0.2 }],
   },
 };
+
+// [combat-souls] Monster AI (server/src/systems/ai/): archetype, attacks and variants.
+//   arch: 'brute' | 'rusher' | 'skirmisher' | 'ranged' | 'caster' | 'pack' | 'boss' | 'hopper'
+//   poise: poise damage that staggers the monster · notice: [min, max] ms of the alert phase (facing the player)
+//   run: speed multiplier while closing a gap (Run clip) · pref: [min, max] preferred distance to the target
+//   flee: hp fraction under which cautious individuals run away for a while · pack: howl calls allies
+//   guard: { reduce, arc } frontal damage reduction while not attacking
+//   attacks[]: id, kind ('melee' | 'tele' | 'proj' | 'howl' | 'heal'), min/max distance to pick it, cd (s),
+//     w (base weight), power (× atk), windup (ms until impact), rec (ms of recovery after — punish window),
+//     tele: shape ('circle' | 'cone' | 'line' | 'ring'), at ('self' | 'target' | 'front'), r, r2, arc, len, wid,
+//           dash (charge to the end of the line), leap (land on the circle), count (several at once)
+//     proj: speed (m/s), hitR (radius at the landing point), lead (0..1 aim ahead of a moving target)
+//     clip: animation played on the attacker (synced by the client), phase: minimum boss phase, next: combo
+//   variants[]: { key, ch (chance), name?, hp?, atk?, speed? (multipliers), ai (overrides) } — same model.
+export const ELITE = { ch: 0.05, hp: 1.8, atk: 1.3, xp: 1.5, gold: 2, drops: 2, prefix: 'Élite' };
+const MONSTER_AI = {
+  slime: {
+    ai: {
+      arch: 'hopper', poise: 16, notice: [300, 700], run: 1.1, pref: [0, 1.6], flee: 0,
+      attacks: [
+        { id: 'slime_hit', kind: 'melee', max: 1.8, cd: 1.8, w: 3, power: 1, windup: 420, rec: 350 },
+        { id: 'slime_slam', kind: 'tele', shape: 'circle', at: 'target', r: 2.2, min: 2.2, max: 6, cd: 7, w: 2, power: 1.35, windup: 950, rec: 700, leap: true, clip: 'Attack2' },
+      ],
+    },
+  },
+  wolf: {
+    speed: 5.8,
+    ai: {
+      arch: 'rusher', pack: true, poise: 24, notice: [150, 450], run: 1.3, pref: [0, 2], flee: 0.18,
+      attacks: [
+        { id: 'wolf_bite', kind: 'melee', max: 2.0, cd: 1.5, w: 3, power: 1, windup: 330, rec: 300 },
+        { id: 'wolf_lunge', kind: 'tele', shape: 'line', at: 'front', len: 7.5, wid: 1.6, min: 3.2, max: 7.5, cd: 5.5, w: 2.2, power: 1.45, windup: 700, rec: 650, dash: true, clip: 'Attack2' },
+        { id: 'wolf_howl', kind: 'howl', r: 22, min: 0, max: 30, cd: 30, w: 4, windup: 900, once: true, clip: 'Attack2' },
+      ],
+    },
+  },
+  goblin: {
+    ai: {
+      arch: 'skirmisher', poise: 28, notice: [200, 550], run: 1.2, pref: [1.5, 3.5], flee: 0.2,
+      attacks: [
+        { id: 'goblin_slash', kind: 'melee', max: 2.2, cd: 1.4, w: 3, power: 1, windup: 340, rec: 280 },
+        { id: 'goblin_leap', kind: 'tele', shape: 'cone', at: 'front', r: 3.6, arc: 1.6, min: 1.5, max: 4.5, cd: 6, w: 1.6, power: 1.5, windup: 750, rec: 600, clip: 'Attack2' },
+      ],
+    },
+    variants: [
+      { key: 'skirmisher', ch: 0.6 },
+      {
+        key: 'thrower', ch: 0.4, name: 'Gobelin lanceur', hp: 0.8, atk: 0.95,
+        ai: {
+          arch: 'ranged', pref: [8, 14], flee: 0.25, run: 1.1,
+          attacks: [
+            { id: 'goblin_spear', kind: 'proj', min: 4, max: 17, cd: 2.4, w: 3, power: 1.1, windup: 520, rec: 350, speed: 17, hitR: 0.95, lead: 0.35, clip: 'Shoot' },
+            { id: 'goblin_stab', kind: 'melee', max: 2.0, cd: 1.6, w: 1, power: 0.8, windup: 360, rec: 300 },
+          ],
+        },
+      },
+    ],
+  },
+  skeleton: {
+    speed: 4.2,
+    ai: {
+      arch: 'brute', poise: 44, notice: [300, 700], run: 1.15, pref: [0, 2.2], flee: 0,
+      guard: { reduce: 0.4, arc: 2.0 },
+      attacks: [
+        { id: 'skel_swing', kind: 'melee', max: 2.3, cd: 1.9, w: 3, power: 1, windup: 450, rec: 400 },
+        { id: 'skel_overhead', kind: 'tele', shape: 'cone', at: 'front', r: 3.8, arc: 1.2, min: 0, max: 3.6, cd: 5.5, w: 2, power: 2.0, windup: 1000, rec: 900, clip: 'Attack2' },
+      ],
+    },
+    variants: [
+      { key: 'brute', ch: 0.8 },
+      {
+        key: 'occultist', ch: 0.2, name: 'Squelette occultiste', hp: 0.75, atk: 0.9,
+        ai: {
+          arch: 'caster', pref: [7, 12], guard: null, flee: 0, poise: 30,
+          attacks: [
+            { id: 'skel_curse', kind: 'tele', shape: 'circle', at: 'target', r: 2.6, min: 3, max: 16, cd: 4.5, w: 3, power: 1.3, windup: 1150, rec: 500, clip: 'Attack2' },
+            { id: 'skel_mend', kind: 'heal', min: 0, max: 30, cd: 9, w: 5, heal: 0.2, r: 14, windup: 700, rec: 300 },
+            { id: 'skel_swing', kind: 'melee', max: 2.1, cd: 2.0, w: 1, power: 0.8, windup: 450, rec: 400 },
+          ],
+        },
+      },
+    ],
+  },
+  golem: {
+    ai: {
+      arch: 'boss', poise: 150, notice: [500, 500], run: 1, pref: [0, 3.2], flee: 0, leash: 26,
+      phases: [0.66, 0.3],
+      attacks: [
+        { id: 'golem_punch', kind: 'melee', max: 3.4, cd: 2.2, w: 3, power: 1, windup: 600, rec: 500 },
+        { id: 'golem_slam', kind: 'tele', shape: 'circle', at: 'self', r: 5.5, min: 0, max: 5, cd: 8, w: 2.2, power: 1.6, windup: 1100, rec: 900, clip: 'Attack2' },
+        { id: 'golem_stomp', kind: 'tele', shape: 'ring', at: 'self', r: 10, r2: 4.2, min: 3.5, max: 10, cd: 10, w: 2, power: 1.4, windup: 1250, rec: 800, clip: 'Attack2' },
+        { id: 'golem_rock', kind: 'tele', shape: 'line', at: 'front', len: 20, wid: 2.4, min: 6, max: 22, cd: 6, w: 2.6, power: 1.35, windup: 1300, rec: 600, phase: 2, count: 2, clip: 'Attack2' },
+        { id: 'golem_sweep', kind: 'tele', shape: 'cone', at: 'front', r: 6.5, arc: 2.3, min: 0, max: 6, cd: 7, w: 1.8, power: 1.3, windup: 900, rec: 700, phase: 2, clip: 'Attack2' },
+        { id: 'golem_quake', kind: 'tele', shape: 'circle', at: 'self', r: 6.5, min: 0, max: 9, cd: 12, w: 2.5, power: 1.7, windup: 1000, rec: 300, phase: 3, next: 'golem_stomp', clip: 'Special' },
+      ],
+    },
+  },
+};
+for (const [type, v] of Object.entries(MONSTER_AI)) Object.assign(MONSTERS[type], v);
 
 // ------------------------------------------------------------------ items
 // type: 'consumable' | 'weapon' | 'armor' | 'junk'. icon = /icons/<icon>.png. price = buy price, sell = sell price.

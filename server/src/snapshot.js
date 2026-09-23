@@ -148,6 +148,7 @@ export function sendSnapshots(game, now) {
     aoi.query(p.x, p.z, R_OUT, buf, 'all');
     for (let bi = 0; bi < buf.length; bi++) {
       const e = buf[bi];
+      if (e.ownerId && e.ownerId !== p.id) continue; // [combat-souls] death echoes: owner only
       let k = known.get(e.id);
       if (e !== p) {
         const dx = e.x - p.x, dz = e.z - p.z;

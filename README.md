@@ -59,9 +59,16 @@ cimetière. Tout le texte du jeu est en français.
   - **Mage** : Trait de feu, Boule de feu, Nova de givre (ralentit), Soin.
   - **Rôdeur** : Tir, Tir perçant, Pluie de flèches (zone ciblée), Tir rapide (3 flèches).
 - Ciblage au clic ou avec Tab, projectiles avec temps de vol, effets de zone, coups critiques, ralentissement.
-- Monstres avec IA : errance, agression, poursuite, attaque, retour au bercail (*leash*), réapparition.
+- **Combat soulslike** : endurance, roulade d'esquive avec invulnérabilité, sprint, engagement des attaques
+  (on ralentit brièvement après chaque capacité), attaques ennemies **télégraphiées** au sol (cercle, cône,
+  ligne, anneau) et projectiles esquivables, déséquilibre des monstres, **écho de mort** (l'XP du niveau reste
+  sur place, à récupérer avant de mourir à nouveau). Voir `docs/EQUILIBRAGE.md`.
+- Monstres avec IA variée : archétypes (brute, fonceur, escarmoucheur, tireur, lanceur de sorts, meute, boss),
+  tempérament propre à chaque individu, phase d'alerte, feintes et pauses, contournement, fuite et regroupement,
+  retour au bercail (*leash*). Variantes (gobelin lanceur, squelette occultiste) et **élites** (5 %).
   Menace : le monstre s'en prend à celui qui lui inflige le plus de dégâts.
-- Boss : le **Golem ancien** frappe périodiquement le sol autour de lui.
+- Boss : le **Golem ancien**, trois phases (écrasement et onde de choc → jets de rochers → rage), grande barre
+  de vie.
 - Aucun combat dans le village, pas de JcJ.
 
 **Progression**
@@ -173,6 +180,8 @@ Mesures de charge : [docs/PERFORMANCES.md](docs/PERFORMANCES.md) (`node tests/lo
 | Clic gauche + clic droit maintenus | Courir tout droit |
 | Molette | Zoomer / dézoomer (3 à 28 m) |
 | **Tab** | Cibler l'ennemi suivant devant vous |
+| **Espace** | Roulade d'esquive (direction du déplacement, sinon en arrière) — 30 d'endurance |
+| **Maj** (maintenue) | Sprinter (consomme de l'endurance) |
 | **Échap** | Fermer la fenêtre du dessus, sinon annuler la cible |
 | **1** | Attaque automatique de la classe |
 | **2 3 4** | Capacités |
@@ -300,13 +309,15 @@ Le serveur de développement redémarre tout seul quand `shared/` change.
 ### Un nouveau monstre
 
 1. **Données** : ajoutez une entrée dans `MONSTERS` (`shared/data.js`) : nom français, `model` (clé du GLB),
-   plage de niveaux, statistiques, portée d'agression, vitesse, XP, or et table de butin.
+   plage de niveaux, statistiques, portée d'agression, vitesse, XP, or et table de butin. Son comportement
+   se décrit dans `MONSTERS[clé].ai` (archétype, attaques avec temps de préparation, télégraphes, projectiles —
+   voir le bloc `MONSTER_AI`) et d'éventuelles `variants` ; relancez ensuite `node tests/balance/sim.mjs`.
 2. **Apparition** : ajoutez une zone dans `SPAWN_ZONES` (`shared/world.js`), et éventuellement une région
    nommée dans `REGIONS` pour la bannière de zone et la minicarte.
 3. **Modèle** : écrivez une fonction de construction dans `assets/blender/characters/` (humanoïde : réutilisez
    le squelette de `humanoid.py` et déclarez-la dans `BUILDERS` de `build.py`) ou un module dans
    `assets/blender/creatures/` (ajoutez sa clé à `KEYS`). Animations attendues : `Idle`, `Walk`, `Attack`,
-   `Hit`, `Death` à 24 images/s. Puis `npm run assets -- creatures --only <clé>`.
+   `Hit`, `Death` (+ `Attack2`, `Run`, et `Shoot` / `Special` selon le rôle) à 24 images/s. Puis `npm run assets -- creatures --only <clé>`.
 4. **Libellé de quête** (facultatif) : ajoutez le texte de progression dans `KILL_LABELS`
    (`server/src/quests.js`), par exemple « Araignées éliminées ».
 

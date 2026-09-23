@@ -20,6 +20,7 @@ import { createInventoryPanel } from './panels/inventory.js';
 import { createCharacterPanel } from './panels/character.js';
 import { createQuestPanel } from './panels/quests.js';
 import { createHelpPanel } from './panels/help.js';
+import { createStaminaBar, createBossBar, createCombatOverlay } from './combat-hud.js'; // [combat-souls]
 
 const NOTIFY_KINDS = new Set(['info', 'error', 'xp', 'loot', 'quest', 'level', 'gold']);
 const FONTS_URL = 'https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700;800&display=swap';
@@ -82,6 +83,10 @@ export function createUI(root, handlers = {}) {
   hud.appendChild(unitframes);
   const playerFrame = createPlayerFrame(unitframes, tooltip);
   const targetFrame = createTargetFrame(unitframes);
+  // [combat-souls] stamina bar, boss bar, low-hp vignette / damage direction
+  const stamina = createStaminaBar(unitframes.querySelector('.bv-uf-player .bv-uf-main'));
+  const bossBar = createBossBar(hud);
+  const combatOverlay = createCombatOverlay(fxLayer);
   const minimapCol = h('div', { class: 'bv-rightcol' });
   hud.appendChild(minimapCol);
   const minimap = createMinimap(minimapCol, tooltip);
@@ -216,6 +221,7 @@ export function createUI(root, handlers = {}) {
       prevLevel = s.level;
       self = s;
       playerFrame.update(s);
+      combatOverlay.setHp(s.hp, s.mhp, s.dead); // [combat-souls]
       targetFrame.setSelfLevel(s.level);
       xpbar.update(s);
       actionbar.update(s);
@@ -267,6 +273,11 @@ export function createUI(root, handlers = {}) {
     updateMinimap(d) {
       minimap.update(d);
     },
+    // [combat-souls]
+    setStamina(st, mst) { stamina.set(Math.round(st * 2) / 2, mst); },
+    staminaEmpty() { stamina.flashEmpty(); },
+    setBoss(d) { bossBar.set(d && typeof d === 'object' ? d : null); },
+    damageTaken(angle, heavy) { combatOverlay.hit(angle, !!heavy); },
     setStatus(s) {
       minimap.setStatus(s);
     },

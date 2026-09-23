@@ -15,6 +15,10 @@ const CONTROLS = [
   [['5'], 'Boire une potion de soin'],
   [['6'], 'Boire une potion de mana'],
 ];
+// [combat-souls]
+CONTROLS.splice(1, 0,
+  [['Espace'], 'Roulade d\'esquive (invulnérable un instant, coûte de l\'endurance)'],
+  [['Maj'], 'Maintenir : sprinter (consomme de l\'endurance)']);
 const WINDOWS = [
   [['I'], 'Sac'],
   [['C'], 'Personnage'],
@@ -35,6 +39,12 @@ const TIPS = [
   'Un point d\'exclamation doré au-dessus de l\'Ancien Aldric signale une nouvelle quête.',
   'Le butin va directement dans votre sac : vendez-le à Marchande Élise.',
 ];
+// [combat-souls]
+TIPS.push(
+  'Les zones rouges au sol annoncent une attaque : sortez-en ou roulez au travers au dernier moment.',
+  'Chaque attaque vous engage : vous ralentissez un court instant après avoir frappé ou tiré.',
+  'En mourant, vous laissez un écho contenant l\'expérience du niveau en cours. Retrouvez-le avant de mourir à nouveau !',
+  'Les coups puissants déséquilibrent les monstres et interrompent leurs attaques.');
 
 export function createHelpPanel(wm, { onToggle }) {
   const win = wm.add(createWindow({

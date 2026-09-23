@@ -139,6 +139,17 @@ export class Audio {
       case 'error': this._tone('square', 180, 140, 0.12, 0.08, out); break;
       case 'loot': this._tone('triangle', 1200 * r, 1600, 0.12, 0.12, out); this._tone('triangle', 1600 * r, 2000, 0.12, 0.1, out, 0.07); break;
       case 'quest': [659, 784, 988].forEach((f, i) => this._tone('triangle', f, f, 0.35, 0.13, out, i * 0.1)); break;
+      // [combat-souls]
+      case 'roll': this._noise('bandpass', 500 * r, 1500, 0.3, 0.35, out, 0, 1.2, 0.04); this._noise('lowpass', 600, 120, 0.2, 0.25, out, 0.28); break;
+      case 'dodge': this._noise('highpass', 2500 * r, 5000, 0.22, 0.25, out, 0, 1, 0.02); break;
+      case 'stagger': this._tone('square', 420 * r, 180, 0.2, 0.14, out); this._noise('bandpass', 2200, 800, 0.25, 0.4, out, 0, 2); break;
+      case 'guard': this._tone('triangle', 1500 * r, 1200, 0.12, 0.15, out); this._tone('square', 900 * r, 700, 0.08, 0.06, out); break;
+      case 'howl': this._tone('sawtooth', 380 * r, 620, 0.5, 0.1, out, 0, 0.12); this._tone('sine', 620 * r, 300, 0.9, 0.12, out, 0.45, 0.05); break;
+      case 'roar': this._tone('sawtooth', 110 * r, 55, 1.4, 0.35, out, 0, 0.1); this._noise('lowpass', 700, 90, 1.5, 0.8, out, 0, 1, 0.1); break;
+      case 'tele': this._tone('sine', 190 * r, 150, 0.35, 0.12, out, 0, 0.05); break;
+      case 'notice': this._tone('triangle', 700 * r, 950, 0.1, 0.1, out); break;
+      case 'spear': this._noise('bandpass', 1400 * r, 600, 0.22, 0.3, out, 0, 2); break;
+      case 'echo': [880, 1175, 1568, 2093].forEach((f, i) => this._tone('sine', f * r, f * r, 0.7, 0.1, out, i * 0.08, 0.02)); break;
       default: break;
     }
   }

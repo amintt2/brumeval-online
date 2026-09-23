@@ -20,6 +20,8 @@ export const CORPSE_TIME_S = 4;         // dead monsters stay visible this long 
 
 /** Entity kinds (`k`). */
 export const KIND = { PLAYER: 'player', MONSTER: 'monster', NPC: 'npc' };
+// [combat-souls] death echo entity (only ever sent to its owner)
+KIND.ECHO = 'echo';
 /** Entity states (`s`). */
 export const STATE = { IDLE: 0, MOVE: 1, DEAD: 2 };
 
@@ -44,6 +46,9 @@ export const C2S = {
   RESPAWN: 'respawn',         // {}  only while dead
   PING: 'ping',               // { c: clientTimeMs }                -> pong
 };
+// [combat-souls] stamina actions (shared/combat.js holds the tuning)
+C2S.DODGE = 'dodge';          // { dx, dz }  unit direction of a dodge roll (costs STAMINA.roll, i-frames, burst)
+C2S.SPRINT = 'sprint';        // { on: boolean }  speed × STAMINA.sprintMult while stamina lasts
 
 // ------------------------------------------------------------------ server -> client
 export const S2C = {
@@ -69,6 +74,12 @@ export const S2C = {
   PONG: 'pong',         // { c, s }  c = echoed client time, s = server time
   KICK: 'kick',         // { msg }  server closes the socket right after
 };
+// [combat-souls] telegraphed attacks
+S2C.TELE = 'tele';         // { id, src, shape: 'circle'|'cone'|'line'|'ring', x, z, r, r2?, a, arc?, w?, len?, ms, ab?, clip? }
+                           //   ground indicator of an attack landing after `ms`; resolved at impact against the
+                           //   positions of the targets then (players in i-frames are unaffected).
+                           //   ab = attack id (visual style), clip = animation to play on src, synced to the impact.
+S2C.TELE_END = 'tele_end'; // { id }  telegraph cancelled (attacker died / staggered)
 
 /** FX kinds (`fx.k`). Pure visuals: the client plays animations / particles. */
 export const FX = {
@@ -81,6 +92,17 @@ export const FX = {
   HIT: 'hit',           // { tg }                (optional) generic hit flash
   RESPAWN: 'respawn',   // { src }               entity appeared / respawned
 };
+// [combat-souls]
+FX.ROLL = 'roll';         // { src, dx, dz }        dodge roll (play Roll on src)
+FX.DODGE = 'dodge';       // { tg }                 an attack was negated by i-frames ("Esquive")
+FX.STAGGER = 'stagger';   // { src, ms }            monster poise broken (play Hit, telegraph cancelled)
+FX.PHASE = 'phase';       // { src, ph }            boss enters phase ph (2, 3…): play Special, roar
+FX.HOWL = 'howl';         // { src, r }             pack call: nearby allies join the fight
+FX.GUARD = 'guard';       // { src, tg }            frontal guard absorbed part of a hit
+FX.ECHO = 'echo';         // { src, v }             death echo recovered by its owner (v = XP)
+FX.NOTICE = 'notice';     // { src }                a monster noticed a player ("!" above its head)
+// Monster projectiles use FX.PROJ without `tg`: { src, x, z, ab, ms } flies to the ground point (x, z) and is
+// resolved there at arrival (dodgeable).
 
 /**
  * EntState (inside snap.ents). Always present: id, x, z, ry, hp, mhp, s.
@@ -105,6 +127,8 @@ export const FX = {
  *     quests: { [questId]: { state: 'active'|'ready'|'done', n } },
  *     abilities: [abilityId, abilityId, abilityId, abilityId],
  *     x, z, ry, dead: boolean }
+ *   [combat-souls] + st (stamina), mst (max stamina, 100), echo: { x, z, xp } | null (own death echo)
+ * [combat-souls] EntState (monsters) may carry static `el` (1 = elite) and `vr` (variant key, e.g. 'thrower').
  */
 
 export const encode = (msg) => JSON.stringify(msg);

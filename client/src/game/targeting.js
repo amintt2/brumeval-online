@@ -154,6 +154,13 @@ export class Targeting {
       return;
     }
     if ((ab.mp || 0) > (self.mp ?? 0)) { notify('Pas assez de mana.', 'error'); return; }
+    // [combat-souls] no attack in the middle of a roll; stamina (the server has the final word)
+    if (player.rolling) return;
+    if ((ab.st || 0) > player.st + 2) {
+      notify('Pas assez d\'endurance.', 'error');
+      this.ctx.ui.staminaEmpty?.();
+      return;
+    }
     if (inVillage(player.x, player.z)) {
       notify('Le combat est interdit dans le village.', 'error');
       return;
@@ -170,6 +177,7 @@ export class Targeting {
         if (this._dist(t) > ab.range + 0.5) { notify('Cible hors de portée.', 'error'); return; }
         player.faceTowards(t.x, t.z);
         send({ t: C2S.ABILITY, slot, tg: t.id });
+        if (slot !== 0) this._commit(ab, now); // [combat-souls] (slot 0: on the server's `cd`)
         break;
       }
       case 'aoe_target': {
@@ -183,12 +191,21 @@ export class Targeting {
         const msg = { t: C2S.ABILITY, slot, x: round2(x), z: round2(z) };
         if (t) msg.tg = t.id;
         send(msg);
+        this._commit(ab, now); // [combat-souls]
         break;
       }
       default:
         send({ t: C2S.ABILITY, slot });
+        this._commit(ab, now); // [combat-souls]
         break;
     }
+  }
+
+  /** [combat-souls] Predict the attack commitment (recovery slow) and stamina cost of a cast. */
+  _commit(ab, now) {
+    const p = this.ctx.player;
+    p.commit(ab, now);
+    p.spend(ab.st || 0, now);
   }
 
   /** 5 = best healing potion, 6 = mana potion. */

@@ -24,7 +24,11 @@ const AB = {
   piercing_shot: { color: col('#8fe4ff'), proj: 'arrow', glow: true },
   arrow_rain: { color: col('#ffd870') },
   rapid_fire: { color: col('#ffd27a'), proj: 'arrow' },
+  // [combat-souls] monster projectiles
+  goblin_spear: { color: col('#d8c9a0'), proj: 'arrow', scale: 1.9 },
 };
+// [combat-souls] player abilities that hit hard enough for a hitstop
+const HEAVY_AB = new Set(['heavy_blow', 'fireball', 'piercing_shot', 'whirlwind']);
 const C_WHITE = col('#ffffff'), C_SPARK = col('#ffe7b0'), C_FIRE = col('#ff7a1a'), C_FIRE2 = col('#ffd35a');
 const C_SMOKE = col('#3a3530'), C_DUST = col('#9c8a6e'), C_FROST = col('#9fe0ff'), C_FROST2 = col('#e8f8ff');
 const C_GOLD = col('#ffd45a'), C_GOLD2 = col('#fff2b0'), C_HEAL = col('#6dff8a'), C_HEAL2 = col('#d8ffb0');
@@ -321,6 +325,7 @@ export class Effects {
     // campfire-ish ambient emitters (embers) registered by the world
     this.emitters = [];
     this.time = 0;
+    this.hitstopUntil = 0; // [combat-souls]
     this._v = new THREE.Vector3();
     this._v2 = new THREE.Vector3();
     this._v3 = new THREE.Vector3();
@@ -462,7 +467,10 @@ export class Effects {
     const p = this._v;
     switch (m.k) {
       case FX.SWING: {
-        E.playAnim(m.src, 'Attack');
+        // [combat-souls] monster swings carry their wind-up (ms): the strike of the clip lands with the hit
+        const sv = E.get(m.src);
+        const ts = m.ms && sv ? (0.45 * sv.animator.clipDuration('Attack')) / (m.ms / 1000) : 1;
+        E.playAnim(m.src, 'Attack', { timeScale: ts });
         const ab = AB[m.ab];
         if (ab && ab.slash) {
           this._arc(m.src, ab.color, ab.slash, false, 1, m.ab === 'heavy_blow' ? 0.34 : 0.26);
@@ -474,6 +482,7 @@ export class Effects {
         break;
       }
       case FX.CAST: {
+        if (this._monsterCast(m)) break; // [combat-souls]
         const ab = ABILITIES[m.ab];
         const isBow = m.ab === 'shot' || m.ab === 'piercing_shot' || m.ab === 'rapid_fire' || m.ab === 'arrow_rain';
         const played = E.playAnim(m.src, 'Cast');
@@ -535,6 +544,122 @@ export class Effects {
         break;
       }
       default:
+        this._soulsFx(m); // [combat-souls]
+        break;
+    }
+  }
+
+  // ---------------------------------------------------------------- [combat-souls]
+  /** Monster casts / throws (goblin spear, occultist heal…). Returns true when handled. */
+  _monsterCast(m) {
+    const v = this.ctx.entities.get(m.src);
+    if (!v || v.rec.k !== KIND.MONSTER) return false;
+    const a = v.animator;
+    const clip = a.has('Shoot') ? 'Shoot' : a.has('Cast') ? 'Cast' : 'Attack';
+    const ts = m.ms ? (0.55 * a.clipDuration(clip)) / (m.ms / 1000) : 1;
+    a.play(clip, { timeScale: ts });
+    const p = this._v;
+    if (m.ab === 'skel_mend' && this.point(m.src, 0.6, p)) {
+      this._burst(this.glow, p, col('#b27dff'), 18, 1.5, 0.3, 0.8, -1, 1.5, 0.5);
+    }
+    return true;
+  }
+
+  /** Brief freeze of the animations on heavy hits. */
+  hitstop(ms) {
+    this.hitstopUntil = Math.max(this.hitstopUntil, performance.now() + ms);
+  }
+
+  /** Animation time scale (almost 0 during a hitstop). */
+  timeScale(now = performance.now()) {
+    return now < this.hitstopUntil ? 0.06 : 1;
+  }
+
+  _text(id, text, cls, h = 0.3) {
+    const v = this.ctx.entities.get(id);
+    if (v) this.ctx.labels.spawnText(text, this._v2.set(v.rec.x, v.topY + h, v.rec.z), cls);
+  }
+
+  _soulsFx(m) {
+    const E = this.ctx.entities;
+    const p = this._v;
+    switch (m.k) {
+      case FX.ROLL: {
+        const v = E.get(m.src);
+        if (!v) break;
+        if (!v.rec.isSelf) v.animator.play('Roll');
+        if (this.point(m.src, 0.05, p)) {
+          for (let i = 0; i < 10; i++) {
+            const a = Math.random() * Math.PI * 2;
+            this.smoke.emit(p.x, p.y + 0.1, p.z, Math.cos(a) * 1.2 - (m.dx || 0) * 1.5, 0.4, Math.sin(a) * 1.2 - (m.dz || 0) * 1.5, C_DUST, 0.5, 0.7, 0, 2, 1.1, 0.45);
+          }
+          this._sound('roll', p);
+        }
+        break;
+      }
+      case FX.DODGE:
+        this._text(m.tg, 'Esquive', 'dodge');
+        if (this.point(m.tg, 0.5, p)) {
+          this._burst(this.glow, p, C_FROST2, 10, 2.5, 0.25, 0.35, 0, 2);
+          this._sound('dodge', p);
+        }
+        break;
+      case FX.STAGGER:
+        E.playAnim(m.src, 'Hit', { force: true });
+        E.flash(m.src, 1);
+        this._text(m.src, 'Déséquilibré !', 'stagger', 0.5);
+        if (this.point(m.src, 0.7, p)) {
+          this._burst(this.spark, p, C_GOLD, 16, 5, 0.22, 0.45, 6);
+          this._sound('stagger', p);
+        }
+        break;
+      case FX.GUARD:
+        if (this.point(m.src, 0.6, p)) {
+          this._burst(this.spark, p, C_WHITE, 8, 4, 0.16, 0.25, 6);
+          this._sound('guard', p);
+        }
+        this._text(m.src, 'Paré', 'guard', 0.1);
+        break;
+      case FX.NOTICE:
+        this._text(m.src, '!', 'notice', 0.15);
+        if (this.point(m.src, 1, p)) this._sound('notice', p);
+        break;
+      case FX.HOWL: {
+        const v = E.get(m.src);
+        if (!v) break;
+        const clip = v.animator.has('Special') ? 'Special' : 'Attack2';
+        const ts = m.ms ? (0.55 * v.animator.clipDuration(clip)) / (m.ms / 1000) : 1;
+        v.animator.play(clip, { timeScale: ts });
+        if (this.point(m.src, 0.8, p)) {
+          this._decal(v.rec.x, v.rec.z, Math.min(8, m.r || 8), col('#c8b8ff'), STYLE.ring, 1.2, 0.5);
+          this._sound('howl', p);
+        }
+        break;
+      }
+      case FX.PHASE: {
+        const v = E.get(m.src);
+        if (!v) break;
+        const clip = v.animator.has('Special') ? 'Special' : 'Attack2';
+        v.animator.play(clip, { timeScale: m.ms ? v.animator.clipDuration(clip) / (m.ms / 1000) : 1 });
+        this._text(m.src, m.ph >= 3 ? 'Rage !' : 'Nouvelle phase', 'phase', 0.6);
+        if (this.point(m.src, 0.1, p)) {
+          this._decal(p.x, p.z, 7, col('#ff5a2a'), STYLE.slam, 1.6, 0.35);
+          this._burst(this.smoke, p, C_DUST, 30, 5, 1.1, 1.4, 0, 1.8, 1, 2.4);
+          this._sound('roar', p);
+        }
+        this.ctx.shake(0.5, 1.1);
+        break;
+      }
+      case FX.ECHO: {
+        if (this.point(m.src, 0.2, p)) {
+          this._pillar(m.src, col('#66e0ff'), 6, 0.9, 1.8);
+          this._burst(this.glow, p, col('#8ff0ff'), 40, 3, 0.3, 1.2, -1.2, 1.2);
+          this._sound('echo', p);
+        }
+        this._text(m.src, `Écho récupéré (+${m.v} XP)`, 'echo', 0.6);
+        break;
+      }
+      default:
         break;
     }
   }
@@ -543,7 +668,12 @@ export class Effects {
     const ab = AB[m.ab] || { color: C_FIRE, proj: 'fire', size: 0.2 };
     const from = new THREE.Vector3(), to = new THREE.Vector3();
     if (!this.point(m.src, 0.68, from)) return;
-    if (!this.point(m.tg, 0.55, to)) return;
+    if (m.tg) {
+      if (!this.point(m.tg, 0.55, to)) return;
+    } else if (Number.isFinite(m.x) && Number.isFinite(m.z)) {
+      to.set(m.x, terrainHeight(m.x, m.z) + 0.9, m.z); // [combat-souls] dodgeable: flies to a ground point
+      if (this._near(to)) this._sound('spear', from);
+    } else return;
     // start a bit in front of the caster
     const dx = to.x - from.x, dz = to.z - from.z, dl = Math.hypot(dx, dz) || 1;
     from.x += (dx / dl) * 0.45;
@@ -567,6 +697,7 @@ export class Effects {
       ar.active = true;
       ar.mesh.visible = true;
       ar.mesh.material = pr.glow ? this.arrowGlowMat : this.arrowMat;
+      ar.mesh.scale.setScalar(ab.scale || 1); // [combat-souls] spears are big arrows
       ar.mesh.position.copy(from);
       pr.obj = ar;
     }
@@ -710,6 +841,9 @@ export class Effects {
     this._sound(m.crit ? 'crit' : 'hit', p);
     v.rec.hp = m.hp;
     v.rec.dirtyLabel = true;
+    // [combat-souls] hit feedback: hitstop on our heavy hits, camera shake when we take a big one
+    if (m.src === selfId && m.tg !== selfId && (m.crit || HEAVY_AB.has(m.ab))) this.hitstop(m.crit && HEAVY_AB.has(m.ab) ? 110 : 70);
+    if (m.tg === selfId && v.rec.mhp > 0 && m.v >= v.rec.mhp * 0.12) this.ctx.shake(Math.min(0.6, 0.15 + (m.v / v.rec.mhp) * 1.2), 0.35);
   }
 
   heal(m, selfId) {

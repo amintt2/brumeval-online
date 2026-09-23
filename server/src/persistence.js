@@ -18,6 +18,7 @@ import { emptyInventory, addItem, sanitizeInventory, isItem, equipSlotOf } from 
 import { sanitizeQuests } from './quests.js';
 import { nameKey, validName, validClass } from './auth.js';
 import { sanitizeSecurityFields } from './security/accountFields.js'; // [anticheat]
+import { sanitizeEcho } from './systems/echo.js'; // [combat-souls]
 
 const gzip = promisify(zlib.gzip);
 
@@ -46,6 +47,7 @@ export function newAccount(name, cls, salt, hash) {
     quests: {},
     x: SPAWN_POINT.x, z: SPAWN_POINT.z,
     created: now, lastSeen: now,
+    echo: null, // [combat-souls] death echo { x, z, xp }
   };
   return migrateAccount(rec) || rec; // every feature's defaults apply to new characters too
 }
@@ -96,6 +98,7 @@ export function migrateAccount(raw) {
     created: finite(raw.created, Date.now()),
     lastSeen: finite(raw.lastSeen, Date.now()),
     ...sanitizeSecurityFields(raw), // [anticheat] role, mute, ignore list, last IP (all optional)
+    echo: sanitizeEcho(raw.echo), // [combat-souls] death echo { x, z, xp }; v0.1 accounts have none
   });
 
   // ---- [netcode-perf] schema version

@@ -59,6 +59,8 @@ export class Monster {
   staticState() {
     const s = { k: this.kind, n: this.name, m: this.model, lv: this.level, mt: this.type, sc: this.scale };
     if (this.boss) s.b = 1;
+    if (this.elite) s.el = 1; // [combat-souls]
+    if (this.variant) s.vr = this.variant; // [combat-souls]
     return s;
   }
 }
