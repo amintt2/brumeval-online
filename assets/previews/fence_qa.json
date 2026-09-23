@@ -1,0 +1,134 @@
+{
+ "key": "fence",
+ "fails": [
+  "fence: AO texture SEAM across UV islands p50=0.072 p95=0.436 (same-island edges p50=0.025 p95=0.117); worst near [[-0.92, -0.12, 0.42], [-0.92, -0.12, 0.82], [-0.92, -0.12, 0.8]]"
+ ],
+ "warns": [
+  "lowest point z=-0.100 (origin must be at the base, ground z=0)",
+  "fence: only 668 triangles (< 1000 for prop) - is the model detailed enough?"
+ ],
+ "info": {
+  "objects": {
+   "fence": {
+    "faces": 668,
+    "islands": 8,
+    "boundary_edges": 20,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "fence": {
+    "seam_edges": 270,
+    "worst_at": [
+     [
+      -0.92,
+      -0.12,
+      0.42
+     ],
+     [
+      -0.92,
+      -0.12,
+      0.82
+     ],
+     [
+      -0.92,
+      -0.12,
+      0.8
+     ],
+     [
+      0.05,
+      -0.12,
+      0.8
+     ],
+     [
+      -0.94,
+      -0.12,
+      0.43
+     ],
+     [
+      0.03,
+      -0.12,
+      0.43
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0354,
+     "seam_p95": 0.1188,
+     "ref_p50": 0.0198,
+     "ref_p95": 0.112
+    },
+    "AO": {
+     "seam_p50": 0.072,
+     "seam_p95": 0.4358,
+     "ref_p50": 0.025,
+     "ref_p95": 0.1168
+    },
+    "roughness": {
+     "seam_p50": 0.0137,
+     "seam_p95": 0.0472,
+     "ref_p50": 0.0072,
+     "ref_p95": 0.0378
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 13.2634,
+     "seam_p95": 29.7966,
+     "ref_p50": 6.554,
+     "ref_p95": 33.0188
+    }
+   }
+  },
+  "bbox_min": [
+   -1.001,
+   -0.15,
+   -0.1
+  ],
+  "bbox_max": [
+   1.001,
+   0.064,
+   1.12
+  ],
+  "dims": [
+   2.002,
+   0.214,
+   1.22
+  ],
+  "tris": 668,
+  "textures": {
+   "fence_Main_basecolor": [
+    512,
+    512
+   ],
+   "fence_Main_orm": [
+    512,
+    512
+   ],
+   "fence_Main_normal": [
+    512,
+    512
+   ]
+  },
+  "glb_bytes": 98700,
+  "bake_s": 42.6,
+  "lods": [
+   [
+    "fence_lod1.glb",
+    200,
+    35768
+   ],
+   [
+    "fence_lod2.glb",
+    49,
+    14064
+   ]
+  ],
+  "groups": {
+   "Main": 512
+  }
+ }
+}

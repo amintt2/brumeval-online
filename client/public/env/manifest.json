@@ -1,0 +1,46 @@
+{
+  "_doc": "Sky HDRIs for IBL. Equirect, three.js layout (u=0.5 -> +X, u=0.75 -> +Z, v=1 up), so RGBELoader + EquirectangularReflectionMapping needs no rotation. hdr = linear Radiance RGBE 1024x512, sun disc clamped: light the sun/moon with a DirectionalLight from sunDirection (normalised, three.js world coords, points from the ground TO the sun). webp = 2048x1024 tonemapped sRGB background (colorSpace SRGB). Upper-hemisphere mean luminance normalised: day 1.0, golden 0.55, overcast 0.70, night 0.06 (keep toneMappingExposure ~1 and blend envMapIntensity across the day cycle).",
+  "golden": {
+    "hdr": "env/sky_golden.hdr",
+    "background": "env/sky_golden.webp",
+    "sunDirection": [
+      -0.9354,
+      0.0958,
+      -0.3404
+    ],
+    "sunElevationDeg": 5.5,
+    "sunAzimuthDeg": 200.0,
+    "light": "sun",
+    "lightColor": [
+      1.0,
+      0.55,
+      0.26
+    ],
+    "lightIntensity": 2.6,
+    "horizonColor": [
+      1.0,
+      0.4543,
+      0.1833
+    ],
+    "zenithColor": [
+      0.4054,
+      0.5775,
+      1.0
+    ],
+    "fogColor": [
+      0.9063,
+      0.637,
+      0.4191
+    ],
+    "ambientLinear": [
+      0.5812,
+      0.5058,
+      0.5701
+    ],
+    "backgroundExposure": 0.3,
+    "bytes": {
+      "hdr": 1332748,
+      "webp": 66058
+    }
+  }
+}

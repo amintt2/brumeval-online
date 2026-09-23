@@ -1,129 +1,123 @@
-"""Humanoid monsters built on the shared rig: goblin (≈1.2 m, club) and skeleton (rusty sword, glowing eyes).
-Clips: Idle, Walk, Attack, Hit, Death."""
+"""Humanoid monsters (v0.2): goblin (~1.2 m, crude spiked club) and skeleton (rusty sword, glowing eyes).
+Clips: Idle Walk Attack Hit Death + Attack2 (telegraphed heavy attack) + Run."""
 import math
 import random
 
-from mathutils import Vector
+import bpy
+from mathutils import Matrix, Vector
 
-import geo as G
+import anatomy as A
+import charmats as CM
+import clips as CL
+import garments as G
+import gear as GR
 import humanoid as H
-import parts as PT
+import hq
+import outfits as O
+import pipeline as PL
 from humanoid import arm_r, over, plus
+from kit import gn
+from kit import materials as KM
+from players import cloth
 
-# small, hunched proportions: short legs, long arms, big head
-GOBLIN = dict(
+# ============================================================================ GOBLIN
+GOBLIN_L = dict(
     ankle=0.06, knee=0.3, hip=0.55, hip_w=0.085, toe_y=-0.13, toe_z=0.02,
     pelvis=0.585, spine=0.64, chest=0.745, neck=0.9, head=0.935, top=1.18,
-    shoulder=0.87, shoulder_w=0.165, elbow=0.665, wrist=0.455, hand=0.1, arm_out=0.05,
+    shoulder=0.87, shoulder_w=0.15, elbow=0.665, wrist=0.455, hand=0.1, arm_out=0.07,
 )
 
 
-# ============================================================================ GOBLIN
-def goblin():
-    L = dict(GOBLIN)
-    rig = H.build_rig(L)
-    P = H.Poser(rig, L)
-    b = G.MeshBuilder()
+def spiked_club(name, wood, iron, length=0.62, seed=4):
+    """Knotted club (curve -> mesh, displaced) with iron nails scattered on the head (kit.gn.scatter)."""
+    rnd = random.Random(seed)
+    pts = []
+    for i in range(8):
+        u = i / 7
+        pts.append((0.008 * math.sin(u * 5), 0.006 * math.cos(u * 4), -0.1 + length * u, 0.55 + 0.9 * u ** 1.6))
+    cu = gn.make_curve([pts], name + "_Curve", kind="NURBS", resolution=4)
+    gn.curve_to_mesh(cu, radius=0.028, profile_res=8)
+    club = gn.apply(cu)
+    gn.displace(club, strength=0.008, scale=9.0, detail=4.0, seed=seed, voronoi=0.4)
+    gn.apply(club)
+    club.data.materials.clear()
+    club.data.materials.append(wood)
+    # nails only on the upper third: scatter on a temporary copy of the head region
+    nail = GR.lathe(name + "_NailTpl", [(-0.012, 0.004), (0.0, 0.0045), (0.035, 0.0)], 4, iron, smooth=False)
+    head = club.copy()
+    head.data = club.data.copy()
+    bpy.context.scene.collection.objects.link(head)
+    bm = __import__("bmesh").new()
+    bm.from_mesh(head.data)
+    kill = [f for f in bm.faces if f.calc_center_median().z < length * 0.55]
+    __import__("bmesh").ops.delete(bm, geom=kill, context="FACES")
+    bm.to_mesh(head.data)
+    bm.free()
+    gn.scatter(head, nail, density=260.0, seed=seed, scale=(0.8, 1.2), rot_random=(0.3, 0.3, 3.1), embed=0.012,
+               keep_target=False, distance_min=0.02)
+    nails = gn.apply(head)
+    gn.remove(nail)
+    nails.data.materials.clear()
+    nails.data.materials.append(iron)
+    return GR.join([club, nails], name)
 
-    skin = PT.mat("Gob_Skin", "#7da846", 0.7)
-    dskin = PT.mat("Gob_SkinDark", "#557a2e", 0.75)
-    inner = PT.mat("Gob_EarInner", "#c07a6a", 0.7)
-    leather = PT.mat("Gob_Leather", "#7a5030", 0.8)
-    dleather = PT.mat("Gob_LeatherDark", "#4a2f1c", 0.85)
-    cloth = PT.mat("Gob_Cloth", "#8c3a2a", 0.9)
-    bone = PT.mat("Gob_Bone", "#e6dcc0", 0.7)
-    wood = PT.mat("Gob_Wood", "#7b5231", 0.85)
-    iron = PT.mat("Gob_Iron", "#5c6168", 0.5, 0.45)
-    eye = PT.mat("Gob_Eye", "#ffd23a", 0.4, 0.0, emit="#ffb400", strength=1.6)
-    pupil = PT.mat("Gob_Pupil", "#1a1208", 0.5)
-    mouth = PT.mat("Gob_Mouth", "#3a1a14", 0.8)
-    hairm = PT.mat("Gob_Hair", "#2a2420", 0.9)
-    zh, zp, zs, zc, zn = L["hip"], L["pelvis"], L["spine"], L["chest"], L["neck"]
 
-    # ---- legs: bowed, bare feet with claws
-    PT.limb_pair(b, P, "thigh", [0.068, 0.062, 0.05], skin, ext0=0.03, ext1=0.01)
-    PT.limb_pair(b, P, "shin", [0.05, 0.052, 0.04], skin, ext1=-0.01)
-    for s in "LR":
-        kn = P.head[f"shin.{s}"]
-        b.add(G.ellipsoid((kn.x, -0.018, kn.z), (0.05, 0.045, 0.048), 7, 4), skin, f"shin.{s}")
-        PT.bare_foot(b, P, s, skin, w=0.05, h=0.07, toe=0.17, heel=0.045, claw=bone)
-    # ---- hips + loincloth (split flaps follow the thighs)
-    b.add(G.loft([(0, 0.0, zh - 0.06, 0.12, 0.1), (0, 0.0, zp + 0.01, 0.135, 0.11), (0, 0.0, zs + 0.03, 0.13, 0.11)], 8), skin, "hips")
-    b.add(G.loft([(0, 0.0, zp - 0.02, 0.142, 0.118), (0, 0.0, zp + 0.025, 0.14, 0.116)], 8), dleather, "hips")
-    rings = [(zh + 0.02, 0.15, 0.125), (zh - 0.08, 0.16, 0.14), (zh - 0.15, 0.165, 0.145)]
-    PT.apron(b, P, rings, cloth, span=0.7, n=2, jag=0.03, seed=3)
-    PT.apron(b, P, rings, cloth, span=0.7, n=2, back=True, jag=0.03, seed=4)
-    b.add(G.xform(G.box((0, 0, 0), 0.012, 0.012, 0.045), G.T(0.1, -0.1, zp - 0.02) @ G.R(0, 70, 20)), bone, "hips")
-    b.add(G.ellipsoid((0.1 + 0.045 * 0.94, -0.1, zp - 0.005), 0.016, 5, 3), bone, "hips")
-    b.add(G.ellipsoid((0.1 - 0.045 * 0.94, -0.1, zp - 0.035), 0.016, 5, 3), bone, "hips")
-    # ---- pot belly, narrow chest, strap, pauldron
-    b.add(G.loft([(0, 0.0, zs - 0.03, 0.13, 0.11), (0, -0.018, zs + 0.06, 0.148, 0.14), (0, -0.004, zc + 0.03, 0.132, 0.112)], 8),
-          skin, "spine")
-    b.add(G.loft([(0, 0.0, zc - 0.03, 0.13, 0.105), (0, 0.0, zc + 0.08, 0.155, 0.112), (0, 0.004, zn - 0.02, 0.14, 0.1),
-                  (0, 0.01, zn + 0.03, 0.07, 0.062)], 8), skin, "chest")
-    strap = [(0.13, -0.085, zn - 0.01), (0.03, -0.118, zc + 0.08), (-0.07, -0.118, zc + 0.0), (-0.13, -0.09, zc - 0.05)]
-    b.add(G.sweep(strap, [(0.006, 0.018)] * 4, n=4, normal=(0, -1, 0)), dleather, "chest")
-    b.add(G.sweep([(0.13, 0.08, zn - 0.01), (0.02, 0.112, zc + 0.08), (-0.1, 0.1, zc - 0.03)], [(0.006, 0.018)] * 3, n=4,
-                  normal=(0, 1, 0)), dleather, "chest")
-    sh = P.head["upper_arm.L"]
-    pc = Vector((sh.x + 0.015, 0, sh.z + 0.02))
-    b.add(G.xform(G.shell(Vector(), (0.085, 0.09, 0.07), 8, 4, phi0=math.pi * 0.45, phi1=math.pi), G.T(pc) @ G.R(0, 20, 0)),
-          leather, "upper_arm.L")
-    for dy in (-0.035, 0.03):
-        base_p = pc + Vector((0.03, dy, 0.05))
-        b.add(G.tube(base_p, base_p + Vector((0.035, 0, 0.07)), 0.016, 0.0, n=5), bone, "upper_arm.L")
-    PT.neck(b, P, skin, r=0.045, bot=zn - 0.03, top=L["head"] + 0.06)
-    # ---- long skinny arms, big hands
-    for s in "LR":
-        PT.limb(b, P, f"upper_arm.{s}", [0.045, 0.04, 0.036], skin, ext1=0.02)
-        PT.ball(b, P, f"upper_arm.{s}", 0.0, 0.05, skin, rings=4)
-        PT.limb(b, P, f"forearm.{s}", [0.04, 0.043, 0.034], skin, ext0=0.01, ext1=-0.01)
-        PT.fist(b, P, s, skin, size=1.25)
-    fa0, fa1 = P.head["forearm.R"], P.tail["forearm.R"]
-    b.add(G.sweep([fa0.lerp(fa1, 0.62), fa0.lerp(fa1, 0.95)], [0.047, 0.043], n=7, normal=(1, 0, 0)), dleather, "forearm.R")
-    # ---- head: big, pointy ears, hooked nose, glowing eyes, tusks, tuft
-    c = Vector((0, -0.012, L["head"] + 0.125))
-    F = PT.human_head(b, P, skin, r=(0.142, 0.135, 0.128), centre=c, jaw=0.95, chin=0.03, seg=10, rings=7)
-    PT.eyes(b, F, eye, pupil, dx=0.055, dz=0.012, size=1.2)
+def goblin_dress(ctx):
+    J = ctx.J
+    rag = cloth("Cloth_Gob_Rag", "#4a3a26", "burlap", seed=121, hem_dirt=0.9)
+    leather = KM.leather("Gob_Leather", "#3a2616", seed=122, wear=0.8, dirt=0.8)
+    fur_m = KM.fur("Gob_Fur", "#5a4a3a", "#8a7a66", "#1e1812", seed=123)
+    wood = KM.bark("Gob_Club", "oak", color="#4a3622", color2="#20150c", seed=124, moss=0.2)
+    iron = KM.metal("Gob_Iron", "iron", rust=0.8, grime=0.8, seed=125)
+    bone = KM.bone("Gob_Bone", seed=126)
+    # loincloth (tattered front/back flaps) + belt
+    lc = G.skirt("Cloth_Gob_Loincloth", ctx.body, z_top=ctx.L["pelvis"] + 0.02, z_bot=ctx.L["knee"] + 0.04, seg=36, rings=10,
+                 flare=0.05, folds=5, fold_amp=0.008, clearance=0.018, mat=rag, seed=6, hem_jag=0.05,
+                 panels=[(-50, 50), (130, 230)])
+    ctx.cloth(lc, smooth=22, thickness=0.004)
+    bl = O.belt(ctx, "Gob_Belt", leather, ctx.L["pelvis"] + 0.02, height=0.035, offset=0.03, thickness=0.008,
+                buckle_mat=bone)
+    ctx.cloth(bl, smooth=10, hem=False)
+    # hide shoulder pad (left) with fur
+    sh = Vector(J["upper_arm.L"][0])
+    pad = GR.ico("Gob_Pad", 0.075, fur_m, 2, tuple(sh + Vector((0.01, 0.0, 0.015))), (1.0, 1.15, 0.6))
+    bm = __import__("bmesh").new()
+    bm.from_mesh(pad.data)
+    kill = [f for f in bm.faces if f.calc_center_median().z < sh.z + 0.0]
+    __import__("bmesh").ops.delete(bm, geom=kill, context="FACES")
+    bm.to_mesh(pad.data)
+    bm.free()
+    G.plate(pad, 0.01, 0.0)
+    ctx.piece(pad, {"upper_arm.L": 0.6, "chest": 0.4}, covers=True)
+    # bone necklace: small teeth on a cord round the neck
+    n0 = Vector(J["neck"][0])
+    sec = G.section(ctx.body, n0 + Vector((0, 0, -0.02)), (0, 0.35, 1), near=n0, radius=0.2, n=20)
+    parts = []
+    if sec:
+        loop, c, nrm = sec
+        for i, p in enumerate(loop):
+            if p.y < c.y:
+                d = (p - c).normalized()
+                t = GR.lathe(f"Gob_Tooth{i}", [(0.0, 0.006), (0.02, 0.0)], 5, bone)
+                GR.xf(t, Matrix.Translation(p + d * 0.014) @ GR.R(180, 0, 0))
+                parts.append(t)
+        cord = G.band("Gob_Cord", loop, c, nrm, 0.006, offset=0.008, thickness=0.004, mat=leather)
+        parts.append(cord)
+    if parts:
+        ctx.cloth(GR.join(parts, "Gob_Necklace"), smooth=6, hem=False, covers=False)
+    # tusks
+    c, k = ctx.head_c, ctx.head_k
     for sx in (1, -1):
-        p = F.surf(sx * 0.055, c.z + 0.048, inset=0.0)
-        b.add(G.xform(G.box((0, 0, 0), 0.045, 0.02, 0.013), G.T(p) @ G.R(0, sx * 18, 0)), dskin, "head")
-        e0 = Vector((sx * 0.128, c.y + 0.012, c.z + 0.015))
-        pts = [e0, e0 + Vector((sx * 0.1, 0.02, 0.025)), e0 + Vector((sx * 0.2, 0.05, 0.06))]
-        b.add(G.sweep(pts, [(0.012, 0.055), (0.01, 0.038), (0.0, 0.0)], n=6, normal=(0, 1, 0)), skin, "head", ground=False)
-        b.add(G.sweep([p_ + Vector((0, -0.008, 0)) for p_ in pts[:2]] + [pts[2] + Vector((-sx * 0.03, -0.006, -0.008))],
-                      [(0.005, 0.034), (0.004, 0.022), (0.0, 0.0)], n=4, normal=(0, 1, 0)), inner, "head", ground=False)
-    nz = F.surf(0, c.z - 0.005, inset=0.012)
-    b.add(G.sweep([nz, nz + Vector((0, -0.05, -0.012)), nz + Vector((0, -0.075, -0.045))], [0.03, 0.02, 0.006], n=6,
-                  normal=(1, 0, 0)), skin, "head")
-    mo = F.surf(0, c.z - 0.065, inset=0.01)
-    b.add(G.xform(G.box((0, 0, 0), 0.058, 0.012, 0.009), G.T(mo)), mouth, "head")
-    for sx in (1, -1):
-        t0 = mo + Vector((sx * 0.04, -0.006, -0.008))
-        b.add(G.tube(t0, t0 + Vector((sx * 0.004, -0.004, 0.035)), 0.009, 0.0, n=4), bone, "head")
-    for i, (dx, dy, lz) in enumerate(((0.0, 0.0, 0.07), (0.035, 0.02, 0.05), (-0.035, 0.025, 0.055))):
-        t0 = c + Vector((dx, dy, 0.115))
-        b.add(G.tube(t0, t0 + Vector((dx * 0.6, 0.03, lz)), 0.016, 0.0, n=4), hairm, "head", ground=False)
-    # ---- crude spiked club (right hand), authored along the grip frame
-    M = PT.grip_matrix(P, "R", tilt=20)
-    rnd = random.Random(11)
-    club = G.loft([(0, 0, 0.1, 0.028, 0.028), (0, 0, 0.3, 0.046, 0.046), (0, 0, 0.47, 0.066, 0.064), (0, 0, 0.56, 0.056, 0.056),
-                   (0, 0, 0.6, 0.0, 0.0)], 7)
-    b.add(G.jitter(club, 0.006, 5), wood, "hand.R", M=M, ground=False)
-    b.add(G.tube((0, 0, -0.085), (0, 0, 0.13), 0.026, 0.026, n=6), dleather, "hand.R", M=M, ground=False)
-    b.add(G.tube((0, 0, 0.29), (0, 0, 0.33), 0.05, 0.05, n=7), iron, "hand.R", M=M, ground=False)
-    for k in range(6):
-        a = math.radians(60 * k + rnd.uniform(-15, 15))
-        z = 0.38 + 0.07 * (k % 3) + rnd.uniform(-0.01, 0.01)
-        r = 0.05 + 0.012 * (z - 0.38) / 0.14
-        p0 = Vector((math.cos(a) * r * 0.8, math.sin(a) * r * 0.8, z))
-        b.add(G.tube(p0, p0 + Vector((math.cos(a), math.sin(a), 0.2)).normalized() * 0.055, 0.013, 0.0, n=4), iron, "hand.R",
-              M=M, ground=False)
+        tk = GR.lathe(f"Gob_Tusk{sx}", [(0.0, 0.006 * k), (0.018 * k, 0.0)], 5, bone)
+        GR.xf(tk, Matrix.Translation(c + Vector((sx * 0.02, -0.098, -0.085)) * k) @ GR.R(-10, sx * 10, 0))
+        ctx.piece(tk, "head")
+    club = spiked_club("Gob_Club", wood, iron)
+    GR.xf(club, GR.grip_frame(ctx, "R", tilt=20))
+    ctx.piece(club, "hand.R", arms_down=True, ground=False)
 
-    body = b.build("goblin", rig)
-    print(f"[goblin] triangles ~{b.tri_count()} {b.breakdown()}")
 
-    # ---- animation
+def goblin_anim(ctx):
+    P, body = ctx.P, ctx.body
     st = H.stance(drop=0.045, width=1.6, feet=(0.05, -0.06), toe_out=18, hips=(8, 0, 0), spine=(12, 0, 0), chest=(12, 0, 0),
                   neck=(-14, 0, 0), head=(-16, 0, 0), sway=0.014, look=8.0, breathe=1.5,
                   arms={"L": dict(fwd=24, out=22, twist=-10, elbow=32), "R": dict(fwd=18, out=20, twist=10, elbow=55)})
@@ -132,6 +126,9 @@ def goblin():
                arms={"R": dict(swing=0.55, fwd=18, elbow=60, out=20, twist=10)})
     P.key_loop("Idle", 48, lambda t: H.idle_spec(P, t, st))
     P.key_loop("Walk", g["frames"], lambda p: H.gait_spec(P, p, g, st))
+    r = CL.run_gait(frames=12, stride=0.8, lift=0.2, lean=20.0, arm_out=20.0, width=1.2, toe_out=10.0,
+                    arms={"R": dict(swing=0.5, fwd=30, elbow=70, out=22, twist=10)})
+    P.key_loop("Run", r["frames"], lambda p: H.gait_spec(P, p, r, st))
     base = H.idle_spec(P, 0, st)
 
     def club_arm(fwd, out, twist, elbow, wrist):
@@ -146,146 +143,235 @@ def goblin():
     follow = over(plus(base, {"hips": {"r": (8, 0, 10), "t": (0, -0.05, -0.06)}, "spine": (10, 0, 10), "chest": (12, 0, 14),
                               "head": (-12, 0, -12)}),
                   {**club_arm(72, 5, -5, 10, 0), "upper_arm.L": arm_r("L", -25, 32), "forearm.L": (-30, 0, 0)})
-    P.key_poses("Attack", [(0, base), (5, wind, "out"), (8, smash, "in"), (10, follow, "out"), (15, base, "smooth")])
-    P.key_poses("Hit", H.hit_keys(base, strength=1.2))
-    P.key_poses("Death", H.death_keys(P, body, base, "fwd", turn=-16, exclude=b.no_ground, arms={
+    P.key_poses("Attack", [(0, base), (5, wind, "out"), (8, smash, "in3"), (10, follow, "out"), (15, base, "smooth")])
+    # Attack2: two-handed overhead leap-smash: crouch & raise (0.65 s), hop forward in place, SLAM, stuck, recover (1.45 s)
+    both = {"upper_arm.L": arm_r("L", 165, 8, 10), "forearm.L": (-60, 0, 0), "hand.L": (0, 0, 0)}
+    raise1 = over(plus(base, {"hips": {"r": (-8, 0, 0), "t": (0, 0.04, -0.1)}, "spine": (-10, 0, 0), "chest": (-14, 0, 0),
+                              "head": (6, 0, 0)}), {**club_arm(170, 10, 0, 70, -10), **both})
+    raise2 = plus(raise1, {"hips": {"t": (0, 0.01, -0.03)}, "chest": (-4, 0, 0), "head": (-4, 0, 0)})   # shaking, held
+    hop = over(plus(base, {"hips": {"r": (-4, 0, 0), "t": (0, -0.04, 0.1)}, "spine": (-6, 0, 0), "chest": (-10, 0, 0)}),
+               {**club_arm(175, 6, 0, 40, -10), **both, "IK": {"leg.L": None, "leg.R": None},
+                "thigh.L": (-40, 0, 0), "shin.L": (60, 0, 0), "thigh.R": (-30, 0, 0), "shin.R": (50, 0, 0)})
+    slam = over(plus(base, {"hips": {"r": (20, 0, 0), "t": (0, -0.1, -0.16)}, "spine": (16, 0, 0), "chest": (18, 0, 0),
+                            "head": (-14, 0, 0)}),
+                {**club_arm(70, 6, 0, 0, 30), "upper_arm.L": arm_r("L", 72, 4, 10), "forearm.L": (-12, 0, 0)})
+    stuck = plus(slam, {"hips": {"t": (0, 0, 0.02)}, "chest": (-3, 0, 0)})
+    P.key_poses("Attack2", [(0, base), (8, raise1, "out"), (15, raise2, "smooth"), (19, hop, "in"), (22, slam, "in3"),
+                            (28, stuck, "out"), (35, base, "smooth")])
+    P.key_poses("Hit", CL.hit_keys(base, 1.2))
+    P.key_poses("Death", H.death_keys(P, body, base, "fwd", turn=-16, exclude=None, arms={
         "upper_arm.R": arm_r("R", -6, 30, 0), "forearm.R": (4, 0, -90), "hand.R": (0, 0, 0), "head": (6, 0, 28)},
         fall_arms={"upper_arm.R": arm_r("R", 40, 50, 0), "forearm.R": (-20, 0, -90)}))
-    return rig, body, P
+
+
+GOBLIN = hq.Spec("goblin", GOBLIN_L, build="goblin", face="goblin", faces=3000, bare_feet=True,
+                 skin=dict(tone="#6f8a42", tone2="#3e5222", lips="#4a3a2a", stubble=0.0, age=0.6, seed=31, flush=0.2,
+                           brow="#2a3014", brow_amt=0.5, kind="orc"),
+                 eyes=dict(iris="#d8b030", iris2="#8a5a10", sclera="#c8b87a"), dress=goblin_dress, animate=goblin_anim,
+                 kind="monster", main_size=1024, cloth_size=512, height=1.22, preview=("Attack2", 20))
 
 
 # ============================================================================ SKELETON
-def skeleton():
-    L = dict(H.HUMAN, shoulder_w=0.19, hip_w=0.09)
-    rig = H.build_rig(L)
-    P = H.Poser(rig, L)
-    b = G.MeshBuilder()
+SKEL_L = dict(H.HUMAN, shoulder=1.44, neck=1.47, shoulder_w=0.19, hip_w=0.09, arm_out=0.08)
 
-    bonem = PT.mat("Ske_Bone", "#e2d8be", 0.75)
-    dbone = PT.mat("Ske_BoneDark", "#b3a78a", 0.8)
-    socket = PT.mat("Ske_Socket", "#18161c", 0.9)
-    glow = PT.mat("Ske_Glow", "#a8fbff", 0.3, 0.0, emit="#3fe8ff", strength=9.0)
-    iron = PT.mat("Ske_Iron", "#5d4e45", 0.7, 0.4)
-    rust = PT.mat("Ske_Rust", "#8e4d28", 0.85, 0.35)
-    drust = PT.mat("Ske_RustDark", "#5c3520", 0.9, 0.3)
-    rag = PT.mat("Ske_Rag", "#3f3a4a", 0.95)
-    rope = PT.mat("Ske_Rope", "#6a5a42", 0.9)
-    zh, zp, zs, zc, zn = L["hip"], L["pelvis"], L["spine"], L["chest"], L["neck"]
 
-    # ---- legs: femur / tibia + fibula with knobby joints, bony feet
+def _bone_piece(name, a, b, r, mat, seg=8, knob=1.9):
+    a, b = Vector(a), Vector(b)
+    L = (b - a).length
+    prof = [(0.0, r * 1.2), (0.03 * L, r * knob), (0.1 * L, r * knob * 0.95), (0.22 * L, r * 1.05), (0.5 * L, r * 0.9),
+            (0.78 * L, r * 1.0), (0.9 * L, r * knob * 0.9), (0.97 * L, r * knob), (L, r * 1.1)]
+    ob = GR.lathe(name, prof, seg, mat)
+    q = Vector((0, 0, 1)).rotation_difference((b - a).normalized())
+    GR.xf(ob, Matrix.Translation(a) @ q.to_matrix().to_4x4())
+    return ob
+
+
+def skeleton_body(ctx):
+    """Bones authored in the ARMS-DOWN frame (P0), each rigid on its bone, moved into the bind pose."""
+    P0 = ctx.P0
+    bone_m = KM.bone("Ske_Bone", "#c2b08a", seed=131, dirt=0.9)
+    pieces = []   # (obj, bone)
+
+    def add(ob, bone):
+        pieces.append((ob, bone))
+        return ob
+
+    Hd, Tl = P0.head, P0.tail
+    # limbs
     for s, sx in (("L", 1), ("R", -1)):
-        PT.limb(b, P, f"thigh.{s}", [0.026, 0.022, 0.025], bonem, n=6, ext0=-0.02, ext1=-0.02)
-        hp, kn, an = P.head[f"thigh.{s}"], P.head[f"shin.{s}"], P.head[f"foot.{s}"]
-        b.add(G.ellipsoid(hp + Vector((0, 0, -0.005)), 0.036, 6, 4), bonem, f"thigh.{s}")
-        b.add(G.ellipsoid(kn + Vector((0, 0.004, 0.025)), (0.046, 0.036, 0.03), 7, 4), bonem, f"thigh.{s}")
-        b.add(G.ellipsoid(kn + Vector((0, 0.004, -0.02)), (0.042, 0.036, 0.026), 7, 4), dbone, f"shin.{s}")
-        b.add(G.ellipsoid(kn + Vector((0, -0.036, 0.0)), (0.022, 0.014, 0.026), 5, 3), bonem, f"shin.{s}")
-        PT.limb(b, P, f"shin.{s}", [0.024, 0.02, 0.023], bonem, n=6, ext0=-0.03, ext1=-0.02)
-        b.add(G.tube(kn + Vector((sx * 0.026, 0.01, -0.04)), an + Vector((sx * 0.022, 0.006, 0.03)), 0.01, 0.009, n=4), dbone,
-              f"shin.{s}")
-        b.add(G.ellipsoid(an + Vector((0, 0.0, -0.01)), (0.034, 0.04, 0.03), 6, 4), bonem, f"foot.{s}")
-        PT.bare_foot(b, P, s, bonem, w=0.038, h=0.045, toe=0.16, heel=0.035)
-    # ---- pelvis
+        add(_bone_piece(f"Humerus{s}", Hd[f"upper_arm.{s}"] + Vector((0, 0, -0.01)), Tl[f"upper_arm.{s}"], 0.014, bone_m), f"upper_arm.{s}")
+        for k, off in enumerate((0.009, -0.009)):
+            add(_bone_piece(f"Radius{s}{k}", Hd[f"forearm.{s}"] + Vector((0, off, 0)), Tl[f"forearm.{s}"] + Vector((0, off * 0.6, 0)),
+                            0.008, bone_m, 6, 1.7), f"forearm.{s}")
+        add(_bone_piece(f"Femur{s}", Hd[f"thigh.{s}"] + Vector((-sx * 0.02, 0, 0.01)), Tl[f"thigh.{s}"], 0.017, bone_m), f"thigh.{s}")
+        add(_bone_piece(f"Tibia{s}", Hd[f"shin.{s}"], Tl[f"shin.{s}"], 0.014, bone_m), f"shin.{s}")
+        add(_bone_piece(f"Fibula{s}", Hd[f"shin.{s}"] + Vector((sx * 0.018, 0.01, -0.02)), Tl[f"shin.{s}"] + Vector((sx * 0.02, 0.01, 0.02)),
+                        0.006, bone_m, 5, 1.6), f"shin.{s}")
+        add(GR.ico(f"Patella{s}", 0.018, bone_m, 1, tuple(Hd[f"shin.{s}"] + Vector((0, -0.03, 0.01))), (1, 0.6, 1.1)), f"shin.{s}")
+        # foot: tarsal block + 5 toe bones
+        an, to = Hd[f"foot.{s}"], Tl[f"foot.{s}"]
+        add(GR.ico(f"Tarsal{s}", 0.03, bone_m, 2, tuple(an.lerp(to, 0.25) + Vector((0, 0.02, -0.03))), (0.9, 1.5, 0.7)), f"foot.{s}")
+        for t in range(5):
+            x = to.x + sx * (0.022 - 0.011 * t)
+            add(_bone_piece(f"Toe{s}{t}", (x, an.y - 0.03, 0.03), (x + sx * 0.004 * t, to.y - 0.015 + 0.008 * t, 0.012), 0.0055,
+                            bone_m, 5, 1.5), f"foot.{s}")
+        # hand: fist of finger bones around the grip (+ metacarpals)
+        gc = GR.grip_center(ctx, s)
+        w = Hd[f"hand.{s}"]
+        for f_i, fy in enumerate((-0.024, -0.008, 0.008, 0.024)):
+            base = w + Vector((0, fy, -0.07))
+            add(_bone_piece(f"Meta{s}{f_i}", w + Vector((0, fy * 0.5, -0.015)), base, 0.005, bone_m, 5, 1.5), f"hand.{s}")
+            p1 = gc + Vector((sx * 0.022, fy, -0.012))
+            p2 = gc + Vector((0, fy, -0.03))
+            p3 = gc + Vector((-sx * 0.02, fy, -0.012))
+            add(_bone_piece(f"Fin{s}{f_i}a", base, p1, 0.0048, bone_m, 5, 1.4), f"hand.{s}")
+            add(_bone_piece(f"Fin{s}{f_i}b", p1, p2, 0.0042, bone_m, 5, 1.4), f"hand.{s}")
+            add(_bone_piece(f"Fin{s}{f_i}c", p2, p3, 0.0038, bone_m, 5, 1.4), f"hand.{s}")
+        add(_bone_piece(f"Thumb{s}", w + Vector((-sx * 0.01, -0.025, -0.03)), gc + Vector((-sx * 0.012, -0.04, 0.0)), 0.0055,
+                        bone_m, 5, 1.4), f"hand.{s}")
+        # clavicle + scapula
+        sh = Hd[f"upper_arm.{s}"]
+        add(_bone_piece(f"Clav{s}", Hd["neck"] + Vector((sx * 0.02, -0.05, -0.04)), sh + Vector((-sx * 0.01, -0.02, 0.01)), 0.008,
+                        bone_m, 6, 1.4), "chest")
+        sc = GR.ico(f"Scap{s}", 0.07, bone_m, 2, tuple(sh + Vector((-sx * 0.07, 0.085, -0.07))), (0.75, 0.18, 1.0))
+        add(sc, "chest")
+    # pelvis: two iliac wings + sacrum
+    hip = Hd["hips"]
     for sx in (1, -1):
-        b.add(G.xform(G.ellipsoid((0, 0, 0), (0.07, 0.028, 0.06), 7, 4), G.T(sx * 0.085, 0.01, zp + 0.01) @ G.R(0, sx * 30, sx * 25)),
-              bonem, "hips")
-    b.add(G.loft([(0, 0.045, zp - 0.07, 0.022, 0.016), (0, 0.05, zp + 0.04, 0.04, 0.022)], 6), dbone, "hips")
-    b.add(G.sweep([(0.085, -0.03, zh - 0.0), (0.035, -0.06, zh - 0.05), (-0.035, -0.06, zh - 0.05), (-0.085, -0.03, zh - 0.0)],
-                  [0.014, 0.013, 0.013, 0.014], n=5, normal=(0, 0, 1)), bonem, "hips")
-    # ---- spine column
-    z = zp + 0.03
-    while z < zn + 0.02:
-        bone = "hips" if z < zs else ("spine" if z < zc else "chest")
-        b.add(G.box((0, 0.05, z), 0.022, 0.019, 0.013), bonem if int(z * 100) % 2 else dbone, bone)
-        z += 0.042
-    for bone, z0, z1 in (("hips", zp, zs + 0.02), ("spine", zs - 0.02, zc + 0.02), ("chest", zc - 0.02, zn + 0.02)):
-        b.add(G.tube((0, 0.045, z0), (0, 0.045, z1), 0.012, 0.012, n=4), dbone, bone)
-    # ---- ribcage + sternum + clavicles
-    for i, (w, dz) in enumerate(((0.8, 0.0), (0.93, 0.045), (1.0, 0.09), (0.98, 0.135), (0.9, 0.18))):
-        zr = zn - 0.05 - dz
+        wing = GR.ico(f"Ilium{sx}", 0.075, bone_m, 2, tuple(hip + Vector((sx * 0.075, 0.0, -0.02))), (0.8, 0.45, 0.85))
+        add(wing, "hips")
+        add(_bone_piece(f"Pubis{sx}", hip + Vector((sx * 0.07, -0.02, -0.07)), hip + Vector((sx * 0.01, -0.055, -0.1)), 0.011, bone_m),
+            "hips")
+    add(GR.ico("Sacrum", 0.04, bone_m, 2, tuple(hip + Vector((0, 0.045, -0.04))), (0.8, 0.6, 1.2)), "hips")
+    # spine: vertebrae from the sacrum to the skull
+    z0, z1 = hip.z, Hd["head"].z
+    n = 17
+    for i in range(n):
+        u = i / (n - 1)
+        z = z0 + (z1 - z0) * u
+        y = 0.045 - 0.02 * math.sin(u * math.pi) + 0.02 * u
+        bone = "hips" if z < Hd["spine"].z else ("spine" if z < Hd["chest"].z else ("chest" if z < Hd["neck"].z else "neck"))
+        r = 0.022 - 0.01 * u
+        v = GR.lathe(f"Vert{i}", [(-r * 0.45, r * 0.85), (-r * 0.2, r), (r * 0.2, r), (r * 0.45, r * 0.85)], 8, bone_m)
+        GR.xf(v, Matrix.Translation((0, y, z)))
+        add(v, bone)
+        sp = _bone_piece(f"Spinous{i}", (0, y + r * 0.8, z), (0, y + r * 2.2, z - 0.012), 0.004, bone_m, 4, 1.3)
+        add(sp, bone)
+    # ribcage: 7 pairs of curved ribs + sternum
+    ch = Hd["chest"]
+    for i in range(7):
+        z = ch.z + 0.16 - 0.035 * i
+        w = 0.1 + 0.035 * math.sin(math.pi * (i + 1) / 8)
         for sx in (1, -1):
-            pts = [(sx * 0.02, 0.055, zr), (sx * 0.1 * w, 0.045, zr - 0.012), (sx * 0.145 * w, -0.01, zr - 0.03),
-                   (sx * 0.125 * w, -0.075, zr - 0.05), (sx * 0.05, -0.108, zr - 0.07)]
-            b.add(G.sweep(pts, [(0.012, 0.007)] * 5, n=4, normal=(0, 0, 1)), bonem, "chest")
-    b.add(G.box((0, -0.112, zn - 0.15), 0.018, 0.01, 0.11), bonem, "chest")
+            pts = []
+            for k in range(8):
+                a = math.radians(-100 + 170 * k / 7)          # from the spine (back) round to the front
+                pts.append((sx * math.sin(math.radians(90) - a) * w * 0 + sx * w * math.cos(a), 0.035 - 0.105 * math.sin(a) *
+                            (1.0 if a > 0 else 0.55), z - 0.03 * k / 7 - 0.012 * (a > 0), 1.0 - 0.3 * (k / 7)))
+            cu = gn.make_curve([pts], f"Rib{i}{sx}", kind="NURBS", resolution=3)
+            gn.curve_to_mesh(cu, radius=0.0065, profile_res=5)
+            rib = gn.apply(cu)
+            rib.data.materials.clear()
+            rib.data.materials.append(bone_m)
+            rib.data.transform(Matrix.Diagonal((1.0, 1.0, 1.0, 1.0)))
+            add(rib, "chest")
+    add(GR.box("Sternum", (0.03, 0.014, 0.17), bone_m, 0.006, (0, -0.075, ch.z + 0.07)), "chest")
+    # skull (metaballs, eye sockets and nasal cavity carved) + jaw
+    c, k = ctx.head_c, ctx.head_k
+    mb = A.MB("_SkullMB", 0.004)
+    mb.ellipsoid(c + Vector((0, 0.012, 0.03)) * 1.0, (0.068 * k, 0.088 * k, 0.085 * k))
+    mb.ellipsoid(c + Vector((0, -0.04, -0.035)) * 1.0, (0.052 * k, 0.05 * k, 0.05 * k))
     for sx in (1, -1):
-        b.add(G.tube((sx * 0.025, -0.1, zn - 0.035), (sx * 0.19, -0.015, L["shoulder"] + 0.02), 0.012, 0.011, n=4), bonem, "chest")
-        b.add(G.xform(G.box((0, 0, 0), 0.055, 0.008, 0.07), G.T(sx * 0.1, 0.075, zc + 0.12) @ G.R(0, 0, sx * -18)), dbone, "chest")
-    # neck vertebrae
-    for zz in (zn + 0.005, zn + 0.045):
-        b.add(G.box((0, 0.025, zz), 0.02, 0.018, 0.012), bonem, "neck")
-    b.add(G.tube((0, 0.025, zn - 0.01), (0, 0.02, L["head"] + 0.04), 0.013, 0.012, n=4), dbone, "neck")
-    # ---- arms: humerus, radius + ulna, bony hands
-    for s, sx in (("L", 1), ("R", -1)):
-        PT.limb(b, P, f"upper_arm.{s}", [0.022, 0.018, 0.021], bonem, n=6, ext0=-0.02, ext1=-0.02)
-        sh, el = P.head[f"upper_arm.{s}"], P.head[f"forearm.{s}"]
-        b.add(G.ellipsoid(sh, 0.034, 6, 4), bonem, f"upper_arm.{s}")
-        b.add(G.ellipsoid(el + Vector((0, 0.004, 0.01)), (0.032, 0.03, 0.026), 6, 4), bonem, f"upper_arm.{s}")
-        wr = P.tail[f"forearm.{s}"]
-        for dy, r in ((-0.012, 0.011), (0.013, 0.01)):
-            b.add(G.tube(el + Vector((0, dy, -0.015)), wr + Vector((0, dy, 0.01)), r, r * 0.9, n=4), bonem if dy < 0 else dbone,
-                  f"forearm.{s}")
-        PT.fist(b, P, s, bonem, size=0.82)
-    # ---- skull: cranium, face, sockets with glowing eyes, nose hole, teeth, jaw
-    c = Vector((0, 0.004, L["head"] + 0.125))
-    b.add(G.ellipsoid(c, (0.098, 0.11, 0.104), 10, 6), bonem, "head")
-    b.add(G.loft([(0, c.y - 0.03, c.z - 0.1, 0.06, 0.06), (0, c.y - 0.025, c.z - 0.06, 0.082, 0.078),
-                  (0, c.y - 0.01, c.z - 0.01, 0.092, 0.095)], 8), bonem, "head")
+        mb.ellipsoid(c + Vector((sx * 0.031, -0.085, 0.0)) * k, (0.019 * k, 0.03 * k, 0.017 * k), neg=True, stiff=3.0)
+        mb.ellipsoid(c + Vector((sx * 0.052, -0.045, -0.02)) * k, (0.016 * k, 0.03 * k, 0.012 * k))     # cheekbones
+    mb.ellipsoid(c + Vector((0, -0.095, -0.035)) * k, (0.011 * k, 0.03 * k, 0.017 * k), neg=True, stiff=3.0)
+    mb.capsule(c + Vector((-0.05, -0.02, 0.015)) * k, c + Vector((0.05, -0.02, 0.015)) * k, 0.014 * k)  # brow
+    skull = mb.to_mesh("Skull")
+    skull.data.transform(Matrix.Translation(Vector((0, 0, 0))))
+    # translate: c already applied above via k-scaled offsets? (ellipsoid centres used raw c + offsets)
+    skull.data.materials.clear()
+    skull.data.materials.append(bone_m)
+    for p in skull.data.polygons:
+        p.use_smooth = True
+    md = skull.modifiers.new("Dec", "DECIMATE")
+    md.ratio = min(1.0, 1400 / max(1, len(skull.data.polygons)))
+    gn.apply(skull)
+    add(skull, "head")
+    teeth = []
+    for t in range(10):
+        a = math.radians(-60 + 120 * t / 9)
+        p = c + Vector((math.sin(a) * 0.028, -0.07 - math.cos(a) * 0.022, -0.075)) * k
+        teeth.append(GR.box(f"Tooth{t}", (0.007, 0.006, 0.012), bone_m, 0.0015, tuple(p)))
+    add(GR.join(teeth, "Teeth"), "head")
+    jaw_pts = [c + Vector((sx * 0.05, 0.0, -0.035)) * k for sx in (1,)]
     for sx in (1, -1):
-        so = Vector((sx * 0.038, c.y - 0.088, c.z - 0.018))
-        b.add(G.ellipsoid(so, (0.028, 0.022, 0.025), 7, 4), socket, "head")
-        b.add(G.ellipsoid(so + Vector((0, -0.021, 0.001)), (0.0135, 0.009, 0.0125), 6, 3), glow, "head")
-        b.add(G.ellipsoid((sx * 0.07, c.y - 0.06, c.z - 0.048), (0.026, 0.024, 0.02), 6, 3), bonem, "head")
-    b.add(G.xform(G.loft([(0, 0, -0.018, 0.016, 0.006), (0, 0, 0.012, 0.0, 0.0)], 3), G.T(0, c.y - 0.1, c.z - 0.055)), socket, "head")
-    for k in range(6):
-        x = -0.03 + 0.012 * k
-        b.add(G.box((x, c.y - 0.086 + abs(x) * 0.4, c.z - 0.092), 0.0048, 0.005, 0.009), bonem, "head")
-    jaw = [(0.068, c.y + 0.0, c.z - 0.05), (0.062, c.y - 0.04, c.z - 0.115), (0.03, c.y - 0.075, c.z - 0.128),
-           (-0.03, c.y - 0.075, c.z - 0.128), (-0.062, c.y - 0.04, c.z - 0.115), (-0.068, c.y + 0.0, c.z - 0.05)]
-    b.add(G.sweep(jaw, [(0.012, 0.018)] * 6, n=4, normal=(0, 0, 1)), dbone, "head")
-    for k in range(5):
-        x = -0.024 + 0.012 * k
-        b.add(G.box((x, c.y - 0.078 + abs(x) * 0.4, c.z - 0.112), 0.0045, 0.005, 0.008), bonem, "head")
-    # ---- rusty gear: dented helmet, pauldron, belt, rags, tattered cape
-    hm = G.shell(c + Vector((0, 0.004, 0.012)), (0.108, 0.12, 0.112), 10, 4, phi0=math.pi * 0.56, phi1=math.pi)
-    b.add(G.jitter(hm, 0.006, 21), iron, "head")
-    b.add(G.loft([(c.x, c.y + 0.004, c.z + 0.02, 0.1, 0.112), (c.x, c.y + 0.004, c.z + 0.04, 0.098, 0.11)], 10, cap0=False,
-                 cap1=False), drust, "head")
-    sh = P.head["upper_arm.L"]
-    pd = G.shell(Vector(), (0.08, 0.085, 0.07), 8, 4, phi0=math.pi * 0.45, phi1=math.pi)
-    b.add(G.jitter(G.xform(pd, G.T(sh + Vector((0.015, 0, 0.02))) @ G.R(0, 22, 0)), 0.005, 22), iron, "upper_arm.L")
-    b.add(G.loft([(0, 0.01, zp - 0.02, 0.13, 0.085), (0, 0.01, zp + 0.012, 0.128, 0.084)], 8), rope, "hips")
-    rings = [(zh + 0.04, 0.135, 0.1), (zh - 0.1, 0.15, 0.12), (zh - 0.24, 0.16, 0.13)]
-    PT.apron(b, P, rings, rag, span=0.75, n=2, jag=0.06, seed=5)
-    PT.apron(b, P, rings, rag, span=0.6, n=2, back=True, jag=0.07, seed=6)
-    cv, cidx = PT._half_rings([(zn + 0.02, 0.2, 0.12, 0.03), (zn - 0.15, 0.25, 0.15, 0.04), (zs + 0.02, 0.24, 0.16, 0.05)], 6,
-                              a0=0.25, a1=math.pi - 0.25)
-    rnd = random.Random(9)
-    for i in cidx[-1]:
-        x, y, zz = cv[i]
-        cv[i] = (x, y, zz - rnd.uniform(0.0, 0.12))
-    b.add((cv, PT._half_faces(cidx)), rag, "chest")
-    # ---- rusty sword (right hand)
-    M = PT.grip_matrix(P, "R", tilt=10)
-    b.add(G.tube((0, 0, -0.07), (0, 0, 0.08), 0.016, 0.016, n=5), rag, "hand.R", M=M, ground=False)
-    b.add(G.ellipsoid((0, 0, -0.085), 0.02, 5, 3), drust, "hand.R", M=M, ground=False)
-    b.add(G.box((0, 0, 0.09), 0.016, 0.085, 0.014), drust, "hand.R", M=M, ground=False)
-    blade = G.loft([(0, 0, 0.1, 0.008, 0.036), (0, 0, 0.3, 0.008, 0.033), (0, 0, 0.36, 0.007, 0.026), (0, 0, 0.4, 0.007, 0.033),
-                    (0, 0, 0.62, 0.006, 0.028), (0, 0, 0.72, 0.005, 0.016), (0, 0, 0.78, 0.0, 0.0)], 4, phase=0.0)
-    b.add(G.jitter(blade, 0.003, 13), rust, "hand.R", M=M, ground=False)
+        add(_bone_piece(f"Ramus{sx}", c + Vector((sx * 0.052, 0.002, -0.03)) * k, c + Vector((sx * 0.046, -0.01, -0.085)) * k,
+                        0.007, bone_m, 5, 1.4), "head")
+        add(_bone_piece(f"Mandible{sx}", c + Vector((sx * 0.046, -0.01, -0.085)) * k, c + Vector((0, -0.075, -0.1)) * k,
+                        0.008, bone_m, 5, 1.3), "head")
+    # map each piece into the bind pose and skin it rigidly, then join into ONE body
+    objs = []
+    for ob, bone in pieces:
+        if bone != "head" or True:
+            PL.to_bind(ob, ctx.deltas, bone)
+        for g in list(ob.vertex_groups):
+            ob.vertex_groups.remove(g)
+        vg = ob.vertex_groups.new(name=bone)
+        vg.add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
+        objs.append(ob)
+    body = GR.join(objs, "Body")
+    return None, body
 
-    body = b.build("skeleton", rig)
-    print(f"[skeleton] triangles ~{b.tri_count()} {b.breakdown()}")
 
-    # ---- animation
+def skeleton_eyes(ctx):
+    glow = KM.emissive("Ske_EyeGlow", "#7fd8ff", strength=8.0)
+    c, k = ctx.head_c, ctx.head_k
+    eyes = []
+    for sx in (1, -1):
+        e = GR.ico(f"SkeEye{sx}", 0.0085 * k, glow, 2, tuple(c + Vector((sx * 0.031, -0.075, 0.0)) * k))
+        eyes.append(e)
+    ctx.piece(GR.join(eyes, "Ske_Eyes"), "head")
+
+
+def skeleton_dress(ctx):
+    rag = cloth("Cloth_Ske_Rag", "#3a3446", "burlap", seed=141, hem_dirt=1.0)
+    rust = KM.metal("Ske_Rust", "iron", rust=0.9, grime=0.8, seed=142)
+    leather = KM.leather("Ske_Leather", "#2a1c12", seed=143, wear=0.9, dirt=0.9)
+    blade = KM.metal("Ske_Blade", "iron", rust=0.75, grime=0.6, wear=0.7, seed=144, scratches=0.8)
+    lc = G.skirt("Cloth_Ske_Rag", ctx.body, z_top=1.0, z_bot=0.55, seg=36, rings=10, flare=0.06, folds=6, fold_amp=0.012,
+                 clearance=0.025, mat=rag, seed=15, hem_jag=0.08, panels=[(-60, 40), (150, 240)])
+    ctx.cloth(lc, smooth=20, thickness=0.003, covers=False)
+    bl = O.belt(ctx, "Ske_Belt", leather, 0.99, height=0.035, offset=0.03, thickness=0.007, buckle_mat=rust)
+    ctx.cloth(bl, smooth=10, hem=False, covers=False)
+    # rusted open helmet (dome with a broken brim)
+    c, k = ctx.head_c, ctx.head_k
+    base = c + Vector((0, 0.012, 0.035)) * k
+    prof = [(0.0, 0.1 * k), (0.01, 0.1 * k), (0.06, 0.092 * k), (0.1, 0.07 * k), (0.125, 0.035 * k), (0.132, 0.0)]
+    hm = GR.lathe("Ske_Helm", prof, 20, rust)
+    GR.xf(hm, Matrix.Translation(base) @ Matrix.Diagonal((1.0, 1.1, 1.0, 1.0)))
+    gn.displace(hm, strength=0.003, scale=20.0, detail=3.0, seed=4, voronoi=0.3)
+    gn.apply(hm)
+    G.plate(hm, 0.004, 0.0)
+    ctx.piece(hm, "head")
+    sw = GR.sword("Ske_Sword", blade, rust, leather, length=0.74, grip_len=0.12, guard_w=0.09, w0=0.03, w1=0.02, fuller=0.2)
+    gn.displace(sw, strength=0.0015, scale=30.0, detail=2.0, seed=6, voronoi=0.5)
+    gn.apply(sw)
+    GR.xf(sw, GR.grip_frame(ctx, "R", tilt=18))
+    ctx.piece(sw, "hand.R", arms_down=True, ground=False)
+
+
+def skeleton_anim(ctx):
+    P, body = ctx.P, ctx.body
     st = H.stance(drop=0.03, width=1.4, feet=(0.05, -0.05), toe_out=10, hips=(3, 0, 0), spine=(5, 0, 0), chest=(6, 0, 0),
                   neck=(-4, 0, 0), head=(-6, 5, 0), sway=0.01, look=6.0, breathe=0.5,
                   arms={"L": dict(fwd=10, out=16, twist=-5, elbow=30), "R": dict(fwd=10, out=12, twist=8, elbow=52)})
     g = H.gait(frames=20, stride=0.7, lift=0.14, duty=0.45, drop=0.05, bob=0.03, lean=6.0, twist=10.0, sway=0.012,
-               arm_swing=30.0, elbow=35.0, arm_out=14.0,
-               arms={"R": dict(swing=0.6, fwd=8, elbow=55, out=12, twist=8)})
+               arm_swing=30.0, elbow=35.0, arm_out=14.0, arms={"R": dict(swing=0.6, fwd=8, elbow=55, out=12, twist=8)})
     P.key_loop("Idle", 48, lambda t: H.idle_spec(P, t, st))
     P.key_loop("Walk", g["frames"], lambda p: H.gait_spec(P, p, g, st))
+    r = CL.run_gait(frames=14, stride=1.05, lean=14.0, arm_out=14.0, twist=14.0,
+                    arms={"R": dict(swing=0.5, fwd=20, elbow=70, out=14, twist=8)})
+    P.key_loop("Run", r["frames"], lambda p: H.gait_spec(P, p, r, st))
     base = H.idle_spec(P, 0, st)
 
     def sword(fwd, out, twist, elbow, wrist):
@@ -300,8 +386,24 @@ def skeleton():
     follow = over(plus(base, {"hips": {"r": (3, 0, 14), "t": (0, -0.05, -0.05)}, "spine": (5, 0, 14), "chest": (8, 0, 30),
                               "head": (-8, 0, -26)}),
                   {**sword(70, -25, -30, 10, 65), "upper_arm.L": arm_r("L", -15, 28), "forearm.L": (-30, 0, 0)})
-    P.key_poses("Attack", [(0, base), (5, wind, "out"), (8, slash, "in"), (10, follow, "out"), (15, base, "smooth")])
-    P.key_poses("Hit", H.hit_keys(base, strength=1.1))
-    P.key_poses("Death", H.death_keys(P, body, base, "back", turn=20, exclude=b.no_ground, arms={
+    P.key_poses("Attack", [(0, base), (5, wind, "out"), (8, slash, "in3"), (10, follow, "out"), (15, base, "smooth")])
+    # Attack2: two-handed overhead cleave, long rattling wind-up, heavy chop, blade stuck in the ground, wrench free
+    both = {"upper_arm.L": arm_r("L", 150, -5, 20), "forearm.L": (-70, 0, 0)}
+    up1 = over(plus(base, {"hips": {"r": (-6, 0, 6), "t": (0, 0.05, -0.04)}, "spine": (-8, 0, 4), "chest": (-14, 0, 6),
+                           "neck": (-6, 0, 0), "head": (-10, 0, 0)}), {**sword(165, 8, 0, 70, -20), **both})
+    up2 = plus(up1, {"chest": (-4, 0, 2), "head": (-4, 6, 0)})
+    chop = over(plus(base, {"hips": {"r": (18, 0, -4), "t": (0, -0.1, -0.14)}, "spine": (16, 0, 0), "chest": (20, 0, -4),
+                            "head": (-16, 0, 0)}),
+                {**sword(62, 4, 0, 4, 40), "upper_arm.L": arm_r("L", 60, -4, 20), "forearm.L": (-18, 0, 0)})
+    stuck = plus(chop, {"hips": {"t": (0, 0.01, 0.01)}, "chest": (-2, 0, 4), "head": (-4, 0, 6)})
+    wrench = plus(chop, {"hips": {"r": (-8, 0, 6), "t": (0, 0.03, 0.05)}, "chest": (-10, 0, 8)})
+    P.key_poses("Attack2", [(0, base), (8, up1, "out"), (16, up2, "smooth"), (19, chop, "in3"), (26, stuck, "out"),
+                            (30, wrench, "smooth"), (36, base, "smooth")])
+    P.key_poses("Hit", CL.hit_keys(base, 1.1))
+    P.key_poses("Death", H.death_keys(P, body, base, "back", turn=20, exclude=None, arms={
         "upper_arm.R": arm_r("R", 10, 60, 0), "forearm.R": (-10, 0, 0), "hand.R": (75, 0, 0)}))
-    return rig, body, P
+
+
+SKELETON = hq.Spec("skeleton", SKEL_L, build="slim", face="stern", faces=3000, body_fn=skeleton_body,
+                   eyes_fn=skeleton_eyes, dress=skeleton_dress, animate=skeleton_anim, kind="monster",
+                   main_size=1024, cloth_size=512, height=1.85, preview=("Attack2", 19))

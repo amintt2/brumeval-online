@@ -1,0 +1,257 @@
+{
+ "key": "campfire",
+ "fails": [
+  "campfire: 1 open shell(s) whose normals seem to point inward [{'faces': 498, 'centre': [0.0, 0.0, 0.04], 'inward_hits': 179, 'hits': 179}]",
+  "campfire: 24.3% of the UV texels are OVERLAPPING (baked detail will repeat)"
+ ],
+ "warns": [
+  "campfire: ~22 faces coplanar with another shell (possible z-fighting)",
+  "campfire: 3 mirrored/folded UV triangle(s) (tangent sign flips -> normal-map seams)",
+  "lowest point z=-0.092 (origin must be at the base, ground z=0)"
+ ],
+ "info": {
+  "objects": {
+   "campfire": {
+    "faces": 2074,
+    "islands": 27,
+    "boundary_edges": 64,
+    "nonmanifold_edges": 0,
+    "inward_open_shells": [
+     {
+      "faces": 498,
+      "centre": [
+       0.0,
+       0.0,
+       0.04
+      ],
+      "inward_hits": 179,
+      "hits": 179
+     }
+    ]
+   }
+  },
+  "uv": {
+   "campfire": {
+    "islands": 169,
+    "splinter_islands": 4,
+    "coverage": 0.676,
+    "overlap": 0.2428,
+    "flipped_tris": 3
+   }
+  },
+  "seams": {
+   "campfire": {
+    "seam_edges": 643,
+    "worst_at": [
+     [
+      -0.67,
+      -0.38,
+      0.19
+     ],
+     [
+      -0.12,
+      0.63,
+      0.19
+     ],
+     [
+      -0.25,
+      0.03,
+      0.36
+     ],
+     [
+      -0.47,
+      -0.01,
+      0.17
+     ],
+     [
+      -0.42,
+      0.67,
+      0.14
+     ],
+     [
+      -0.68,
+      -0.25,
+      0.19
+     ]
+    ],
+    "island_pairs": 4,
+    "island_offset_worst": [
+     {
+      "lum": 0.0204,
+      "ao": 0.0,
+      "normal_deg": 0.0,
+      "edges": 11,
+      "at": [
+       0.1,
+       0.49,
+       -0.02
+      ]
+     },
+     {
+      "lum": 0.0056,
+      "ao": 0.018,
+      "normal_deg": 0.0,
+      "edges": 6,
+      "at": [
+       -0.81,
+       -0.12,
+       0.1
+      ]
+     },
+     {
+      "lum": 0.0003,
+      "ao": 0.0135,
+      "normal_deg": 0.0,
+      "edges": 6,
+      "at": [
+       0.67,
+       0.53,
+       0.04
+      ]
+     },
+     {
+      "lum": 0.0014,
+      "ao": 0.0,
+      "normal_deg": 0.0,
+      "edges": 7,
+      "at": [
+       -0.16,
+       -0.47,
+       -0.02
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.005,
+     "seam_p95": 0.0459,
+     "ref_p50": 0.0045,
+     "ref_p95": 0.0549
+    },
+    "AO": {
+     "seam_p50": 0.0264,
+     "seam_p95": 0.1161,
+     "ref_p50": 0.0273,
+     "ref_p95": 0.126
+    },
+    "roughness": {
+     "seam_p50": 0.0068,
+     "seam_p95": 0.038,
+     "ref_p50": 0.0052,
+     "ref_p95": 0.0363
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    }
+   }
+  },
+  "atlas": {
+   "campfire_Main_basecolor": {
+    "objects": [
+     "campfire"
+    ],
+    "coverage": 0.676,
+    "overlap_between_objects": 0.0
+   },
+   "campfire_FireGlow_basecolor": {
+    "objects": [
+     "campfire"
+    ],
+    "coverage": 0.676,
+    "overlap_between_objects": 0.0
+   }
+  },
+  "bbox_min": [
+   -0.873,
+   -0.834,
+   -0.092
+  ],
+  "bbox_max": [
+   0.868,
+   0.882,
+   1.11
+  ],
+  "dims": [
+   1.741,
+   1.716,
+   1.202
+  ],
+  "tris": 3160,
+  "textures": {
+   "campfire_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "campfire_Main_orm": [
+    1024,
+    1024
+   ],
+   "campfire_Main_normal": [
+    1024,
+    1024
+   ],
+   "campfire_Main_emissive": [
+    1024,
+    1024
+   ],
+   "campfire_FireGlow_basecolor": [
+    256,
+    256
+   ],
+   "campfire_FireGlow_orm": [
+    256,
+    256
+   ],
+   "campfire_FireGlow_normal": [
+    256,
+    256
+   ],
+   "campfire_FireGlow_emissive": [
+    256,
+    256
+   ]
+  },
+  "glb_bytes": 597932,
+  "bake_s": {
+   "Main": {
+    "base": 172.12,
+    "_device": "CPU",
+    "rough": 123.24,
+    "metal": 31.69,
+    "emission": 37.71,
+    "normal": 310.91,
+    "ao": 1077.37
+   },
+   "FireGlow": {
+    "base": 1.69,
+    "_device": "CPU",
+    "rough": 1.37,
+    "metal": 1.46,
+    "emission": 1.58,
+    "normal": 0.97,
+    "ao": 25.3
+   }
+  },
+  "lods": [
+   [
+    "campfire_lod1.glb",
+    948,
+    220852
+   ],
+   [
+    "campfire_lod2.glb",
+    249,
+    87648
+   ]
+  ],
+  "build_s": 3562.3
+ }
+}

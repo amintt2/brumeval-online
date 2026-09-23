@@ -1,0 +1,160 @@
+{
+ "key": "ruins_pillar",
+ "fails": [
+  "ruins_pillar: 1 floating part(s) with < 3 faces (loose triangles)",
+  "ruins_pillar: baseColor texture SEAM across UV islands p50=0.019 p95=0.178 (same-island edges p50=0.006 p95=0.053); worst near [[-0.53, 0.41, 4.63], [-0.56, -0.24, 4.54], [-0.48, 0.38, 4.61]]",
+  "ruins_pillar: roughness texture SEAM across UV islands p50=0.014 p95=0.645 (same-island edges p50=0.006 p95=0.041); worst near [[-0.53, 0.41, 4.63], [-0.56, -0.24, 4.54], [-0.48, 0.38, 4.61]]"
+ ],
+ "warns": [],
+ "info": {
+  "objects": {
+   "ruins_pillar": {
+    "faces": 4777,
+    "islands": 59,
+    "boundary_edges": 343,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "ruins_pillar": {
+    "seam_edges": 1771,
+    "worst_at": [
+     [
+      -0.53,
+      0.41,
+      4.63
+     ],
+     [
+      -0.56,
+      -0.24,
+      4.54
+     ],
+     [
+      -0.48,
+      0.38,
+      4.61
+     ],
+     [
+      0.35,
+      0.42,
+      3.92
+     ],
+     [
+      -0.61,
+      -0.02,
+      4.61
+     ],
+     [
+      -0.52,
+      0.44,
+      4.63
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0193,
+     "seam_p95": 0.1783,
+     "ref_p50": 0.006,
+     "ref_p95": 0.0529
+    },
+    "AO": {
+     "seam_p50": 0.0225,
+     "seam_p95": 0.1685,
+     "ref_p50": 0.0124,
+     "ref_p95": 0.0737
+    },
+    "roughness": {
+     "seam_p50": 0.0144,
+     "seam_p95": 0.6451,
+     "ref_p50": 0.0061,
+     "ref_p95": 0.0409
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 6.0313,
+     "seam_p95": 24.294,
+     "ref_p50": 5.032,
+     "ref_p95": 20.8277
+    }
+   }
+  },
+  "bbox_min": [
+   -1.251,
+   -1.459,
+   -0.05
+  ],
+  "bbox_max": [
+   1.392,
+   1.15,
+   4.668
+  ],
+  "dims": [
+   2.643,
+   2.609,
+   4.719
+  ],
+  "tris": 4877,
+  "textures": {
+   "ruins_pillar_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "ruins_pillar_Main_orm": [
+    1024,
+    1024
+   ],
+   "ruins_pillar_Main_normal": [
+    1024,
+    1024
+   ],
+   "ruins_pillar_GrassRuins_basecolor": [
+    256,
+    256
+   ],
+   "ruins_pillar_GrassRuins_orm": [
+    256,
+    256
+   ],
+   "ruins_pillar_GrassRuins_normal": [
+    256,
+    256
+   ]
+  },
+  "glb_bytes": 593708,
+  "bake_s": {
+   "Main": {
+    "base": 9.55,
+    "_device": "GPU",
+    "rough": 7.84,
+    "metal": 2.91,
+    "normal": 16.52,
+    "ao": 31.93
+   },
+   "GrassRuins": {
+    "base": 0.36,
+    "_device": "GPU",
+    "rough": 0.34,
+    "metal": 0.33,
+    "alpha": 0.33,
+    "normal": 1.01
+   }
+  },
+  "lods": [
+   [
+    "ruins_pillar_lod1.glb",
+    1462,
+    233144
+   ],
+   [
+    "ruins_pillar_lod2.glb",
+    383,
+    90004
+   ]
+  ],
+  "build_s": 455.5
+ }
+}

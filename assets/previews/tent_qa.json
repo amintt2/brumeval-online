@@ -1,0 +1,206 @@
+{
+ "key": "tent",
+ "fails": [
+  "tent: 2 UV island border(s) with a systematic offset (visible seam): worst lum=0.043 ao=0.005 normal=0.0deg over 9 edges near [-0.03, -0.02, 2.64]"
+ ],
+ "warns": [
+  "tent: 11 mirrored/folded UV triangle(s) (tangent sign flips -> normal-map seams)",
+  "lowest point z=-0.073 (origin must be at the base, ground z=0)"
+ ],
+ "info": {
+  "objects": {
+   "tent": {
+    "faces": 2858,
+    "islands": 28,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "uv": {
+   "tent": {
+    "islands": 223,
+    "splinter_islands": 23,
+    "coverage": 0.337,
+    "overlap": 0.0,
+    "flipped_tris": 11
+   }
+  },
+  "seams": {
+   "tent": {
+    "seam_edges": 715,
+    "worst_at": [
+     [
+      0.51,
+      -1.19,
+      0.58
+     ],
+     [
+      0.53,
+      -1.21,
+      0.59
+     ],
+     [
+      0.46,
+      -1.06,
+      0.81
+     ],
+     [
+      -0.31,
+      -0.68,
+      1.5
+     ],
+     [
+      -0.12,
+      -0.77,
+      2.02
+     ],
+     [
+      0.13,
+      -0.75,
+      1.98
+     ]
+    ],
+    "island_pairs": 12,
+    "island_offset_worst": [
+     {
+      "lum": 0.0432,
+      "ao": 0.0053,
+      "normal_deg": 0.0,
+      "edges": 9,
+      "at": [
+       -0.03,
+       -0.02,
+       2.64
+      ]
+     },
+     {
+      "lum": 0.0356,
+      "ao": 0.0094,
+      "normal_deg": 0.0,
+      "edges": 12,
+      "at": [
+       0.09,
+       -0.43,
+       1.95
+      ]
+     },
+     {
+      "lum": 0.0268,
+      "ao": 0.0152,
+      "normal_deg": 0.0,
+      "edges": 9,
+      "at": [
+       -0.05,
+       -0.04,
+       2.65
+      ]
+     },
+     {
+      "lum": 0.0196,
+      "ao": 0.0494,
+      "normal_deg": 0.0,
+      "edges": 11,
+      "at": [
+       -0.09,
+       0.1,
+       2.64
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0162,
+     "seam_p95": 0.1805,
+     "ref_p50": 0.0163,
+     "ref_p95": 0.1514
+    },
+    "AO": {
+     "seam_p50": 0.019,
+     "seam_p95": 0.0853,
+     "ref_p50": 0.0183,
+     "ref_p95": 0.0781
+    },
+    "roughness": {
+     "seam_p50": 0.0241,
+     "seam_p95": 0.1406,
+     "ref_p50": 0.0343,
+     "ref_p95": 0.1438
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    }
+   }
+  },
+  "atlas": {
+   "tent_Main_basecolor": {
+    "objects": [
+     "tent"
+    ],
+    "coverage": 0.337,
+    "overlap_between_objects": 0.0
+   }
+  },
+  "bbox_min": [
+   -1.922,
+   -1.674,
+   -0.073
+  ],
+  "bbox_max": [
+   1.936,
+   1.87,
+   3.306
+  ],
+  "dims": [
+   3.858,
+   3.544,
+   3.379
+  ],
+  "tris": 5060,
+  "textures": {
+   "tent_Main_basecolor": [
+    2048,
+    2048
+   ],
+   "tent_Main_orm": [
+    2048,
+    2048
+   ],
+   "tent_Main_normal": [
+    2048,
+    2048
+   ]
+  },
+  "glb_bytes": 1257360,
+  "bake_s": {
+   "Main": {
+    "base": 75.79,
+    "_device": "GPU",
+    "rough": 81.35,
+    "metal": 125.44,
+    "normal": 119.97,
+    "ao": 452.52
+   }
+  },
+  "lods": [
+   [
+    "tent_lod1.glb",
+    1518,
+    412600
+   ],
+   [
+    "tent_lod2.glb",
+    394,
+    138132
+   ]
+  ],
+  "build_s": 936.3
+ }
+}

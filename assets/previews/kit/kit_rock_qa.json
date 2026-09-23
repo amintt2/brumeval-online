@@ -1,0 +1,202 @@
+{
+ "key": "kit_rock",
+ "fails": [],
+ "warns": [
+  "Rock: UV island border close to a visible offset (score 0.62)"
+ ],
+ "info": {
+  "objects": {
+   "Rock": {
+    "faces": 4616,
+    "islands": 19,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "uv": {
+   "Rock": {
+    "islands": 45,
+    "splinter_islands": 3,
+    "coverage": 0.613,
+    "overlap": 0.0,
+    "flipped_tris": 0
+   }
+  },
+  "seams": {
+   "Rock": {
+    "seam_edges": 195,
+    "worst_at": [
+     [
+      -0.27,
+      0.68,
+      0.09
+     ],
+     [
+      0.37,
+      -0.63,
+      0.1
+     ],
+     [
+      -0.18,
+      -0.5,
+      0.85
+     ],
+     [
+      -0.78,
+      -0.13,
+      0.69
+     ],
+     [
+      0.27,
+      0.59,
+      0.77
+     ],
+     [
+      0.69,
+      0.44,
+      0.12
+     ]
+    ],
+    "island_pairs": 12,
+    "island_offset_worst": [
+     {
+      "lum": 0.003,
+      "ao": 0.0002,
+      "normal_deg": 6.19,
+      "edges": 9,
+      "at": [
+       0.56,
+       -0.44,
+       0.78
+      ]
+     },
+     {
+      "lum": 0.0047,
+      "ao": 0.0005,
+      "normal_deg": 3.41,
+      "edges": 10,
+      "at": [
+       0.87,
+       0.08,
+       0.11
+      ]
+     },
+     {
+      "lum": 0.001,
+      "ao": 0.0005,
+      "normal_deg": 3.39,
+      "edges": 11,
+      "at": [
+       -0.75,
+       0.48,
+       0.42
+      ]
+     },
+     {
+      "lum": 0.0027,
+      "ao": 0.0005,
+      "normal_deg": 3.28,
+      "edges": 15,
+      "at": [
+       -0.05,
+       -0.68,
+       0.09
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0053,
+     "seam_p95": 0.0347,
+     "ref_p50": 0.0047,
+     "ref_p95": 0.0293
+    },
+    "AO": {
+     "seam_p50": 0.0117,
+     "seam_p95": 0.0516,
+     "ref_p50": 0.0135,
+     "ref_p95": 0.0553
+    },
+    "roughness": {
+     "seam_p50": 0.0065,
+     "seam_p95": 0.0225,
+     "ref_p50": 0.0047,
+     "ref_p95": 0.0213
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 9.7862,
+     "seam_p95": 27.4725,
+     "ref_p50": 9.3688,
+     "ref_p95": 25.544
+    }
+   }
+  },
+  "atlas": {
+   "kit_rock_Main_basecolor": {
+    "objects": [
+     "Rock"
+    ],
+    "coverage": 0.613,
+    "overlap_between_objects": 0.0
+   }
+  },
+  "bbox_min": [
+   -0.925,
+   -0.764,
+   -0.06
+  ],
+  "bbox_max": [
+   0.957,
+   0.739,
+   1.02
+  ],
+  "dims": [
+   1.881,
+   1.503,
+   1.08
+  ],
+  "tris": 4616,
+  "textures": {
+   "kit_rock_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "kit_rock_Main_orm": [
+    1024,
+    1024
+   ],
+   "kit_rock_Main_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 450976,
+  "bake_times": {
+   "Main": {
+    "base": 3.73,
+    "_device": "GPU",
+    "rough": 2.16,
+    "metal": 0.84,
+    "normal": 3.55,
+    "ao": 9.74
+   }
+  },
+  "lods": [
+   [
+    "C:\\Users\\amin2\\mmorpg\\assets\\previews\\kit\\kit_rock_lod1.glb",
+    1384,
+    149332
+   ],
+   [
+    "C:\\Users\\amin2\\mmorpg\\assets\\previews\\kit\\kit_rock_lod2.glb",
+    368,
+    56852
+   ]
+  ]
+ }
+}

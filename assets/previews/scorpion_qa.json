@@ -1,0 +1,280 @@
+{
+ "key": "scorpion",
+ "fails": [
+  "Body: 16 non-manifold edges (shared by > 2 faces)",
+  "Body: 1 UV island border(s) with a systematic offset (visible seam): worst lum=0.003 ao=0.107 normal=0.0deg over 20 edges near [-0.27, -1.16, 0.31]",
+  "clip Death: mesh goes 0.163 m below the ground"
+ ],
+ "warns": [
+  "Body: 21 mirrored/folded UV triangle(s) (tangent sign flips -> normal-map seams)"
+ ],
+ "info": {
+  "objects": {
+   "Body": {
+    "faces": 4092,
+    "islands": 10,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 16
+   }
+  },
+  "uv": {
+   "Body": {
+    "islands": 205,
+    "splinter_islands": 22,
+    "coverage": 0.314,
+    "overlap": 0.0015,
+    "flipped_tris": 21
+   }
+  },
+  "seams": {
+   "Body": {
+    "seam_edges": 2090,
+    "worst_at": [
+     [
+      0.72,
+      0.13,
+      0.07
+     ],
+     [
+      -0.55,
+      -0.64,
+      0.17
+     ],
+     [
+      -0.54,
+      -0.65,
+      0.17
+     ],
+     [
+      0.37,
+      0.34,
+      0.45
+     ],
+     [
+      0.53,
+      0.1,
+      0.31
+     ],
+     [
+      -0.45,
+      -0.61,
+      0.32
+     ]
+    ],
+    "island_pairs": 101,
+    "island_offset_worst": [
+     {
+      "lum": 0.0034,
+      "ao": 0.1075,
+      "normal_deg": 0.0,
+      "edges": 20,
+      "at": [
+       -0.27,
+       -1.16,
+       0.31
+      ]
+     },
+     {
+      "lum": 0.0278,
+      "ao": 0.0444,
+      "normal_deg": 0.0,
+      "edges": 14,
+      "at": [
+       -0.54,
+       -0.63,
+       0.18
+      ]
+     },
+     {
+      "lum": 0.0058,
+      "ao": 0.0606,
+      "normal_deg": 0.0,
+      "edges": 13,
+      "at": [
+       0.35,
+       -1.18,
+       0.34
+      ]
+     },
+     {
+      "lum": 0.0257,
+      "ao": 0.0,
+      "normal_deg": 0.0,
+      "edges": 7,
+      "at": [
+       0.07,
+       -0.23,
+       0.34
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0195,
+     "seam_p95": 0.0876,
+     "ref_p50": 0.0171,
+     "ref_p95": 0.2081
+    },
+    "AO": {
+     "seam_p50": 0.021,
+     "seam_p95": 0.1002,
+     "ref_p50": 0.0189,
+     "ref_p95": 0.0989
+    },
+    "roughness": {
+     "seam_p50": 0.0035,
+     "seam_p95": 0.0731,
+     "ref_p50": 0.003,
+     "ref_p95": 0.286
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    }
+   }
+  },
+  "atlas": {
+   "scorpion_Main_basecolor": {
+    "objects": [
+     "Body"
+    ],
+    "coverage": 0.314,
+    "overlap_between_objects": 0.0
+   }
+  },
+  "bbox_min": [
+   -0.774,
+   -1.198,
+   0.009
+  ],
+  "bbox_max": [
+   0.774,
+   0.966,
+   1.279
+  ],
+  "dims": [
+   1.547,
+   2.164,
+   1.27
+  ],
+  "tris": 8056,
+  "textures": {
+   "scorpion_Main_basecolor": [
+    2048,
+    2048
+   ],
+   "scorpion_Main_orm": [
+    2048,
+    2048
+   ],
+   "scorpion_Main_normal": [
+    2048,
+    2048
+   ],
+   "scorpion_Main_emissive": [
+    2048,
+    2048
+   ]
+  },
+  "glb_bytes": 1427012,
+  "creature": {
+   "weights": {
+    "Body": {
+     "unweighted": 0,
+     "max_influences": 4
+    }
+   },
+   "ground": {
+    "Attack": {
+     "frames": [
+      0,
+      15
+     ],
+     "min_z": 0.009,
+     "max_min_z": 0.009,
+     "loop_gap": 0.0
+    },
+    "Attack2": {
+     "frames": [
+      0,
+      36
+     ],
+     "min_z": 0.009,
+     "max_min_z": 0.009,
+     "loop_gap": 0.0
+    },
+    "Death": {
+     "frames": [
+      0,
+      30
+     ],
+     "min_z": -0.163,
+     "max_min_z": 0.009,
+     "loop_gap": 0.8522
+    },
+    "Hit": {
+     "frames": [
+      0,
+      9
+     ],
+     "min_z": 0.009,
+     "max_min_z": 0.009,
+     "loop_gap": 0.0
+    },
+    "Idle": {
+     "frames": [
+      0,
+      48
+     ],
+     "min_z": 0.002,
+     "max_min_z": 0.01,
+     "loop_gap": 0.0
+    },
+    "Run": {
+     "frames": [
+      0,
+      12
+     ],
+     "min_z": 0.009,
+     "max_min_z": 0.01,
+     "loop_gap": 0.0
+    },
+    "Shoot": {
+     "frames": [
+      0,
+      20
+     ],
+     "min_z": 0.009,
+     "max_min_z": 0.009,
+     "loop_gap": 0.0
+    },
+    "Walk": {
+     "frames": [
+      0,
+      20
+     ],
+     "min_z": 0.009,
+     "max_min_z": 0.01,
+     "loop_gap": 0.0
+    }
+   }
+  },
+  "clips": {
+   "Attack": 0.625,
+   "Attack2": 1.5,
+   "Death": 1.25,
+   "Hit": 0.375,
+   "Idle": 2.0,
+   "Run": 0.5,
+   "Shoot": 0.833,
+   "Walk": 0.833
+  }
+ }
+}

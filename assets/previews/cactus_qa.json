@@ -1,0 +1,125 @@
+{
+ "key": "cactus",
+ "fails": [],
+ "warns": [],
+ "info": {
+  "objects": {
+   "cactus": {
+    "faces": 4200,
+    "islands": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "cactus": {
+    "seam_edges": 1238,
+    "worst_at": [
+     [
+      -0.52,
+      0.28,
+      2.0
+     ],
+     [
+      -0.52,
+      0.28,
+      2.0
+     ],
+     [
+      0.49,
+      0.25,
+      2.59
+     ],
+     [
+      0.02,
+      -0.54,
+      2.22
+     ],
+     [
+      0.48,
+      0.23,
+      2.6
+     ],
+     [
+      0.05,
+      -0.34,
+      2.3
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0027,
+     "seam_p95": 0.0079,
+     "ref_p50": 0.0023,
+     "ref_p95": 0.0071
+    },
+    "AO": {
+     "seam_p50": 0.0178,
+     "seam_p95": 0.1002,
+     "ref_p50": 0.0145,
+     "ref_p95": 0.0735
+    },
+    "roughness": {
+     "seam_p50": 0.003,
+     "seam_p95": 0.01,
+     "ref_p50": 0.0025,
+     "ref_p95": 0.0091
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 3.5702,
+     "seam_p95": 12.462,
+     "ref_p50": 1.8173,
+     "ref_p95": 5.0166
+    }
+   }
+  },
+  "bbox_min": [
+   -0.774,
+   -0.775,
+   -0.06
+  ],
+  "bbox_max": [
+   0.751,
+   0.377,
+   3.56
+  ],
+  "dims": [
+   1.525,
+   1.152,
+   3.62
+  ],
+  "tris": 4200,
+  "textures": {
+   "cactus_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "cactus_Main_orm": [
+    1024,
+    1024
+   ],
+   "cactus_Main_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 382072,
+  "lods": [
+   [
+    "cactus_lod1.glb",
+    1260,
+    152584
+   ],
+   [
+    "cactus_lod2.glb",
+    336,
+    62316
+   ]
+  ]
+ }
+}

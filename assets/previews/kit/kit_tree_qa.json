@@ -1,0 +1,198 @@
+{
+ "key": "kit_tree",
+ "fails": [],
+ "warns": [
+  "lowest point z=-0.096 (origin must be at the base, ground z=0)"
+ ],
+ "info": {
+  "objects": {
+   "Trunk": {
+    "faces": 1995,
+    "islands": 21,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   },
+   "Leaves": {
+    "faces": 29,
+    "islands": 29,
+    "boundary_edges": 116,
+    "nonmanifold_edges": 0
+   }
+  },
+  "uv": {
+   "Trunk": {
+    "islands": 94,
+    "splinter_islands": 12,
+    "coverage": 0.439,
+    "overlap": 0.0,
+    "flipped_tris": 0
+   }
+  },
+  "seams": {
+   "Trunk": {
+    "seam_edges": 462,
+    "worst_at": [
+     [
+      0.0,
+      0.11,
+      0.32
+     ],
+     [
+      -0.3,
+      -0.22,
+      3.21
+     ],
+     [
+      -0.21,
+      -0.21,
+      3.07
+     ],
+     [
+      0.05,
+      -0.03,
+      1.0
+     ],
+     [
+      -0.21,
+      -0.19,
+      3.21
+     ],
+     [
+      -0.23,
+      -0.03,
+      0.0
+     ]
+    ],
+    "island_pairs": 13,
+    "island_offset_worst": [
+     {
+      "lum": 0.0091,
+      "ao": 0.0409,
+      "normal_deg": 0.0,
+      "edges": 24,
+      "at": [
+       -0.21,
+       -0.19,
+       3.21
+      ]
+     },
+     {
+      "lum": 0.0026,
+      "ao": 0.0146,
+      "normal_deg": 0.0,
+      "edges": 24,
+      "at": [
+       -0.24,
+       -0.26,
+       3.22
+      ]
+     },
+     {
+      "lum": 0.0031,
+      "ao": 0.0,
+      "normal_deg": 0.0,
+      "edges": 28,
+      "at": [
+       -0.94,
+       -0.0,
+       2.81
+      ]
+     },
+     {
+      "lum": 0.003,
+      "ao": 0.0068,
+      "normal_deg": 0.0,
+      "edges": 26,
+      "at": [
+       -0.24,
+       -0.26,
+       3.22
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0067,
+     "seam_p95": 0.0597,
+     "ref_p50": 0.0053,
+     "ref_p95": 0.0719
+    },
+    "AO": {
+     "seam_p50": 0.0483,
+     "seam_p95": 0.1577,
+     "ref_p50": 0.054,
+     "ref_p95": 0.1866
+    },
+    "roughness": {
+     "seam_p50": 0.0046,
+     "seam_p95": 0.0177,
+     "ref_p50": 0.0053,
+     "ref_p95": 0.0174
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    }
+   }
+  },
+  "atlas": {
+   "kit_tree_Main_basecolor": {
+    "objects": [
+     "Trunk"
+    ],
+    "coverage": 0.439,
+    "overlap_between_objects": 0.0
+   }
+  },
+  "bbox_min": [
+   -1.266,
+   -2.033,
+   -0.096
+  ],
+  "bbox_max": [
+   1.622,
+   1.784,
+   4.257
+  ],
+  "dims": [
+   2.888,
+   3.817,
+   4.353
+  ],
+  "tris": 4174,
+  "textures": {
+   "kit_tree_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "kit_tree_Main_orm": [
+    1024,
+    1024
+   ],
+   "kit_tree_Main_normal": [
+    1024,
+    1024
+   ],
+   "kit_tree_Leaf_oak_basecolor": [
+    512,
+    512
+   ],
+   "kit_tree_Leaf_oak_orm": [
+    512,
+    512
+   ],
+   "kit_tree_Leaf_oak_normal": [
+    512,
+    512
+   ]
+  },
+  "glb_bytes": 456276
+ }
+}

@@ -1,0 +1,125 @@
+{
+ "key": "rock_desert",
+ "fails": [],
+ "warns": [],
+ "info": {
+  "objects": {
+   "rock_desert": {
+    "faces": 3000,
+    "islands": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "rock_desert": {
+    "seam_edges": 1067,
+    "worst_at": [
+     [
+      -0.03,
+      0.7,
+      0.77
+     ],
+     [
+      -0.03,
+      0.7,
+      0.77
+     ],
+     [
+      -0.77,
+      -0.06,
+      0.53
+     ],
+     [
+      -0.46,
+      -0.02,
+      1.86
+     ],
+     [
+      0.68,
+      -0.69,
+      1.23
+     ],
+     [
+      0.02,
+      -0.69,
+      0.4
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0092,
+     "seam_p95": 0.0581,
+     "ref_p50": 0.0071,
+     "ref_p95": 0.0496
+    },
+    "AO": {
+     "seam_p50": 0.0281,
+     "seam_p95": 0.1179,
+     "ref_p50": 0.0185,
+     "ref_p95": 0.0748
+    },
+    "roughness": {
+     "seam_p50": 0.0089,
+     "seam_p95": 0.0271,
+     "ref_p50": 0.0089,
+     "ref_p95": 0.0269
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 9.7647,
+     "seam_p95": 30.0225,
+     "ref_p50": 7.6712,
+     "ref_p95": 20.8216
+    }
+   }
+  },
+  "bbox_min": [
+   -1.047,
+   -0.923,
+   -0.05
+  ],
+  "bbox_max": [
+   1.028,
+   0.884,
+   1.987
+  ],
+  "dims": [
+   2.075,
+   1.807,
+   2.037
+  ],
+  "tris": 3000,
+  "textures": {
+   "rock_desert_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "rock_desert_Main_orm": [
+    1024,
+    1024
+   ],
+   "rock_desert_Main_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 469256,
+  "lods": [
+   [
+    "rock_desert_lod1.glb",
+    900,
+    177008
+   ],
+   [
+    "rock_desert_lod2.glb",
+    240,
+    66284
+   ]
+  ]
+ }
+}

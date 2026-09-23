@@ -1,0 +1,407 @@
+{
+ "key": "golem",
+ "fails": [
+  "GolemParts: baseColor texture SEAM across UV islands p50=0.007 p95=0.176 (same-island edges p50=0.002 p95=0.054); worst near [[0.67, 0.83, 2.51], [0.67, 0.88, 2.53], [-0.85, 0.86, 2.63]]",
+  "GolemParts: normal(deg) texture SEAM across UV islands p50=3.867 p95=39.303 (same-island edges p50=0.476 p95=14.188); worst near [[0.67, 0.83, 2.51], [0.67, 0.88, 2.53], [-0.85, 0.86, 2.63]]"
+ ],
+ "warns": [
+  "Plates: normal(deg) texture SEAM across UV islands p50=12.417 p95=67.424 (same-island edges p50=6.350 p95=33.989); worst near [[-0.23, -1.02, 3.82], [-0.13, -0.33, 2.08], [-0.06, -0.38, 2.08]]",
+  "GolemParts: AO texture SEAM across UV islands p50=0.025 p95=0.264 (same-island edges p50=0.004 p95=0.086); worst near [[0.67, 0.83, 2.51], [0.67, 0.88, 2.53], [-0.85, 0.86, 2.63]]",
+  "clip Attack: mesh goes 0.17 m under the ground",
+  "clip Attack2: mesh goes 0.80 m under the ground",
+  "clip Death: mesh goes 1.16 m under the ground",
+  "clip Idle: mesh goes 0.08 m under the ground",
+  "clip Run: mesh goes 0.39 m under the ground",
+  "clip Walk: mesh goes 0.30 m under the ground"
+ ],
+ "info": {
+  "objects": {
+   "GolemBody": {
+    "faces": 4800,
+    "islands": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   },
+   "Plates": {
+    "faces": 11396,
+    "islands": 27,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   },
+   "GolemParts": {
+    "faces": 990,
+    "islands": 16,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   },
+   "Moss": {
+    "faces": 8160,
+    "islands": 34,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "GolemBody": {
+    "seam_edges": 757,
+    "worst_at": [
+     [
+      -1.62,
+      0.19,
+      2.21
+     ],
+     [
+      -1.59,
+      -0.29,
+      0.69
+     ],
+     [
+      -0.05,
+      0.49,
+      1.61
+     ],
+     [
+      1.34,
+      0.42,
+      2.35
+     ],
+     [
+      -0.03,
+      0.68,
+      2.75
+     ],
+     [
+      0.36,
+      -0.1,
+      0.6
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0042,
+     "seam_p95": 0.0574,
+     "ref_p50": 0.0037,
+     "ref_p95": 0.052
+    },
+    "AO": {
+     "seam_p50": 0.0009,
+     "seam_p95": 0.1264,
+     "ref_p50": 0.0,
+     "ref_p95": 0.16
+    },
+    "roughness": {
+     "seam_p50": 0.0056,
+     "seam_p95": 0.0211,
+     "ref_p50": 0.005,
+     "ref_p95": 0.0196
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 1.2931,
+     "seam_p95": 15.7404,
+     "ref_p50": 1.1534,
+     "ref_p95": 14.1914
+    }
+   },
+   "Plates": {
+    "seam_edges": 4788,
+    "worst_at": [
+     [
+      -0.23,
+      -1.02,
+      3.82
+     ],
+     [
+      -0.13,
+      -0.33,
+      2.08
+     ],
+     [
+      -0.06,
+      -0.38,
+      2.08
+     ],
+     [
+      -0.11,
+      -0.32,
+      2.08
+     ],
+     [
+      -1.75,
+      -0.33,
+      1.26
+     ],
+     [
+      -0.35,
+      -0.89,
+      3.82
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0152,
+     "seam_p95": 0.1232,
+     "ref_p50": 0.0091,
+     "ref_p95": 0.0983
+    },
+    "AO": {
+     "seam_p50": 0.0215,
+     "seam_p95": 0.1679,
+     "ref_p50": 0.0132,
+     "ref_p95": 0.1131
+    },
+    "roughness": {
+     "seam_p50": 0.0098,
+     "seam_p95": 0.0736,
+     "ref_p50": 0.0074,
+     "ref_p95": 0.0552
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 12.417,
+     "seam_p95": 67.4236,
+     "ref_p50": 6.3496,
+     "ref_p95": 33.989
+    }
+   },
+   "GolemParts": {
+    "seam_edges": 815,
+    "worst_at": [
+     [
+      0.67,
+      0.83,
+      2.51
+     ],
+     [
+      0.67,
+      0.88,
+      2.53
+     ],
+     [
+      -0.85,
+      0.86,
+      2.63
+     ],
+     [
+      0.57,
+      0.85,
+      2.72
+     ],
+     [
+      -0.84,
+      0.89,
+      2.5
+     ],
+     [
+      0.56,
+      0.8,
+      2.83
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0072,
+     "seam_p95": 0.1756,
+     "ref_p50": 0.0021,
+     "ref_p95": 0.0545
+    },
+    "AO": {
+     "seam_p50": 0.0251,
+     "seam_p95": 0.2636,
+     "ref_p50": 0.0042,
+     "ref_p95": 0.0856
+    },
+    "roughness": {
+     "seam_p50": 0.0002,
+     "seam_p95": 0.0185,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0145
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 3.867,
+     "seam_p95": 39.3027,
+     "ref_p50": 0.4761,
+     "ref_p95": 14.1882
+    }
+   },
+   "Moss": {
+    "seam_edges": 3197,
+    "worst_at": [
+     [
+      0.04,
+      -0.48,
+      2.44
+     ],
+     [
+      -1.22,
+      -0.15,
+      3.51
+     ],
+     [
+      -0.13,
+      -0.28,
+      1.79
+     ],
+     [
+      0.28,
+      -0.42,
+      2.04
+     ],
+     [
+      -1.24,
+      -0.22,
+      3.52
+     ],
+     [
+      -1.23,
+      -0.23,
+      3.53
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0067,
+     "seam_p95": 0.0277,
+     "ref_p50": 0.0011,
+     "ref_p95": 0.0068
+    },
+    "AO": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0641,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0204
+    },
+    "roughness": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 4.2529,
+     "seam_p95": 10.098,
+     "ref_p50": 2.516,
+     "ref_p95": 5.6248
+    }
+   }
+  },
+  "bbox_min": [
+   -1.854,
+   -1.036,
+   0.007
+  ],
+  "bbox_max": [
+   1.847,
+   1.439,
+   4.196
+  ],
+  "dims": [
+   3.701,
+   2.475,
+   4.189
+  ],
+  "tris": 26192,
+  "textures": {
+   "golem_Main_basecolor": [
+    2048,
+    2048
+   ],
+   "golem_Main_orm": [
+    2048,
+    2048
+   ],
+   "golem_Main_normal": [
+    2048,
+    2048
+   ],
+   "golem_Main_emissive": [
+    2048,
+    2048
+   ]
+  },
+  "glb_bytes": 4799488,
+  "ground": {
+   "Attack": {
+    "min_z": -0.175,
+    "max_min_z": -0.056
+   },
+   "Attack2": {
+    "min_z": -0.8,
+    "max_min_z": 0.01
+   },
+   "Death": {
+    "min_z": -1.156,
+    "max_min_z": -0.056
+   },
+   "Hit": {
+    "min_z": -0.056,
+    "max_min_z": -0.049
+   },
+   "Idle": {
+    "min_z": -0.085,
+    "max_min_z": -0.058
+   },
+   "Run": {
+    "min_z": -0.386,
+    "max_min_z": -0.018
+   },
+   "Special": {
+    "min_z": -0.362,
+    "max_min_z": 0.009
+   },
+   "Walk": {
+    "min_z": -0.302,
+    "max_min_z": -0.059
+   }
+  },
+  "clips": {
+   "Attack": 1.125,
+   "Attack2": 1.583,
+   "Death": 2.333,
+   "Hit": 0.5,
+   "Idle": 2.917,
+   "Run": 0.917,
+   "Special": 2.5,
+   "Walk": 1.333
+  },
+  "bones": [
+   "root",
+   "hips",
+   "spine",
+   "chest",
+   "neck",
+   "head",
+   "jaw",
+   "upper_arm.L",
+   "forearm.L",
+   "hand.L",
+   "upper_arm.R",
+   "forearm.R",
+   "hand.R",
+   "thigh.L",
+   "shin.L",
+   "foot.L",
+   "thigh.R",
+   "shin.R",
+   "foot.R"
+  ]
+ }
+}

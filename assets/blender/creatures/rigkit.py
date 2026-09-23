@@ -5,8 +5,7 @@ Only used by assets/blender/creatures/*.py. Everything is deterministic.
 Key ideas
 ---------
 * Bones are declared in armature space (head, tail, parent). The armature object is named 'Rig'.
-* Mesh parts get vertex groups named like bones (rigid or blended weights) and are then joined into one
-  skinned mesh (`skin()`), parented to the rig with an Armature modifier.
+* Skinning lives in body.py (continuous skin-modifier body + heat weights, smoothed).
 * Animation poses are authored as *armature-space* deltas per bone, relative to the rest pose:
       {'bone': {'r': (rx, ry, rz) degrees, 't': (x, y, z) metres, 's': (sx, sy, sz) or scalar}}
   Rotations use Blender XYZ euler order around the ARMATURE axes (X = right, Y = back, Z = up; creatures
@@ -118,79 +117,6 @@ def build_armature(bones, name="Rig"):
 def bone_segments(rig):
     """{name: (head, tail)} in armature space (rest pose)."""
     return {b.name: (b.head_local.copy(), b.tail_local.copy()) for b in rig.data.bones}
-
-
-# --------------------------------------------------------------------------- weights
-def _group(obj, bone):
-    return obj.vertex_groups.get(bone) or obj.vertex_groups.new(name=bone)
-
-
-def rigid(obj, bone):
-    """Assign every vertex of obj to `bone` with weight 1 (call before joining)."""
-    g = _group(obj, bone)
-    g.add(list(range(len(obj.data.vertices))), 1.0, "REPLACE")
-    obj["_weighted"] = True
-    return obj
-
-
-def blended(obj, fn):
-    """fn(world_co: Vector) -> {bone: weight}; weights are normalised, max 4 influences."""
-    mw = obj.matrix_world
-    groups = {}
-    for v in obj.data.vertices:
-        ws = fn(mw @ v.co)
-        ws = {k: w for k, w in ws.items() if w > 1e-4}
-        ws = dict(sorted(ws.items(), key=lambda kv: -kv[1])[:4])
-        tot = sum(ws.values()) or 1.0
-        for k, w in ws.items():
-            if k not in groups:
-                groups[k] = _group(obj, k)
-            groups[k].add([v.index], w / tot, "REPLACE")
-    obj["_weighted"] = True
-    return obj
-
-
-def _seg_dist(p, a, b):
-    ab = b - a
-    L = ab.length_squared
-    t = 0.0 if L == 0 else clamp((p - a).dot(ab) / L)
-    return (a + ab * t - p).length
-
-
-def by_bones(rig, names, sharp=6.0):
-    """Weight function blending the given bones by inverse distance to their segments."""
-    segs = bone_segments(rig)
-
-    def fn(co):
-        ds = {n: _seg_dist(co, *segs[n]) for n in names}
-        dmin = min(ds.values())
-        return {n: math.exp(-sharp * (d - dmin) / max(0.05, dmin + 0.05)) for n, d in ds.items()}
-
-    return fn
-
-
-def skin(parts, rig, name="Body"):
-    """Join weighted mesh parts into one mesh, parent it to the rig with an Armature modifier."""
-    import common as C
-
-    import meshkit as MK
-
-    for p in parts:
-        if not p.get("_weighted"):
-            raise RuntimeError(f"part {p.name} has no bone weights")
-    # glTF exports COLOR_0 for every primitive of a mesh once any part has a colour attribute, and three.js
-    # multiplies it into the material colour -> parts without one must be white, not the default black.
-    names = {a.name for p in parts for a in p.data.color_attributes}
-    for nm in names:
-        for p in parts:
-            if p.data.color_attributes.get(nm) is None:
-                MK.vertex_colors(p, lambda co, n: (1.0, 1.0, 1.0), nm)
-    mesh = C.join(parts, name)
-    C.flat(mesh)
-    mesh.parent = rig
-    mod = mesh.modifiers.new("Armature", "ARMATURE")
-    mod.object = rig
-    return mesh
 
 
 # --------------------------------------------------------------------------- animation

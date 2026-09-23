@@ -1,0 +1,56 @@
+[0.0s] base lowlands + coast distance
+[7.7s] ridges and peaks
+[8.2s] volcano
+[8.2s] plateaus and mesas
+[8.6s] dunes and wetlands
+[8.9s] coast, islands
+[9.7s] erosion
+[13.4s] ravines
+[13.5s] lakes
+[13.5s] rivers
+[24.5s] settlements
+[24.5s] roads
+[25.5s] water + slope
+[25.8s] regions + biomes
+[33.9s] reachability
+[35.2s] reached cells 711104
+[35.2s] dijkstra brumeval done
+[36.6s] reached cells 711104
+[36.6s] dijkstra port_salin done
+[37.9s] reached cells 711104
+[37.9s] dijkstra ambresable done
+[39.1s] reached cells 711104
+[39.1s] dijkstra rochegivre done
+[40.2s] reached cells 711104
+[40.2s] dijkstra clairsaule done
+[40.3s] control map
+[40.4s] writing outputs
+[40.6s] heights -45.0 .. 574.1
+[40.6s] unreachable from Brumeval: none
+peaks Pic de Givrecime 382 | Dent de l'Hiver 356 | Mont Blanchecorne 320 | Aiguille Grise 331 | Corne du Loup 315 | Mont Guet 200 | Mont Écumeur 289 | Pic de Suie 280 | Mont Brasier 379 | Table du Géant 260 | Les Trois Enclumes 129 | Sentinelle Rouge 93 | Colonne des Vents 84 | Tour de Sel 59
+passes Col du Loup Blanc 181 | Col des Cendres 135 | Brèche des Embruns 78 | Gorge Sèche 130 | Escalier d'Ambresable 47
+lakes songes@18 leak=0 | glace@254.5 leak=0 | oasis_ambre@37.5 leak=0 | oasis_mirages@57 leak=0 | oasis_palmes@32.2 leak=0 | vermeil@73.5 leak=0 | miroir_aldmar@155.5 leak=0 | lave@317 leak=0
+roads voie_royale L1102 g10 cut-29.5 fill28.3 br0 worst [-65,-956,128,128.4,false,false]
+  route_mordore L1348 g10 cut-1.7 fill1.2 br1 worst [-424,-147,54.3,54.7,false,false]
+  route_col L842 g20 cut-26 fill12.5 br1 worst [-939,-1218,125.3,126.1,false,false]
+  sentier_glace L496 g22 cut-30.2 fill19.7 br1 worst [-1498,-2045,255.4,256.3,false,false]
+  sentier_blanchecorne L370 g25 cut-17 fill13.4 br1 worst [-1414,-1899,213.5,212.5,false,false]
+  route_sud_ouest L1370 g10 cut-2.7 fill2.6 br1 worst [-974,403,37.5,37.9,false,false]
+  piste_mirages L572 g15 cut-2 fill1.1 br1 worst [-1661,732,44.5,45.1,false,false]
+  escalier_entaille L2205 g25 cut-2.3 fill5.2 br1 worst [-1518,-1515,181.6,182.6,false,false]
+  sentier_table L429 g25 cut-26.7 fill28.2 br1 worst [-1463,-767,162.5,163.5,false,false]
+  porte_rougecrete L975 g22 cut-33.7 fill11.9 br3 worst [-1167,-524,85.5,86.4,false,false]
+  route_port L1064 g10 cut-2.7 fill2.5 br1 worst [344,229,41.7,41.3,false,false]
+  route_cote L2023 g15 cut-3.6 fill14.6 br3 worst [580,937,14.4,15,false,false]
+  route_palmes L687 g10 cut-2.1 fill2.3 br0 worst [840,824,8.6,9,false,false]
+  route_est L2305 g10 cut-4.7 fill4.9 br3 worst [378,-102,47.8,47.4,false,false]
+  route_phare L720 g30 cut-27 fill23.6 br0 worst [1731,-811,66.2,67.4,false,false]
+  route_cendres L901 g12 cut-16.6 fill16.1 br1 worst [826,-1214,31.5,32,false,false]
+  sentier_brasier L462 g30 cut-20 fill20.6 br0 worst [979,-1536,93.9,95.1,false,false]
+  coulee L762 g35 cut-21.7 fill29.6 br0 worst [1385,-1700,240.3,241.7,false,false]
+  route_foret L2100 g12 cut-50.8 fill30.1 br1 worst [-59,-1124,156.6,157.1,false,false]
+  rampe_est_aldmar L1054 g14 cut-29.3 fill27.9 br2 worst [303,-821,100.3,100.9,false,false]
+  lac_gue L1026 g13.7 cut-0.8 fill0.4 br0 worst [-638,-146,42.5,42,false,false]
+slope hist [ 377524, 197146, 70891, 34143, 22746 ]
+regions arbre 0.17km² h151 walk90% | coeur_aldmar 0.12km² h142 walk91% | aldmar 0.18km² h140 walk88% | couronne 0.15km² h336 walk75% | coeur_brasier 0.32km² h302 walk68% | mer_dunes 0.23km² h37 walk100% | epave 0.09km² h15 walk99% | egares 0.21km² h105 walk100% | entaille 0.24km² h159 walk60% | brumeval 0.95km² h53 walk99% | mordore 1.3km² h78 walk98% | ventfauve 0.51km² h49 walk99% | sylve 1.77km² h122 walk95% | givreval 1.34km² h234 walk88% | cendres 0.98km² h171 walk76% | brumenoire 1.03km² h12 walk97% | embruns 0.4km² h138 walk51% | rougecrete 1.12km² h189 walk88% | sable_rouge 1.37km² h44 walk96% | songes 0.7km² h26 walk100% | port_salin 1.84km² h28 walk100% | azurine 1.75km² h15 walk100%
+brumeval travel brumeval:0 port_salin:3.2 ambresable:3.9 rochegivre:6.7 clairsaule:6.3 relais_mordore:2.7 poste_cendres:5.8 phare:7.6 wp_brumeval:0 wp_mordore:2.6 wp_gue_argentine:3.9 wp_porte_aldmar:2.3 wp_arbre:3.3 wp_lisiere:5.2 wp_clairsaule:6.3 wp_col_loup:5.7 wp_rochegivre:6.6 wp_lac_glace:8.3 wp_blanchecorne:8.5 wp_table:6.8 wp_entaille:5.2 wp_ambresable:3.9 wp_mirages:5.4 wp_songes:1.8 wp_anse:3.6 wp_port_salin:3.1 wp_palmes:4.2 wp_azurine:5.9 wp_ventfauve:2.7 wp_brumenoire:4.3 wp_delta:4.8 wp_phare:7.5 wp_cendres:5.8 wp_aiguille:7.8 wp_clairiere_nord:7.2 wp_plage_noire:8.9 wp_cretes:10.4 wp_palais:5.6 wp_mines:6.1 wp_ajoncs:2.5 wp_brasier:7.5 crypte_aldmar:3.9 grotte_gelee:8.3 forge_brasier:8.7 tombeau_sables:6 antre_sorciere:4.9 grotte_marees:6.8 mines_rougecrete:6.3 antre_golem:0.5

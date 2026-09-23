@@ -1,0 +1,136 @@
+{
+ "key": "crate",
+ "fails": [
+  "crate: baseColor texture SEAM across UV islands p50=0.039 p95=0.163 (same-island edges p50=0.009 p95=0.098); worst near [[0.47, -0.48, 0.49], [-0.51, 0.5, 0.12], [0.51, 0.34, 0.12]]",
+  "crate: AO texture SEAM across UV islands p50=0.018 p95=0.386 (same-island edges p50=0.000 p95=0.046); worst near [[0.47, -0.48, 0.49], [-0.51, 0.5, 0.12], [0.51, 0.34, 0.12]]"
+ ],
+ "warns": [
+  "crate: 32 tiny loose part(s) (< 0.01% of the area)",
+  "crate: ~1 faces coplanar with another shell (possible z-fighting)",
+  "crate: roughness texture SEAM across UV islands p50=0.018 p95=0.169 (same-island edges p50=0.004 p95=0.063); worst near [[0.47, -0.48, 0.49], [-0.51, 0.5, 0.12], [0.51, 0.34, 0.12]]"
+ ],
+ "info": {
+  "objects": {
+   "crate": {
+    "faces": 2290,
+    "islands": 95,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "crate": {
+    "seam_edges": 2040,
+    "worst_at": [
+     [
+      0.47,
+      -0.48,
+      0.49
+     ],
+     [
+      -0.51,
+      0.5,
+      0.12
+     ],
+     [
+      0.51,
+      0.34,
+      0.12
+     ],
+     [
+      -0.52,
+      -0.5,
+      0.89
+     ],
+     [
+      -0.52,
+      0.5,
+      0.12
+     ],
+     [
+      0.51,
+      0.34,
+      0.12
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0386,
+     "seam_p95": 0.1625,
+     "ref_p50": 0.0087,
+     "ref_p95": 0.0983
+    },
+    "AO": {
+     "seam_p50": 0.0176,
+     "seam_p95": 0.3861,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0459
+    },
+    "roughness": {
+     "seam_p50": 0.0184,
+     "seam_p95": 0.1693,
+     "ref_p50": 0.0037,
+     "ref_p95": 0.0626
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.1699,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0431
+    },
+    "normal(deg)": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    }
+   }
+  },
+  "bbox_min": [
+   -0.582,
+   -0.536,
+   0.0
+  ],
+  "bbox_max": [
+   0.582,
+   0.536,
+   1.011
+  ],
+  "dims": [
+   1.163,
+   1.072,
+   1.011
+  ],
+  "tris": 3724,
+  "textures": {
+   "crate_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "crate_Main_orm": [
+    1024,
+    1024
+   ],
+   "crate_Main_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 548212,
+  "bake_s": 236.3,
+  "lods": [
+   [
+    "crate_lod1.glb",
+    1116,
+    210464
+   ],
+   [
+    "crate_lod2.glb",
+    232,
+    65280
+   ]
+  ],
+  "groups": {
+   "Main": 1024
+  }
+ }
+}

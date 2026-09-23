@@ -1,0 +1,139 @@
+{
+ "key": "tree_pine",
+ "fails": [],
+ "warns": [
+  "tree_pine: ~1 faces coplanar with another shell (possible z-fighting)"
+ ],
+ "info": {
+  "objects": {
+   "tree_pine": {
+    "faces": 3388,
+    "islands": 333,
+    "boundary_edges": 2336,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "tree_pine": {
+    "seam_edges": 1499,
+    "worst_at": [
+     [
+      0.41,
+      0.7,
+      0.16
+     ],
+     [
+      0.42,
+      0.72,
+      0.15
+     ],
+     [
+      0.38,
+      1.07,
+      2.29
+     ],
+     [
+      0.69,
+      0.92,
+      4.64
+     ],
+     [
+      0.82,
+      0.6,
+      5.24
+     ],
+     [
+      0.64,
+      0.5,
+      5.32
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0165,
+     "seam_p95": 0.103,
+     "ref_p50": 0.0086,
+     "ref_p95": 0.0989
+    },
+    "AO": {
+     "seam_p50": 0.058,
+     "seam_p95": 0.2675,
+     "ref_p50": 0.0289,
+     "ref_p95": 0.1851
+    },
+    "roughness": {
+     "seam_p50": 0.0075,
+     "seam_p95": 0.036,
+     "ref_p50": 0.0044,
+     "ref_p95": 0.0275
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 7.8536,
+     "seam_p95": 24.2857,
+     "ref_p50": 4.1448,
+     "ref_p95": 24.7265
+    }
+   }
+  },
+  "bbox_min": [
+   -2.28,
+   -2.131,
+   -0.05
+  ],
+  "bbox_max": [
+   2.376,
+   2.747,
+   6.577
+  ],
+  "dims": [
+   4.656,
+   4.878,
+   6.627
+  ],
+  "tris": 5276,
+  "textures": {
+   "tree_pine_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "tree_pine_Main_orm": [
+    1024,
+    1024
+   ],
+   "tree_pine_Main_normal": [
+    1024,
+    1024
+   ],
+   "tree_pine_Leaf_pine_basecolor": [
+    1024,
+    1024
+   ],
+   "tree_pine_Leaf_pine_orm": [
+    1024,
+    1024
+   ],
+   "tree_pine_Leaf_pine_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 781952,
+  "lods": [
+   [
+    "tree_pine_lod1.glb",
+    2156,
+    325128
+   ],
+   [
+    "tree_pine_lod2.glb",
+    4,
+    26828
+   ]
+  ]
+ }
+}

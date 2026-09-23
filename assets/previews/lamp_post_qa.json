@@ -1,0 +1,154 @@
+{
+ "key": "lamp_post",
+ "fails": [
+  "lamp_post: baseColor texture SEAM across UV islands p50=0.047 p95=0.181 (same-island edges p50=0.011 p95=0.118); worst near [[-0.17, 0.19, 0.06], [-0.14, 0.07, 0.31], [-0.15, -0.03, 0.33]]"
+ ],
+ "warns": [
+  "lamp_post: ~32 faces coplanar with another shell (possible z-fighting)",
+  "lamp_post: AO texture SEAM across UV islands p50=0.014 p95=0.287 (same-island edges p50=0.004 p95=0.069); worst near [[-0.17, 0.19, 0.06], [-0.14, 0.07, 0.31], [-0.15, -0.03, 0.33]]",
+  "lamp_post: roughness texture SEAM across UV islands p50=0.031 p95=0.160 (same-island edges p50=0.008 p95=0.065); worst near [[-0.17, 0.19, 0.06], [-0.14, 0.07, 0.31], [-0.15, -0.03, 0.33]]",
+  "lamp_post: metallic texture SEAM across UV islands p50=0.005 p95=0.257 (same-island edges p50=0.002 p95=0.042); worst near [[-0.17, 0.19, 0.06], [-0.14, 0.07, 0.31], [-0.15, -0.03, 0.33]]",
+  "bbox centre (-0.00,-0.28) far from the origin (pivot must be at base centre)"
+ ],
+ "info": {
+  "objects": {
+   "lamp_post": {
+    "faces": 2182,
+    "islands": 41,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "lamp_post": {
+    "seam_edges": 1246,
+    "worst_at": [
+     [
+      -0.17,
+      0.19,
+      0.06
+     ],
+     [
+      -0.14,
+      0.07,
+      0.31
+     ],
+     [
+      -0.15,
+      -0.03,
+      0.33
+     ],
+     [
+      -0.22,
+      -0.07,
+      0.27
+     ],
+     [
+      -0.17,
+      0.12,
+      0.3
+     ],
+     [
+      -0.04,
+      0.17,
+      0.25
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0475,
+     "seam_p95": 0.1813,
+     "ref_p50": 0.0109,
+     "ref_p95": 0.1179
+    },
+    "AO": {
+     "seam_p50": 0.0144,
+     "seam_p95": 0.2867,
+     "ref_p50": 0.0044,
+     "ref_p95": 0.0695
+    },
+    "roughness": {
+     "seam_p50": 0.0309,
+     "seam_p95": 0.1597,
+     "ref_p50": 0.008,
+     "ref_p95": 0.065
+    },
+    "metallic": {
+     "seam_p50": 0.005,
+     "seam_p95": 0.2565,
+     "ref_p50": 0.0016,
+     "ref_p95": 0.0416
+    },
+    "normal(deg)": {
+     "seam_p50": 2.3945,
+     "seam_p95": 20.0492,
+     "ref_p50": 0.4569,
+     "ref_p95": 14.3588
+    }
+   }
+  },
+  "bbox_min": [
+   -0.26,
+   -0.81,
+   -0.052
+  ],
+  "bbox_max": [
+   0.253,
+   0.257,
+   3.03
+  ],
+  "dims": [
+   0.513,
+   1.067,
+   3.082
+  ],
+  "tris": 2182,
+  "textures": {
+   "lamp_post_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "lamp_post_Main_orm": [
+    1024,
+    1024
+   ],
+   "lamp_post_Main_normal": [
+    1024,
+    1024
+   ],
+   "lamp_post_Glow_basecolor": [
+    1024,
+    1024
+   ],
+   "lamp_post_Glow_orm": [
+    1024,
+    1024
+   ],
+   "lamp_post_Glow_normal": [
+    1024,
+    1024
+   ],
+   "lamp_post_Glow_emissive": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 473016,
+  "bake_s": 1760.5,
+  "lods": [
+   [
+    "lamp_post_lod1.glb",
+    654,
+    168040
+   ],
+   [
+    "lamp_post_lod2.glb",
+    160,
+    62584
+   ]
+  ],
+  "groups": {
+   "Main": 1024,
+   "Glow": 1024
+  }
+ }
+}

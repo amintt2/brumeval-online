@@ -1,0 +1,61 @@
+{
+ "key": "flowers",
+ "fails": [],
+ "warns": [
+  "size z=0.63 m vs expected 0.50 m",
+  "flowers: only 1712 triangles (< 2000 for vegetation) - is the model detailed enough?"
+ ],
+ "info": {
+  "objects": {
+   "flowers": {
+    "faces": 856,
+    "islands": 214,
+    "boundary_edges": 1712,
+    "nonmanifold_edges": 0
+   }
+  },
+  "bbox_min": [
+   -0.73,
+   -0.734,
+   -0.02
+  ],
+  "bbox_max": [
+   0.712,
+   0.724,
+   0.611
+  ],
+  "dims": [
+   1.442,
+   1.458,
+   0.631
+  ],
+  "tris": 1712,
+  "textures": {
+   "flowers_Grass_flowers_basecolor": [
+    1024,
+    1024
+   ],
+   "flowers_Grass_flowers_orm": [
+    1024,
+    1024
+   ],
+   "flowers_Grass_flowers_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 163256,
+  "lods": [
+   [
+    "flowers_lod1.glb",
+    800,
+    80624
+   ],
+   [
+    "flowers_lod2.glb",
+    200,
+    35068
+   ]
+  ]
+ }
+}

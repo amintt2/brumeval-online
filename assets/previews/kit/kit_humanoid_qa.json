@@ -1,0 +1,599 @@
+{
+ "key": "kit_humanoid",
+ "fails": [],
+ "warns": [
+  "Body: 276 boundary edges (holes / open borders) - fine only if hidden",
+  "Tunic: UV island border close to a visible offset (score 0.72)"
+ ],
+ "info": {
+  "objects": {
+   "Body": {
+    "faces": 2037,
+    "islands": 5,
+    "boundary_edges": 276,
+    "nonmanifold_edges": 0
+   },
+   "Tunic": {
+    "faces": 1784,
+    "islands": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   },
+   "Skirt": {
+    "faces": 1360,
+    "islands": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   },
+   "Belt": {
+    "faces": 320,
+    "islands": 1,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "uv": {
+   "Body": {
+    "islands": 18,
+    "splinter_islands": 0,
+    "coverage": 0.353,
+    "overlap": 0.0,
+    "flipped_tris": 0
+   },
+   "Tunic": {
+    "islands": 28,
+    "splinter_islands": 6,
+    "coverage": 0.175,
+    "overlap": 0.0,
+    "flipped_tris": 0
+   },
+   "Skirt": {
+    "islands": 10,
+    "splinter_islands": 0,
+    "coverage": 0.28,
+    "overlap": 0.0,
+    "flipped_tris": 0
+   },
+   "Belt": {
+    "islands": 2,
+    "splinter_islands": 0,
+    "coverage": 0.1,
+    "overlap": 0.0,
+    "flipped_tris": 0
+   }
+  },
+  "seams": {
+   "Body": {
+    "seam_edges": 398,
+    "worst_at": [
+     [
+      -0.12,
+      -0.0,
+      0.05
+     ],
+     [
+      0.44,
+      0.01,
+      1.09
+     ],
+     [
+      -0.06,
+      0.03,
+      1.68
+     ],
+     [
+      0.05,
+      -0.04,
+      1.53
+     ],
+     [
+      -0.12,
+      0.03,
+      0.08
+     ],
+     [
+      0.58,
+      -0.04,
+      0.98
+     ]
+    ],
+    "island_pairs": 21,
+    "island_offset_worst": [
+     {
+      "lum": 0.0021,
+      "ao": 0.023,
+      "normal_deg": 1.43,
+      "edges": 9,
+      "at": [
+       0.1,
+       -0.12,
+       0.07
+      ]
+     },
+     {
+      "lum": 0.0002,
+      "ao": 0.0196,
+      "normal_deg": 2.76,
+      "edges": 12,
+      "at": [
+       0.12,
+       -0.12,
+       0.02
+      ]
+     },
+     {
+      "lum": 0.0006,
+      "ao": 0.0044,
+      "normal_deg": 1.99,
+      "edges": 9,
+      "at": [
+       -0.12,
+       -0.11,
+       0.06
+      ]
+     },
+     {
+      "lum": 0.0003,
+      "ao": 0.0038,
+      "normal_deg": 1.58,
+      "edges": 6,
+      "at": [
+       -0.65,
+       0.0,
+       0.89
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0044,
+     "seam_p95": 0.0128,
+     "ref_p50": 0.0046,
+     "ref_p95": 0.0132
+    },
+    "AO": {
+     "seam_p50": 0.01,
+     "seam_p95": 0.0575,
+     "ref_p50": 0.011,
+     "ref_p95": 0.0647
+    },
+    "roughness": {
+     "seam_p50": 0.0296,
+     "seam_p95": 0.0832,
+     "ref_p50": 0.0316,
+     "ref_p95": 0.09
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 6.7124,
+     "seam_p95": 13.4057,
+     "ref_p50": 6.8457,
+     "ref_p95": 13.7299
+    }
+   },
+   "Tunic": {
+    "seam_edges": 326,
+    "worst_at": [
+     [
+      0.18,
+      0.05,
+      1.33
+     ],
+     [
+      0.19,
+      -0.04,
+      1.33
+     ],
+     [
+      -0.19,
+      0.04,
+      1.33
+     ],
+     [
+      0.2,
+      -0.01,
+      1.32
+     ],
+     [
+      -0.18,
+      -0.02,
+      0.91
+     ],
+     [
+      0.18,
+      -0.02,
+      1.32
+     ]
+    ],
+    "island_pairs": 18,
+    "island_offset_worst": [
+     {
+      "lum": 0.0013,
+      "ao": 0.0,
+      "normal_deg": 7.23,
+      "edges": 17,
+      "at": [
+       -0.16,
+       -0.05,
+       0.93
+      ]
+     },
+     {
+      "lum": 0.0005,
+      "ao": 0.0104,
+      "normal_deg": 0.39,
+      "edges": 12,
+      "at": [
+       -0.39,
+       0.06,
+       1.18
+      ]
+     },
+     {
+      "lum": 0.0015,
+      "ao": 0.0083,
+      "normal_deg": 0.34,
+      "edges": 12,
+      "at": [
+       -0.17,
+       -0.06,
+       0.93
+      ]
+     },
+     {
+      "lum": 0.0017,
+      "ao": 0.0064,
+      "normal_deg": 0.06,
+      "edges": 42,
+      "at": [
+       -0.39,
+       0.06,
+       1.18
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0031,
+     "seam_p95": 0.018,
+     "ref_p50": 0.0025,
+     "ref_p95": 0.0099
+    },
+    "AO": {
+     "seam_p50": 0.0103,
+     "seam_p95": 0.0507,
+     "ref_p50": 0.0101,
+     "ref_p95": 0.0535
+    },
+    "roughness": {
+     "seam_p50": 0.0054,
+     "seam_p95": 0.015,
+     "ref_p50": 0.005,
+     "ref_p95": 0.0151
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 1.8631,
+     "seam_p95": 8.3248,
+     "ref_p50": 1.6174,
+     "ref_p95": 3.6306
+    }
+   },
+   "Skirt": {
+    "seam_edges": 132,
+    "worst_at": [
+     [
+      0.24,
+      0.17,
+      0.18
+     ],
+     [
+      -0.23,
+      0.17,
+      0.24
+     ],
+     [
+      0.22,
+      0.15,
+      0.3
+     ],
+     [
+      0.23,
+      0.16,
+      0.24
+     ],
+     [
+      -0.23,
+      -0.16,
+      0.29
+     ],
+     [
+      0.21,
+      -0.14,
+      0.47
+     ]
+    ],
+    "island_pairs": 8,
+    "island_offset_worst": [
+     {
+      "lum": 0.0002,
+      "ao": 0.0282,
+      "normal_deg": 0.22,
+      "edges": 17,
+      "at": [
+       0.25,
+       0.18,
+       0.13
+      ]
+     },
+     {
+      "lum": 0.0001,
+      "ao": 0.0121,
+      "normal_deg": 0.17,
+      "edges": 16,
+      "at": [
+       -0.26,
+       0.18,
+       0.13
+      ]
+     },
+     {
+      "lum": 0.0,
+      "ao": 0.0066,
+      "normal_deg": 0.32,
+      "edges": 16,
+      "at": [
+       0.25,
+       0.18,
+       0.13
+      ]
+     },
+     {
+      "lum": 0.0003,
+      "ao": 0.0058,
+      "normal_deg": 0.39,
+      "edges": 17,
+      "at": [
+       -0.27,
+       -0.19,
+       0.13
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.003,
+     "seam_p95": 0.0073,
+     "ref_p50": 0.0027,
+     "ref_p95": 0.0072
+    },
+    "AO": {
+     "seam_p50": 0.009,
+     "seam_p95": 0.0685,
+     "ref_p50": 0.008,
+     "ref_p95": 0.0771
+    },
+    "roughness": {
+     "seam_p50": 0.0059,
+     "seam_p95": 0.0164,
+     "ref_p50": 0.0058,
+     "ref_p95": 0.0173
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 1.7046,
+     "seam_p95": 3.6208,
+     "ref_p50": 1.6938,
+     "ref_p95": 3.6277
+    }
+   },
+   "Belt": {
+    "seam_edges": 80,
+    "worst_at": [
+     [
+      -0.18,
+      -0.06,
+      0.91
+     ],
+     [
+      -0.15,
+      -0.1,
+      0.91
+     ],
+     [
+      -0.17,
+      0.01,
+      0.92
+     ],
+     [
+      -0.18,
+      0.06,
+      0.91
+     ],
+     [
+      0.13,
+      0.11,
+      0.91
+     ],
+     [
+      0.01,
+      0.13,
+      0.92
+     ]
+    ],
+    "island_pairs": 1,
+    "island_offset_worst": [
+     {
+      "lum": 0.0013,
+      "ao": 0.0,
+      "normal_deg": 1.91,
+      "edges": 80,
+      "at": [
+       0.19,
+       -0.04,
+       0.91
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0053,
+     "seam_p95": 0.0266,
+     "ref_p50": 0.0036,
+     "ref_p95": 0.0216
+    },
+    "roughness": {
+     "seam_p50": 0.0152,
+     "seam_p95": 0.05,
+     "ref_p50": 0.0137,
+     "ref_p95": 0.0468
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 9.9892,
+     "seam_p95": 42.3181,
+     "ref_p50": 9.0606,
+     "ref_p95": 36.4916
+    }
+   }
+  },
+  "atlas": {
+   "kit_humanoid_Main_basecolor": {
+    "objects": [
+     "Body",
+     "Belt"
+    ],
+    "coverage": 0.453,
+    "overlap_between_objects": 0.0
+   },
+   "kit_humanoid_Cloth_Robe_basecolor": {
+    "objects": [
+     "Tunic",
+     "Skirt"
+    ],
+    "coverage": 0.455,
+    "overlap_between_objects": 0.0
+   }
+  },
+  "bbox_min": [
+   -0.665,
+   -0.324,
+   0.007
+  ],
+  "bbox_max": [
+   0.665,
+   0.312,
+   1.762
+  ],
+  "dims": [
+   1.33,
+   0.636,
+   1.755
+  ],
+  "tris": 11002,
+  "textures": {
+   "kit_humanoid_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "kit_humanoid_Main_orm": [
+    1024,
+    1024
+   ],
+   "kit_humanoid_Main_normal": [
+    1024,
+    1024
+   ],
+   "kit_humanoid_Cloth_Robe_basecolor": [
+    1024,
+    1024
+   ],
+   "kit_humanoid_Cloth_Robe_orm": [
+    1024,
+    1024
+   ],
+   "kit_humanoid_Cloth_Robe_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 867280,
+  "covered_verts": 73,
+  "clothing": {
+   "Idle": {
+    "frames": [
+     0,
+     4,
+     8,
+     12,
+     16,
+     20,
+     24,
+     28,
+     32,
+     36,
+     40,
+     44,
+     48
+    ],
+    "worst_verts": 0,
+    "bad_frames": [],
+    "min_z": 0.0
+   },
+   "Walk": {
+    "frames": [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10,
+     12,
+     14,
+     16,
+     18,
+     20,
+     22,
+     24
+    ],
+    "worst_verts": 0,
+    "bad_frames": [],
+    "min_z": 0.0
+   }
+  },
+  "bake_times": {
+   "Main": {
+    "base": 1.89,
+    "_device": "GPU",
+    "rough": 0.86,
+    "metal": 0.54,
+    "normal": 1.27,
+    "ao": 3.46
+   },
+   "Cloth_Robe": {
+    "base": 1.09,
+    "_device": "GPU",
+    "rough": 1.21,
+    "metal": 0.65,
+    "normal": 1.62,
+    "ao": 3.95
+   }
+  }
+ }
+}

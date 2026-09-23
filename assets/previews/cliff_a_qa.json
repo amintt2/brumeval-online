@@ -1,0 +1,132 @@
+{
+ "key": "cliff_a",
+ "fails": [
+  "cliff_a: baseColor texture SEAM across UV islands p50=0.009 p95=0.221 (same-island edges p50=0.003 p95=0.067); worst near [[4.55, -1.2, 0.67], [-3.83, -1.25, 2.62], [-4.79, -0.02, 0.16]]",
+  "cliff_a: AO texture SEAM across UV islands p50=0.067 p95=0.447 (same-island edges p50=0.009 p95=0.070); worst near [[4.55, -1.2, 0.67], [-3.83, -1.25, 2.62], [-4.79, -0.02, 0.16]]",
+  "cliff_a: roughness texture SEAM across UV islands p50=0.000 p95=0.949 (same-island edges p50=0.000 p95=0.041); worst near [[4.55, -1.2, 0.67], [-3.83, -1.25, 2.62], [-4.79, -0.02, 0.16]]",
+  "cliff_a: 13448 triangles > budget 5000 (rock)"
+ ],
+ "warns": [
+  "lowest point z=-0.201 (origin must be at the base, ground z=0)"
+ ],
+ "info": {
+  "objects": {
+   "cliff_a": {
+    "faces": 13448,
+    "islands": 80,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "cliff_a": {
+    "seam_edges": 5430,
+    "worst_at": [
+     [
+      4.55,
+      -1.2,
+      0.67
+     ],
+     [
+      -3.83,
+      -1.25,
+      2.62
+     ],
+     [
+      -4.79,
+      -0.02,
+      0.16
+     ],
+     [
+      -0.91,
+      1.65,
+      8.28
+     ],
+     [
+      -3.83,
+      -1.25,
+      2.62
+     ],
+     [
+      -4.72,
+      0.29,
+      0.06
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0088,
+     "seam_p95": 0.2213,
+     "ref_p50": 0.0025,
+     "ref_p95": 0.0667
+    },
+    "AO": {
+     "seam_p50": 0.0666,
+     "seam_p95": 0.4474,
+     "ref_p50": 0.0089,
+     "ref_p95": 0.0697
+    },
+    "roughness": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.949,
+     "ref_p50": 0.0,
+     "ref_p95": 0.041
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 3.3107,
+     "seam_p95": 16.2986,
+     "ref_p50": 1.0037,
+     "ref_p95": 11.0635
+    }
+   }
+  },
+  "bbox_min": [
+   -5.18,
+   -2.177,
+   -0.201
+  ],
+  "bbox_max": [
+   5.146,
+   2.294,
+   8.549
+  ],
+  "dims": [
+   10.326,
+   4.472,
+   8.751
+  ],
+  "tris": 13448,
+  "textures": {
+   "cliff_a_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "cliff_a_Main_orm": [
+    1024,
+    1024
+   ],
+   "cliff_a_Main_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 1239284,
+  "lods": [
+   [
+    "cliff_a_lod1.glb",
+    4034,
+    469168
+   ],
+   [
+    "cliff_a_lod2.glb",
+    1062,
+    147584
+   ]
+  ]
+ }
+}

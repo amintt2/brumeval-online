@@ -1,0 +1,144 @@
+{
+ "key": "tree_oak",
+ "fails": [
+  "tree_oak: baseColor texture SEAM across UV islands p50=0.043 p95=0.219 (same-island edges p50=0.010 p95=0.079); worst near [[-0.16, -0.59, 4.58], [-0.16, -0.58, 4.58], [0.01, -0.57, 3.14]]",
+  "tree_oak: roughness texture SEAM across UV islands p50=0.009 p95=0.878 (same-island edges p50=0.002 p95=0.014); worst near [[-0.16, -0.59, 4.58], [-0.16, -0.58, 4.58], [0.01, -0.57, 3.14]]",
+  "tree_oak: normal(deg) texture SEAM across UV islands p50=14.143 p95=39.664 (same-island edges p50=3.657 p95=23.653); worst near [[-0.16, -0.59, 4.58], [-0.16, -0.58, 4.58], [0.01, -0.57, 3.14]]"
+ ],
+ "warns": [
+  "tree_oak: 1 tiny loose part(s) (< 0.01% of the area)",
+  "tree_oak: AO texture SEAM across UV islands p50=0.039 p95=0.192 (same-island edges p50=0.009 p95=0.062); worst near [[-0.16, -0.59, 4.58], [-0.16, -0.58, 4.58], [0.01, -0.57, 3.14]]"
+ ],
+ "info": {
+  "objects": {
+   "tree_oak": {
+    "faces": 3640,
+    "islands": 395,
+    "boundary_edges": 2238,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "tree_oak": {
+    "seam_edges": 1281,
+    "worst_at": [
+     [
+      -0.16,
+      -0.59,
+      4.58
+     ],
+     [
+      -0.16,
+      -0.58,
+      4.58
+     ],
+     [
+      0.01,
+      -0.57,
+      3.14
+     ],
+     [
+      -0.53,
+      0.05,
+      2.33
+     ],
+     [
+      0.47,
+      -0.85,
+      3.38
+     ],
+     [
+      -1.16,
+      -1.22,
+      2.38
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0434,
+     "seam_p95": 0.2194,
+     "ref_p50": 0.0097,
+     "ref_p95": 0.0788
+    },
+    "AO": {
+     "seam_p50": 0.0392,
+     "seam_p95": 0.1921,
+     "ref_p50": 0.0091,
+     "ref_p95": 0.0616
+    },
+    "roughness": {
+     "seam_p50": 0.0088,
+     "seam_p95": 0.8784,
+     "ref_p50": 0.0021,
+     "ref_p95": 0.0142
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 14.1426,
+     "seam_p95": 39.6636,
+     "ref_p50": 3.6568,
+     "ref_p95": 23.6532
+    }
+   }
+  },
+  "bbox_min": [
+   -2.803,
+   -2.642,
+   -0.05
+  ],
+  "bbox_max": [
+   2.212,
+   2.427,
+   5.837
+  ],
+  "dims": [
+   5.015,
+   5.069,
+   5.887
+  ],
+  "tris": 4680,
+  "textures": {
+   "tree_oak_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "tree_oak_Main_orm": [
+    1024,
+    1024
+   ],
+   "tree_oak_Main_normal": [
+    1024,
+    1024
+   ],
+   "tree_oak_Leaf_oak_basecolor": [
+    1024,
+    1024
+   ],
+   "tree_oak_Leaf_oak_orm": [
+    1024,
+    1024
+   ],
+   "tree_oak_Leaf_oak_normal": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 515708,
+  "lods": [
+   [
+    "tree_oak_lod1.glb",
+    1854,
+    226932
+   ],
+   [
+    "tree_oak_lod2.glb",
+    4,
+    38492
+   ]
+  ]
+ }
+}

@@ -1,0 +1,288 @@
+{
+ "key": "boar",
+ "fails": [
+  "Body: 1 UV island border(s) with a systematic offset (visible seam): worst lum=0.002 ao=0.092 normal=0.0deg over 24 edges near [0.15, 0.51, 0.06]",
+  "clip Death: mesh goes 0.129 m below the ground"
+ ],
+ "warns": [
+  "Body: 6 mirrored/folded UV triangle(s) (tangent sign flips -> normal-map seams)",
+  "Fur: ~1 faces coplanar with another shell (possible z-fighting)"
+ ],
+ "info": {
+  "objects": {
+   "Body": {
+    "faces": 4070,
+    "islands": 9,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   },
+   "Fur": {
+    "faces": 2440,
+    "islands": 1220,
+    "boundary_edges": 7320,
+    "nonmanifold_edges": 0
+   }
+  },
+  "uv": {
+   "Body": {
+    "islands": 128,
+    "splinter_islands": 12,
+    "coverage": 0.471,
+    "overlap": 0.0014,
+    "flipped_tris": 6
+   }
+  },
+  "seams": {
+   "Body": {
+    "seam_edges": 1289,
+    "worst_at": [
+     [
+      -0.06,
+      -1.04,
+      0.5
+     ],
+     [
+      -0.13,
+      -0.96,
+      0.66
+     ],
+     [
+      -0.14,
+      0.45,
+      0.07
+     ],
+     [
+      0.03,
+      -1.07,
+      0.52
+     ],
+     [
+      -0.15,
+      -0.98,
+      0.66
+     ],
+     [
+      0.07,
+      -0.99,
+      0.54
+     ]
+    ],
+    "island_pairs": 52,
+    "island_offset_worst": [
+     {
+      "lum": 0.0022,
+      "ao": 0.0922,
+      "normal_deg": 0.0,
+      "edges": 24,
+      "at": [
+       0.15,
+       0.51,
+       0.06
+      ]
+     },
+     {
+      "lum": 0.0051,
+      "ao": 0.0501,
+      "normal_deg": 0.0,
+      "edges": 19,
+      "at": [
+       -0.18,
+       0.52,
+       0.07
+      ]
+     },
+     {
+      "lum": 0.0188,
+      "ao": 0.0014,
+      "normal_deg": 0.0,
+      "edges": 7,
+      "at": [
+       -0.04,
+       -1.04,
+       0.48
+      ]
+     },
+     {
+      "lum": 0.0089,
+      "ao": 0.0273,
+      "normal_deg": 0.0,
+      "edges": 8,
+      "at": [
+       -0.24,
+       0.57,
+       0.72
+      ]
+     }
+    ],
+    "baseColor": {
+     "seam_p50": 0.0083,
+     "seam_p95": 0.0443,
+     "ref_p50": 0.0086,
+     "ref_p95": 0.0347
+    },
+    "AO": {
+     "seam_p50": 0.034,
+     "seam_p95": 0.1814,
+     "ref_p50": 0.0434,
+     "ref_p95": 0.1875
+    },
+    "roughness": {
+     "seam_p50": 0.0051,
+     "seam_p95": 0.0502,
+     "ref_p50": 0.0046,
+     "ref_p95": 0.0233
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    },
+    "normal(deg)": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    }
+   }
+  },
+  "atlas": {
+   "boar_Main_basecolor": {
+    "objects": [
+     "Body"
+    ],
+    "coverage": 0.471,
+    "overlap_between_objects": 0.0
+   }
+  },
+  "bbox_min": [
+   -0.361,
+   -1.082,
+   -0.006
+  ],
+  "bbox_max": [
+   0.375,
+   0.897,
+   1.23
+  ],
+  "dims": [
+   0.736,
+   1.98,
+   1.236
+  ],
+  "tris": 12988,
+  "textures": {
+   "boar_Main_basecolor": [
+    2048,
+    2048
+   ],
+   "boar_Main_orm": [
+    2048,
+    2048
+   ],
+   "boar_Main_normal": [
+    2048,
+    2048
+   ],
+   "boar_FurCard_boar_basecolor": [
+    512,
+    512
+   ],
+   "boar_FurCard_boar_orm": [
+    512,
+    512
+   ],
+   "boar_FurCard_boar_normal": [
+    512,
+    512
+   ]
+  },
+  "glb_bytes": 2292912,
+  "creature": {
+   "weights": {
+    "Body": {
+     "unweighted": 0,
+     "max_influences": 4
+    },
+    "Fur": {
+     "unweighted": 0,
+     "max_influences": 4
+    }
+   },
+   "ground": {
+    "Attack": {
+     "frames": [
+      0,
+      15
+     ],
+     "min_z": -0.006,
+     "max_min_z": -0.004,
+     "loop_gap": 0.0
+    },
+    "Attack2": {
+     "frames": [
+      0,
+      36
+     ],
+     "min_z": -0.006,
+     "max_min_z": 0.046,
+     "loop_gap": 0.0652
+    },
+    "Death": {
+     "frames": [
+      0,
+      30
+     ],
+     "min_z": -0.129,
+     "max_min_z": 0.009,
+     "loop_gap": 1.0031
+    },
+    "Hit": {
+     "frames": [
+      0,
+      9
+     ],
+     "min_z": -0.006,
+     "max_min_z": -0.006,
+     "loop_gap": 0.0
+    },
+    "Idle": {
+     "frames": [
+      0,
+      48
+     ],
+     "min_z": -0.018,
+     "max_min_z": -0.005,
+     "loop_gap": 0.0
+    },
+    "Run": {
+     "frames": [
+      0,
+      12
+     ],
+     "min_z": -0.006,
+     "max_min_z": 0.001,
+     "loop_gap": 0.0
+    },
+    "Walk": {
+     "frames": [
+      0,
+      22
+     ],
+     "min_z": -0.006,
+     "max_min_z": -0.004,
+     "loop_gap": 0.0
+    }
+   }
+  },
+  "clips": {
+   "Attack": 0.625,
+   "Attack2": 1.5,
+   "Death": 1.25,
+   "Hit": 0.375,
+   "Idle": 2.0,
+   "Run": 0.5,
+   "Walk": 0.917
+  }
+ }
+}
