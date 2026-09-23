@@ -20,6 +20,9 @@
 | **P1** | **Carte plus grande avec plus de contenu** | Durée de vie | v0.3 |
 | **P1** | **Groupes** (partage d'XP et de butin), **guildes**, **PvP** | Le « M » de MMO | v0.3 |
 | **P1** | **Artisanat** (récolte, métiers, recettes, stations) | Économie et progression | v0.3 |
+| **P0 v0.3** | **Bien plus de variété d'équipement** : « on s'équipe vite et il n'y a rien de mieux ». Paliers d'objets par zone jusqu'au niveau 30, 5 raretés, affixes aléatoires, objets uniques de boss, ensembles, amélioration à la forge (+1 à +10) | Sans objectif d'équipement, on arrête de jouer | v0.3 |
+| **P0 v0.3** | **Échanger son butin simplement** : échange direct entre joueurs, **étals du marché** pour vendre son butin (même hors ligne), banque | Économie entre joueurs, simple et accessible | v0.3 |
+| **P0 v0.3** | **Zones rouges** : JcJ libre ; à la mort (joueur ou monstre), on lâche son butin dans un sac que tout le monde peut ramasser ; en échange, bien plus d'XP et de butin | Tension, risque contre récompense | v0.3 |
 
 ## 2. Ce qu'on attend d'un MMO : la liste étendue
 
@@ -32,7 +35,9 @@
 - Guildes (création payante, rangs, chat de guilde, tag sous le nom, liste des membres) · liste d'amis · échange sécurisé entre joueurs
 - PvP : duels (/duel), arène près du village, classement PvP ; zones sûres respectées
 - Artisanat : minerais (cuivre, fer, mithril, cristal), plantes (herbe de brume, fleur de givre, pétale de braise), métiers Forge / Alchimie / Couture, recettes, qualité des objets fabriqués
-- Progression : niveau max 30, emplacements casque, gants, bottes, anneau, amulette, objets à affixes aléatoires, ensembles, arbre de talents, nouvelles compétences par classe
+- Progression : niveau max 30, arbre de talents, nouvelles compétences par classe — et le **butin v2** (section 2 bis)
+- Économie : échange direct, **étals du marché**, banque, courrier (section 2 bis)
+- **Zones rouges** à JcJ libre et butin perdu à la mort (section 2 bis)
 
 **P2 — v0.4 « Aventures »**
 - Donjons instanciés en groupe (Crypte d'Aldmar, Grotte gelée) avec boss et butin dédié
@@ -49,6 +54,30 @@
 - Pêche, cuisine (buffs), logement, familiers, événements saisonniers
 - Saisons PvP classées, guerres de guilde, sièges
 - Traduction anglaise, serveurs multiples
+
+## 2 bis. Préconception v0.3 : butin, échanges, zones rouges (retours joueurs du 23/09)
+
+Principe : **simple et accessible** — une infobulle qui compare tout seule, des raretés à la couleur évidente, pas de règles cachées.
+
+**Butin v2**
+- Niveau d'objet = niveau du monstre ou de la zone ; niveau max des joueurs : 30.
+- 5 raretés : Commun (blanc, 0 affixe) · Inhabituel (vert, 1) · Rare (bleu, 2) · Épique (violet, 3) · Légendaire (orange : objet unique de boss avec un effet spécial, ex. « Lame runique d'Aldmar : les coups critiques gèlent »).
+- Affixes aléatoires dont la valeur dépend du niveau d'objet : Force (attaque), Garde (défense), Vitalité (PV), Esprit (mana), Endurance, Précision (critique), Vitesse d'attaque, Vol de vie, Équilibre, dégâts de feu / givre / arcane, résistances.
+- Emplacements : arme, main gauche (bouclier / grimoire / carquois), tête, torse, mains, pieds, 2 anneaux, amulette. Types d'armure : plaques (guerrier), cuir (rôdeur), tissu (mage).
+- 6 paliers, chacun avec son allure visuelle : **T1** Brumeval (niv. 1–5) · **T2** Forêt et camp gobelin (5–10) · **T3** Cimetière (10–15) · **T4** Marais et désert (15–20) · **T5** Givreval (20–25) · **T6** Aldmar et zones rouges (25–30).
+- Ensembles de 2 et 4 pièces (donjons, zones rouges) ; **amélioration à la forge** de +1 à +10 avec des pierres de forge trouvées en jeu ; **recyclage** des objets en matériaux.
+- Infobulle de comparaison automatique avec l'objet porté (gains en vert, pertes en rouge).
+
+**Échanges**
+- **Échange direct** : fenêtre à deux, double confirmation, toute modification annule la confirmation, joueurs à moins de 8 m, hors combat.
+- **Étals du marché** (place du marché de Brumeval, puis Port-Salin) : on dépose ses objets avec un prix, ils se vendent **même quand on est hors ligne** ; recherche et filtres (emplacement, rareté, niveau, classe, prix) ; taxe de 5 % pour retirer de l'or du jeu ; l'argent arrive à la banque.
+- **Banque** : coffre personnel en ville (40 emplacements, extensible). Indispensable avec les zones rouges.
+
+**Zones rouges**
+- 3 niveaux de sécurité : **vert** (villes : aucun combat) · **jaune** (JcE ; JcJ seulement en duel ou à l'arène ; mort = écho d'XP comme en v0.2) · **rouge** (JcJ libre, régions de haut niveau 15+).
+- **Mort en zone rouge** (tué par un joueur ou un monstre) : tout le sac + 50 % de l'or porté tombent dans un **sac de butin** au sol, que tout le monde peut piller pendant 10 min. **Recommandation retenue par défaut** : l'équipement porté est conservé, pour rester accessible. Un réglage serveur permet le mode « tout perdre ».
+- Récompenses : +50 % d'XP, +100 % de chances de butin, raretés supérieures, élites et ressources exclusives, meilleur palier (T6).
+- Signalisation : bordure rouge sur la carte et la minicarte, bannière d'avertissement à l'entrée, confirmation la première fois, et 5 s de protection en entrant (pas d'embuscade à la frontière).
 
 ## 3. Organisation du travail
 
