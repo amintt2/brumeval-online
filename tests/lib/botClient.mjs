@@ -27,7 +27,8 @@ export class Bot {
 
   connect() {
     return new Promise((resolve, reject) => {
-      const ws = new WebSocket(this.url);
+      // browsers always send an Origin; the server refuses Origin-less clients unless ALLOW_NO_ORIGIN=1
+      const ws = new WebSocket(this.url, { origin: this.origin || 'http://localhost' });
       this.ws = ws;
       ws.on('open', () => resolve(this));
       ws.on('error', (err) => { if (ws.readyState !== WebSocket.OPEN) reject(err); });

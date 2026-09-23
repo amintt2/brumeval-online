@@ -4,7 +4,8 @@ import { CLASSES } from '../../shared/data.js';
 import { has } from './util.js';
 
 export const NAME_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9_]{3,16}$/;
-export const PASSWORD_MIN = 4;
+/** Minimum length for NEW passwords (v0.2). Existing accounts created with 4-5 characters still log in: login never checks it. */
+export const PASSWORD_MIN = 6;
 export const PASSWORD_MAX = 64;
 
 export const validName = (name) => typeof name === 'string' && NAME_RE.test(name);

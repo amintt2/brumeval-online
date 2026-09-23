@@ -12,24 +12,27 @@ import { createStaticHandler } from './http.js';
 import { attachNet } from './net.js';
 import { AccountStore } from './persistence.js';
 import { Game } from './game.js';
+import { Security } from './security/index.js'; // [anticheat]
 
 const resolveDir = (dir) => (path.isAbsolute(dir) ? dir : path.resolve(ROOT_DIR, dir));
 
 /**
  * Start the game server.
  * Relative directories are resolved against the repository root.
- * @returns {Promise<{ port: number, close: () => Promise<void>, game: Game, store: AccountStore }>}
+ * @returns {Promise<{ port: number, close: () => Promise<void>, game: Game, store: AccountStore, security: Security }>}
  */
-export async function startServer({ port = DEFAULT_PORT, dataDir = 'server/data', staticDir = 'client/dist', quiet = false } = {}) {
+export async function startServer({ port = DEFAULT_PORT, dataDir = 'server/data', staticDir = 'client/dist', quiet = false, security: securityOpts = {} } = {}) {
   const log = createLogger({ quiet });
   const store = new AccountStore(resolveDir(dataDir), log).load();
-  const game = new Game({ store, log });
+  // [anticheat] bans.json + security.log live next to the accounts; `security` overrides env settings (tests)
+  const security = new Security({ dataDir: resolveDir(dataDir), log, config: securityOpts });
+  const game = new Game({ store, log, security });
 
   const server = http.createServer(createStaticHandler(resolveDir(staticDir), log));
   server.on('clientError', (err, socket) => {
     try { socket.end('HTTP/1.1 400 Bad Request\r\n\r\n'); } catch { /* ignore */ }
   });
-  const net = attachNet(server, { game, store, log });
+  const net = attachNet(server, { game, store, log, security });
 
   await new Promise((resolve, reject) => {
     const onError = (err) => reject(err);
@@ -58,6 +61,8 @@ export async function startServer({ port = DEFAULT_PORT, dataDir = 'server/data'
   statusTimer.unref();
 
   const actualPort = server.address().port;
+  const sc = security.cfg; // [anticheat]
+  log.info(`sécurité : origines ${sc.allowedOrigins.join(', ')}${sc.allowLocalhostOrigins ? ' + localhost' : ''}${sc.allowNoOrigin ? ' + clients sans Origin' : ''}, TRUST_PROXY=${sc.trustProxy}, ${sc.adminNames.length} administrateur(s), ${security.bans.active().length} bannissement(s) actif(s)`);
   log.info(`${GAME_TITLE} — serveur démarré sur http://localhost:${actualPort} (WebSocket ${WS_PATH}, ${store.size} compte(s), ${game.monsters.size} monstres)`);
 
   let closing = null;
@@ -80,7 +85,7 @@ export async function startServer({ port = DEFAULT_PORT, dataDir = 'server/data'
     return closing;
   };
 
-  return { port: actualPort, close, game, store };
+  return { port: actualPort, close, game, store, security };
 }
 
 // ---------------------------------------------------------------- CLI

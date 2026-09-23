@@ -284,7 +284,7 @@ test('chat: global, whispers, /who, /help, unknown command, sanitising, rate lim
 
   // long messages are capped, empty ones ignored
   b.session.clear();
-  game.handleMessage(a, { t: 'chat', text: 'x'.repeat(1000) });
+  game.handleMessage(a, { t: 'chat', text: 'abcdefghij '.repeat(100) });
   assert.equal(b.session.last('chat').text.length, CHAT_MAX_LEN);
   game.handleMessage(a, { t: 'chat', text: '    ' });
   game.handleMessage(a, { t: 'chat', text: 42 });

@@ -10,8 +10,10 @@ test('name validation (3-16 chars, letters incl. French accents, digits, _)', ()
 });
 
 test('password and class validation', () => {
-  assert.ok(validPassword('abcd'));
+  // v0.2: 6 characters minimum for new passwords (login never checks the length rule)
+  assert.ok(validPassword('abcdef'));
   assert.ok(validPassword('x'.repeat(64)));
+  assert.ok(!validPassword('abcde'));
   assert.ok(!validPassword('abc'));
   assert.ok(!validPassword('x'.repeat(65)));
   assert.ok(!validPassword(1234));

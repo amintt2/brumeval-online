@@ -5,8 +5,9 @@ import { mulberry32 } from '../../shared/noise.js';
 import { SPAWN_ZONES } from '../../shared/world.js';
 
 export class FakeSession {
-  constructor() { this.msgs = []; this.closed = false; }
+  constructor(ip = '203.0.113.7') { this.msgs = []; this.closed = false; this.ip = ip; this.kicked = null; }
   send(m) { this.msgs.push(JSON.parse(JSON.stringify(m))); }
+  kick(msg) { if (this.closed) return; this.send({ t: 'kick', msg }); this.kicked = msg; this.closed = true; }
   sendRaw(s) { this.msgs.push(JSON.parse(s)); }
   of(t, pred = () => true) { return this.msgs.filter((m) => m.t === t && pred(m)); }
   last(t, pred = () => true) { const a = this.of(t, pred); return a[a.length - 1]; }
