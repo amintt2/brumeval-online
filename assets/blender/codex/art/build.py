@@ -1,5 +1,5 @@
 """CX-1 — deterministic Cycles key art, exclusively in the reserved art folders.
-Blender --background --python build.py -- --only logo,bg_login --samples 64
+Blender --background --python build.py -- --only logo,bg_login --samples 32
 The shared kit is read-only; BRUMEVAL_KIT_ROOT overrides its location.
 """
 import sys
@@ -39,7 +39,7 @@ def world(color=(.3,.4,.55),strength=.25):
     w.node_tree.nodes['Background'].inputs[0].default_value=(*color,1)
     w.node_tree.nodes['Background'].inputs[1].default_value=strength
 def sunset():
-    world(strength=.35)
+    world(strength=.06)
     nt=bpy.context.scene.world.node_tree; sky=nt.nodes.new('ShaderNodeTexSky');sky.sky_type='MULTIPLE_SCATTERING'
     sky.sun_elevation=.13;sky.sun_rotation=2.1;sky.altitude=300;sky.air_density=1.2
     nt.links.new(sky.outputs[0],nt.nodes['Background'].inputs[0])
@@ -50,7 +50,8 @@ def fog(density=.015,color=(.48,.56,.62)):
     m.node_tree.links.new(vol.outputs['Volume'],out.inputs['Volume'])
     G.box('Brume',(160,180,65),m,loc=(0,45,22))
 def rock(pos,scale,mat):
-    o=G.ico('Rock',1,3,mat,loc=pos,scale=scale,jitter=.13,seed=R.randrange(50000))
+    o=G.ico('Rock',1,5,mat,loc=pos,scale=scale,jitter=.035,seed=R.randrange(50000))
+    C.apply_transforms(o)
     for f in o.data.polygons: f.use_smooth=True
     return o
 def terrain():
@@ -120,6 +121,10 @@ def house(x,y,s=1):
                 tile.rotation_euler[1]=side*math.atan(.9)
     for xx in [-2.45,0,2.45]: box('Montant',(.17,6.1,3.9),wood,(xx,0,2.2))
     for z in [.65,2.3,4.1]: box('Traverse',(5.1,6.1,.15),wood,(0,0,z))
+    for side in [-1,1]:
+        a=Vector((x+side*.3*s,y-3.09*s,.8*s));b=Vector((x+side*2.3*s,y-3.09*s,2.15*s))
+        o=G.box('Contreventement',(.14*s,.16*s,(b-a).length),wood,loc=tuple((a+b)/2),bevel=.012*s)
+        o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler()
     ob=G.extrude('Pignon',[(-2.5,4.05),(2.5,4.05),(0,6.4)],.14,plaster)
     ob.location=(x,y-3*s,0);ob.scale=(s,s,s)
     # front windows and mullions
@@ -129,6 +134,9 @@ def house(x,y,s=1):
         box('Croisillon',(.045,.04,1.02),wood,(xx,-3.18,2.75),.005)
         box('Croisillon',(.8,.04,.045),wood,(xx,-3.18,2.75),.005)
     box('Porte',(1.1,.18,1.9),wood,(0,-3.08,1.5))
+    iron=bpy.data.materials.get('Ferrures') or M.metal('Ferrures',kind='iron',rust=.4)
+    for z in [.86,1.8]:box('Penture',(.91,.04,.055),iron,(0,-3.19,z),.005)
+    G.torus('Heurtoir',.07*s,.013*s,24,8,iron,loc=(x+.31*s,y-3.21*s,1.5*s),rot=(90,0,0))
     box('Cheminee',(.7,.85,2.8),stone,(1.3,1,5.8))
     for k in range(4): box('Marche',(1.6,.38,.15),stone,(0,-3.3-k*.3,.56-k*.14))
 def arch(x,y,z=0,r=3):
@@ -189,7 +197,7 @@ def landscape(key):
         G.box('Rempart',(21,2.2,9),st,loc=(0,79,4.5))
         mountain=M.rock('Montagnes',color='#4b5556',moss=.2)
         for i in range(12):
-            rock((-90+i*17,112+R.uniform(-4,10),9),(16,18,R.uniform(16,34)),mountain)
+            rock((-110+i*22,140+R.uniform(-4,10),4),(24,22,R.uniform(14,23)),mountain)
         fog(.003,(.7,.65,.49)); camera((1,-15,3.2),(0,26,5),37)
     elif key=='bg_loading_1':
         world((.2,.32,.5),.2); light('Lune',(-14,18,28),2.3,(.44,.65,1),kind='SUN')
@@ -220,6 +228,8 @@ def landscape(key):
             for s in [-1,1]:
                 for k in range(3):tree(s*(5+k*7+R.uniform(-1,1)),j*10+R.uniform(-2,2),R.uniform(12,20))
         arch(0,38,r=2.6); fog(.030,(.38,.51,.48))
+        light('Clairiere',(-6,8,16),10000,(.70,.85,.78),size=5,target=(0,20,3))
+        light('SousBois',(0,-5,7),2500,(.55,.70,.64),size=10,target=(0,15,3))
         camera((0,-13,2.8),(0,35,5.5),35)
 
 def title(text,z,size,mat):
@@ -254,7 +264,7 @@ def logo():
     camera((0,-15,.55),(0,0,.55),ortho=7.4)
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--only',default=''); p.add_argument('--samples',type=int,default=64); p.add_argument('--percent',type=int,default=100); p.add_argument('--no-preview',action='store_true')
+    p=argparse.ArgumentParser(); p.add_argument('--only',default=''); p.add_argument('--samples',type=int,default=32); p.add_argument('--percent',type=int,default=100); p.add_argument('--no-preview',action='store_true')
     a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     keys=a.only.split(',') if a.only else KEYS
     if set(keys)-set(KEYS):raise ValueError('Unknown key')
@@ -282,10 +292,12 @@ def main():
         s.render.image_settings.quality=92
         s.view_settings.view_transform='AgX'
         s.render.filepath=str(OUT/(key+('.png' if key.startswith('logo') else '.webp')))
-        with gpu.device(s,samples=a.samples,wait=30):
+        # Dense alpha foliage + participating media: this first-pass forest is denoised at 8 samples.
+        samples=min(a.samples,8) if key=='bg_loading_3' else a.samples
+        with gpu.device(s,samples=samples,wait=30):
             s.cycles.use_denoising=True; s.cycles.max_bounces=6
             s.cycles.volume_bounces=1
             bpy.ops.render.render(write_still=True)
         print('CX1 DONE',key,flush=True)
-    (HERE/'manifest.json').write_text(json.dumps({'keys':KEYS,'engine':'Cycles','seed':410,'samples':a.samples,'percent':a.percent,'kit_root':str(kitroot)},indent=2)+'\n')
+    (HERE/'manifest.json').write_text(json.dumps({'keys':KEYS,'engine':'Cycles','seed':410,'samples':{k:min(a.samples,8) if k=='bg_loading_3' else a.samples for k in KEYS},'percent':a.percent,'kit_root':str(kitroot)},indent=2)+'\n')
 if __name__=='__main__':main()

@@ -1,0 +1,24 @@
+{
+  "keys": [
+    "logo",
+    "logo_512",
+    "bg_login",
+    "bg_loading_1",
+    "bg_loading_2",
+    "bg_loading_3",
+    "launcher_banner"
+  ],
+  "engine": "Cycles",
+  "seed": 410,
+  "samples": {
+    "logo": 32,
+    "logo_512": 32,
+    "bg_login": 32,
+    "bg_loading_1": 32,
+    "bg_loading_2": 32,
+    "bg_loading_3": 8,
+    "launcher_banner": 32
+  },
+  "percent": 100,
+  "kit_root": "C:\\Users\\amin2\\mmorpg\\assets\\blender"
+}
