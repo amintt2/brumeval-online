@@ -699,7 +699,7 @@ function debugPause(ms) {
 function exposeDebug() {
   window.__game = {
     state, scene, camera, renderer, entities, effects, labels, env, world, assets, player, orbit, targeting, ui, net: conn,
-    telegraphs, echo: echoFx, roll, // [combat-souls]
+    telegraphs, echo: echoFx, roll, input, // [combat-souls]
     bootTimes,
     get fps() { return fps; },
     get ping() { return ping; },
