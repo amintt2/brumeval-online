@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brumeval Launcher</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <img class="topbar-crest" src="vendor/crest.svg" alt="" draggable="false">
+    <span class="topbar-name">Brumeval</span>
+    <span class="topbar-sub">Launcher</span>
+  </header>
+
+  <main class="layout">
+    <section class="hero" aria-label="Brumeval Online">
+      <div class="hero-sky" aria-hidden="true"></div>
+      <div class="hero-mountains" aria-hidden="true"></div>
+      <div class="hero-mist" aria-hidden="true"></div>
+
+      <div class="hero-text">
+        <p class="hero-kicker">MMORPG en ligne</p>
+        <h1 class="hero-title">Brumeval<span>Online</span></h1>
+        <p class="hero-tagline">Les brumes se lèvent sur la vallée. Esquivez, frappez, survivez&nbsp;: les monstres de Brumeval n'attendent que vous.</p>
+        <div class="class-tabs" role="tablist" aria-label="Classes">
+          <button class="class-tab" role="tab" data-cls="warrior" type="button">Guerrier</button>
+          <button class="class-tab" role="tab" data-cls="mage" type="button">Mage</button>
+          <button class="class-tab" role="tab" data-cls="ranger" type="button">Rôdeur</button>
+        </div>
+        <p class="class-desc" id="class-desc" aria-live="polite"></p>
+      </div>
+
+      <div class="hero-cast" aria-hidden="true">
+        <div class="hero-glow"></div>
+        <img class="hero-char" data-cls="mage" src="vendor/art/class_mage.png" alt="" draggable="false">
+        <img class="hero-char" data-cls="ranger" src="vendor/art/class_ranger.png" alt="" draggable="false">
+        <img class="hero-char" data-cls="warrior" src="vendor/art/class_warrior.png" alt="" draggable="false">
+      </div>
+    </section>
+
+    <aside class="panel news" aria-labelledby="news-title">
+      <div class="panel-head">
+        <h2 id="news-title">Chroniques</h2>
+        <span class="news-offline" id="news-offline" hidden>hors ligne</span>
+      </div>
+      <div class="news-list" id="news-list" aria-busy="true">
+        <p class="news-empty">Chargement des nouvelles…</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footbar">
+    <div class="status" id="status" data-state="unknown" title="État du serveur">
+      <span class="status-dot" aria-hidden="true"></span>
+      <div class="status-body">
+        <span class="status-text" id="status-text">Connexion au serveur…</span>
+        <span class="status-server" id="status-server"></span>
+      </div>
+    </div>
+
+    <div class="update" id="update" data-state="idle">
+      <span class="update-text" id="update-text"></span>
+      <div class="update-bar" aria-hidden="true"><div class="update-fill" id="update-fill"></div></div>
+      <button class="btn btn-small" id="update-btn" type="button" hidden>Redémarrer pour mettre à jour</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-icon" id="options-btn" type="button" title="Options" aria-label="Options">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-1.7-1L15 3.4h-4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.4zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg>
+      </button>
+      <button class="btn-play" id="play" type="button">
+        <span class="btn-play-label" id="play-label">Jouer</span>
+      </button>
+    </div>
+  </footer>
+
+  <div class="modal" id="options" role="dialog" aria-modal="true" aria-labelledby="options-title" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <form class="modal-card panel" id="options-form" novalidate>
+      <div class="panel-head">
+        <h2 id="options-title">Options</h2>
+        <button class="btn-close" type="button" data-close aria-label="Fermer">×</button>
+      </div>
+
+      <label class="field">
+        <span class="field-label">URL du serveur</span>
+        <span class="field-row">
+          <input class="input" id="opt-url" type="text" inputmode="url" spellcheck="false" autocomplete="off" placeholder="https://brumel.mciut.fr">
+          <button class="btn btn-small" id="opt-url-reset" type="button">Par défaut</button>
+        </span>
+        <span class="field-error" id="opt-url-error" role="alert"></span>
+      </label>
+
+      <label class="toggle">
+        <input type="checkbox" id="opt-fullscreen">
+        <span class="toggle-ui" aria-hidden="true"></span>
+        <span class="toggle-text">Plein écran<small>Le jeu démarre en plein écran (F11 pour basculer).</small></span>
+      </label>
+
+      <label class="toggle">
+        <input type="checkbox" id="opt-close">
+        <span class="toggle-ui" aria-hidden="true"></span>
+        <span class="toggle-text">Fermer le launcher en jouant<small>Le launcher se ferme quand la partie démarre.</small></span>
+      </label>
+
+      <div class="field">
+        <span class="field-label">Cache du jeu</span>
+        <span class="field-row">
+          <button class="btn btn-small" id="opt-cache" type="button">Vider le cache</button>
+          <span class="field-hint" id="opt-cache-result">Modèles, textures et scripts téléchargés par le jeu.</span>
+        </span>
+      </div>
+
+      <div class="about">
+        <span id="about-version"></span>
+        <a href="#" id="about-releases">Toutes les versions</a>
+        <a href="#" id="about-site">Jouer dans le navigateur</a>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn" type="button" data-close>Annuler</button>
+        <button class="btn btn-gold" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "name": "brumeval-launcher",
+  "productName": "Brumeval Launcher",
+  "version": "0.2.0",
+  "description": "Launcher de Brumeval Online — MMORPG multijoueur",
+  "author": "Brumeval Online",
+  "homepage": "https://brumel.mciut.fr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amintt2/brumeval-online.git",
+    "directory": "launcher"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/main/main.js",
+  "brumeval": {
+    "macAutoUpdate": false
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare-ui": "node scripts/prepare.cjs",
+    "icons": "electron scripts/render-icons.cjs",
+    "start": "npm run prepare-ui && electron .",
+    "test": "node --test \"test/*.test.cjs\"",
+    "smoke": "npm run prepare-ui && node scripts/smoke.cjs",
+    "smoke:packaged": "node scripts/smoke.cjs --packaged",
+    "dist": "npm run prepare-ui && electron-builder --publish never",
+    "dist:win": "npm run prepare-ui && electron-builder --win --publish never",
+    "dist:mac": "npm run prepare-ui && electron-builder --mac --publish never",
+    "dist:linux": "npm run prepare-ui && electron-builder --linux --publish never",
+    "release": "npm run prepare-ui && electron-builder --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  },
+  "devDependencies": {
+    "@fontsource/alegreya-sans": "^5.3.0",
+    "@fontsource/cinzel": "^5.3.0",
+    "electron": "^44.4.4",
+    "electron-builder": "^26.15.3"
+  }
+}

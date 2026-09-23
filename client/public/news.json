@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "v0.2-fondations-et-ame",
+      "date": "2026-09-23",
+      "tag": "Mise à jour",
+      "title": "Version 0.2 — « Fondations & Âme »",
+      "summary": "Combats exigeants à la manière d'un soulslike, monstres plus malins, un monde plus beau et un launcher pour jouer depuis votre ordinateur.",
+      "body": [
+        "Endurance : une nouvelle jauge alimente la roulade, le sprint et certaines capacités. Elle se recharge dès que vous soufflez un instant.",
+        "Roulade d'esquive : esquivez au bon moment pour traverser une attaque sans dégâts.",
+        "Sprint : traversez les plaines plus vite, tant que votre endurance le permet.",
+        "Attaques télégraphiées : les coups puissants des monstres s'annoncent au sol. Lisez-les, esquivez-les.",
+        "IA revue : les monstres chargent, tournent autour de vous, se replient, tirent à distance… et ne se comportent jamais deux fois de la même façon.",
+        "Le Golem ancien combat désormais en plusieurs phases.",
+        "Écho de mort : à votre mort, votre expérience du niveau reste sur place. Retournez la chercher avant de mourir à nouveau !",
+        "Rééquilibrage du Mage et du Rôdeur, jugés trop puissants.",
+        "Anti-triche côté serveur : vitesse, téléportation et spam sont détectés ; les tricheurs sont bannis.",
+        "Nouveau rendu : herbe qui ondule au vent, arbres vivants, ciel, eau et lumière plus doux.",
+        "Serveur et réseau optimisés pour accueillir plus de joueurs sur une carte plus grande."
+      ]
+    },
+    {
+      "id": "v0.2-launcher",
+      "date": "2026-09-23",
+      "tag": "Nouveau",
+      "title": "Le launcher Brumeval est disponible",
+      "summary": "Jouez depuis une application dédiée sur Windows, macOS et Linux. Le jeu est toujours à jour et le launcher se met à jour tout seul.",
+      "body": [
+        "Windows : installateur .exe ou version portable.",
+        "macOS : image disque .dmg (processeurs Intel et Apple).",
+        "Linux : AppImage ou paquet .deb.",
+        "Sur le navigateur, Brumeval s'installe aussi comme une application : cherchez « Installer » dans la barre d'adresse.",
+        "Options : adresse du serveur, plein écran (F11), fermeture du launcher pendant la partie, vidage du cache du jeu."
+      ],
+      "url": "https://github.com/amintt2/brumeval-online/releases/latest"
+    },
+    {
+      "id": "v0.1-premiere-version",
+      "date": "",
+      "tag": "Version",
+      "title": "Version 0.1 — première version jouable",
+      "summary": "Le village de Brumeval ouvre ses portes : trois classes, cinq quêtes, le Golem ancien et le multijoueur en ligne.",
+      "body": [
+        "Guerrier, Mage et Rôdeur, chacun avec quatre capacités.",
+        "Une chaîne de cinq quêtes de l'Ancien Aldric, jusqu'au Golem ancien.",
+        "Marchande, butin, équipement et progression jusqu'au niveau 20.",
+        "Cycle jour/nuit, discussion générale et chuchotements."
+      ]
+    }
+  ]
+}

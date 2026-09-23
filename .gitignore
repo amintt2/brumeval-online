@@ -6,3 +6,7 @@ __pycache__/
 *.pyc
 .claude/worktrees/
 coordination/
+
+# [launcher] Electron launcher build output and files copied by launcher/scripts/prepare.cjs
+launcher/dist/
+launcher/src/renderer/vendor/

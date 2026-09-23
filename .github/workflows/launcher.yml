@@ -1,0 +1,175 @@
+# Builds the desktop launcher for Windows, macOS and Linux.
+#  - tag "launcher-vX.Y.Z" (X.Y.Z = launcher/package.json version): builds, uploads every installer into one
+#    draft GitHub release, then publishes it -> electron-updater in installed launchers finds the new version.
+#  - manual run (workflow_dispatch): builds only; installers are attached to the run as artifacts.
+# See docs/LAUNCHER.md for the release process and code signing.
+name: Launcher
+
+on:
+  push:
+    tags: ["launcher-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: launcher-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PUBLISH: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/launcher-v') }}
+
+jobs:
+  prepare:
+    name: Préparation de la release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version du launcher
+        id: version
+        shell: bash
+        run: |
+          version=$(node -p "require('./launcher/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ "$PUBLISH" = "true" ] && [ "$GITHUB_REF_NAME" != "launcher-v$version" ]; then
+            echo "::error::Le tag $GITHUB_REF_NAME ne correspond pas à launcher/package.json ($version) : attendu launcher-v$version"
+            exit 1
+          fi
+
+      - name: Brouillon de release
+        if: env.PUBLISH == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Created once here so the three builds upload into the same draft (no race between runners).
+          if ! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft \
+              --title "Brumeval Launcher ${{ steps.version.outputs.version }}" \
+              --notes "Launcher de Brumeval Online ${{ steps.version.outputs.version }}. Windows : Brumeval-Launcher-Setup-*.exe (ou version portable). macOS : .dmg (x64 = Intel, arm64 = Apple Silicon). Linux : .AppImage ou .deb. Le launcher déjà installé se met à jour tout seul."
+          fi
+
+  build:
+    name: Build ${{ matrix.name }}
+    needs: prepare
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: Windows
+            target: --win
+          - os: macos-latest
+            name: macOS
+            target: --mac
+          - os: ubuntu-latest
+            name: Linux
+            target: --linux
+    defaults:
+      run:
+        working-directory: launcher
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: launcher/package-lock.json
+
+      - name: Installation
+        run: npm ci
+
+      - name: Tests unitaires
+        run: npm test
+
+      - name: Ressources de l'interface
+        run: npm run prepare-ui
+
+      - name: Build et publication
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Code signing is optional: without these secrets the builds are unsigned (see docs/LAUNCHER.md).
+          CSC_LINK: ${{ (matrix.os == 'macos-latest' && secrets.MAC_CSC_LINK) || (matrix.os == 'windows-latest' && secrets.WIN_CSC_LINK) || '' }}
+          CSC_KEY_PASSWORD: ${{ (matrix.os == 'macos-latest' && secrets.MAC_CSC_KEY_PASSWORD) || (matrix.os == 'windows-latest' && secrets.WIN_CSC_KEY_PASSWORD) || '' }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -z "$CSC_LINK" ]; then
+            export CSC_IDENTITY_AUTO_DISCOVERY=false
+            unset CSC_LINK CSC_KEY_PASSWORD
+          fi
+          if [ "$PUBLISH" = "true" ]; then
+            npx electron-builder ${{ matrix.target }} --publish always
+          else
+            npx electron-builder ${{ matrix.target }} --publish never
+          fi
+
+      - name: Jeu local pour le test automatique (Windows)
+        if: matrix.os == 'windows-latest'
+        working-directory: .
+        shell: bash
+        run: |
+          npm ci
+          npm run build
+
+      - name: Test automatique du launcher empaqueté (Windows)
+        if: matrix.os == 'windows-latest'
+        # Hidden windows + temporary profile, against a local game server on port 3205 (see scripts/smoke.cjs).
+        # A failure stops the release: the draft is never published.
+        run: npm run smoke:packaged
+
+      - name: Installateurs
+        if: env.PUBLISH != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: brumeval-launcher-${{ matrix.name }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            launcher/dist/*.exe
+            launcher/dist/*.dmg
+            launcher/dist/*.zip
+            launcher/dist/*.AppImage
+            launcher/dist/*.deb
+            launcher/dist/*.yml
+            launcher/dist/*.blockmap
+
+  publish:
+    name: Publication de la release
+    needs: [prepare, build]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/launcher-v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Vérification des fichiers de mise à jour
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          assets=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name')
+          echo "$assets"
+          for f in latest.yml latest-mac.yml latest-linux.yml; do
+            echo "$assets" | grep -qx "$f" || { echo "::error::$f manquant dans la release"; exit 1; }
+          done
+
+      - name: Publication
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest

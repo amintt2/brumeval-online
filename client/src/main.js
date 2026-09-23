@@ -654,3 +654,6 @@ boot().catch((err) => {
   console.error(err);
   fatal('Une erreur est survenue au démarrage du jeu. Rechargez la page.');
 });
+
+// [launcher] installable web app: manifest + service worker (skipped by the Vite dev server)
+import('./pwa.js').then((m) => m.setupPwa()).catch(() => {});
