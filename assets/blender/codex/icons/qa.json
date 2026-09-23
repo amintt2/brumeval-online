@@ -13,8 +13,8 @@
         0,
         255
       ],
-      "bytes": 39499,
-      "sha256": "7eababc2c24686718bc0b0b2c2e3e8a23be96ead184e207d78d4176f5250de2c"
+      "bytes": 47366,
+      "sha256": "d98158f3b8c55ad32f81f64df0eb850cea7dd6271e95e88965d0d9f734fd614a"
     },
     {
       "key": "potion_hp_l",
@@ -26,8 +26,8 @@
         0,
         255
       ],
-      "bytes": 34717,
-      "sha256": "2920c53796b1deec122da3b3f2c4c30c0d5e08fec01652c9abd6b52a2abffd78"
+      "bytes": 46329,
+      "sha256": "7c2c9fdce9775587e3147f46031a17927cc219d1d18b5cb6ae3fb65b96b7fb99"
     },
     {
       "key": "potion_mp_s",
@@ -39,8 +39,8 @@
         0,
         255
       ],
-      "bytes": 28736,
-      "sha256": "13a7271ae1a39bf5b22cdce4832307571af441e75a920e240c55239d61cd09e9"
+      "bytes": 46723,
+      "sha256": "2c5e48d5d7a1f074ddebc1623801f10a663102b4c0dc54672b3a1931e2196c32"
     },
     {
       "key": "slime_gel",
@@ -312,8 +312,8 @@
         255,
         255
       ],
-      "bytes": 82350,
-      "sha256": "c0eb66a72022e8618ea1f7cace0fc6773264d3f8afc066abb84f11888eb1027e"
+      "bytes": 86043,
+      "sha256": "c100803c80a0099dd3e2f3adab1155bc74033969914591bc88e8ea652ac7bed5"
     },
     {
       "key": "ab_whirlwind",
@@ -351,8 +351,8 @@
         255,
         255
       ],
-      "bytes": 76435,
-      "sha256": "d3b3a94f404ec22b2dc3a52fee4bb4ac79b96e9673d019d6bcff4f79aaa7693e"
+      "bytes": 78614,
+      "sha256": "b3d64f34bdfd363c55ca15c71efcbcce7c932d54adf67839d2e1cd0510367c14"
     },
     {
       "key": "ab_fireball",
@@ -364,8 +364,8 @@
         255,
         255
       ],
-      "bytes": 73206,
-      "sha256": "9a2667f25deba13d9a3bf07e60b9703583d20394e4fd97d6ba371a904dd736ce"
+      "bytes": 89295,
+      "sha256": "2a785970e9054fc78bca6775427662b1548589fb2b3218330d7fb207d2dad602"
     },
     {
       "key": "ab_frost_nova",
@@ -403,8 +403,8 @@
         255,
         255
       ],
-      "bytes": 70873,
-      "sha256": "ce6989ee86e3f038d2de4a89fcf31c56716d5ed366ae1ad7cb10d6d7a8385ede"
+      "bytes": 70988,
+      "sha256": "da2876809e2c771f54888bcbb3a436ddee31a02e3d995ea857e4a67fbc338b5e"
     },
     {
       "key": "ab_piercing_shot",
@@ -416,8 +416,8 @@
         255,
         255
       ],
-      "bytes": 72058,
-      "sha256": "2a9b006dd5a7dc63abb5baaefc17acaecfc62bf7ca7a67f738900ee2e48e62bc"
+      "bytes": 74590,
+      "sha256": "a15c58597b79b9e741deda3135bae8a05eda4aa0d45041889be273bea893d213"
     },
     {
       "key": "ab_arrow_rain",
@@ -429,8 +429,8 @@
         255,
         255
       ],
-      "bytes": 78470,
-      "sha256": "fd881ba090ffe71f336ec7cd17e641c29a29b10f00770f52b2c49a1bb1df1d93"
+      "bytes": 83468,
+      "sha256": "ba8e55af054aae52edff609cfc9fe4e57414b9100e1a1b6ec1470f45c94f9e2a"
     },
     {
       "key": "ab_rapid_fire",
@@ -442,8 +442,8 @@
         255,
         255
       ],
-      "bytes": 76071,
-      "sha256": "f1239ea7cabe8e03f4076d086253eabdde9f360e673a6ab1852492018d897ebf"
+      "bytes": 76771,
+      "sha256": "3e35caae9b4dd3a852da10a8259bee31905de1d62a93d7d86f7a8f90525eaa7c"
     },
     {
       "key": "ore_copper",
@@ -611,8 +611,8 @@
         0,
         255
       ],
-      "bytes": 32608,
-      "sha256": "3c4be2cb655f3052fa77264e0f828fe84cdb398778dd070299ec383ab04e4d51"
+      "bytes": 40062,
+      "sha256": "1b1b22cc4af715cfdb52864fe4f710f77a68936a7be278906d5ea129b6af17f8"
     },
     {
       "key": "potion_stamina",
@@ -624,8 +624,8 @@
         0,
         255
       ],
-      "bytes": 34143,
-      "sha256": "8769f491efa0cb83f22f49c5e9ca4e048b07c428ccb84619b893c518b0a50086"
+      "bytes": 38989,
+      "sha256": "9159e371d3f0cf14eae91c4b472766e01d785c99e8f93a98afd3a8d7647a4506"
     },
     {
       "key": "helm_iron",

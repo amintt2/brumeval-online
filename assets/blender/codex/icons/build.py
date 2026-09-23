@@ -22,6 +22,7 @@ import geo as G
 import iconlib as L
 import items, abilities
 import second_pass
+import final_pass
 import garments
 from kit import materials as M, gpu
 
@@ -186,8 +187,13 @@ def render(key,opts,samples):
     q=cam.rotation_euler.to_quaternion()
     pts=L._world_points(objs)
     center=Vector(((pts.min(0)+pts.max(0))*.5).tolist())
-    for name,offset,power,color,size in [('Key',(-3,4,4),650,(1,.88,.72),4),('Fill',(3,0,3),100,(.68,.79,1),3),('Rim',(2,3,-3),850,(.75,.85,1),2)]:
+    rig=[('Key',(-3,4,4),650,(1,.88,.72),4),('Fill',(3,0,3),100,(.68,.79,1),3),('Rim',(2,3,-3),850,(.75,.85,1),2)]
+    if opts.get('potion_lighting'):
+        rig=[('Key',(-2.1,1.2,3),160,(1,.96,.89),.20),('Fill',(2,0,3),35,(.75,.83,1),.12),('Rim',(1.1,1.4,-2),180,(.85,.91,1),.28)]
+    for name,offset,power,color,size in rig:
         data=bpy.data.lights.new(name,'AREA');data.energy=power;data.color=color;data.shape='DISK';data.size=size
+        if opts.get('potion_lighting'):
+            data.shape='RECTANGLE';data.size_y=3.5
         ob=bpy.data.objects.new(name,data);scene.collection.objects.link(ob);ob.location=center+q@Vector(offset)
         ob.rotation_euler=(center-ob.location).to_track_quat('-Z','Y').to_euler()
     scene.render.resolution_x=scene.render.resolution_y=512
@@ -213,10 +219,11 @@ def main():
     if args.draft: OUT=QA/'drafts'
     OUT.mkdir(parents=True,exist_ok=True); QA.mkdir(parents=True,exist_ok=True)
     for key in keys:
-        C.reset(); importlib.reload(gpu); opts=garments.build(key)
+        C.reset(); importlib.reload(gpu); opts=final_pass.build(key)
+        if opts is None: opts=garments.build(key)
         if opts is None: opts=second_pass.build(key)
         if opts is None: opts=builders[key]() or {}
         upgrade_materials(); second_pass.mute_materials(); finish_geometry(); render(key,opts,args.samples)
-    if not args.draft: (HERE/'manifest.json').write_text(json.dumps({'size':[256,256],'engine':'Cycles','pass':2,'render_size':[512,512],'postprocess':'Pillow supersampling, vignette and restrained bloom','keys':list(builders),'kit_root':str(KIT_ROOT),'samples':args.samples},indent=2)+'\n')
+    if not args.draft: (HERE/'manifest.json').write_text(json.dumps({'size':[256,256],'engine':'Cycles','pass':3,'targeted_pass_keys':final_pass.KEYS,'render_size':[512,512],'postprocess':'Pillow supersampling, vignette and restrained bloom','keys':list(builders),'kit_root':str(KIT_ROOT),'samples':args.samples},indent=2)+'\n')
 
 if __name__=='__main__': main()

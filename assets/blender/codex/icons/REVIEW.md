@@ -1,4 +1,17 @@
-# Revue CX-2 — seconde passe
+# Revue CX-2 — passe finale ciblée
+
+La dernière demande de Claude est traitée sur douze images; les 41 autres fichiers publics restent identiques à `47da7ad`. Les planches `pass3-readability-40.png` (53 icônes en taille réelle), `pass3-compare-40.png` et `pass3-targets.png` ont été ouvertes et examinées.
+
+## Résultat à 40 pixels
+
+- Potions : le contenu est maintenant identifiable sur fond sombre et clair. Rouge rubis, bleu profond et vert restent distincts. La petite fiole ronde, la moyenne en poire et la grande flasque à épaules larges sont distinguables par leur contour. Les grosses taches de reflet ont été remplacées par des traits étroits.
+- Feu : `firebolt` est un dard orange allongé; `fireball` une sphère de flammes avec une surface orangée irrégulière. Une première version trop blanche a été corrigée avant les rendus finaux.
+- Tirs : une seule flèche pour `shot`; plaque percée et éclats pour `piercing_shot`; trois traits séparés pour `rapid_fire`; flèches descendantes et cercle au sol pour `arrow_rain`. Les quatre silhouettes sont distinctes dans la planche réduite.
+- Marteau : une onde d'impact et une traînée épaisse le distinguent davantage du simple coup d'épée.
+
+Les liquides et reflets restent stylisés pour la lecture à petite taille; la plaque percée reste schématique à 40 px. Les réserves antérieures concernant les mains, le raccord de la robe et les accessoires simples ne sont pas corrigées par cette passe ciblée. La vérification en contexte d'interface est du ressort de l'intégration.
+
+## Historique : seconde passe
 
 Les quatre planches de `previews/` ont été ouvertes après le rendu des 53 icônes. Un sous-agent critique indépendant a aussi examiné les objets signalés et les douze compétences, puis vérifié les six corrections finales.
 

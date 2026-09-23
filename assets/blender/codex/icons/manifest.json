@@ -4,7 +4,21 @@
     256
   ],
   "engine": "Cycles",
-  "pass": 2,
+  "pass": 3,
+  "targeted_pass_keys": [
+    "potion_hp_s",
+    "potion_hp_m",
+    "potion_hp_l",
+    "potion_mp_s",
+    "potion_stamina",
+    "ab_firebolt",
+    "ab_fireball",
+    "ab_shot",
+    "ab_piercing_shot",
+    "ab_rapid_fire",
+    "ab_arrow_rain",
+    "ab_heavy_blow"
+  ],
   "render_size": [
     512,
     512
