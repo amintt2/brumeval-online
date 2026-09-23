@@ -19,7 +19,8 @@ export const PERMESSAGE_DEFLATE = process.env.WS_COMPRESSION === '0' ? false : {
   threshold: 128,                 // tiny frames (pong, cd…) are not worth a deflate round
   concurrencyLimit: 16,           // zlib jobs in flight (they run on the libuv thread pool)
   serverMaxWindowBits: 14,        // 16 KB sliding window: several snapshots of context, 64 KB of RAM
-  zlibDeflateOptions: { level: envInt('WS_DEFLATE_LEVEL', 3, 1, 9), memLevel: 7 },
+  // level 1: measured (tests/load.mjs, 100 clients) ≈ 6 % more bytes than level 3 for ≈ 20 % less deflate CPU
+  zlibDeflateOptions: { level: envInt('WS_DEFLATE_LEVEL', 1, 1, 9), memLevel: 7 },
   clientNoContextTakeover: true,  // client → server messages are tiny; keeps the inflate side cheap
 };
 

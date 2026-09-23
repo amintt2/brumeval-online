@@ -81,6 +81,7 @@ if (flag('server')) {
         cpuPct: ((cpu.user + cpu.system) / 1000 / wall) * 100,
         rss: process.memoryUsage().rss, heap: process.memoryUsage().heapUsed,
         players: game.players.size, monsters: game.monsters.size, errors: game.errorCount, phases,
+        snapSkipped: game.snapState?.skipped ?? 0, awake: game.aoi?.stats?.awake ?? null,
       });
     } else if (m.t === 'stop') {
       await srv.close();
@@ -202,8 +203,9 @@ async function parent() {
     cpuPct: +s.cpuPct.toFixed(1), rssMB: +(s.rss / 1e6).toFixed(0), heapMB: +(s.heap / 1e6).toFixed(0),
     perClient: { wireKBps: +(wireBps / 1024).toFixed(2), rawKBps: +(rawBps / 1024).toFixed(2), msgPerS: +msgps.toFixed(1), framesPerS: +framesps.toFixed(1) },
     chats, attacks, respawns, corrections, stuck, disconnected: N - alive, serverErrors: s.errors, phases: s.phases,
+    snapshotsSkipped: s.snapSkipped ?? 0, monstersAwake: s.awake ?? null,
   };
-  log(`joueurs connectés : ${s.players}/${N}, monstres : ${s.monsters}, déconnectés : ${N - alive}`);
+  log(`joueurs connectés : ${s.players}/${N}, monstres : ${s.monsters}${s.awake != null ? ` (${s.awake} éveillés)` : ''}, déconnectés : ${N - alive}${s.snapSkipped ? `, ${s.snapSkipped} snapshots différés (clients saturés)` : ''}`);
   if (alive < N) {
     const codes = {};
     for (const b of bots) if (b.closed) codes[b.closeCode] = (codes[b.closeCode] || 0) + 1;

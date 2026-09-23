@@ -15,7 +15,7 @@ import { AccountStore } from './persistence.js';
 import { Game } from './game.js';
 import { attachPerf } from './perf.js';
 import { VERSION, buildId, setStaticDir } from './version.js';
-import { netStats, socketBytesWritten } from './wsout.js';
+import { netStats, socketBytesWritten, PERMESSAGE_DEFLATE } from './wsout.js';
 
 const BACKUP_CHECK_MS = 60 * 60_000;   // daily backup: checked every hour
 const PERF_CHECK_MS = 60_000;          // tick budget warning / phase window
@@ -64,7 +64,8 @@ export async function startServer({ port = DEFAULT_PORT, dataDir = 'server/data'
           outRawKBps: Math.round(netRate.rawBps / 102.4) / 10,
           msgPerS: Math.round(netRate.msgps),
           perClientKBps: game.players.size ? Math.round(netRate.wireBps / game.players.size / 102.4) / 10 : 0,
-          compression: 'permessage-deflate',
+          compression: PERMESSAGE_DEFLATE ? 'permessage-deflate' : 'none',
+          snapshotsSkipped: game.snapState?.skipped ?? 0, // rounds skipped for congested clients (snapshot.js)
         },
         saves: { ...store.stats, pending: !!store.writing, lastError: store.lastError },
         memory: { rssMB: Math.round(mem.rss / 1048576), heapMB: Math.round(mem.heapUsed / 1048576) },

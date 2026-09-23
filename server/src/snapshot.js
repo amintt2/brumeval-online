@@ -11,6 +11,11 @@
 // the same for every such client and is serialised once per entity. Clients that see an entity for the
 // first time (or after a static/layout change) get it whole, and each entity is re-sent whole to every
 // client every FULL_EVERY rounds (staggered by id) as a safety net for client-side edits.
+//
+// Congestion: a client whose socket still holds more than SNAP_SKIP_BYTES of unsent data (slow link, or the
+// compression pipeline falling behind) is skipped for the round instead of queueing more snapshots. Its
+// knowledge is left untouched, so the next round it is served it gets the full state of every entity
+// (they are no longer "up to date"): the delta chain is never broken and memory stays bounded.
 import { VIEW_RADIUS } from '../../shared/protocol.js';
 import { AOI_EXIT_MARGIN } from './config.js';
 import { aoiOf } from './aoi.js';
@@ -21,6 +26,7 @@ const R_OUT2 = R_OUT * R_OUT;
 export const QPOS = 0.05;          // metres
 export const QANG = 0.02;          // radians (≈ 1.1°)
 export const FULL_EVERY = 50;      // snapshot rounds (5 s at 10 Hz)
+export const SNAP_SKIP_BYTES = 256 * 1024; // unsent bytes above which a client skips a snapshot round
 const IPOS = 1 / QPOS, IANG = 1 / QANG;
 
 const qpos = (v) => Math.round(v * IPOS) / IPOS;
@@ -109,10 +115,16 @@ class Known {
   }
 }
 
+/** True when the client's connection is backed up (bytes queued on the socket or in the deflate pipeline). */
+function congested(p) {
+  const ws = p.session?.ws;
+  return !!ws && ws.bufferedAmount > SNAP_SKIP_BYTES;
+}
+
 /** Snapshot state attached to the game (created lazily). */
 function stateOf(game) {
   let s = game.snapState;
-  if (!s) s = game.snapState = { round: 0, cache: new Map(), buf: [], parts: [], gone: [] };
+  if (!s) s = game.snapState = { round: 0, cache: new Map(), buf: [], parts: [], gone: [], skipped: 0 };
   return s;
 }
 
@@ -126,6 +138,10 @@ export function sendSnapshots(game, now) {
   const cache = S.cache, buf = S.buf, parts = S.parts, gone = S.gone;
 
   for (const p of game.players.values()) {
+    if (congested(p)) { // see "Congestion" above: this client catches up with full states later
+      S.skipped++;
+      continue;
+    }
     parts.length = 0;
     gone.length = 0;
     const known = p.known;

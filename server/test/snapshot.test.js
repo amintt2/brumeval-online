@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { VIEW_RADIUS, STATE } from '../../shared/protocol.js';
-import { QPOS, QANG, FULL_EVERY } from '../src/snapshot.js';
+import { QPOS, QANG, FULL_EVERY, SNAP_SKIP_BYTES } from '../src/snapshot.js';
 import { damageMonster } from '../src/systems/combat.js';
 import { makeGame, addPlayer, place, advance, spawnAt } from './helpers.js';
 
@@ -159,4 +159,38 @@ test('entState fields added by other features are delta-encoded too', () => {
   advance(game, 100);
   eb = a.session.last('snap').ents.find((e) => e.id === b.id);
   assert.deepEqual(Object.keys(eb).sort(), ['id', 'st'], 'objects compared by value, only the stamina changed');
+});
+
+test('a congested client skips snapshot rounds, then catches up with full states (no broken delta chain)', () => {
+  const game = makeGame({ spawnMonsters: true, seed: 3 });
+  const a = addPlayer(game, { name: 'Lent' });
+  const b = addPlayer(game, { name: 'Rapide' });
+  place(game, a, 40, 20);
+  place(game, b, 44, 22);
+  const view = mirror(a.session);
+  advance(game, 500);
+  assertMirrors(game, a, view, 'avant');
+  // the socket of A is backed up: no snapshot is queued for it, B is served normally
+  a.session.ws = { bufferedAmount: SNAP_SKIP_BYTES + 1 };
+  const snapsA = a.session.of('snap').length, snapsB = b.session.of('snap').length;
+  const skipped0 = game.snapState.skipped;
+  for (let i = 0; i < 10; i++) {
+    place(game, b, b.x + 0.7, b.z);
+    b.hp = Math.max(1, b.hp - 3);
+    advance(game, 100);
+  }
+  place(game, b, 200, 200); // B leaves A's area of interest while A is congested (gone must follow)
+  advance(game, 100);
+  assert.equal(a.session.of('snap').length, snapsA, 'no snapshot for the congested client');
+  assert.ok(b.session.of('snap').length > snapsB, 'other clients still get theirs');
+  assert.ok(game.snapState.skipped > skipped0, 'skipped rounds are counted (/health)');
+  // drained: the next round brings A back to the exact server state
+  a.session.ws.bufferedAmount = 0;
+  advance(game, 100);
+  assertMirrors(game, a, view, 'après congestion');
+  assert.ok(a.session.last('snap').gone.includes(b.id), 'B is reported gone');
+  for (let i = 0; i < 20; i++) {
+    advance(game, 100);
+    assertMirrors(game, a, view, `reprise ${i}`);
+  }
 });

@@ -22,7 +22,7 @@ Trois façons de le faire tourner :
 | `TRUST_PROXY` | `0` | Nombre de proxys inverses de confiance devant le serveur (`1` derrière nginx/Caddy). Voir [plus bas](#trust_proxy) |
 | `MAX_PLAYERS` | `100` | Nombre maximal de joueurs connectés simultanément |
 | `WS_COMPRESSION` | activée | `0` désactive la compression WebSocket permessage-deflate |
-| `WS_DEFLATE_LEVEL` | `3` | Niveau de compression WebSocket (1 = rapide … 9 = plus compact) |
+| `WS_DEFLATE_LEVEL` | `1` | Niveau de compression WebSocket (1 = rapide … 9 = plus compact ; 3 donne ≈ 6 % d’octets en moins pour ≈ 20 % de CPU de compression en plus) |
 
 Les chemins relatifs sont résolus depuis la racine du dépôt.
 
@@ -173,7 +173,6 @@ Le proxy termine le TLS et transmet tout au serveur de jeu, y compris la **mise 
 
 ```caddyfile
 brumel.example.fr {
-    encode zstd gzip
     reverse_proxy 127.0.0.1:3000
 }
 ```
