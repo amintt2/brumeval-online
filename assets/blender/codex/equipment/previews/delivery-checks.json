@@ -1,0 +1,1341 @@
+[
+  {
+    "key": "eq_sword_1",
+    "variants": [
+      {
+        "file": "eq_sword_1.glb",
+        "triangles": 1892,
+        "bytes": 410176,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "f2920e1c77268833433006289d2ffcd94c6e72f3ac7492155b3b3d6f3f888edf"
+      },
+      {
+        "file": "eq_sword_1_lod1.glb",
+        "triangles": 672,
+        "bytes": 149860,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "be5b41062019afefe0dc7a299da3a35c00d8dd19c99e247b76d968e8fe5f97db"
+      },
+      {
+        "file": "eq_sword_1_lod2.glb",
+        "triangles": 246,
+        "bytes": 53952,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "44fd23b8c14a1a3bbb0759c7ac194538525f6ef3a676306fbe3bd003555e14f4"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "key": "eq_sword_2",
+    "variants": [
+      {
+        "file": "eq_sword_2.glb",
+        "triangles": 1892,
+        "bytes": 340408,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "d7c6cf9ff44d22b3eba040ddbe483e8161e7fe22ff9718bb62ca08f7deaf0688"
+      },
+      {
+        "file": "eq_sword_2_lod1.glb",
+        "triangles": 672,
+        "bytes": 127156,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "8a63d41efb9fd1f4c402e7c4c8082b7408583674b6f19b4f99b54190696b34fd"
+      },
+      {
+        "file": "eq_sword_2_lod2.glb",
+        "triangles": 246,
+        "bytes": 45052,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "df0e388d1e0c349eeb7ac434cdab407e676a8ed2a895b2056728597357748c7d"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "key": "eq_sword_3",
+    "variants": [
+      {
+        "file": "eq_sword_3.glb",
+        "triangles": 2060,
+        "bytes": 382888,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "edd1c39d372f3d1bdc061a4eeb6e185879a49abaf22fffb72951958dd64d527a"
+      },
+      {
+        "file": "eq_sword_3_lod1.glb",
+        "triangles": 686,
+        "bytes": 136860,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "c9bb24db65283f79e324e0fa66cf18ee393fec90d7a1323f7c1b85e071045939"
+      },
+      {
+        "file": "eq_sword_3_lod2.glb",
+        "triangles": 234,
+        "bytes": 48388,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "78da77133be17efa2f085cc71af462e78edda74e79d942f8656e91907419d8f1"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "key": "eq_sword_4",
+    "variants": [
+      {
+        "file": "eq_sword_4.glb",
+        "triangles": 2060,
+        "bytes": 417660,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "176766f9b305144a24c36f07de428a15f99c80b5f44cea75c2a3d2f5b9ad5d71"
+      },
+      {
+        "file": "eq_sword_4_lod1.glb",
+        "triangles": 728,
+        "bytes": 148320,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "3ca831b6caba1d3f72914de93e696090092440616e91e0988e644642f64c2356"
+      },
+      {
+        "file": "eq_sword_4_lod2.glb",
+        "triangles": 286,
+        "bytes": 54728,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "45e3af861ee389c1c994c0d343ba2fbd34bcf9af56ee2a4b289e76e685f65587"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "key": "eq_sword_5",
+    "variants": [
+      {
+        "file": "eq_sword_5.glb",
+        "triangles": 2080,
+        "bytes": 483460,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "d97a6ebe7cdc7ed4791b8d884cf0dba05832dfbfcb4c6c1a5c3efd12277cd0a4"
+      },
+      {
+        "file": "eq_sword_5_lod1.glb",
+        "triangles": 706,
+        "bytes": 164876,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "7c50fc8521c26b64db6afc68c33a2d2eba4add71d65f2b57127c50721164be46"
+      },
+      {
+        "file": "eq_sword_5_lod2.glb",
+        "triangles": 258,
+        "bytes": 57220,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "6bdc43ef467a1377ba6959f22ec00528c87ad0e39d2ff6e25d415219cc3f1761"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "key": "eq_greatsword_1",
+    "variants": [
+      {
+        "file": "eq_greatsword_1.glb",
+        "triangles": 1912,
+        "bytes": 383280,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "abff861f18f7146e0b70ebb521d5765948ed7b034a0417637c71e2ff902a8713"
+      },
+      {
+        "file": "eq_greatsword_1_lod1.glb",
+        "triangles": 692,
+        "bytes": 143936,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "49e92f8f714bae66e02342c048136224d7906dbbfbb24f9608087822bd64ab30"
+      },
+      {
+        "file": "eq_greatsword_1_lod2.glb",
+        "triangles": 262,
+        "bytes": 50108,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "eef59add48e037f7be047d0df5dbf239d139abc4f4c8ed5d5cfb795c3fd608b2"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "key": "eq_greatsword_2",
+    "variants": [
+      {
+        "file": "eq_greatsword_2.glb",
+        "triangles": 1912,
+        "bytes": 322148,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "9f1a931c5928835d25bfc8450bab35f1655ec1ac7c61caa4245365ede08146a7"
+      },
+      {
+        "file": "eq_greatsword_2_lod1.glb",
+        "triangles": 692,
+        "bytes": 124108,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "59b874d42637c321f10abb5a29b96c393c9d7f48247094c80727b15fe2c57a5e"
+      },
+      {
+        "file": "eq_greatsword_2_lod2.glb",
+        "triangles": 262,
+        "bytes": 42852,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "0358b4f0d0d9e1ec6917653ab0e84e41053df2dd6423cfcfb7c2c66671bce75d"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "key": "eq_staff_1",
+    "variants": [
+      {
+        "file": "eq_staff_1.glb",
+        "triangles": 2196,
+        "bytes": 347364,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "9a99fcf6a0be5f7f581534a5e535cc31cb6cb1e0a567d711ec17809d65e6c62a"
+      },
+      {
+        "file": "eq_staff_1_lod1.glb",
+        "triangles": 658,
+        "bytes": 129568,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "0e2fb756a1328a9e7988a3c7d9e467273b7e5ffeb6a33f219546bdf7510e5316"
+      },
+      {
+        "file": "eq_staff_1_lod2.glb",
+        "triangles": 156,
+        "bytes": 44576,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "e4415901ed09fe235fe2e210136d21c238746077e0be06f0ca2d0aa8595a0da4"
+      }
+    ],
+    "warnings": [
+      "eq_staff_1: ~2 faces coplanar with another shell (possible z-fighting)",
+      "eq_staff_1: baseColor texture SEAM across UV islands p50=0.021 p95=0.129 (same-island edges p50=0.010 p95=0.070); worst near [[0.02, -0.02, 0.12], [0.01, 0.03, -0.55], [0.02, -0.02, -0.12]]",
+      "eq_staff_1: roughness texture SEAM across UV islands p50=0.021 p95=0.134 (same-island edges p50=0.006 p95=0.068); worst near [[0.02, -0.02, 0.12], [0.01, 0.03, -0.55], [0.02, -0.02, -0.12]]"
+    ]
+  },
+  {
+    "key": "eq_staff_2",
+    "variants": [
+      {
+        "file": "eq_staff_2.glb",
+        "triangles": 1992,
+        "bytes": 383756,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "3ac2db3ea73eee6f9bd0ca1c643d9f1526e1b8754264f28169b8ac798718e2ad"
+      },
+      {
+        "file": "eq_staff_2_lod1.glb",
+        "triangles": 648,
+        "bytes": 140080,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "ad2c6e6c48253634daf4cf1db2cfe9b5adda5d6542c47f13bb8fae63d9546fbb"
+      },
+      {
+        "file": "eq_staff_2_lod2.glb",
+        "triangles": 180,
+        "bytes": 48168,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "f2a1ced42424d78370a3362a8e933a7bd7e76f05bac41dcdaebfd058cfeb3573"
+      }
+    ],
+    "warnings": [
+      "eq_staff_2: ~1 faces coplanar with another shell (possible z-fighting)",
+      "eq_staff_2: baseColor texture SEAM across UV islands p50=0.022 p95=0.138 (same-island edges p50=0.008 p95=0.069); worst near [[0.0, -0.0, 0.94], [0.01, 0.03, -0.55], [0.02, 0.02, -0.55]]",
+      "eq_staff_2: roughness texture SEAM across UV islands p50=0.025 p95=0.156 (same-island edges p50=0.006 p95=0.095); worst near [[0.0, -0.0, 0.94], [0.01, 0.03, -0.55], [0.02, 0.02, -0.55]]",
+      "eq_staff_2: metallic texture SEAM across UV islands p50=0.000 p95=0.246 (same-island edges p50=0.000 p95=0.115); worst near [[0.0, -0.0, 0.94], [0.01, 0.03, -0.55], [0.02, 0.02, -0.55]]"
+    ]
+  },
+  {
+    "key": "eq_staff_3",
+    "variants": [
+      {
+        "file": "eq_staff_3.glb",
+        "triangles": 1992,
+        "bytes": 344320,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "a082e10d3d03be8744084eada1b7b615f5bfa42f54a47cf447182b8b7c5eea59"
+      },
+      {
+        "file": "eq_staff_3_lod1.glb",
+        "triangles": 648,
+        "bytes": 132984,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "9b57f69d05dd2027f9dc7a1a3690a0be44213e7cb6253db3262b0140c5ee8c75"
+      },
+      {
+        "file": "eq_staff_3_lod2.glb",
+        "triangles": 180,
+        "bytes": 47520,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "2da629f77ae3d2fcd469abd4aabced60486df8ce2c77e5b17c04e09f2da64bbf"
+      }
+    ],
+    "warnings": [
+      "eq_staff_3: ~1 faces coplanar with another shell (possible z-fighting)",
+      "eq_staff_3: baseColor texture SEAM across UV islands p50=0.025 p95=0.132 (same-island edges p50=0.008 p95=0.062); worst near [[-0.0, -0.0, -0.5], [-0.03, 0.01, -0.55], [-0.02, 0.02, -0.55]]",
+      "eq_staff_3: roughness texture SEAM across UV islands p50=0.024 p95=0.161 (same-island edges p50=0.005 p95=0.071); worst near [[-0.0, -0.0, -0.5], [-0.03, 0.01, -0.55], [-0.02, 0.02, -0.55]]",
+      "eq_staff_3: metallic texture SEAM across UV islands p50=0.000 p95=0.208 (same-island edges p50=0.000 p95=0.030); worst near [[-0.0, -0.0, -0.5], [-0.03, 0.01, -0.55], [-0.02, 0.02, -0.55]]"
+    ]
+  },
+  {
+    "key": "eq_staff_4",
+    "variants": [
+      {
+        "file": "eq_staff_4.glb",
+        "triangles": 2472,
+        "bytes": 375604,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "c9fd0b866ef5c879941f272b2e95dae460b7b416030e6d5323b49ffd8fbc13c1"
+      },
+      {
+        "file": "eq_staff_4_lod1.glb",
+        "triangles": 792,
+        "bytes": 137896,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "80e6b84ee3022074701292e88191b6623695bfae9f19c3ad4f45109bdc69465c"
+      },
+      {
+        "file": "eq_staff_4_lod2.glb",
+        "triangles": 222,
+        "bytes": 49404,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "32695e45dc12b50b5a518385bb9a8a300b87b7f4d984d02079529b34304517e0"
+      }
+    ],
+    "warnings": [
+      "eq_staff_4: ~1 faces coplanar with another shell (possible z-fighting)",
+      "eq_staff_4: baseColor texture SEAM across UV islands p50=0.024 p95=0.155 (same-island edges p50=0.011 p95=0.095); worst near [[0.01, -0.04, 1.23], [-0.03, -0.01, -0.55], [-0.02, -0.02, 0.12]]"
+    ]
+  },
+  {
+    "key": "eq_bow_1",
+    "variants": [
+      {
+        "file": "eq_bow_1.glb",
+        "triangles": 2292,
+        "bytes": 391960,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "7b899df2458c8ffa48bd3120cf12f0a2a9b591aed7dc63f461b8f1b947007f47"
+      },
+      {
+        "file": "eq_bow_1_lod1.glb",
+        "triangles": 730,
+        "bytes": 150640,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "dbb528c362b29f0c09c8300c9db6790994f325d8b427d8dfc89bcc51e0c17539"
+      },
+      {
+        "file": "eq_bow_1_lod2.glb",
+        "triangles": 162,
+        "bytes": 48984,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "d9675b636bb1879a12ed1b051a7a14d5045e4bed0626494343338b2e3adf2fd8"
+      }
+    ],
+    "warnings": [
+      "eq_bow_1: fragmented UVs (210 islands, 60 of 1-2 faces for 2292 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "eq_bow_1: UV coverage only 22% of the texture"
+    ]
+  },
+  {
+    "key": "eq_bow_2",
+    "variants": [
+      {
+        "file": "eq_bow_2.glb",
+        "triangles": 2620,
+        "bytes": 220680,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "615880af884b3adf4d2c879847d885590f2091549a96b9d3e9684e0ae70685e7"
+      },
+      {
+        "file": "eq_bow_2_lod1.glb",
+        "triangles": 844,
+        "bytes": 81316,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "4a7f9d0c3282c3de1f9e97ae719478e8ed0e67b4992fef8a62c2d82e0ef1aa9a"
+      },
+      {
+        "file": "eq_bow_2_lod2.glb",
+        "triangles": 246,
+        "bytes": 29560,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "7994e4b9a32ae77bb160b719eea202c81de48e994f1f7da45d2a43643736c9aa"
+      }
+    ],
+    "warnings": [
+      "texture eq_bow_2_Main_basecolor: UV coverage only 11% (texels wasted; pack tighter / smaller size)"
+    ]
+  },
+  {
+    "key": "eq_bow_3",
+    "variants": [
+      {
+        "file": "eq_bow_3.glb",
+        "triangles": 2780,
+        "bytes": 444400,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "29799bb5debf00d4bdaa99f8660b92c2605f8348f64374d528b163261c835f30"
+      },
+      {
+        "file": "eq_bow_3_lod1.glb",
+        "triangles": 892,
+        "bytes": 173596,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "e55135d5b6393dcb3925bf642fecd587c59d938b61562d49e83cbca9b69928b5"
+      },
+      {
+        "file": "eq_bow_3_lod2.glb",
+        "triangles": 274,
+        "bytes": 60308,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "5dd888bd28b1e71e9895b81ab98b7fc99a394604857d44ae2c77d8bc776a19ee"
+      }
+    ],
+    "warnings": [
+      "eq_bow_3: fragmented UVs (162 islands, 17 of 1-2 faces for 2780 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "eq_bow_3: UV coverage only 17% of the texture",
+      "eq_bow_3: UV island border close to a visible offset (score 0.99)"
+    ]
+  },
+  {
+    "key": "eq_bow_4",
+    "variants": [
+      {
+        "file": "eq_bow_4.glb",
+        "triangles": 2780,
+        "bytes": 259708,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "b2426fb6f8b4bd11648a8e5cee1ac10b890f435bbb9b9c573dfd295117ca25c4"
+      },
+      {
+        "file": "eq_bow_4_lod1.glb",
+        "triangles": 892,
+        "bytes": 94360,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "1329444a305a289dd6184f640eb4b960b1a239a15bdbafc7964ad50a88640b5e"
+      },
+      {
+        "file": "eq_bow_4_lod2.glb",
+        "triangles": 270,
+        "bytes": 36140,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "5a3365f6ecd0205113a443eef655ad39562fac223c3be17ae0bc4aa36c937866"
+      }
+    ],
+    "warnings": [
+      "texture eq_bow_4_Main_basecolor: UV coverage only 11% (texels wasted; pack tighter / smaller size)"
+    ]
+  },
+  {
+    "key": "eq_shield_1",
+    "variants": [
+      {
+        "file": "eq_shield_1.glb",
+        "triangles": 2352,
+        "bytes": 323340,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "e127c21b8690dfbdda97426baa0656e8d6b6e98d47c82190ff93b1ffa88be295"
+      },
+      {
+        "file": "eq_shield_1_lod1.glb",
+        "triangles": 750,
+        "bytes": 124892,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "bccb15e21faf275aab8dda7c6181a81b92a0749ffd6dc9aa4141e862a355e1a2"
+      },
+      {
+        "file": "eq_shield_1_lod2.glb",
+        "triangles": 158,
+        "bytes": 38436,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "69899b0ba9a6b4b5348a0989b221681c9c9c8fc4b2dd1097ce8a57d425f8bbc0"
+      }
+    ],
+    "warnings": [
+      "eq_shield_1: fragmented UVs (104 islands, 0 of 1-2 faces for 2352 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "eq_shield_1: UV coverage only 35% of the texture",
+      "eq_shield_1: UV island border close to a visible offset (score 0.89)",
+      "eq_shield_1: normal(deg) texture SEAM across UV islands p50=2.119 p95=18.873 (same-island edges p50=1.364 p95=9.380); worst near [[0.31, -0.13, -0.0], [0.16, -0.12, 0.28], [0.16, -0.13, 0.28]]"
+    ]
+  },
+  {
+    "key": "eq_shield_2",
+    "variants": [
+      {
+        "file": "eq_shield_2.glb",
+        "triangles": 1288,
+        "bytes": 324280,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "c40df6a111281ffe2b238a1d11624b433e69e1749ff25dccf06acc969f602b4b"
+      },
+      {
+        "file": "eq_shield_2_lod1.glb",
+        "triangles": 492,
+        "bytes": 116280,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "98ebfd5488f71fc391f158b61e2b4de9a3b087ae41b23bbe57c2947fdae27f0d"
+      },
+      {
+        "file": "eq_shield_2_lod2.glb",
+        "triangles": 184,
+        "bytes": 45268,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "a7c78bb8a5a002ad935fa67760e237e8f9733b98c3366929938dffc5042ab20e"
+      }
+    ],
+    "warnings": [
+      "eq_shield_2: fragmented UVs (116 islands, 8 of 1-2 faces for 1288 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "eq_shield_2: UV coverage only 31% of the texture",
+      "eq_shield_2: baseColor texture SEAM across UV islands p50=0.026 p95=0.125 (same-island edges p50=0.009 p95=0.078); worst near [[0.14, -0.11, 0.17], [-0.15, -0.13, 0.22], [-0.16, -0.12, 0.22]]",
+      "eq_shield_2: normal(deg) texture SEAM across UV islands p50=4.590 p95=25.206 (same-island edges p50=1.608 p95=13.364); worst near [[0.14, -0.11, 0.17], [-0.15, -0.13, 0.22], [-0.16, -0.12, 0.22]]"
+    ]
+  },
+  {
+    "key": "eq_shield_3",
+    "variants": [
+      {
+        "file": "eq_shield_3.glb",
+        "triangles": 1368,
+        "bytes": 287980,
+        "textures": [
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ],
+          [
+            1024,
+            1024
+          ]
+        ],
+        "sha256": "e27331514ac63a3a44fcc11e925d25f8d728e7413e19a3a0eada823a721102f4"
+      },
+      {
+        "file": "eq_shield_3_lod1.glb",
+        "triangles": 510,
+        "bytes": 109396,
+        "textures": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "sha256": "e8b7fb4aa696b530b4dac70db3d9f264b706c56eabd8e84e592970d630327cb5"
+      },
+      {
+        "file": "eq_shield_3_lod2.glb",
+        "triangles": 182,
+        "bytes": 43356,
+        "textures": [
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ],
+          [
+            256,
+            256
+          ]
+        ],
+        "sha256": "720e94bcfd5b10ce800139fffb14b7e521e6f9cc665c7babed662eb796cdd40f"
+      }
+    ],
+    "warnings": [
+      "eq_shield_3: fragmented UVs (122 islands, 8 of 1-2 faces for 1368 tris) -> use bake_asset(uv_method='CHARTS') for organic shapes",
+      "eq_shield_3: UV coverage only 30% of the texture",
+      "eq_shield_3: baseColor texture SEAM across UV islands p50=0.025 p95=0.123 (same-island edges p50=0.008 p95=0.068); worst near [[-0.16, -0.12, 0.22], [-0.21, -0.11, -0.38], [0.26, -0.12, 0.47]]",
+      "eq_shield_3: normal(deg) texture SEAM across UV islands p50=4.809 p95=24.442 (same-island edges p50=1.202 p95=13.737); worst near [[-0.16, -0.12, 0.22], [-0.21, -0.11, -0.38], [0.26, -0.12, 0.47]]"
+    ]
+  }
+]

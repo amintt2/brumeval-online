@@ -3,7 +3,7 @@ Blender -b --python build.py -- --only eq_sword_1 [--geometry-only] [--no-sheets
 """
 import sys
 sys.dont_write_bytecode = True
-import os, math, json, argparse, importlib
+import os, math, json, argparse, importlib, struct, hashlib
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[4]
 HERE = Path(__file__).resolve().parent
@@ -35,16 +35,21 @@ def bevel(ob, width=.003, segments=2):
 
 def tube(name, points, radius, mat, sides=8):
     # Parallel reference Y is stable for all authored sweeps in the XZ plane.
+    closed=len(points)>3 and (Vector(points[0])-Vector(points[-1])).length<1e-7
+    if closed:points=points[:-1]
     vertices=[]
     for i, p in enumerate(points):
-        tangent=Vector(points[min(i+1,len(points)-1)])-Vector(points[max(0,i-1)])
+        prev=(i-1)%len(points) if closed else max(0,i-1)
+        nex=(i+1)%len(points) if closed else min(i+1,len(points)-1)
+        tangent=Vector(points[nex])-Vector(points[prev])
         tangent.normalize(); a=tangent.cross(Vector((0,1,0))).normalized(); b=tangent.cross(a).normalized()
         r=radius[i] if isinstance(radius,list) else radius
         vertices.extend(tuple(Vector(p)+r*(math.cos(j*math.tau/sides)*a+math.sin(j*math.tau/sides)*b)) for j in range(sides))
-    faces=[tuple(reversed(range(sides)))]
-    for i in range(len(points)-1):
-        for j in range(sides): faces.append((i*sides+j,i*sides+(j+1)%sides,(i+1)*sides+(j+1)%sides,(i+1)*sides+j))
-    faces.append(tuple((len(points)-1)*sides+j for j in range(sides)))
+    faces=[] if closed else [tuple(reversed(range(sides)))]
+    for i in range(len(points) if closed else len(points)-1):
+        nex=(i+1)%len(points)
+        for j in range(sides): faces.append((i*sides+j,i*sides+(j+1)%sides,nex*sides+(j+1)%sides,nex*sides+j))
+    if not closed:faces.append(tuple((len(points)-1)*sides+j for j in range(sides)))
     return mesh(name,vertices,faces,mat,True)
 
 def mats(i):
@@ -72,6 +77,10 @@ def grip(m, length=.22, radius=.025):
 
 def sword(i, great=False):
     m=mats(i); length=(1.18+.17*i) if great else [.73,.91,1.02,.82,1.10][i-1]
+    if not great and i==3:
+        m['steel']=M.engraved_metal('RunedSteel',kind='steel',pattern='runes',rust=.10,grime=.25,scale=.85,seed=3,glow='#526b70',glow_strength=.45)
+    if not great and i==5:
+        m['steel']=M.engraved_metal('CeremonialSteel',kind='silver',pattern='filigree',rust=.06,grime=.3,scale=.7,seed=5)
     handle=.36 if great else .22; grip(m,handle,.029 if great else .024)
     z0=handle/2+.033; width=(.080 if great else [.045,.047,.052,.065,.042][i-1])
     # Full lenticular section with sharpened edge strips and intentional tapered shoulders.
@@ -110,6 +119,7 @@ def staff(i):
         tube('Shepherd crook',[(.03+math.cos(t)*.10,0,top+math.sin(t)*.14) for t in [j/20*math.pi*1.65-.3 for j in range(21)]],.024,m['wood'],10)
         C.ico('Clouded focus',r=.055,subdiv=2,mat=m['gem'],loc=(.02,0,top+.055),scale=(.75,.75,1.25))
     else:
+        C.cone('Crystal socket',r1=.027,r2=.052,depth=.10,verts=16,mat=m['bronze'] if i!=3 else m['iron'],loc=(0,0,top-.03),smooth=True)
         for side in [-1,1]:
             tube('Crown prong',[(0,0,top-.12),(side*.075,0,top+.01),(side*(.115 if i==3 else .095),0,top+.18),(side*.048,0,top+.30)], [.024,.020,.014,.007],m['bronze'] if i!=3 else m['iron'],10)
         gem=C.ico('Focus crystal',r=.092,subdiv=2,mat=m['gem'],loc=(0,0,top+.13),scale=(.7,.65,1.7))
@@ -117,22 +127,30 @@ def staff(i):
             C.torus('Astral meridian',major=.13,minor=.007,seg=40,minor_seg=6,mat=m['bronze'],loc=(0,0,top+.13),rot=(math.pi/2,.4,0))
 
 def bow(i):
-    m=mats(i); half=[.56,.78,.72,.84][i-1]
+    m=mats(i); half=[.56,.78,.72,.84][i-1];brace=.15 if i>=3 else .11
+    if i in (2,4):
+        # Long, thin limbs have few texels across their width. Limit albedo microcontrast
+        # to avoid unstable grain/engraving at atlas seams; roughness and bump stay intact.
+        for material,mean in [(m['wood'],(.075,.042,.022,1)),(m['bronze'],(.20,.11,.043,1))]:
+            nt=material.node_tree;bs=next(n for n in nt.nodes if n.type=='BSDF_PRINCIPLED')
+            source=bs.inputs['Base Color'].links[0].from_socket
+            mix=nt.nodes.new('ShaderNodeMixRGB');mix.inputs[0].default_value=.45;mix.inputs[2].default_value=mean
+            nt.links.new(source,mix.inputs[1]);nt.links.new(mix.outputs[0],bs.inputs['Base Color'])
     for side in [-1,1]:
         points=[]
         for j in range(25):
-            t=j/24; recur=.13*math.sin(t*math.pi)-(.07 if i>=3 else .025)*t**5
+            t=j/24; recur=.13*math.sin(t*math.pi)-brace*t**5
             points.append((recur,0,side*half*t))
         tube('Carved flexible limb',points,[.024*(1-.65*j/24) for j in range(25)],m['wood'],12)
         if i>=2:
             tube('Metal limb binding',[(p[0],-.016,p[2]) for p in points[3:17]],.0045,m['bronze'],6)
     grip(m,.19,.028)
     # String ends are attached to limb tips; string is offset from the hand at full brace.
-    tip=-(.07 if i>=3 else .025)
-    tube('Taut bowstring',[(tip,0,-half),(-.16,0,0),(tip,0,half)],.0016,m['leather'],6)
+    tip=-brace
+    tube('Taut bowstring',[(tip,0,-half),(tip,0,half)],.0016,m['leather'],6)
     if i>=3:
         for side in [-1,1]:
-            t=.13/half; x=.13*math.sin(t*math.pi)-.07*t**5
+            t=.13/half; x=.13*math.sin(t*math.pi)-brace*t**5
             C.ico('Grip cabochon',r=.018,subdiv=2,mat=m['gem'],loc=(x,-.016,side*.13),scale=(.8,.4,1.3))
     # Bow fires toward -Y like the other assets; braced string sits behind the grip at +Y.
     for ob in bpy.context.scene.objects:
@@ -171,8 +189,53 @@ def sheets(key,ob,geometry_only=False):
             with render.Stage(ground=False) as st:
                 for kind in ('wire','normals','uv'):render.override_sheet(st,[ob],key,str(PRE),kind,256)
 
+def lod_views(levels):
+    for level in levels:
+        C.reset();importlib.reload(gpu)
+        bpy.ops.import_scene.gltf(filepath=level['path'])
+        meshes=[o for o in bpy.context.scene.objects if o.type=='MESH']
+        with gpu.lock_only(wait=120):
+            with render.Stage(ground=False) as st:
+                render.hero(st,meshes,Path(level['path']).stem,str(PRE),size=384)
+
+def texture_fingerprints(path):
+    raw=Path(path).read_bytes();length=struct.unpack_from('<I',raw,12)[0]
+    doc=json.loads(raw[20:20+length]);blob=raw[28+length:];result=[]
+    for im in doc.get('images',[]):
+        view=doc['bufferViews'][im['bufferView']];start=view.get('byteOffset',0)
+        result.append(hashlib.sha256(blob[start:start+view['byteLength']]).hexdigest())
+    return sorted(result)
+
 def build(key,args):
     C.reset(); importlib.reload(gpu)
+    sys.path.insert(0,str(HERE))
+    import lod_safe
+    if args.views:
+        bpy.ops.import_scene.gltf(filepath=str(OUT/f'{key}.glb'))
+        objects=[o for o in bpy.context.scene.objects if o.type=='MESH']
+        sheets(key,objects[0])
+        rep=json.loads((PRE/f'{key}_qa.json').read_text());lod_views(rep['info']['lods'])
+        print('ALL VIEWS COMPLETE',key,flush=True)
+        return
+    if args.lod_views:
+        rep=json.loads((PRE/f'{key}_qa.json').read_text());lod_views(rep['info']['lods'])
+        print('LOD VIEWS COMPLETE',key,flush=True)
+        return
+    if args.lod_only or args.finalize:
+        bpy.ops.import_scene.gltf(filepath=str(OUT/f'{key}.glb'))
+        objects=[o for o in bpy.context.scene.objects if o.type=='MESH']
+        report_path=PRE/f'{key}_qa.json';rep=json.loads(report_path.read_text())
+        if args.finalize:
+            # glTF import has triangulated the geometry: explicit tangents can now be exported.
+            before=texture_fingerprints(OUT/f'{key}.glb')
+            info=export.export_glb(key,str(OUT),objects=objects,budget='prop',animations=False)
+            rep['info']['glb_bytes']=info['bytes']
+            rep['info']['finalization_images_unchanged']=before==texture_fingerprints(OUT/f'{key}.glb')
+        levels=lod_safe.export_lods(key,objects,str(OUT))
+        rep['info']['lods']=levels;qa.save(rep,str(PRE))
+        if not args.no_sheets:lod_views(levels)
+        print('SAFE LODS COMPLETE',key,flush=True)
+        return
     family,i=key.removeprefix('eq_').rsplit('_',1); i=int(i)
     if family=='greatsword': sword(i,True)
     else: globals()[family](i)
@@ -187,23 +250,41 @@ def build(key,args):
     if args.geometry_only:
         sheets(key,ob,True)
         return
-    baked=bake.bake_asset([ob],key,size=1024,samples=8,ao_samples=64,ao_distance=.025,tex_dir=str(PRE/'tex'),ao_in_base=0)
+    # The long bow's narrow curved inlay needs continuous charts instead of many projected slivers.
+    uv_method='CHARTS' if key in ('eq_bow_2','eq_bow_4') else 'SMART'
+    baked=bake.bake_asset([ob],key,size=1024,samples=8,ao_samples=64,ao_distance=.025,tex_dir=str(PRE/'tex'),ao_in_base=0,uv_method=uv_method)
     # Slender assembled props should not carry near-black ambient shadows into every lighting setup.
     # Keep contact AO subtle (35% strength), in the exported ORM itself, never in baseColor.
     for group in baked.values():
         im=group['images']['orm']; pixels=bake.img_to_np(im);pixels[...,0]=.65+.35*pixels[...,0]
         bake.np_to_img(im,pixels);im.pack()
         bake.save_image(im,str(PRE/'tex'/f'{im.name}.png'))
+    C.activate(ob);tri=ob.modifiers.new('Explicit triangles for tangent export','TRIANGULATE')
+    bpy.ops.object.modifier_apply(modifier=tri.name)
     info=export.export_glb(key,str(OUT),objects=[ob],budget='prop',animations=False)
-    levels=lod.export_lods(key,[ob],str(OUT))
+    levels=lod_safe.export_lods(key,[ob],str(OUT))
     rep=qa.run(key,[ob],budget='prop',glb=info,grounded=False,centred=False)
     rep['info']['attachment']={'origin':[0,0,0],'long_axis':'Blender +Z / glTF +Y','front':'Blender -Y / glTF +Z'}
     rep['info']['lods']=levels;qa.save(rep,str(PRE))
-    if not args.no_sheets:sheets(key,ob)
+    if not args.no_sheets:
+        # Inspect the delivered GLB (including WebP compression), not just Blender's source images.
+        C.reset();importlib.reload(gpu)
+        bpy.ops.import_scene.gltf(filepath=info['path'])
+        delivered=[o for o in bpy.context.scene.objects if o.type=='MESH']
+        assert len(delivered)==1, 'Equipment must remain one exported mesh'
+        sheets(key,delivered[0])
+        lod_views(levels)
     print('EQUIPMENT COMPLETE',key,json.dumps(info),flush=True)
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--only',nargs='+',choices=KEYS);parser.add_argument('--geometry-only',action='store_true');parser.add_argument('--no-sheets',action='store_true')
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--only',nargs='+',choices=KEYS)
+    parser.add_argument('--geometry-only',action='store_true')
+    parser.add_argument('--no-sheets',action='store_true')
+    parser.add_argument('--lod-only',action='store_true')
+    parser.add_argument('--finalize',action='store_true')
+    parser.add_argument('--lod-views',action='store_true')
+    parser.add_argument('--views',action='store_true')
     args=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     OUT.mkdir(parents=True,exist_ok=True);PRE.mkdir(parents=True,exist_ok=True)
     render.TMP=str(PRE/'tmp');Path(render.TMP).mkdir(exist_ok=True)

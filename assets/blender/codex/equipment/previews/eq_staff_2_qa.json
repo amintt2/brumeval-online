@@ -1,0 +1,681 @@
+{
+ "key": "eq_staff_2",
+ "fails": [],
+ "warns": [
+  "eq_staff_2: ~1 faces coplanar with another shell (possible z-fighting)",
+  "eq_staff_2: baseColor texture SEAM across UV islands p50=0.022 p95=0.138 (same-island edges p50=0.008 p95=0.069); worst near [[0.0, -0.0, 0.94], [0.01, 0.03, -0.55], [0.02, 0.02, -0.55]]",
+  "eq_staff_2: roughness texture SEAM across UV islands p50=0.025 p95=0.156 (same-island edges p50=0.006 p95=0.095); worst near [[0.0, -0.0, 0.94], [0.01, 0.03, -0.55], [0.02, 0.02, -0.55]]",
+  "eq_staff_2: metallic texture SEAM across UV islands p50=0.000 p95=0.246 (same-island edges p50=0.000 p95=0.115); worst near [[0.0, -0.0, 0.94], [0.01, 0.03, -0.55], [0.02, 0.02, -0.55]]"
+ ],
+ "info": {
+  "objects": {
+   "eq_staff_2": {
+    "faces": 944,
+    "islands": 11,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0
+   }
+  },
+  "seams": {
+   "eq_staff_2": {
+    "seam_edges": 1009,
+    "worst_at": [
+     [
+      0.0,
+      -0.0,
+      0.94
+     ],
+     [
+      0.01,
+      0.03,
+      -0.55
+     ],
+     [
+      0.02,
+      0.02,
+      -0.55
+     ],
+     [
+      0.03,
+      0.02,
+      1.03
+     ],
+     [
+      0.01,
+      -0.03,
+      0.94
+     ],
+     [
+      0.04,
+      0.01,
+      1.03
+     ]
+    ],
+    "baseColor": {
+     "seam_p50": 0.0216,
+     "seam_p95": 0.1376,
+     "ref_p50": 0.0082,
+     "ref_p95": 0.0692
+    },
+    "AO": {
+     "seam_p50": 0.0228,
+     "seam_p95": 0.1448,
+     "ref_p50": 0.0044,
+     "ref_p95": 0.0768
+    },
+    "roughness": {
+     "seam_p50": 0.0249,
+     "seam_p95": 0.1562,
+     "ref_p50": 0.0058,
+     "ref_p95": 0.0948
+    },
+    "metallic": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.2457,
+     "ref_p50": 0.0,
+     "ref_p95": 0.1153
+    },
+    "normal(deg)": {
+     "seam_p50": 0.0,
+     "seam_p95": 0.0,
+     "ref_p50": 0.0,
+     "ref_p95": 0.0
+    }
+   }
+  },
+  "bbox_min": [
+   -0.109,
+   -0.06,
+   -0.59
+  ],
+  "bbox_max": [
+   0.109,
+   0.06,
+   1.363
+  ],
+  "dims": [
+   0.218,
+   0.12,
+   1.953
+  ],
+  "tris": 1992,
+  "textures": {
+   "eq_staff_2_Main_basecolor": [
+    1024,
+    1024
+   ],
+   "eq_staff_2_Main_orm": [
+    1024,
+    1024
+   ],
+   "eq_staff_2_Main_normal": [
+    1024,
+    1024
+   ],
+   "eq_staff_2_Main_emissive": [
+    1024,
+    1024
+   ]
+  },
+  "glb_bytes": 383756,
+  "attachment": {
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "long_axis": "Blender +Z / glTF +Y",
+   "front": "Blender -Y / glTF +Z"
+  },
+  "lods": [
+   {
+    "path": "C:\\Users\\amin2\\mmorpg-codex-cx3\\client\\public\\models\\eq_staff_2_lod1.glb",
+    "bytes": 140080,
+    "tris": 648,
+    "textures": {
+     "eq_staff_2_Main_emissive_lod1": [
+      512,
+      512
+     ],
+     "eq_staff_2_Main_basecolor_lod1": [
+      512,
+      512
+     ],
+     "eq_staff_2_Main_orm_lod1": [
+      512,
+      512
+     ],
+     "eq_staff_2_Main_normal_lod1": [
+      512,
+      512
+     ]
+    },
+    "warnings": [],
+    "ratio": 0.3,
+    "requestedRatio": 0.3,
+    "actualRatio": 0.325301,
+    "sourceTris": 1992,
+    "connectedComponents": 11,
+    "components": [
+     {
+      "sourceTris": 500,
+      "minimumTris": 72,
+      "targetTris": 150,
+      "extent": [
+       0.074978,
+       0.07577,
+       1.643155
+      ],
+      "elongated": true,
+      "structural": true,
+      "component": 0,
+      "actualTris": 150,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 150,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.01027
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 16,
+      "targetTris": 18,
+      "extent": [
+       0.05,
+       0.05,
+       0.24
+      ],
+      "elongated": true,
+      "structural": false,
+      "component": 1,
+      "actualTris": 18,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 18,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.03004
+     },
+     {
+      "sourceTris": 900,
+      "minimumTris": 16,
+      "targetTris": 270,
+      "extent": [
+       0.0552,
+       0.0552,
+       0.228113
+      ],
+      "elongated": true,
+      "structural": false,
+      "component": 2,
+      "actualTris": 270,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 270,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.01925
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 16,
+      "targetTris": 18,
+      "extent": [
+       0.06,
+       0.06,
+       0.019
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 3,
+      "actualTris": 18,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 18,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.08075
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 16,
+      "targetTris": 18,
+      "extent": [
+       0.06,
+       0.06,
+       0.019
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 4,
+      "actualTris": 18,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 18,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.08075
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 16,
+      "targetTris": 18,
+      "extent": [
+       0.058,
+       0.058,
+       0.09
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 5,
+      "actualTris": 18,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 18,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.04713
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 16,
+      "targetTris": 18,
+      "extent": [
+       0.058,
+       0.058,
+       0.09
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 6,
+      "actualTris": 18,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 18,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.04713
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 16,
+      "targetTris": 18,
+      "extent": [
+       0.104,
+       0.104,
+       0.1
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 7,
+      "actualTris": 18,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 18,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.07312
+     },
+     {
+      "sourceTris": 76,
+      "minimumTris": 48,
+      "targetTris": 48,
+      "extent": [
+       0.129728,
+       0.045651,
+       0.434546
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 8,
+      "actualTris": 48,
+      "attempts": [
+       {
+        "ratio": 0.6316,
+        "tris": 48,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.03516
+     },
+     {
+      "sourceTris": 76,
+      "minimumTris": 48,
+      "targetTris": 48,
+      "extent": [
+       0.129728,
+       0.045651,
+       0.434546
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 9,
+      "actualTris": 48,
+      "attempts": [
+       {
+        "ratio": 0.6316,
+        "tris": 48,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.03515
+     },
+     {
+      "sourceTris": 80,
+      "minimumTris": 16,
+      "targetTris": 24,
+      "extent": [
+       0.122496,
+       0.1196,
+       0.3128
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 10,
+      "actualTris": 24,
+      "attempts": [
+       {
+        "ratio": 0.3,
+        "tris": 24,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.10914
+     }
+    ],
+    "policy": "component quotas + 26-direction support checks",
+    "seamWeldDistance": 1e-07
+   },
+   {
+    "path": "C:\\Users\\amin2\\mmorpg-codex-cx3\\client\\public\\models\\eq_staff_2_lod2.glb",
+    "bytes": 48168,
+    "tris": 180,
+    "textures": {
+     "eq_staff_2_Main_emissive_lod2": [
+      256,
+      256
+     ],
+     "eq_staff_2_Main_basecolor_lod2": [
+      256,
+      256
+     ],
+     "eq_staff_2_Main_orm_lod2": [
+      256,
+      256
+     ],
+     "eq_staff_2_Main_normal_lod2": [
+      256,
+      256
+     ]
+    },
+    "warnings": [],
+    "ratio": 0.08,
+    "requestedRatio": 0.08,
+    "actualRatio": 0.090361,
+    "sourceTris": 1992,
+    "connectedComponents": 11,
+    "components": [
+     {
+      "sourceTris": 500,
+      "minimumTris": 48,
+      "targetTris": 48,
+      "extent": [
+       0.074978,
+       0.07577,
+       1.643155
+      ],
+      "elongated": true,
+      "structural": true,
+      "component": 0,
+      "actualTris": 48,
+      "attempts": [
+       {
+        "ratio": 0.096,
+        "tris": 48,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.03457
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.05,
+       0.05,
+       0.24
+      ],
+      "elongated": true,
+      "structural": false,
+      "component": 1,
+      "actualTris": 12,
+      "attempts": [
+       {
+        "ratio": 0.2,
+        "tris": 12,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06342
+     },
+     {
+      "sourceTris": 900,
+      "minimumTris": 12,
+      "targetTris": 72,
+      "extent": [
+       0.0552,
+       0.0552,
+       0.228113
+      ],
+      "elongated": true,
+      "structural": false,
+      "component": 2,
+      "actualTris": 0,
+      "removedDecoration": {
+       "supportComponent": 0,
+       "volumeFraction": 0.01101,
+       "reason": "dense thin decoration contained around solid support"
+      }
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.06,
+       0.06,
+       0.019
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 3,
+      "actualTris": 12,
+      "attempts": [
+       {
+        "ratio": 0.2,
+        "tris": 12,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.08075
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.06,
+       0.06,
+       0.019
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 4,
+      "actualTris": 12,
+      "attempts": [
+       {
+        "ratio": 0.2,
+        "tris": 12,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.08075
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.058,
+       0.058,
+       0.09
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 5,
+      "actualTris": 12,
+      "attempts": [
+       {
+        "ratio": 0.2,
+        "tris": 12,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06342
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.058,
+       0.058,
+       0.09
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 6,
+      "actualTris": 12,
+      "attempts": [
+       {
+        "ratio": 0.2,
+        "tris": 12,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.06342
+     },
+     {
+      "sourceTris": 60,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.104,
+       0.104,
+       0.1
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 7,
+      "actualTris": 12,
+      "attempts": [
+       {
+        "ratio": 0.2,
+        "tris": 12,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.13507
+     },
+     {
+      "sourceTris": 76,
+      "minimumTris": 24,
+      "targetTris": 24,
+      "extent": [
+       0.129728,
+       0.045651,
+       0.434546
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 8,
+      "actualTris": 24,
+      "attempts": [
+       {
+        "ratio": 0.3158,
+        "tris": 24,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.05586
+     },
+     {
+      "sourceTris": 76,
+      "minimumTris": 24,
+      "targetTris": 24,
+      "extent": [
+       0.129728,
+       0.045651,
+       0.434546
+      ],
+      "elongated": false,
+      "structural": true,
+      "component": 9,
+      "actualTris": 24,
+      "attempts": [
+       {
+        "ratio": 0.3158,
+        "tris": 24,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.05585
+     },
+     {
+      "sourceTris": 80,
+      "minimumTris": 12,
+      "targetTris": 12,
+      "extent": [
+       0.122496,
+       0.1196,
+       0.3128
+      ],
+      "elongated": false,
+      "structural": false,
+      "component": 10,
+      "actualTris": 12,
+      "attempts": [
+       {
+        "ratio": 0.15,
+        "tris": 12,
+        "silhouettePass": true
+       }
+      ],
+      "maxSupportWidthLoss": 0.15833
+     }
+    ],
+    "policy": "component quotas + 26-direction support checks",
+    "seamWeldDistance": 1e-07
+   }
+  ],
+  "finalization_images_unchanged": true
+ }
+}
