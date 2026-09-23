@@ -447,6 +447,7 @@ async function boot() {
   }
   scene.add(warm);
   gfx.update(0.016, 0, state.tod, new THREE.Vector3(), null); // [render-souls]
+  await Promise.race([effects.ready, new Promise((r) => setTimeout(r, 4000))]); // [render-souls] flipbook VFX sheets (warmed up below)
   try {
     await renderer.compileAsync(scene, camera);
   } catch {

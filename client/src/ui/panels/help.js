@@ -20,6 +20,7 @@ const WINDOWS = [
   [['C'], 'Personnage'],
   [['L'], 'Journal de quêtes'],
   [['H'], 'Aide'],
+  [['O'], 'Graphismes'], // [render-souls]
   [['Entrée'], 'Ouvrir la discussion / envoyer'],
   [['M'], 'Couper / rétablir le son'],
 ];

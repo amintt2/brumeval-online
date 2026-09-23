@@ -4,14 +4,15 @@ import { Sky } from './sky.js';
 import { CascadedShadows } from './shadows.js';
 import { EnvironmentLighting } from './envmap.js';
 import { CAMERA, URLP } from '../config.js';
-import { getSettings } from './quality.js';
+import { getSettings, hasSavedSettings } from './quality.js';
 
 export function createRenderer(canvas) {
   const settings = getSettings();
   const renderer = new THREE.WebGLRenderer({
     canvas,
     // with post-processing the scene is anti-aliased by SMAA; MSAA on the default framebuffer would be wasted
-    antialias: !settings.post || URLP.quality === 'low',
+    // (first launch: the preset is not known yet — the benchmark may pick one without post-processing)
+    antialias: !settings.post || URLP.quality === 'low' || !hasSavedSettings(),
     powerPreference: 'high-performance',
     stencil: false,
   });

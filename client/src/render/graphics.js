@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { WORLD_HALF, TERRAIN_STEP } from '@shared/world.js';
 import { URLP } from '../config.js';
 import {
-  getSettings, applyPreset, onSettingsChange, hasSavedSettings, presetFromBenchmark, PRESETS,
+  getSettings, applyPreset, onSettingsChange, hasSavedSettings, presetFromBenchmark, PRESETS, setGraphicsHooks,
 } from './quality.js';
 import { PostPipeline } from './post.js';
 import { Terrain, buildMountainRing, buildWater } from './terrain.js';
@@ -26,7 +26,9 @@ const BENIGN_HLSL = /^\s*(\(\d+,[\d-]+\):\s*)?warning X(4122|3595|3557|3570|3571
   const prev = THREE.getConsoleFunction?.();
   THREE.setConsoleFunction?.((type, message, ...params) => {
     if (type === 'warn' && String(message).startsWith('THREE.WebGLProgram: Program Info Log')) {
-      const lines = String(params[0] ?? '').split('\n').map((l) => l.trim()).filter(Boolean);
+      // (ANGLE terminates the log with a NUL character: strip control characters before testing each line)
+      // eslint-disable-next-line no-control-regex
+      const lines = String(params[0] ?? '').split('\n').map((l) => l.replace(/[\u0000-\u001f\u007f]/g, '').trim()).filter(Boolean);
       if (lines.length && lines.every((l) => BENIGN_HLSL.test(l))) {
         if (shaderNotes.length < 50) shaderNotes.push(lines.join(' | '));
         return;
@@ -119,6 +121,11 @@ export class Graphics {
     this._benders = [];
     for (let i = 0; i < 12; i++) this._benders.push({ x: 0, z: 0, r: 0, s: 1 });
     this.apply(this.settings);
+    setGraphicsHooks({
+      stats: () => this.stats(),
+      autodetect: () => this.autoDetect({ force: true }),
+      msaa: () => !!renderer.getContext().getContextAttributes()?.antialias,
+    });
   }
 
   get anisotropy() {
@@ -334,6 +341,8 @@ export class Graphics {
       geometries: i.memory.geometries,
       grassTiles: this.grass?.tileCount || 0,
       preset: this.settings.preset,
+      fps: Math.round(1000 / Math.max(1, this._dyn.dtEma)),
+      frameMs: +this._dyn.dtEma.toFixed(2),
     };
   }
 
@@ -341,8 +350,8 @@ export class Graphics {
    * First launch (no saved settings): render a few frames at "Élevé" and pick the preset from the median frame
    * time. Returns the chosen preset id (or null when settings already exist).
    */
-  async autoDetect() {
-    if (hasSavedSettings() || TEST_PRESET || URLP.quality === 'low') return null;
+  async autoDetect({ force = false } = {}) {
+    if ((!force && hasSavedSettings()) || TEST_PRESET || URLP.quality === 'low') return null;
     const gl = this.renderer.getContext();
     let gpuName = '';
     try {

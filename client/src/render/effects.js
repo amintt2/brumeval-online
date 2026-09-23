@@ -9,6 +9,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { ParticleSystem } from './particles.js';
 import { glowTexture, sparkTexture, smokeTexture } from './textures.js';
 import { RENDER } from '../config.js';
+import { Flipbooks } from './flipbooks.js'; // [render-souls] Blender flipbook VFX (procedural fallback below)
 
 const col = (hex) => new THREE.Color(hex);
 const AB = {
@@ -218,6 +219,9 @@ export class Effects {
     this.spark = new ParticleSystem(scene, { max: 800, texture: sparkTexture(), additive: true, name: 'fxSpark' });
     this.smoke = new ParticleSystem(scene, { max: 700, texture: smokeTexture(), additive: false, name: 'fxSmoke' });
     this.systems = [this.glow, this.spark, this.smoke];
+    // [render-souls] flipbook sprite sheets from /vfx/manifest.json (every call falls back when a sheet is missing)
+    this.flip = new Flipbooks(scene, { anisotropy: 4 });
+    this.ready = this.flip.ready;
 
     // point lights (constant count)
     this.lights = [];
@@ -450,6 +454,24 @@ export class Effects {
     }
   }
 
+  /** [render-souls] Play a flipbook when its sheet exists (see flipbooks.js); returns the handle or null. */
+  flipbook(name, pos, opts) {
+    return this.flip.play(name, pos, opts);
+  }
+
+  /** [render-souls] Flipbook slash in front of the attacker (replaces the procedural arc when available). */
+  _slashFb(id, ab) {
+    if (!this.flip.has('slash_arc')) return false;
+    const v = this.ctx.entities.get(id);
+    if (!v) return false;
+    const rec = v.rec;
+    const reach = 0.9 * v.scale * Math.max(1, v.radius * 1.3);
+    this._v3.set(rec.x + Math.sin(rec.ry) * reach, v.root.position.y + 1.1 * v.scale * (v.height / 1.8), rec.z + Math.cos(rec.ry) * reach);
+    return !!this.flip.play('slash_arc', this._v3, {
+      size: 2.6 * ab.slash * v.scale * Math.max(1, v.radius), color: ab.color, rotation: (Math.random() - 0.5) * 0.9,
+    });
+  }
+
   _near(pos, d = 45) {
     const sp = this.ctx.selfPos();
     return !sp || (pos.x - sp.x) ** 2 + (pos.z - sp.z) ** 2 < d * d;
@@ -468,7 +490,7 @@ export class Effects {
         E.playAnim(m.src, 'Attack');
         const ab = AB[m.ab];
         if (ab && ab.slash) {
-          this._arc(m.src, ab.color, ab.slash, false, 1, m.ab === 'heavy_blow' ? 0.34 : 0.26);
+          if (!this._slashFb(m.src, ab)) this._arc(m.src, ab.color, ab.slash, false, 1, m.ab === 'heavy_blow' ? 0.34 : 0.26); // [render-souls]
           if (this.point(m.src, 0.6, p)) this._sound(m.ab === 'heavy_blow' ? 'heavy' : 'swing', p);
         } else if (this.point(m.src, 0.5, p)) {
           this._sound('claw', p);
@@ -484,6 +506,8 @@ export class Effects {
         const c = AB[m.ab]?.color || C_GOLD;
         if (this.point(m.src, 0.62, p)) {
           if (!isBow) {
+            // [render-souls] rune circle under the caster
+            if (this.point(m.src, 0, this._v3)) this.flip.play('rune_circle', this._v3, { size: 2.2, color: c, ground: true, life: 0.9 });
             for (let i = 0; i < 16; i++) {
               const a = Math.random() * Math.PI * 2, r = 0.35 + Math.random() * 0.25;
               this.glow.emit(p.x + Math.cos(a) * r, p.y + (Math.random() - 0.3) * 0.6, p.z + Math.sin(a) * r,
@@ -508,6 +532,8 @@ export class Effects {
         if (this.point(m.src, 0, p)) {
           this._pillar(m.src, C_GOLD, 7.5, 1.0, 2.2);
           this._decal(p.x, p.z, 3.2, C_GOLD, STYLE.ring, 1.4, 0.5);
+          this.flip.play('rune_circle', p, { size: 4.2, color: C_GOLD, ground: true, life: 2 }); // [render-souls]
+          this.flip.play('arcane_burst', this._v3.set(p.x, p.y + 1.2, p.z), { size: 3.4, color: C_GOLD2 });
           p.y += 0.2;
           for (let i = 0; i < 60; i++) {
             const a = Math.random() * Math.PI * 2, r = Math.random() * 1.1;
@@ -522,18 +548,22 @@ export class Effects {
         break;
       case FX.HIT:
         E.flash(m.tg, 0.8);
-        if (this.point(m.tg, 0.55, p)) this._burst(this.spark, p, C_SPARK, 6, 4, 0.2, 0.3, 4);
+        if (this.point(m.tg, 0.55, p)) {
+          const fb = this.flip.play('impact_spark', p, { size: 1.3 }); // [render-souls]
+          this._burst(this.spark, p, C_SPARK, fb ? 3 : 6, 4, 0.2, 0.3, 4);
+        }
         break;
       case FX.RESPAWN: {
         const v = E.get(m.src);
         if (v && v.rec.k === KIND.PLAYER) {
           this._pillar(m.src, C_RESPAWN, 4.5, 0.8, 1.5);
+          if (this.point(m.src, 0, this._v3)) this.flip.play('rune_circle', this._v3, { size: 3, color: C_RESPAWN, ground: true, life: 1.6 }); // [render-souls]
           if (this.point(m.src, 0.2, p)) {
             this._burst(this.glow, p, C_RESPAWN, 30, 2.5, 0.25, 1.0, -1, 1.2);
             this._sound('respawn', p);
           }
         } else if (v && this.point(m.src, 0.3, p)) {
-          this._burst(this.smoke, p, C_DUST, 10, 1.5, 0.8, 1.0, 0, 2, 0.5, 1.4);
+          if (!this.flip.play('dust_puff', p, { size: 2.2 * v.scale })) this._burst(this.smoke, p, C_DUST, 10, 1.5, 0.8, 1.0, 0, 2, 0.5, 1.4); // [render-souls]
         }
         break;
       }
@@ -580,17 +610,24 @@ export class Effects {
     const p = pr.cur;
     if (pr.kind === 'fire') {
       if (pr.explode) {
-        this._burst(this.glow, p, C_FIRE, 40, 7, 0.55, 0.55, -1, 3, 0.8, 0.1);
-        this._burst(this.glow, p, C_FIRE2, 20, 4, 0.4, 0.4, 0, 3, 0.5, 0.1);
-        this._burst(this.smoke, p, C_SMOKE, 12, 2, 0.9, 1.1, -1.2, 2, 0.6, 1.8);
+        // [render-souls] flipbook explosion + smoke, procedural bursts as fallback
+        if (this.flip.play('explosion', p, { size: 4.6 })) {
+          this.flip.play('smoke_puff', this._v3.set(p.x, p.y + 0.4, p.z), { size: 3.4, delay: 0.12, velocity: this._v2.set(0, 0.7, 0) });
+          this._burst(this.spark, p, C_FIRE2, 14, 7, 0.2, 0.5, 6);
+        } else {
+          this._burst(this.glow, p, C_FIRE, 40, 7, 0.55, 0.55, -1, 3, 0.8, 0.1);
+          this._burst(this.glow, p, C_FIRE2, 20, 4, 0.4, 0.4, 0, 3, 0.5, 0.1);
+          this._burst(this.smoke, p, C_SMOKE, 12, 2, 0.9, 1.1, -1.2, 2, 0.6, 1.8);
+        }
         this._light(p, C_FIRE, 45, 0.45);
         this._sound('explode', p);
       } else {
-        this._burst(this.glow, p, C_FIRE, 16, 4, 0.3, 0.35, 0, 3, 0.4, 0.05);
+        if (!this.flip.play('fire_burst', p, { size: 1.7 })) this._burst(this.glow, p, C_FIRE, 16, 4, 0.3, 0.35, 0, 3, 0.4, 0.05); // [render-souls]
         this._burst(this.spark, p, C_FIRE2, 6, 5, 0.18, 0.3, 5);
         this._sound('firehit', p);
       }
     } else {
+      this.flip.play('impact_spark', p, { size: pr.glow ? 1.2 : 0.8, color: pr.glow ? C_FROST : null }); // [render-souls]
       this._burst(this.spark, p, pr.glow ? C_FROST : C_SPARK, pr.glow ? 12 : 6, 4, 0.18, 0.28, 6);
       this._sound('arrowhit', p);
     }
@@ -605,6 +642,7 @@ export class Effects {
       E.playAnim(m.src, 'Attack');
       this._arc(m.src, AB.whirlwind.color, 1, true, r * 0.95, 0.55);
       this._decal(m.x, m.z, r, col('#c8d4ff'), STYLE.ring, 0.7, 0.25);
+      this._dustRing(m.x, m.z, r * 0.8, 5, r * 0.55); // [render-souls]
       for (let i = 0; i < 28; i++) {
         const a = Math.random() * Math.PI * 2, rr = r * (0.5 + Math.random() * 0.5);
         this.smoke.emit(m.x + Math.cos(a) * rr, p.y + 0.2, m.z + Math.sin(a) * rr, -Math.sin(a) * 3, 0.6, Math.cos(a) * 3, C_DUST, 0.7, 0.8, 0, 2, 1.5, 0.5);
@@ -614,7 +652,8 @@ export class Effects {
       E.playAnim(m.src, 'Cast');
       this._decal(m.x, m.z, r, C_FROST, STYLE.frost, 1.3, 0.28);
       p.y += 0.6;
-      for (let i = 0; i < 70; i++) {
+      const frostFb = this.flip.play('frost_burst', p, { size: r * 1.7 }); // [render-souls]
+      for (let i = 0; i < (frostFb ? 30 : 70); i++) {
         const a = Math.random() * Math.PI * 2, s = r * (1.2 + Math.random() * 1.4);
         this.spark.emit(p.x, p.y + Math.random() * 0.6, p.z, Math.cos(a) * s, 0.5 + Math.random() * 1.5, Math.sin(a) * s,
           i % 3 ? C_FROST : C_FROST2, 0.3, 0.7, 1.5, 2.2, 0.08);
@@ -639,6 +678,7 @@ export class Effects {
     } else if (ab === 'slam' || (!ab && r >= 5)) {
       E.playAnim(m.src, 'Attack');
       this._decal(m.x, m.z, r, col('#ff9a3a'), STYLE.slam, 1.3, 0.2);
+      this._dustRing(m.x, m.z, r * 0.6, 7, r * 0.75); // [render-souls]
       p.y += 0.2;
       for (let i = 0; i < 40; i++) {
         const a = Math.random() * Math.PI * 2, s = 2 + Math.random() * r;
@@ -655,7 +695,8 @@ export class Effects {
     } else {
       const c = AB[ab]?.color || C_FIRE;
       this._decal(m.x, m.z, r, c, STYLE.fire, 1.0, 0.3);
-      this._burst(this.glow, p.setY(p.y + 0.5), c, 30, r, 0.4, 0.6, 0, 2.5, 0.8);
+      p.setY(p.y + 0.5);
+      if (!this.flip.play('fire_burst', p, { size: r * 1.3, color: c })) this._burst(this.glow, p, c, 30, r, 0.4, 0.6, 0, 2.5, 0.8); // [render-souls]
     }
   }
 
@@ -666,6 +707,7 @@ export class Effects {
       this.ctx.entities.playAnim(id, 'Cast');
       this._decal(p.x, p.z, 4, AB.war_cry.color, STYLE.ring, 0.9, 0.2);
       p.y += 1.2;
+      this.flip.play('arcane_burst', p, { size: 4, color: AB.war_cry.color }); // [render-souls]
       this._burst(this.glow, p, AB.war_cry.color, 30, 5, 0.35, 0.5, 0, 3, 0.2);
       this._burst(this.spark, p, C_GOLD, 12, 4, 0.22, 0.5, 0, 2);
       this._light(p, AB.war_cry.color, 20, 0.5);
@@ -674,7 +716,12 @@ export class Effects {
     }
     if (ab === 'heal') this.ctx.entities.playAnim(id, 'Cast');
     this._decal(p.x, p.z, 1.6, C_HEAL, STYLE.soft, 1.3, 0.6);
-    for (let i = 0; i < 36; i++) {
+    // [render-souls] healing aura that follows the target
+    const fp = new THREE.Vector3();
+    const aura = this.flip.play('heal_aura', this._v3.set(p.x, p.y + 0.9, p.z), {
+      size: 2.6, life: 1.4, follow: () => (this.point(id, 0.5, fp) ? fp : null),
+    });
+    for (let i = 0; i < (aura ? 16 : 36); i++) {
       const a = (i / 36) * Math.PI * 6, r = 0.6 + Math.random() * 0.25;
       this.spark.emit(p.x + Math.cos(a) * r, p.y + (i / 36) * 1.6, p.z + Math.sin(a) * r,
         -Math.sin(a) * 0.8, 1.2 + Math.random() * 0.8, Math.cos(a) * 0.8, i % 2 ? C_HEAL : C_HEAL2, 0.26, 1.1, -0.3, 0.8, 0.06);
@@ -744,6 +791,10 @@ export class Effects {
     const p = this._v;
     this.point(id, 0.3, p);
     const key = v.modelKey;
+    // [render-souls] flipbooks: poison cloud (slime), soul wisp (undead / golem), dust
+    if (key === 'slime') this.flip.play('poison_cloud', p, { size: 2.2 * v.scale, color: C_GEL });
+    else if (key === 'skeleton' || key === 'golem') this.flip.play('soul_wisp', this._v3.set(p.x, p.y + 0.6, p.z), { size: 1.8 * v.scale, velocity: this._v2.set(0, 0.9, 0), life: 2.2, color: key === 'golem' ? col('#8fe8ff') : null });
+    else this.flip.play('dust_puff', p, { size: 1.8 * v.scale });
     if (key === 'slime') this._burst(this.smoke, p, C_GEL, 18, 3, 0.35, 0.8, 8, 1, 2, 0.2);
     else if (key === 'skeleton') this._burst(this.glow, p, col('#a8c8ff'), 20, 1.5, 0.35, 1.4, -1.5, 1.5, 0.5, 0.1);
     else if (key === 'golem') {
@@ -765,6 +816,7 @@ export class Effects {
   /** Unlit smoke / dust / mist follow the scene brightness (night = darker). */
   setAmbient(light) {
     this.smoke.uniforms.uLight.value = light;
+    this.flip.setLight(light); // [render-souls]
   }
 
   update(dt, time, camera) {
@@ -885,7 +937,7 @@ export class Effects {
         if (k >= 1 && !a.landed) {
           a.landed = true;
           this._v3.set(a.x, a.y0 + 0.1, a.z);
-          this.smoke.emit(a.x, a.y0 + 0.1, a.z, (Math.random() - 0.5), 0.5, (Math.random() - 0.5), C_DUST, 0.35, 0.5, 0, 2, 0.8, 0.6);
+          if ((i & 3) !== 0 || !this.flip.play('dust_puff', this._v3, { size: 0.9 })) this.smoke.emit(a.x, a.y0 + 0.1, a.z, (Math.random() - 0.5), 0.5, (Math.random() - 0.5), C_DUST, 0.35, 0.5, 0, 2, 0.8, 0.6); // [render-souls]
           this.spark.emit(a.x, a.y0 + 0.2, a.z, 0, 1.5, 0, C_SPARK, 0.2, 0.2, 5);
         }
         // arrow points along its fall direction (down and slightly forward)
@@ -915,14 +967,29 @@ export class Effects {
         }
         continue;
       }
-      while (em.acc > 0.06) {
-        em.acc -= 0.06;
+      // [render-souls] looping flipbook flames (the embers stay procedural)
+      if (!em.fb && this.flip.has('fire_loop')) em.fb = this.flip.play('fire_loop', this._v3.set(em.x, em.y + 0.75, em.z), { size: 1.7, loop: true });
+      const every = em.fb ? 0.2 : 0.06;
+      while (em.acc > every) {
+        em.acc -= every;
         this.glow.emit(em.x + (Math.random() - 0.5) * 0.6, em.y + 0.3, em.z + (Math.random() - 0.5) * 0.6,
           (Math.random() - 0.5) * 0.4, 1.2 + Math.random() * 1.2, (Math.random() - 0.5) * 0.4, Math.random() < 0.5 ? C_FIRE : C_FIRE2, 0.35, 0.9, -0.3, 0.6, 0.05);
+        if (em.fb && Math.random() < 0.3) { this.flip.play('smoke_puff', this._v3.set(em.x, em.y + 1.6, em.z), { size: 1.4, velocity: this._v2.set(0, 0.8, 0), life: 2.4, alpha: 0.5 }); continue; }
         if (Math.random() < 0.25) this.smoke.emit(em.x, em.y + 1.0, em.z, (Math.random() - 0.5) * 0.3, 0.9, (Math.random() - 0.5) * 0.3, C_SMOKE, 0.6, 2.2, -0.1, 0.3, 1.8, 0.25);
       }
     }
     for (const s of this.systems) s.update(dt);
+    this.flip.update(dt, time); // [render-souls]
+  }
+
+  /** [render-souls] A ring of dust puffs on the ground (flipbook only). */
+  _dustRing(x, z, r, n, size) {
+    if (!this.flip.has('dust_puff')) return;
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + Math.random() * 0.4;
+      const px = x + Math.cos(a) * r, pz = z + Math.sin(a) * r;
+      this.flip.play('dust_puff', this._v3.set(px, terrainHeight(px, pz) + size * 0.3, pz), { size, delay: Math.random() * 0.08, velocity: this._v2.set(Math.cos(a) * 1.2, 0.3, Math.sin(a) * 1.2) });
+    }
   }
 
   clear() {
@@ -936,5 +1003,7 @@ export class Effects {
     for (const a of this.arcs) { a.active = false; a.mesh.visible = false; }
     for (const p of this.pillars) { p.active = false; p.mesh.visible = false; }
     for (const s of this.systems) s.clear();
+    this.flip.clear(); // [render-souls]
+    for (const em of this.emitters) em.fb = null;
   }
 }

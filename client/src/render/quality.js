@@ -153,6 +153,20 @@ export function presetFromBenchmark(ms, gpuName = '') {
   return id;
 }
 
+// ------------------------------------------------------------------ runtime hooks (set by render/graphics.js)
+// The settings panel (UI) never imports Three.js: the renderer registers what the panel may ask for.
+const hooks = { stats: null, autodetect: null };
+
+/** Renderer side: { stats() → { fps, calls, triangles, scale, gpuMs… }, autodetect() → Promise<presetId> }. */
+export function setGraphicsHooks(h) {
+  Object.assign(hooks, h);
+}
+
+/** UI side: the registered hooks (null when the renderer isn't running, e.g. the UI sandbox page). */
+export function graphicsHooks() {
+  return hooks;
+}
+
 /** Test helper: forget the in-memory settings (reloads from storage on the next getSettings()). */
 export function _resetForTests() {
   current = null;
