@@ -249,9 +249,15 @@ function runAction(game, m, target, dt, now) {
       return now < act.until && dist(m.x, m.z, target.x, target.z) < act.stop;
     }
     case 'flee': {
-      const a = angleTo(m, target.x, target.z);
-      stepDir(game, m, -Math.sin(a), -Math.cos(a), combatSpeed(m, now, true), dt, now);
-      m.ry = a + Math.PI;
+      // regroup: run to the nearest ally of the same kind if there is one, else straight away from the target
+      const ally = act.ally ? game.monsters.get(act.ally) : null;
+      if (ally && !ally.dead && dist(m.x, m.z, ally.x, ally.z) > 2.5) {
+        stepToward(game, m, ally.x, ally.z, combatSpeed(m, now, true), dt, 2, now);
+      } else {
+        const a = angleTo(m, target.x, target.z);
+        stepDir(game, m, -Math.sin(a), -Math.cos(a), combatSpeed(m, now, true), dt, now);
+        m.ry = a + Math.PI;
+      }
       return now < act.until;
     }
     case 'pause':
@@ -330,13 +336,23 @@ export function decide(game, m, target, now) {
       break;
     case 'flee':
       m.fled = true;
-      m.act = { kind: 'flee', until: now + 1800 + rnd(m) * 1700 };
+      m.act = { kind: 'flee', until: now + 1800 + rnd(m) * 1700, ally: nearestAlly(game, m, 20)?.id || 0 };
       break;
     default: // pause / feint: hold the ground a moment, facing the target
       m.act = { kind: 'pause', until: now + 250 + rnd(m) * 650 * (0.5 + T.patience) };
       break;
   }
   return pick.kind;
+}
+
+function nearestAlly(game, m, r) {
+  let best = null, bd = r * r;
+  for (const o of game.monsters.values()) {
+    if (o === m || o.dead || o.type !== m.type || o.ai === 'return') continue;
+    const d = dist2(m.x, m.z, o.x, o.z);
+    if (d < bd) { bd = d; best = o; }
+  }
+  return best;
 }
 
 // ------------------------------------------------------------------ hooks (combat.js)

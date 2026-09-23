@@ -22,7 +22,11 @@ function angDiff(a, b) {
 }
 
 /** Wind-up time of an attack for this monster (enraged bosses are faster). */
-export const windupOf = (m, atk) => Math.round((atk.windup || 400) * (m.enraged ? 0.85 : 1));
+// Light swings get a personal random delay (-10 % … +35 %): delayed attacks punish panic rolls.
+export const windupOf = (m, atk) => {
+  const jitter = atk.kind === 'melee' && m.rng ? 0.9 + m.rng() * 0.45 : 1;
+  return Math.round((atk.windup || 400) * (m.enraged ? 0.85 : 1) * jitter);
+};
 
 function hitPlayer(game, m, p, atk) {
   const { amount, crit } = computeDamage(m.atk, atk.power || 1, p.stats.def, m.crit, game.rng(), game.rng());

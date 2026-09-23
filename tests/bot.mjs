@@ -7,7 +7,12 @@ import path from 'node:path';
 import { startServer } from '../server/src/index.js';
 import { NPC_SPAWNS, SPAWN_POINT } from '../shared/world.js';
 import { ITEMS, START_GOLD, CLASSES } from '../shared/data.js';
-import { Bot, sleep } from './lib/botClient.mjs';
+import { Bot, sleep, collisionWorld } from './lib/botClient.mjs';
+// [combat-souls]
+import { PLAYER_RADIUS } from '../shared/protocol.js';
+import { ROLL } from '../shared/combat.js';
+import { telegraphs } from '../server/src/systems/telegraph.js';
+import { damagePlayer } from '../server/src/systems/players.js';
 
 const T0 = performance.now();
 const DEADLINE_MS = 85_000;
@@ -198,6 +203,9 @@ async function main() {
   await A.waitFor((m) => m.t === 'snap' && m.gone.includes(killed.id), { from: killed.index, timeout: 7000, desc: 'gone du cadavre' });
   ok(true, 'cadavre retiré (gone) après CORPSE_TIME_S');
 
+  // ---------------------------------------------------------------- [combat-souls] telegraphs & dodge roll
+  await soulsChecks(A);
+
   // ---------------------------------------------------------------- relogin keeps progress
   await sleep(150);
   const before = { level: A.self.level, xp: A.self.xp, gold: A.self.gold, quests: JSON.stringify(A.self.quests), inv: JSON.stringify(A.self.inv) };
@@ -227,6 +235,50 @@ async function main() {
   const persisted = JSON.parse(fs.readFileSync(path.join(dataDir, 'accounts.json'), 'utf8'));
   ok(persisted.accounts[NAME_A.toLowerCase()]?.xp === before.xp && !('password' in persisted.accounts[NAME_A.toLowerCase()]),
     'accounts.json écrit (xp persistée, mot de passe haché uniquement)');
+}
+
+/**
+ * [combat-souls] A telegraphed attack is resolved at impact against the positions of that moment:
+ * rolling out of it avoids the damage (and the roll is never corrected by the server), staying in it hurts.
+ */
+async function soulsChecks(A) {
+  const game = server.game;
+  A.send({ t: 'stop' });
+  await sleep(1600); // stamina back to full, auto-attack stopped
+  const cw = collisionWorld();
+  // a free direction for a full 5 m roll
+  let dir = null;
+  for (let i = 0; i < 16 && !dir; i++) {
+    const a = (i / 16) * Math.PI * 2, dx = Math.sin(a), dz = Math.cos(a);
+    let x = A.x, z = A.z;
+    for (let k = 0; k < 10; k++) { const r = cw.move(x, z, x + dx * 0.5, z + dz * 0.5, PLAYER_RADIUS); x = r.x; z = r.z; }
+    if (Math.hypot(x - A.x, z - A.z) > ROLL.dist - 0.05) dir = { dx, dz };
+  }
+  ok(dir, 'direction de roulade libre trouvée');
+  const src = [...game.monsters.values()].find((m) => !m.dead && !m.invulnerable);
+  const serverA = game.players.get(A.id);
+  const startTele = (x, z) => telegraphs(game).start(src, { shape: 'circle', x, z, r: 2.2 }, 900, {
+    ab: 'bot_test', onHit: (p) => damagePlayer(game, p, src, 7, false, 'bot_test'),
+  });
+  // 1) roll out of the circle
+  const corr0 = A.corrections;
+  let fa = A.mark();
+  startTele(A.x, A.z);
+  const tele = await A.waitType('tele', (m) => m.ab === 'bot_test', { from: fa });
+  ok(tele.shape === 'circle' && tele.ms === 900, 'télégraphe reçu (cercle, 900 ms)');
+  await sleep(250);
+  await A.roll(dir.dx, dir.dz);
+  await sleep(900);
+  ok(!A.history.slice(fa).some((m) => m.t === 'dmg' && m.tg === A.id && m.ab === 'bot_test'), 'roulade hors de la zone : aucun dégât');
+  ok(A.corrections === corr0, 'la roulade ne provoque aucune correction de position');
+  ok(Math.hypot(serverA.x - A.x, serverA.z - A.z) < 0.6, 'position serveur après la roulade synchronisée');
+  // 2) stay in it
+  await sleep(1200);
+  fa = A.mark();
+  startTele(A.x, A.z);
+  const hit = await A.waitType('dmg', (m) => m.tg === A.id && m.ab === 'bot_test', { from: fa, timeout: 3000 });
+  ok(hit.v === 7, 'rester dans la zone : touché à l\'impact');
+  ok(typeof A.self.st === 'number' && A.self.mst === 100, `endurance dans SelfState (${A.self.st}/${A.self.mst})`);
 }
 
 /** Engage a slime with slot 0 only; returns { id, index } on death, null if lost. */

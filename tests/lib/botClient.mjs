@@ -3,6 +3,7 @@
 import WebSocket from 'ws';
 import { CollisionWorld } from '../../shared/collision.js';
 import { MOVE_SEND_HZ, PLAYER_RADIUS } from '../../shared/protocol.js';
+import { ROLL, ROLL_SPEED } from '../../shared/combat.js'; // [combat-souls]
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let sharedCollision = null;
@@ -162,6 +163,33 @@ export class Bot {
       this.send({ t: 'move', x: +this.x.toFixed(2), z: +this.z.toFixed(2), ry: +this.ry.toFixed(3) });
     }
     this.send({ t: 'move', x: +this.x.toFixed(2), z: +this.z.toFixed(2), ry: +this.ry.toFixed(3) });
+  }
+
+  /**
+   * [combat-souls] Dodge roll like the real client: `dodge` then ROLL.dist metres at ROLL_SPEED along (dx, dz)
+   * (CollisionWorld steps, one `move` every 1/MOVE_SEND_HZ s).
+   */
+  async roll(dx, dz) {
+    const l = Math.hypot(dx, dz) || 1;
+    dx /= l; dz /= l;
+    const cw = collisionWorld();
+    this.send({ t: 'dodge', dx: +dx.toFixed(3), dz: +dz.toFixed(3) });
+    const t0 = performance.now();
+    let done = 0;
+    while (done < ROLL.dist - 1e-3) {
+      await sleep(1000 / MOVE_SEND_HZ);
+      const want = Math.min(ROLL.dist, (ROLL_SPEED * (performance.now() - t0)) / 1000);
+      let remaining = want - done;
+      done = want;
+      while (remaining > 1e-4) {
+        const step = Math.min(0.5, remaining);
+        const r = cw.move(this.x, this.z, this.x + dx * step, this.z + dz * step, PLAYER_RADIUS);
+        this.x = r.x; this.z = r.z;
+        remaining -= step;
+      }
+      this.ry = Math.atan2(dx, dz);
+      this.send({ t: 'move', x: +this.x.toFixed(2), z: +this.z.toFixed(2), ry: +this.ry.toFixed(3) });
+    }
   }
 
   async walkPath(points, opts) {
