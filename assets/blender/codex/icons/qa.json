@@ -13,8 +13,8 @@
         0,
         255
       ],
-      "bytes": 61477,
-      "sha256": "60b3adef4c8bb60dc78f70f7e0715dfa2f9b6c14df746b7f1d2c3b7a7093293c"
+      "bytes": 39499,
+      "sha256": "7eababc2c24686718bc0b0b2c2e3e8a23be96ead184e207d78d4176f5250de2c"
     },
     {
       "key": "potion_hp_l",
@@ -26,8 +26,8 @@
         0,
         255
       ],
-      "bytes": 70378,
-      "sha256": "f8c17787c166d9ed8a681af3b3dcd6b2519d7ad5f81530f26aeac9344099374e"
+      "bytes": 34717,
+      "sha256": "2920c53796b1deec122da3b3f2c4c30c0d5e08fec01652c9abd6b52a2abffd78"
     },
     {
       "key": "potion_mp_s",
@@ -39,8 +39,8 @@
         0,
         255
       ],
-      "bytes": 61836,
-      "sha256": "64f354a9a4b76cfca38b8d95629cbb0db30d5357ad90329b38e80349f85c059e"
+      "bytes": 28736,
+      "sha256": "13a7271ae1a39bf5b22cdce4832307571af441e75a920e240c55239d61cd09e9"
     },
     {
       "key": "slime_gel",
@@ -52,8 +52,8 @@
         0,
         255
       ],
-      "bytes": 75164,
-      "sha256": "b4fc487c293f9e3661fd6fb18a43f045a6279de032b8e3364f459de55d5668b7"
+      "bytes": 46094,
+      "sha256": "d9f6d5e7393a3d6f82c7633936ca3001e9de4f35555354441d77a80812df5d3b"
     },
     {
       "key": "wolf_pelt",
@@ -65,8 +65,8 @@
         0,
         255
       ],
-      "bytes": 57387,
-      "sha256": "d87186f00d89fe85c9b933ea6bab7a616c4e4833683cc7a7c96ec9d06387e2a7"
+      "bytes": 54786,
+      "sha256": "07844473f52e396905eaf582a25a1a2b205263af522e8158e95a4289f4300c68"
     },
     {
       "key": "goblin_trinket",
@@ -78,8 +78,8 @@
         0,
         255
       ],
-      "bytes": 49395,
-      "sha256": "7cc369d226d92ce72f7b403aa41cbc33341ec1796d597a70e7d0b04dca496292"
+      "bytes": 34990,
+      "sha256": "0a6c9c7a80c5b35a5d83ece1e276815eb4f2f5821411f5003b2ef2080d36f5d6"
     },
     {
       "key": "ancient_bone",
@@ -91,8 +91,8 @@
         0,
         255
       ],
-      "bytes": 49030,
-      "sha256": "557a5c4ce204b0d474bf6634e174cdfdd295743a00643d373b9664f859ef3987"
+      "bytes": 30597,
+      "sha256": "cb2e588dda3014fd1f7b837d1f40c3c25672cead2e121fea956269bc4b7bde77"
     },
     {
       "key": "golem_core",
@@ -104,8 +104,8 @@
         0,
         255
       ],
-      "bytes": 54659,
-      "sha256": "d5e712b5a647a57b84f0c8e0c9e45c5f6f31a482fe46ba3df7395de8c86b7de8"
+      "bytes": 37269,
+      "sha256": "dc158f48b0f483c8c8b5053586720abe8607370b41bd9bd3696e5f11be228b5f"
     },
     {
       "key": "rusty_sword",
@@ -117,8 +117,8 @@
         0,
         255
       ],
-      "bytes": 44290,
-      "sha256": "8990f5d0eb04afaef2d73ab3411224db4e525a5c83dfc00fae74c74c7b3ef78c"
+      "bytes": 26931,
+      "sha256": "e5c372b8e2399c746fc8c39b4c9ec086f5be28e1391033ff0557ccb095103111"
     },
     {
       "key": "steel_sword",
@@ -130,8 +130,8 @@
         0,
         255
       ],
-      "bytes": 45837,
-      "sha256": "9cd206778aa80aa8dba592ab15e83b86fda1438ce6b4eac2dc36020f14564631"
+      "bytes": 29307,
+      "sha256": "c3359635b21fc1f920332b979b4775b813d10ac584589e1564fc7be1c17c1c83"
     },
     {
       "key": "runeblade",
@@ -143,8 +143,8 @@
         0,
         255
       ],
-      "bytes": 47632,
-      "sha256": "0ab792b1cfdc939299bc01f99db59c7c231e146f2ab8f594971d480520c9a096"
+      "bytes": 29642,
+      "sha256": "fb28987769d41327a0ceece93d62b4be9b2431cbd204263124e3f0e9b29f48a1"
     },
     {
       "key": "apprentice_staff",
@@ -156,8 +156,8 @@
         0,
         255
       ],
-      "bytes": 38733,
-      "sha256": "acac572032dcbb127429fec8610bdf343a3be721c8dedc4fed68f21569884138"
+      "bytes": 21553,
+      "sha256": "bd0f5344acb53956af2175b2fca4240f0812315e81e2e8e70248032768ee4bfa"
     },
     {
       "key": "arcane_staff",
@@ -169,8 +169,8 @@
         0,
         255
       ],
-      "bytes": 40223,
-      "sha256": "639892e2e66dca96ee82cf0c17ef5c41d3170fee7ed54bfd5da57dd7e1b7ad28"
+      "bytes": 23211,
+      "sha256": "4ff264be205adcdd44f619fe7d953005f8dcab790181847466c8a0732e8c2853"
     },
     {
       "key": "ember_staff",
@@ -182,8 +182,8 @@
         0,
         255
       ],
-      "bytes": 41042,
-      "sha256": "3eda41efc7a1b8b4898548414b61e5f09993d67eae24ecd69dfe1c78666f234d"
+      "bytes": 21252,
+      "sha256": "468e49d254db799a487e9d274a5034c0bf481dfb1a351fd5c2035407dc8dbcdd"
     },
     {
       "key": "short_bow",
@@ -195,8 +195,8 @@
         0,
         255
       ],
-      "bytes": 46064,
-      "sha256": "13770e0f4ffa48538ace92a5b59c71527ebcadf7943cb6a7c63ce44abfef753c"
+      "bytes": 28652,
+      "sha256": "7a45d1fb6791e7563ab6e8afd9be9ff8f1f5d4cef41658e7fc6ae71ce729d4da"
     },
     {
       "key": "long_bow",
@@ -208,8 +208,8 @@
         0,
         255
       ],
-      "bytes": 40928,
-      "sha256": "22358e7de4a44de8d1f4323774bdf644bdd110806eaf41dc18bef924537eae33"
+      "bytes": 24098,
+      "sha256": "1ad2f3c537b7eb2bffc7c469454f9761aab26f71885e4e494130d0317fe6c347"
     },
     {
       "key": "elven_bow",
@@ -221,8 +221,8 @@
         0,
         255
       ],
-      "bytes": 45945,
-      "sha256": "9df482e841c001ba728d809385a61d4f8fbbe66909d91214a67a5ac1d33b7355"
+      "bytes": 28054,
+      "sha256": "8ef5b4c0c8dfcff7f63744b5f168b24f5262742b4b8291334b89ac0fc5093400"
     },
     {
       "key": "leather_tunic",
@@ -234,8 +234,8 @@
         0,
         255
       ],
-      "bytes": 69423,
-      "sha256": "ab447f8801a8cdc4f1f703a3b07dce78626df2cdff039176064c533ddd9f7d2e"
+      "bytes": 57249,
+      "sha256": "c12f7b9921d2947797574fe1c3e8537bf9ff2a0a1918a886b6eeb5d1ffb31bed"
     },
     {
       "key": "mage_robe",
@@ -247,8 +247,8 @@
         0,
         255
       ],
-      "bytes": 64111,
-      "sha256": "d174b51bbb37c2fb7115b5b461e7f6a836726ed1461c7249518e1fa6f65766c7"
+      "bytes": 45867,
+      "sha256": "4065b4d99efa6db3d45d204096fc6ccb2cf6781b353975c3fdbf8d15f38b1536"
     },
     {
       "key": "chainmail",
@@ -260,8 +260,8 @@
         0,
         255
       ],
-      "bytes": 81862,
-      "sha256": "1ef90adcdfddb9186e437fc13c55c0f7a9519b6a4b1017571f8e1ba1e73c76cc"
+      "bytes": 70257,
+      "sha256": "c9cd2f133839cee4506afe21c3aad9d6220aecf2f95f1588c082bdc807f5fb62"
     },
     {
       "key": "golem_plate",
@@ -273,8 +273,8 @@
         0,
         255
       ],
-      "bytes": 72050,
-      "sha256": "17d926d9bef6d5a76b6b5a97db43e7356102131cae1fc7a3c3e25945989abcff"
+      "bytes": 59805,
+      "sha256": "5cff5512d1a9f9b4a43455d068cae5c712fa4f95ce19505c1fa8e7c0668f3f98"
     },
     {
       "key": "gold",
@@ -286,8 +286,8 @@
         0,
         255
       ],
-      "bytes": 58350,
-      "sha256": "166ed4c54af74aa14121791a5f0ceeafafd91febb74894ffcdd471ea5f9d7dbd"
+      "bytes": 47704,
+      "sha256": "86dc12265fc2f73ebcf794150185c191a69a214de06b22f22d1b267d364e702a"
     },
     {
       "key": "ab_strike",
@@ -299,8 +299,8 @@
         255,
         255
       ],
-      "bytes": 98160,
-      "sha256": "fbcb9d78246a29617db0703eb72c514f814f24303cb150eb38c19d934b4486a5"
+      "bytes": 78664,
+      "sha256": "7875adf364dc91b25eaa5c148c00d01eaa189b2c5105f896599ca1cae981b65d"
     },
     {
       "key": "ab_heavy_blow",
@@ -312,8 +312,8 @@
         255,
         255
       ],
-      "bytes": 105691,
-      "sha256": "15025024255675c8392dd79ca3e73a7ae3b86fa0357f15903aea83d79da302a5"
+      "bytes": 82350,
+      "sha256": "c0eb66a72022e8618ea1f7cace0fc6773264d3f8afc066abb84f11888eb1027e"
     },
     {
       "key": "ab_whirlwind",
@@ -325,8 +325,8 @@
         255,
         255
       ],
-      "bytes": 101885,
-      "sha256": "bfaf1d433d89a10fe4925518393afcf4b6ee69d4009f5bcd0e5dd43c19389185"
+      "bytes": 80853,
+      "sha256": "e0edbab5b1550765778f77170322279920a73d72228d05e6db361f94cd6ca118"
     },
     {
       "key": "ab_war_cry",
@@ -338,8 +338,8 @@
         255,
         255
       ],
-      "bytes": 101361,
-      "sha256": "b48dd29b28c0b18a82a53f2748dbd645edc57cd9e01531abd01df4dcfb876831"
+      "bytes": 79634,
+      "sha256": "b2f3fc58f3a518fb27a1f98d7ffc069d6cfaa51f881bf5b04a6d9ad38692109c"
     },
     {
       "key": "ab_firebolt",
@@ -351,8 +351,8 @@
         255,
         255
       ],
-      "bytes": 107988,
-      "sha256": "8366cde50f25b10cdd7a9116c5723740003b2c04b7c0867dd3691712501a3e1f"
+      "bytes": 76435,
+      "sha256": "d3b3a94f404ec22b2dc3a52fee4bb4ac79b96e9673d019d6bcff4f79aaa7693e"
     },
     {
       "key": "ab_fireball",
@@ -364,8 +364,8 @@
         255,
         255
       ],
-      "bytes": 113877,
-      "sha256": "66ff290a908e3689bfcf80d3f6cc812ea69be4afcc08d73a9cec97f9b2a5aaf0"
+      "bytes": 73206,
+      "sha256": "9a2667f25deba13d9a3bf07e60b9703583d20394e4fd97d6ba371a904dd736ce"
     },
     {
       "key": "ab_frost_nova",
@@ -377,8 +377,8 @@
         255,
         255
       ],
-      "bytes": 113425,
-      "sha256": "0ad01b45adbefa5d165efb2c95bd0f503d51f0d19e478d6ccefa7f803d258bc1"
+      "bytes": 75714,
+      "sha256": "1bd04e249e6d15801f9df07542d200a2c9e4b00e1343d51838e915a84af14d1c"
     },
     {
       "key": "ab_heal",
@@ -390,8 +390,8 @@
         255,
         255
       ],
-      "bytes": 102157,
-      "sha256": "3c48ddd81eb88cc3a3e077abe8124ced9ffee36bac273e8e53b0b8341704d6ea"
+      "bytes": 78714,
+      "sha256": "09727e62400c4fd7fafc8f48edfd48367ddfc6f60e878e63d35965293d21417f"
     },
     {
       "key": "ab_shot",
@@ -403,8 +403,8 @@
         255,
         255
       ],
-      "bytes": 98912,
-      "sha256": "b2ee1150f09fcd630c5f1e1cfa61196c86e0da1e884cf9a662825849d8e32ad5"
+      "bytes": 70873,
+      "sha256": "ce6989ee86e3f038d2de4a89fcf31c56716d5ed366ae1ad7cb10d6d7a8385ede"
     },
     {
       "key": "ab_piercing_shot",
@@ -416,8 +416,8 @@
         255,
         255
       ],
-      "bytes": 103138,
-      "sha256": "01108e8690532beb69ac9f3d12a75ee085843e24d997c79a55ab71a1d83145ee"
+      "bytes": 72058,
+      "sha256": "2a9b006dd5a7dc63abb5baaefc17acaecfc62bf7ca7a67f738900ee2e48e62bc"
     },
     {
       "key": "ab_arrow_rain",
@@ -429,8 +429,8 @@
         255,
         255
       ],
-      "bytes": 105502,
-      "sha256": "637da48070cc195f5ec08bac9756898f4742a76c94ac3b704408c76f825b42b6"
+      "bytes": 78470,
+      "sha256": "fd881ba090ffe71f336ec7cd17e641c29a29b10f00770f52b2c49a1bb1df1d93"
     },
     {
       "key": "ab_rapid_fire",
@@ -442,8 +442,8 @@
         255,
         255
       ],
-      "bytes": 102008,
-      "sha256": "5c4b0f5aaa4984b0b663d8d3f196b22d85aec2ae9bf9b8ba4549e14c58fd9f47"
+      "bytes": 76071,
+      "sha256": "f1239ea7cabe8e03f4076d086253eabdde9f360e673a6ab1852492018d897ebf"
     },
     {
       "key": "ore_copper",
@@ -455,8 +455,8 @@
         0,
         255
       ],
-      "bytes": 54881,
-      "sha256": "68e4212d3e6d2911bfe13a3501b1526e3b47466b63ba9d1d92bc8147a618fe01"
+      "bytes": 40915,
+      "sha256": "37cc7156350848819c411c5941bf51de9188371b7959fb4b3176d357b4f0d982"
     },
     {
       "key": "ore_iron",
@@ -468,8 +468,8 @@
         0,
         255
       ],
-      "bytes": 50110,
-      "sha256": "8fcaf346034af985ca32ce62b5cc48a655e8ca6c892faffcbfab5830cb8b7ae5"
+      "bytes": 38072,
+      "sha256": "0629597c8f09504157a0006cd31b3423ea1852c3ab184bb271069e1b0bef79ce"
     },
     {
       "key": "ore_mithril",
@@ -481,8 +481,8 @@
         0,
         255
       ],
-      "bytes": 54258,
-      "sha256": "e889132cd130f9f39c237d8214995320a94bc7249176e3e0483c8f7cb6c1f749"
+      "bytes": 40871,
+      "sha256": "d30262e2bda05a671ea3bf2be050aee88a41b5fe5360f9226c93a383b7e25862"
     },
     {
       "key": "crystal_shard",
@@ -494,8 +494,8 @@
         0,
         255
       ],
-      "bytes": 60036,
-      "sha256": "67d8397b7e62cfa210a7aed77aab357abd5529b313af117b3eb29942882c034f"
+      "bytes": 43021,
+      "sha256": "7065df9f5b66afbf128375ac7ae9b3a1eb7eb72636d96879c3baf7bea204b400"
     },
     {
       "key": "herb_brume",
@@ -507,8 +507,8 @@
         0,
         255
       ],
-      "bytes": 47683,
-      "sha256": "9d342c7005de22fa285bf570603cdd154676095abfdf9c17bdee9c6b21652df0"
+      "bytes": 28302,
+      "sha256": "2b4a979edc39806d13e5d23f81e99a38eee99a7e464cf8d0695bf8377bb3d289"
     },
     {
       "key": "herb_givre",
@@ -520,8 +520,8 @@
         0,
         255
       ],
-      "bytes": 52544,
-      "sha256": "5c4e910b0327f42bc7eb37cd9fa0aa955c481f902a4d25ee90e7b0fad1e20dc4"
+      "bytes": 33753,
+      "sha256": "50660417bdda599e1ff981c77af58a687d2e90c606185fd692d903ee28d35578"
     },
     {
       "key": "herb_braise",
@@ -533,8 +533,8 @@
         0,
         255
       ],
-      "bytes": 50350,
-      "sha256": "42a810c2ad7bd21d0c9c705d806be5980fe46a4e3ee3df4b9974941ec8f7eeb1"
+      "bytes": 32680,
+      "sha256": "902f2a3af95c0662c5143e70e096a97a97becfc8d08396b317143e4e471f5805"
     },
     {
       "key": "ingot_copper",
@@ -546,8 +546,8 @@
         0,
         255
       ],
-      "bytes": 46966,
-      "sha256": "a9607610e2e603f9db231901c2ef99f6a550fa6f4ed47d027a84c6d452e36bc2"
+      "bytes": 32034,
+      "sha256": "4389406581b83cc67c9fb26b6ab224c60d1679ff4ec716045d7e793b7fc6acfd"
     },
     {
       "key": "ingot_iron",
@@ -559,8 +559,8 @@
         0,
         255
       ],
-      "bytes": 43353,
-      "sha256": "525a62df1b421b9e24572df001c08bb8d0789be32999ea540741c6e9b91d0e14"
+      "bytes": 29241,
+      "sha256": "33e7b88f5ef666e1c3acc4273417249299ce82651a715f408e84fe1e484e9f20"
     },
     {
       "key": "ingot_mithril",
@@ -572,8 +572,8 @@
         0,
         255
       ],
-      "bytes": 45909,
-      "sha256": "02de047f8d3dca0bf343bea25baa9473d1c478081323ae656691ff152745af1d"
+      "bytes": 31610,
+      "sha256": "6aa82d74437d6e04c4adf056bd5981c0433d21702ed746c1316a855c3bffd91d"
     },
     {
       "key": "leather_strip",
@@ -585,8 +585,8 @@
         0,
         255
       ],
-      "bytes": 39241,
-      "sha256": "a5869c43add5a6d40e8a64dac01c8a54e8b0dea33763c2f7d4bc46f9662fa28b"
+      "bytes": 24962,
+      "sha256": "38790d16712c0f1cb514132711ad4326009b0fd7fcdf30ddb1af8484c9a399b5"
     },
     {
       "key": "cloth_bolt",
@@ -598,8 +598,8 @@
         0,
         255
       ],
-      "bytes": 47183,
-      "sha256": "219c3a09a197e1b0e1d1d4e3de76da1f8ac57544c7fba1e7786a37d3b0386823"
+      "bytes": 34448,
+      "sha256": "78dc9a148674a90e43c96fe702c05746751ea3ad87b12b92871b5d1bbf3b578f"
     },
     {
       "key": "potion_hp_m",
@@ -611,8 +611,8 @@
         0,
         255
       ],
-      "bytes": 61815,
-      "sha256": "3dbe6f7efb295fab5ad494c656c51bfd23ea3cb793ef5ff89dbe045d8043d5c7"
+      "bytes": 32608,
+      "sha256": "3c4be2cb655f3052fa77264e0f828fe84cdb398778dd070299ec383ab04e4d51"
     },
     {
       "key": "potion_stamina",
@@ -624,8 +624,8 @@
         0,
         255
       ],
-      "bytes": 69309,
-      "sha256": "a371c9f0d739227d1789ea284f7f7dc54eab4364bd3c24ee6b77db411e12d0cb"
+      "bytes": 34143,
+      "sha256": "8769f491efa0cb83f22f49c5e9ca4e048b07c428ccb84619b893c518b0a50086"
     },
     {
       "key": "helm_iron",
@@ -637,8 +637,8 @@
         0,
         255
       ],
-      "bytes": 55483,
-      "sha256": "f08373b23e0008a4b43e167ccc89183108136a36acc8091cf9bb802a0c3b69b5"
+      "bytes": 39634,
+      "sha256": "b892a2456f855f05909c9b03617e3a80838112eca4b95d511c3d4db91f07200b"
     },
     {
       "key": "gloves_leather",
@@ -650,8 +650,8 @@
         0,
         255
       ],
-      "bytes": 56874,
-      "sha256": "71336e6cd8b8423de8bf2a275f458ac5cf027d220c9fef8fede63d07ea735de1"
+      "bytes": 44587,
+      "sha256": "4bf00eede9c199c0df62321c7c32ce55dfbe55e33f01aff11741aa52b3735d5d"
     },
     {
       "key": "boots_leather",
@@ -663,8 +663,8 @@
         0,
         255
       ],
-      "bytes": 72089,
-      "sha256": "508bb55c7f867b314ef323931df323340e16b3366621c4c2a7e33ea61e9cfd4d"
+      "bytes": 61676,
+      "sha256": "c7f1ab0e7b8adca1d561bf31e005ad0220e194419344ad8d187e02977c7ad3bf"
     },
     {
       "key": "ring_silver",
@@ -676,8 +676,8 @@
         0,
         255
       ],
-      "bytes": 62038,
-      "sha256": "631be353d45022839888f50c5e533564796163a57086a4fa0213df39c30d8d0c"
+      "bytes": 49864,
+      "sha256": "fc6d3436686e90b9e1884758d9bb0a704619665513bbf603d7e17bd1b3394015"
     },
     {
       "key": "amulet_bone",
@@ -689,8 +689,8 @@
         0,
         255
       ],
-      "bytes": 49828,
-      "sha256": "a07741e1ef497e395ed5555c4c84dbcdfa954d33eb92eafce571ad677177c218"
+      "bytes": 32070,
+      "sha256": "6fac9fc95b9f7343fe671e6a9bfe23e496c4b4a7bfaa99145067972b50b7fd05"
     }
   ]
 }

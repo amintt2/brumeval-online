@@ -4,6 +4,12 @@
     256
   ],
   "engine": "Cycles",
+  "pass": 2,
+  "render_size": [
+    512,
+    512
+  ],
+  "postprocess": "Pillow supersampling, vignette and restrained bloom",
   "keys": [
     "potion_hp_s",
     "potion_hp_l",

@@ -5,7 +5,7 @@ BRUMEVAL_KIT_ROOT can point to the checkout containing the still-uncommitted kit
 """
 import sys
 sys.dont_write_bytecode = True
-import argparse, os, math, json, random
+import argparse, os, math, json, random, importlib
 from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
@@ -213,7 +213,7 @@ def main():
     if args.draft: OUT=QA/'drafts'
     OUT.mkdir(parents=True,exist_ok=True); QA.mkdir(parents=True,exist_ok=True)
     for key in keys:
-        C.reset(); opts=garments.build(key)
+        C.reset(); importlib.reload(gpu); opts=garments.build(key)
         if opts is None: opts=second_pass.build(key)
         if opts is None: opts=builders[key]() or {}
         upgrade_materials(); second_pass.mute_materials(); finish_geometry(); render(key,opts,args.samples)

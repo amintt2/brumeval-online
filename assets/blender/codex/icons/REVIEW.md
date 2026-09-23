@@ -1,13 +1,21 @@
-# Revue CX-2 — première passe, non validée pour publication
+# Revue CX-2 — seconde passe
 
-Les quatre planches nommées de `previews/` ont été inspectées. La couverture des noms, la taille 256 × 256, le canal alpha et les marges sont vérifiés par `review.py`.
+Les quatre planches de `previews/` ont été ouvertes après le rendu des 53 icônes. Un sous-agent critique indépendant a aussi examiné les objets signalés et les douze compétences, puis vérifié les six corrections finales.
 
-Corrections effectuées après la première série : minerais moins sphériques et davantage enchâssés dans la gangue ; fleurs aux silhouettes distinctes ; potions v0.3 distinguées de la grande fiole de soin ; émissions modulées par des nœuds procéduraux.
+## Changements constatés
 
-À poursuivre avant de déclarer CX-2 terminé :
+- Potions et gelée : verre réfractif, contenu sombre, bouchons ; cœur décoratif supprimé de la grande potion.
+- Peau de loup : volume plié, contour irrégulier et mèches courtes ; moins rectangulaire que la première passe.
+- Compétences : fond sombre vignetté, couleurs par classe, cor avec onde/poussière, glace au sol, armes avec traînées, incantation dorée dans des mains.
+- Robe : tissu plissé, manches courbes, suppression des étoiles ; cotte : anneaux serrés et chevauchants plutôt qu'une grille sur plaque.
+- Éclairage : principale en haut à gauche et reflets latéraux, matériaux désaturés, rendu 512 réduit en 256.
 
-- Les silhouettes historiques sont conservées pour la reconnaissance, mais plusieurs compétences et accessoires restent trop stylisés pour atteindre pleinement la référence dark fantasy du brief.
-- Enrichir notamment les flammes, les robes et les petits ornements plutôt que se contenter d'un changement de matériaux.
-- Vérifier l'équilibre de contraste dans les véritables emplacements de l'interface lorsque Claude intègre le lot.
+## Réserves artistiques
 
-Ce lot est une base reproductible à relire, pas une validation de publication. Aucun changement de `shared/data.js`, de l'interface ou du kit partagé.
+Le lot progresse vers le brief mais ne reproduit pas encore la richesse peinte de la référence Elden Ring. Les mains de soin restent stylisées, les filaments magiques très propres, les reflets des fioles assez larges, et le raccord d'épaule de la robe est visible de près. Quelques silhouettes historiques et accessoires v0.3 — plantes, gants, bottes — restent simples. `ab_shot` et `ab_piercing_shot` gagneraient à être davantage distingués à très petite taille.
+
+La priorité de cette passe était de corriger les retours explicites de Claude tout en conservant la reconnaissance des clés. Une validation dans les véritables emplacements d'interface reste à faire lors de l'intégration.
+
+## Contrôles
+
+`review.py` passe : 53 fichiers, 34 références actuelles du jeu couvertes, PNG RGBA 256 × 256, compétences opaques, objets transparents, marges sûres et empreintes SHA-256. Les six icônes retouchées après critique ont été rerendues à 48 échantillons et inspectées à nouveau. Aucune modification du jeu ou du kit partagé. Les rendus et scripts sont livrés pour relecture, sans validation implicite de publication.
