@@ -143,3 +143,34 @@ test('client IP: socket address unless TRUST_PROXY says how many proxies to trus
   assert.equal(clientIp(req(undefined, '::ffff:10.0.0.2', '5.6.7.8'), 1), '5.6.7.8', 'X-Real-IP fallback');
   assert.equal(clientIp(req(undefined), 1), '10.0.0.2');
 });
+
+test('broadcastNear inside the tick (grid query) reaches exactly the players a full scan reaches', async () => {
+  const { VIEW_RADIUS } = await import('../../shared/protocol.js');
+  const { AOI_EXIT_MARGIN } = await import('../src/config.js');
+  const game = makeGame({ seed: 11 });
+  const players = [];
+  for (let i = 0; i < 40; i++) {
+    const p = addPlayer(game, { name: `Echo${i}` });
+    place(game, p, -150 + Math.random() * 300, -150 + Math.random() * 300);
+    players.push(p);
+  }
+  const R = VIEW_RADIUS + AOI_EXIT_MARGIN;
+  for (let round = 0; round < 25; round++) {
+    for (const p of players) if (Math.random() < 0.3) place(game, p, p.x + (Math.random() - 0.5) * 60, p.z + (Math.random() - 0.5) * 60);
+    const x = -150 + Math.random() * 300, z = -150 + Math.random() * 300;
+    for (const p of players) p.session.clear();
+    // same path as game.tick(): new tick number, grid synced lazily by the first query
+    game.tickCount++;
+    game.inTick = true;
+    game.broadcastNear(x, z, { t: 'fx', k: 'test', n: round }, players[0]);
+    game.inTick = false;
+    const got = players.filter((p) => p.session.msgs.length > 0).map((p) => p.id);
+    const want = players.filter((p) => p !== players[0] && Math.hypot(p.x - x, p.z - z) <= R).map((p) => p.id);
+    assert.deepEqual(got.sort((a, b) => a - b), want.sort((a, b) => a - b), `round ${round}`);
+  }
+  // outside the tick (message handlers: players may have just moved) it still scans every player
+  place(game, players[1], 500, 500);
+  for (const p of players) p.session.clear();
+  game.broadcastNear(500, 500, { t: 'fx', k: 'test' });
+  assert.equal(players[1].session.msgs.length, 1);
+});

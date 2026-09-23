@@ -18,9 +18,11 @@ import { handleInteract, handleQuestAccept, handleQuestTurnin, handleBuy, handle
 import { handleUseItem, handleEquip, handleUnequip, handleDrop } from './systems/items.js';
 import { handleChat } from './chat.js';
 import { has, isNum, normAngle, randInt, round4 } from './util.js';
+import { aoiOf } from './aoi.js'; // [netcode-perf]
 
 const TICK_MS = 1000 / TICK_RATE;
 const EVENT_R2 = (VIEW_RADIUS + AOI_EXIT_MARGIN) ** 2;
+const nearBuf = []; // [netcode-perf] reused grid query buffer for broadcastNear
 
 export class Game {
   /**
@@ -161,7 +163,9 @@ export class Game {
   /** Send to every player whose area of interest contains (x, z). */
   broadcastNear(x, z, msg, except = null) {
     let str = null;
-    for (const p of this.players.values()) {
+    // [netcode-perf] inside the tick players do not move, so the grid (synced once per tick) is exact for them
+    const list = this.inTick ? aoiOf(this).playersNear(x, z, VIEW_RADIUS + AOI_EXIT_MARGIN, nearBuf, false) : this.players.values();
+    for (const p of list) {
       if (p === except) continue;
       const dx = p.x - x, dz = p.z - z;
       if (dx * dx + dz * dz > EVENT_R2) continue;
@@ -249,12 +253,14 @@ export class Game {
     const now = this.now();
     const dt = 1 / TICK_RATE;
     this.tickCount++;
+    this.inTick = true; // [netcode-perf] grid queries may use the per-tick synced grid
     this.guard('timers', () => this.runTimers(now));
     this.guard('ai', () => updateMonsters(this, dt, now));
     this.guard('combat', () => updateAutoAttacks(this, now));
     this.guard('regen', () => updateRegen(this, dt, now));
     if (this.tickCount % SNAPSHOT_EVERY === 0) this.guard('snapshot', () => sendSnapshots(this, now));
     for (const p of this.players.values()) this.guard('self', () => this.flushSelf(p));
+    this.inTick = false; // [netcode-perf]
     const ms = performance.now() - t0;
     const s = this.tickStats;
     s.n++; s.total += ms; s.last = ms;

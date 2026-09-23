@@ -158,7 +158,7 @@ function chase(game, m, dt, now) {
     m.slamReady = now + slam.cd * 1000;
     m.lastCombat = now;
     game.broadcastNear(m.x, m.z, { t: S2C.FX, k: FX.AOE, src: m.id, x: round2(m.x), z: round2(m.z), r: slam.radius, ab: 'slam' });
-    for (const p of [...game.players.values()]) {
+    for (const p of aoiOf(game).playersNear(m.x, m.z, slam.radius + 1, [], false)) { // [netcode-perf] grid query (own array: damage may kill)
       if (!validVictim(p) || dist(m.x, m.z, p.x, p.z) > slam.radius) continue;
       const { amount, crit } = computeDamage(m.atk, slam.power, p.stats.def, m.crit, game.rng(), game.rng());
       damagePlayer(game, p, m, amount, crit, 'slam');

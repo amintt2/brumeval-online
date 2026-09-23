@@ -133,7 +133,8 @@ aucune requête, et les modèles/icônes sont revalidés par `ETag` (réponse `3
 ### CPU du serveur
 
 - **Grille spatiale** (`server/src/aoi.js`, cellules de 32 m) : toutes les recherches « entités autour d'un
-  point » (zones d'intérêt des snapshots, aggro des monstres, dégâts de zone) ne parcourent plus que les
+  point » (zones d'intérêt des snapshots, aggro des monstres, dégâts de zone, onde de choc du golem, effets
+  visuels et morts envoyés aux joueurs proches pendant le tick) ne parcourent plus que les
   cellules voisines au lieu de toutes les entités (la discussion, elle, est globale : pas de recherche).
   Mise à jour incrémentale quand une entité change de cellule.
 - **Sommeil des monstres** : un monstre sans joueur à moins de ≈ 100 m (et qui ne combat pas) est mis à jour à
@@ -163,6 +164,6 @@ pour `/assets/*`, `ETag` + `304` pour le reste, `no-cache` pour `index.html`, en
 
 - Au-delà de ≈ 200 joueurs visibles les uns des autres, la sérialisation des snapshots domine : on pourra réduire
   la fréquence des entités lointaines (par exemple 5 Hz au-delà de 40 m) sans changer le protocole.
-- `game.broadcastNear` (effets visuels envoyés aux joueurs proches) parcourt encore tous les joueurs : négligeable
-  à 200 joueurs (quelques microsecondes par tick), à passer sur la grille au-delà de ≈ 500.
+- `game.broadcastNear` hors du tick (réactions immédiates à un message d'un joueur, qui vient peut-être de bouger)
+  parcourt encore tous les joueurs pour rester exact : négligeable à 200 joueurs.
 - Un format binaire n'apporterait aujourd'hui qu'environ 30 % de plus après compression : pas prioritaire.
