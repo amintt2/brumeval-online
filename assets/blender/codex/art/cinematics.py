@@ -44,11 +44,11 @@ def ground(paving=False,settlement=False):
     G.box('Earth',(190,210,.5),mud,loc=(0,55,-.3))
     grass=material('GrassUnderstorey','leaf_card',kind='grass',color='#465440',color2='#777457',seed=31)
     gv=[];gf=[]
-    for i in range(4600):
+    for i in range(9000):
         x=R.uniform(-26,26);y=R.uniform(-8,75)
         if abs(x-1.5*math.sin(y*.045))<3.75 or occupied(x,y):continue
         if noise.noise_vector(Vector((x*.24,y*.24,0)))[0]<-.2:continue
-        h=R.uniform(.13,.38);w=R.uniform(.25,.47);a=R.uniform(0,math.tau)
+        h=R.uniform(.08,.27);w=R.uniform(.16,.31);a=R.uniform(0,math.tau)
         for turn in [0,math.pi/2]:
             dx=math.cos(a+turn)*w/2;dy=math.sin(a+turn)*w/2;n=len(gv)
             gv.extend([(x-dx,y-dy,-.052),(x+dx,y+dy,-.052),(x+dx+.035,y+dy,h),(x-dx+.035,y-dy,h)])
@@ -113,16 +113,19 @@ def tree(x,y,h=14,r=.5,dead=False,seed=1):
     leaf=material('LeafCanopy','leaf_card',kind='oak',color='#303b23',color2='#58613b',seed=seed)
     rr=random.Random(seed)
     info=gn.branch_tree(seed=seed,height=h,radius=r,levels=3,children=(8,4,3),wobble=.23,gravity=.1,
-                        root_flare=2.0,spread=(37,72),length_ratio=(.60,.53,.4),start=(.38,.97))
+                        root_flare=1.45,spread=(37,72),length_ratio=(.60,.53,.4),start=(.38,.97))
     for spline in info['splines']:
         pts=[(a+x,b+y,c) for a,b,c,_ in spline]
         G.tube('AncientBranch',pts,[p[3] for p in spline],12 if len(pts)>6 else 8,bark)
     for k in range(8):
-        a=k*math.tau/8+rr.uniform(-.2,.2);length=r*rr.uniform(3,6)
-        pts=[(x+math.cos(a)*r*.3,y+math.sin(a)*r*.3,r*1.6),
-             (x+math.cos(a)*length*.4,y+math.sin(a)*length*.4,.25),
-             (x+math.cos(a+.12)*length,y+math.sin(a+.12)*length,.02)]
-        G.tube('ContrefortRacine',pts,[r*.6,r*.30,.008],16,bark)
+        a=k*math.tau/8+rr.uniform(-.2,.2);length=r*rr.uniform(2.6,4.4)
+        while abs(x+math.cos(a)*length-1.5*math.sin((y+math.sin(a)*length)*.045))<3.8 and length>.7:length*=.72
+        pts=[(x+math.cos(a)*r*.3,y+math.sin(a)*r*.3,r*1.05),
+             (x+math.cos(a)*length*.3,y+math.sin(a)*length*.3,.23),
+             (x+math.cos(a+.08)*length*.6,y+math.sin(a+.08)*length*.6,.10),
+             (x+math.cos(a+.18)*length*.85,y+math.sin(a+.18)*length*.85,-.01),
+             (x+math.cos(a+.28)*length,y+math.sin(a+.28)*length,-.14)]
+        G.tube('ContrefortRacine',pts,[r*.38,r*.25,r*.14,r*.055,.01],16,bark)
     if dead:return
     vs=[];fs=[]
     for tip,direction in info['tips']:
@@ -163,10 +166,15 @@ def arch(x,y,z=0,r=2,height=3,depth=.8):
     for s in [-1,1]:
         G.box('Jambage',(r*.3,depth,height),mat,loc=(x+s*r,y,z+height/2),bevel=.045)
         G.box('Chapiteau',(r*.43,depth*1.15,.22),mat,loc=(x+s*r,y,z+height),bevel=.035)
+    # True radial voussoirs share their joint planes; no floating boxes on large spans.
     for i in range(20):
-        a=i*math.pi/19
-        ob=G.box('Voussoir',(.48,depth,r*math.pi/19*1.035),mat,loc=(x+r*math.cos(a),y,z+height+r*math.sin(a)),bevel=.025)
-        ob.rotation_euler[1]=math.pi/2-a
+        a=i*math.pi/20;b=(i+1)*math.pi/20;vs=[]
+        for yy in [y-depth/2,y+depth/2]:
+            for radius,theta in [(r-.24,a),(r+.24,a),(r+.24,b),(r-.24,b)]:
+                vs.append((x+radius*math.cos(theta),yy,z+height+radius*math.sin(theta)))
+        ob=mesh('Voussoir',vs,[(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)],mat,False)
+        bevel=ob.modifiers.new('JointUsure','BEVEL');bevel.width=.008;bevel.segments=2
+
 
 def chapel(x,y,z=0,scale=1,ruined=False):
     before=set(bpy.context.scene.objects)
@@ -182,13 +190,15 @@ def chapel(x,y,z=0,scale=1,ruined=False):
         arch(0,-3.5,0,r=1.4,height=3.6,depth=.7)
         G.box('FondRuine',(7,.65,5.8),stone,loc=(0,9.5,2.9),bevel=.08)
         wood=material('RoofWreck','wood',color='#3a3229',dirt=.5)
-        for y in [-1,2,5,8]:
-            for side in [-1,1]:G.tube('CharpenteBrisee',[(side*3.6,y,5.7),(side*R.uniform(.4,1.3),y+.1,R.uniform(7.2,8))],[.16,.06],8,wood)
+        for beam_y in [-1,2,5,8]:
+            for side in [-1,1]:G.tube('CharpenteBrisee',[(side*3.6,beam_y,5.7),(side*R.uniform(.4,1.3),beam_y+.1,R.uniform(7.2,8))],[.16,.06],8,wood)
         for i in range(30):B.rock((R.uniform(-4.4,4.4),R.uniform(-5,10),.12),(R.uniform(.2,.5),R.uniform(.2,.5),R.uniform(.2,.6)),stone)
     # Dark inset gothic window and several nested archivolts.
     dark=material('WindowDark','flat',color='#0c1518')
-    G.extrude('Lancette',[(-.7,0),(.7,0),(.7,2.0),(0,2.8),(-.7,2.0)],.04,dark).location=(0,-3.55,2.7)
-    arch(0,-3.7,0,r=1.2,height=2.8,depth=.3)
+    if not ruined:
+        G.extrude('Lancette',[(-.7,0),(.7,0),(.7,2.0),(0,2.8),(-.7,2.0)],.04,dark).location=(0,-3.55,2.7)
+        arch(0,-3.7,0,r=1.2,height=2.8,depth=.3)
+    else:B.light('MoonThroughRoof',(0,3,5),90,(.42,.58,.77),kind='POINT')
     for side in [-1,1]:
         for j in range(4):
             G.box('Contrefort',(.8,1.1,6.5),stone,loc=(side*3.7,-2+j*3.5,3.2),bevel=.06)

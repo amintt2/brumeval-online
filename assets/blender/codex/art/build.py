@@ -4,7 +4,7 @@ The shared kit is read-only; BRUMEVAL_KIT_ROOT overrides its location.
 """
 import sys
 sys.dont_write_bytecode=True
-import os, math, random, argparse, json
+import os, math, random, argparse, json, importlib
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[3]
@@ -274,6 +274,7 @@ def main():
             print('Logo validé conservé:',key,flush=True)
             continue
         C.reset()
+        importlib.reload(gpu)
         if key.startswith('logo'):logo()
         else:
             import cinematics

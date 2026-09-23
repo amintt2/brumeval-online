@@ -27,3 +27,5 @@ Le kit partagé est utilisé en lecture seule, sans bytecode. Il doit être pré
 Le Golem est une copie figée du modèle de Claude : `sources/golem.glb`, SHA-256 `b61e5d54bd81d03345444d2795a026a6fc604d86e56afab4b80b7df7989c9d91`. Police du logo : Constantia Windows, remplaçable avec `BRUMEVAL_TITLE_FONT` ; aucune police redistribuée.
 
 Le lanceur commun proposé est `dispatch_codex.py`. Claude l'installe hors de nos dossiers lors de la fusion. Les contrôles de `review.py` vérifient formats, dimensions, transparence et empreintes ; ils ne remplacent pas une validation artistique.
+
+Galerie avant/après : `python assets/blender/codex/art/make_gallery.py`, puis ouvrir `previews/review.html`. Les vues de contrôle peuvent être filtrées par `--views 10-arriere,11-arriere-droite`.

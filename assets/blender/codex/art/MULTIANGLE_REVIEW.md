@@ -28,4 +28,4 @@ La caméra arrière centrale de la première série était dans une montagne : s
 
 Ces scènes Blender produisent les illustrations fixes de CX-1. Elles ne constituent pas un niveau jouable ni une validation de collisions/navigation du client. Les vues extérieures vérifient la cohérence des volumes et des accès représentés. La validation artistique finale reste distincte des contrôles techniques de fichiers.
 
-La série après correction et le contrôle chiffré des escaliers doivent être regardés avant d'annoncer la correction vérifiée. Les rapports et planches sont conservés dans ce dossier réservé.
+La série après correction a été regardée par les sous-agents. Le contrôle chiffré des cinq escaliers passe ; les trois vues de la maison confirment les raccords et le retrait de la végétation des marches. Les blocs de la grande arche sont désormais des voussoirs radiaux continus, vérifiés sous deux angles. L’ouverture de la chapelle est également confirmée après suppression du panneau qui la masquait. Les réserves artistiques restantes figurent dans les rapports finaux. Une galerie locale avant/après est générée dans `previews/review.html`.

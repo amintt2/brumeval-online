@@ -1,15 +1,27 @@
-# Revue CX-1 — première passe, non validée pour publication
+# Revue CX-1 — seconde passe et inspections multiangles
 
-Contrôle effectué directement sur les images, puis sur la planche de contact générée par `review.py`.
+Les illustrations et les scènes ont été retravaillées à partir des retours de Claude, puis des défauts repérés par Amin et trois sous-agents. Le logo approuvé reste strictement identique à la première passe.
 
-Corrections effectuées : remplacement des masses de feuillage pleines par des feuilles alpha, réduction du voile et de la lumière ambiante du village, relief montagneux affiné, ajout de contreventements et de ferrures, remplacement du Golem provisoire par le modèle du jeu figé dans les sources.
+## Ce qui change
 
-À poursuivre avant de déclarer CX-1 terminé :
+Village : caméra basse, voyageur, lanternes, pavage continu, maisons différenciées, château sur plateau avec remparts, contreforts et accès. Falaise : masses irrégulières et éboulis, plus de nervures périodiques. Cimetière : chapelle ruinée ouverte, stèles variées, lanternes, corbeaux. Antre : repère humain, lumière latérale, colonnes cassées, poussières et arche continue. Forêt : racines plus courtes et enterrées, sous-bois, ligne d'arbres et relief au fond, stèle en pierre avec trois glyphes. Bannière : cadrage panoramique distinct et logo approuvé sur une zone sombre latérale.
 
-- Le village reste trop régulier et peu habité pour la direction cinématique demandée. Varier l'architecture, enrichir la place et travailler un véritable sujet au premier plan.
-- Les décors restent une composition procédurale de première passe ; l'usure, les silhouettes et les contrastes doivent encore passer une revue artistique exigeante.
-- Le cimetière a une ambiance nocturne lisible mais ses matériaux s'effacent trop dans les ombres : remonter localement la lumière sur les stèles sans éclaircir uniformément le fond.
-- La bannière respecte le format et son titre est lisible en grand ; renforcer encore le contraste du lettrage pour un affichage réduit.
-- Installer le lanceur parent avec Claude pour activer exactement `npm run assets -- codex`. La proposition est dans `dispatch_codex.py`, pas au chemin parent interdit par la restriction d'écriture.
+## Correction signalée par Amin
 
-Les contrôles dimensionnels et de transparence ne constituent pas une acceptation artistique. Aucun changement de l'interface ni publication n'est effectué par cette branche.
+La maison gauche avait été surélevée avec ses petites marches : elles flottaient devant le soubassement. L'élévation est réduite et l'escalier est reconstruit avec des volumes pleins depuis le terrain jusqu'au palier. Les cinq maisons suivent le même principe. Herbe et pierres sont exclues des accès.
+
+`check_access.py` vérifie les vertices évalués après transformations et biseaux. Les cinq escaliers sont ancrés 1,5 cm sous le terrain ; les marches se recouvrent sans intervalle ; le haut du palier correspond au bas de la porte. Maison gauche : huit contremarches d'environ 16,16 cm. Trois vues proches vérifient également le raccord au sol et au seuil.
+
+## Revue indépendante
+
+23 vues : maison 3, château/falaise 8 avant et latérales + 3 arrière, cimetière 3, antre 3, forêt 3. Les premières captures et critiques sont conservées dans `previews/angles-before/`. Les planches corrigées sont dans `previews/angles/`. Voir `MULTIANGLE_REVIEW.md`, `ACCESS_AND_CLIFF_REVIEW.md` et `FINAL_SCENE_REVIEW.md` dans les dossiers indiqués.
+
+Les critiques distinguent les corrections vérifiables des réserves artistiques. La composition et les accès progressent ; certains cylindres, appareils de pierre, végétaux et lumières restent trop réguliers pour prétendre atteindre la richesse d'Elden Ring. Cette livraison est une seconde passe à relire, pas une validation artistique de publication.
+
+Ces scènes produisent des images fixes de CX-1. Le contrôle des marches porte sur les volumes représentés ; il ne valide pas la navigation ni les collisions d'un niveau jouable.
+
+## Contrôles techniques
+
+`review.py` contrôle les sept fichiers, leurs dimensions, le décodage, la transparence des logos et les empreintes SHA-256. Les logos sont également comparés octet par octet au commit `2afac69`. `check_access.json` conserve les mesures des cinq escaliers. Les scripts et les preuves restent exclusivement dans les dossiers réservés à CX-1.
+
+Après chaque remise à zéro complète de Blender, le module GPU est rechargé pour réinitialiser son cache de préférences HIP. Ce contournement local a été signalé à Claude ; le kit partagé reste inchangé.

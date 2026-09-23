@@ -1,5 +1,6 @@
 """Assemble the independent multi-angle scene review, without modifying renders."""
 from pathlib import Path
+import argparse
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent / 'previews' / 'angles'
@@ -15,7 +16,13 @@ GROUPS = {
 def font(size):
     return ImageFont.truetype('C:/Windows/Fonts/arial.ttf', size)
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--only', default='', help='Comma-separated groups, or all existing groups by default')
+requested = set(filter(None, parser.parse_args().only.split(',')))
+
 for group, (title, labels) in GROUPS.items():
+    if requested and group not in requested:
+        continue
     files = [HERE / f'{group}-{i:02d}-{name}.webp' for i, name in enumerate(labels, 9 if group == 'cliff_back' else 1)]
     if not all(path.exists() for path in files):
         continue
