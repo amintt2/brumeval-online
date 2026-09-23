@@ -6,6 +6,10 @@ import { RANGE_TOLERANCE, MULTI_HIT_INTERVAL_MS } from '../config.js';
 import { recordKill, killLabel } from '../quests.js';
 import { dist, isId, isInt, isNum, randInt, round2 } from '../util.js';
 import { grantXp, giveItem, giveGold, healPlayer } from './players.js';
+// [combat-souls]
+import { ELITE } from '../../../shared/data.js';
+import { spendStamina, applyRecovery, isRolling, isRunning } from './stamina.js';
+import { applyPoise, guardReduction, onMonsterDamaged, onMonsterDeath } from './ai.js';
 
 const TARGETED = new Set(['melee', 'projectile']);
 
@@ -28,11 +32,22 @@ export function handleAbility(game, p, msg) {
     target = e;
   }
   if (inVillage(p.x, p.z)) return game.error(p, 'safe_zone', 'Impossible de combattre dans le village');
+  // [combat-souls] no attacking in the middle of a dodge roll
+  if (isRolling(p, game.now())) {
+    if (target && slot === 0) p.autoTarget = target.id;
+    return;
+  }
   // Slot 0 (re)starts auto-attacking this target; any targeted ability switches an active auto-attack.
   if (target && (slot === 0 || p.autoTarget)) p.autoTarget = target.id;
   const err = castAbility(game, p, slot, target, msg, game.now());
   if (!err) return;
   if (slot === 0 && err.code === 'cooldown') return; // the auto-attack will swing as soon as it is ready
+  // [combat-souls] ranged auto-attack while running: it fires once the player slows down (hint throttled)
+  if (err.code === 'moving') {
+    const now = game.now();
+    if (now - (p.movingErrAt || -Infinity) < 3000) return;
+    p.movingErrAt = now;
+  }
   game.error(p, err.code, err.msg);
 }
 
@@ -74,9 +89,14 @@ export function castAbility(game, p, slot, target, point, now) {
     if (dist(p.x, p.z, px, pz) > ab.range + RANGE_TOLERANCE) return { code: 'out_of_range', msg: 'Zone hors de portée' };
   }
   if (p.mp < ab.mp) return { code: 'no_mana', msg: 'Pas assez de mana' };
+  // [combat-souls] stamina + no ranged auto-attack spam while running full speed
+  if (p.st < (ab.st || 0)) return { code: 'no_stamina', msg: 'Pas assez d\'endurance' };
+  if (ab.auto && ab.kind === 'projectile' && isRunning(p, now)) return { code: 'moving', msg: 'Ralentissez pour tirer' };
 
   // --- pay & start cooldown
   p.cooldowns[slot] = now + ab.cd * 1000;
+  spendStamina(p, ab.st || 0, now); // [combat-souls]
+  applyRecovery(p, ab, now); // [combat-souls] attack commitment
   if (ab.mp > 0) {
     p.mp -= ab.mp;
     p.markDirty('mp');
@@ -146,6 +166,12 @@ export function hitMonster(game, p, m, power, abId) {
 export function damageMonster(game, m, attacker, amount, crit, abId) {
   if (m.dead || m.invulnerable) return false;
   const now = game.now();
+  // [combat-souls] frontal guard (skeletons): part of the hit is absorbed
+  const guard = attacker.kind === KIND.PLAYER ? guardReduction(m, attacker) : 0;
+  if (guard > 0) {
+    amount = Math.max(1, Math.round(amount * (1 - guard)));
+    game.broadcastNear(m.x, m.z, { t: S2C.FX, k: FX.GUARD, src: m.id, tg: attacker.id });
+  }
   m.hp -= amount;
   m.lastCombat = now;
   attacker.lastCombat = now;
@@ -157,12 +183,9 @@ export function damageMonster(game, m, attacker, amount, crit, abId) {
     killMonster(game, m);
     return true;
   }
-  if (m.ai !== 'chase') {
-    m.ai = 'chase';
-    m.target = attacker.id;
-    m.atkReady = Math.max(m.atkReady, now + 400);
-    if (m.def.slam) m.slamReady = now + m.def.slam.cd * 1000;
-  }
+  // [combat-souls] reaction (reaction delay, alert) + poise / stagger
+  onMonsterDamaged(game, m, attacker, now);
+  applyPoise(game, m, (abId && ABILITIES[abId]?.poise) || 0, now);
   return true;
 }
 
@@ -175,6 +198,7 @@ export function killMonster(game, m) {
   m.ai = 'dead';
   m.target = 0;
   m.slowUntil = 0;
+  onMonsterDeath(game, m); // [combat-souls] pending telegraphs are cancelled
 
   const damagers = [];
   for (const [id, dmg] of m.threat) {
@@ -189,7 +213,7 @@ export function killMonster(game, m) {
   game.broadcastNear(m.x, m.z, { t: S2C.DEATH, id: m.id, by: killer ? killer.id : 0 });
 
   for (const { p } of damagers) {
-    grantXp(game, p, monsterXp(m.type, m.level, p.level));
+    grantXp(game, p, Math.round(monsterXp(m.type, m.level, p.level) * (m.elite ? ELITE.xp : 1))); // [combat-souls] elites
     const progress = recordKill(p.quests, m.type);
     if (progress.length) {
       p.markDirty('quests');
@@ -205,8 +229,9 @@ export function killMonster(game, m) {
 
   if (killer) {
     const [gMin, gMax] = m.def.gold;
-    giveGold(game, killer, randInt(game.rng, gMin, gMax));
-    for (const drop of m.def.drops || []) if (game.rng() < drop.ch) giveItem(game, killer, drop.id, 1);
+    const eliteMul = m.elite ? ELITE.gold : 1; // [combat-souls] elites: more gold, better drop chances
+    giveGold(game, killer, randInt(game.rng, gMin, gMax) * eliteMul);
+    for (const drop of m.def.drops || []) if (game.rng() < drop.ch * (m.elite ? ELITE.drops : 1)) giveItem(game, killer, drop.id, 1);
   }
   game.store?.markDirty();
 
@@ -223,6 +248,9 @@ export function updateAutoAttacks(game, now) {
     if (!m || m.kind !== KIND.MONSTER || m.dead) { p.autoTarget = 0; continue; }
     if (now < p.cooldowns[0] || m.invulnerable || inVillage(p.x, p.z)) continue;
     const ab = ABILITIES[p.abilities[0]];
+    // [combat-souls] no swing mid-roll; ranged autos wait until the player slows down; stamina
+    if (isRolling(p, now) || p.st < (ab.st || 0)) continue;
+    if (ab.kind === 'projectile' && isRunning(p, now)) continue;
     if (dist(p.x, p.z, m.x, m.z) > ab.range + RANGE_TOLERANCE) continue;
     castAbility(game, p, 0, m, null, now);
   }

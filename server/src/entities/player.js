@@ -5,6 +5,7 @@ import { SPAWN_POINT } from '../../../shared/world.js';
 import { cloneInventory } from '../inventory.js';
 import { MoveValidator } from '../movement.js';
 import { round2, round3 } from '../util.js';
+import { initCombatState, maxSpeedAt } from '../systems/stamina.js'; // [combat-souls]
 
 export class Player {
   constructor(id, account, session, now) {
@@ -50,7 +51,14 @@ export class Player {
     this.dirty = new Set(); // SelfState fields to send in the next `self`
     this.sentHp = this.hpShown();
     this.sentMp = this.mpShown();
+    // [combat-souls] stamina / dodge / sprint / attack commitment + death echo
+    initCombatState(this);
+    this.echo = account.echo ? { ...account.echo } : null;
+    this.echoEnt = null;
   }
+
+  /** [combat-souls] Movement allowance contract: metres/second allowed at `nowMs`. */
+  maxSpeedAt(nowMs) { return maxSpeedAt(this, nowMs); }
 
   get abilities() { return CLASSES[this.cls].abilities; }
 
@@ -90,6 +98,8 @@ export class Player {
       case 'x': return round2(this.x);
       case 'z': return round2(this.z);
       case 'ry': return round3(this.ry);
+      case 'st': return Math.floor(this.st); // [combat-souls]
+      case 'echo': return this.echo ? { ...this.echo } : null; // [combat-souls]
       default: return this[f];
     }
   }
@@ -150,3 +160,4 @@ export const SELF_FIELDS = [
   'id', 'name', 'cls', 'level', 'xp', 'xpNext', 'hp', 'mhp', 'mp', 'mmp', 'gold',
   'stats', 'inv', 'eq', 'quests', 'abilities', 'x', 'z', 'ry', 'dead',
 ];
+SELF_FIELDS.push('st', 'mst', 'echo'); // [combat-souls]

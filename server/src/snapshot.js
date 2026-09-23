@@ -30,6 +30,7 @@ export function sendSnapshots(game, now) {
     const known = p.known;
     for (const e of entities) {
       const k = known.get(e.id);
+      if (e.ownerId && e.ownerId !== p.id) continue; // [combat-souls] death echoes: owner only
       if (e !== p) {
         const dx = e.x - p.x, dz = e.z - p.z;
         if (dx * dx + dz * dz > (k ? R_OUT2 : R_IN2)) continue;

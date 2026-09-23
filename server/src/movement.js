@@ -49,15 +49,39 @@ export class MoveValidator {
 
   /** Teleport / respawn: new reference position, full credit. */
   reset(x, z, t) {
-    this.last = { x, z, t };
-    this.history = [{ x, z, t }];
+    // [combat-souls] `odo` integrates the allowed speed over time (player.maxSpeedAt changes with sprint,
+    // dodge rolls and attack recovery), so every rule below compares distances with the distance that was
+    // really allowed during the interval instead of the speed at the time of the check.
+    this.odo = 0;
+    this.odoT = t;
+    this.odoV = null;
+    this.last = { x, z, t, odo: 0 };
+    this.history = [this.last];
     this.credit = Infinity; // clamped to the cap on first use
-    this.creditT = t;
+    this.creditOdo = 0;
+  }
+
+  /** [combat-souls] Integrate the allowed speed up to `now` (max of the previous and current speed). */
+  advance(now, speed) {
+    if (now > this.odoT) {
+      const v = this.odoV === null ? speed : Math.max(this.odoV, speed);
+      this.odo += (v * (now - this.odoT)) / 1000;
+      this.odoT = now;
+    }
+    this.odoV = speed;
+  }
+
+  /** Allowed distance since the entry `e` (elapsed capped at MOVE_MAX_ELAPSED_S). */
+  allowedSince(e, now) {
+    const elapsed = Math.max(0, now - e.t);
+    let d = this.odo - e.odo;
+    if (elapsed > MOVE_MAX_ELAPSED_S * 1000) d *= (MOVE_MAX_ELAPSED_S * 1000) / elapsed;
+    return d * MOVE_SPEED_FACTOR + MOVE_SLACK_M;
   }
 
   creditAt(now, speed) {
     const cap = speed * MOVE_MAX_ELAPSED_S * MOVE_SPEED_FACTOR + MOVE_SLACK_M;
-    return Math.min(cap, this.credit + speed * MOVE_SPEED_FACTOR * Math.max(0, now - this.creditT) / 1000);
+    return Math.min(cap, this.credit + (this.odo - this.creditOdo) * MOVE_SPEED_FACTOR);
   }
 
   /** Newest accepted position at least WINDOW_MS old (null if none). Prunes older entries. */
@@ -67,25 +91,27 @@ export class MoveValidator {
     return h[0].t <= now - WINDOW_MS ? h[0] : null;
   }
 
-  /** null if the move to `to` at time `now` is accepted, else the reason. Does not mutate. */
+  /** null if the move to `to` at time `now` is accepted, else the reason. Does not mutate (but integrates). */
   check(to, now, speed, collision) {
+    this.advance(now, speed);
     const d = Math.hypot(to.x - this.last.x, to.z - this.last.z);
-    if (d > maxMoveDistance(speed, now - this.last.t) && d > this.creditAt(now, speed)) return 'too_fast';
+    if (d > this.allowedSince(this.last, now) && d > this.creditAt(now, speed)) return 'too_fast';
     const spot = validateSpot(to, collision);
     if (spot) return spot;
     const a = this.anchor(now);
     if (a) {
-      const allowed = speed * ((now - a.t) / 1000) * MOVE_SPEED_FACTOR + MOVE_SLACK_M;
+      const allowed = (this.odo - a.odo) * MOVE_SPEED_FACTOR + MOVE_SLACK_M;
       if (Math.hypot(to.x - a.x, to.z - a.z) > allowed) return 'too_fast';
     }
     return null;
   }
 
   accept(to, now, speed) {
+    this.advance(now, speed);
     const d = Math.hypot(to.x - this.last.x, to.z - this.last.z);
     this.credit = Math.max(0, this.creditAt(now, speed) - d);
-    this.creditT = now;
-    this.last = { x: to.x, z: to.z, t: now };
+    this.creditOdo = this.odo;
+    this.last = { x: to.x, z: to.z, t: now, odo: this.odo };
     this.history.push(this.last);
   }
 }

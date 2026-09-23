@@ -6,6 +6,7 @@ import { SPAWN_POINT, isWalkable } from '../../shared/world.js';
 import { emptyInventory, addItem, sanitizeInventory, isItem, equipSlotOf } from './inventory.js';
 import { sanitizeQuests } from './quests.js';
 import { nameKey, validName, validClass } from './auth.js';
+import { sanitizeEcho } from './systems/echo.js'; // [combat-souls]
 
 const FILE_VERSION = 1;
 
@@ -24,6 +25,7 @@ export function newAccount(name, cls, salt, hash) {
     quests: {},
     x: SPAWN_POINT.x, z: SPAWN_POINT.z,
     created: now, lastSeen: now,
+    echo: null, // [combat-souls] death echo { x, z, xp }
   };
 }
 
@@ -55,6 +57,7 @@ export function sanitizeAccount(raw) {
     x, z,
     created: finite(raw.created, Date.now()),
     lastSeen: finite(raw.lastSeen, Date.now()),
+    echo: sanitizeEcho(raw.echo), // [combat-souls] v0.1 accounts have none
   };
 }
 

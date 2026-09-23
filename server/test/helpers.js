@@ -3,6 +3,7 @@ import { Game } from '../src/game.js';
 import { newAccount } from '../src/persistence.js';
 import { mulberry32 } from '../../shared/noise.js';
 import { SPAWN_ZONES } from '../../shared/world.js';
+import { setupMonster } from '../src/systems/ai/brain.js';
 
 export class FakeSession {
   constructor() { this.msgs = []; this.closed = false; }
@@ -52,10 +53,14 @@ export function place(game, p, x, z) {
 export const slimeZone = SPAWN_ZONES.find((z) => z.monster === 'slime');
 export const zoneOf = (type) => SPAWN_ZONES.find((z) => z.monster === type);
 
-/** Spawn a monster of `type` at (x, z) (defaults to its zone centre). It stays idle unless provoked. */
-export function spawnAt(game, type, x, z) {
+/**
+ * Spawn a monster of `type` at (x, z) (defaults to its zone centre). It stays idle unless provoked.
+ * [combat-souls] never an elite unless asked; `ai` = { seed, variant, elite } re-configures its AI.
+ */
+export function spawnAt(game, type, x, z, ai = {}) {
   const zone = zoneOf(type);
   const m = game.spawnMonster(zone);
+  setupMonster(game, m, { elite: false, ...ai });
   m.x = m.homeX = x ?? zone.x;
   m.z = m.homeZ = z ?? zone.z;
   m.aiUntil = Infinity;
