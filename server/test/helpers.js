@@ -1,6 +1,6 @@
 // Test helpers: a Game with a manual clock, fake sessions that record every message, player factories.
 import { Game } from '../src/game.js';
-import { newAccount } from '../src/persistence.js';
+import { newCharacter } from '../src/persistence.js';
 import { mulberry32 } from '../../shared/noise.js';
 import { SPAWN_ZONES } from '../../shared/world.js';
 import { setupMonster } from '../src/systems/ai/brain.js';
@@ -37,7 +37,7 @@ export function advance(game, ms) {
 let counter = 0;
 /** Create an online player. `over` overrides account fields (level, x, z, gold, inv, eq, quests…). */
 export function addPlayer(game, { name, cls = 'warrior', ...over } = {}) {
-  const acc = newAccount(name || `Joueur${++counter}`, cls, 'aa', 'bb');
+  const acc = newCharacter(name || `Joueur${++counter}`, cls);
   Object.assign(acc, over);
   const s = new FakeSession();
   const p = game.addPlayer(acc, s);

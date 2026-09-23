@@ -2,14 +2,23 @@
 // [anticheat] v0.2 hardening: real client IP, Origin allow-list, connections per IP, bans, auth timeout, idle
 // kick, token-bucket rate limits (global + per message type), strict message validation, login throttling,
 // account creation limit, name filter. See docs/SECURITE.md.
+// [accounts] A connection goes through three states: anonymous -> account (character selection) -> in world.
+// Accounts own up to MAX_CHARS characters, remembered sessions and passkeys. See docs/COMPTES.md.
 import { WebSocketServer, WebSocket } from 'ws';
-import { WS_PATH, C2S, S2C, decode } from '../../shared/protocol.js';
+import { WS_PATH, C2S, S2C, decode, MAX_CHARS } from '../../shared/protocol.js';
 import { CLASSES } from '../../shared/data.js';
 import {
   MAX_PAYLOAD, MAX_AUTH_ATTEMPTS, HEARTBEAT_MS, MAX_BUFFERED_BYTES, MAX_PLAYERS, MOTD,
 } from './config.js';
 import { validName, validPassword, validClass, nameKey, hashPassword, verifyPassword, dummyVerify, PASSWORD_MIN, PASSWORD_MAX } from './auth.js';
-import { newAccount } from './persistence.js';
+import { newAccount, newCharacter, MAX_PASSKEYS } from './persistence.js';
+import {
+  issueToken, findToken, revokeSession, revokeAllSessions, accountSummary, charList, validTokenFormat,
+} from './accounts.js';
+import {
+  relyingParty, registrationOptions, authenticationOptions, verifyRegistration, verifyLogin, responseShapeOk,
+  cleanLabel, CHALLENGE_TTL_MS,
+} from './passkeys.js';
 import { isNum } from './util.js';
 import { PERMESSAGE_DEFLATE, Outbox, wantsBatch, flushAll } from './wsout.js'; // [netcode-perf]
 import { VERSION, buildId } from './version.js'; // [netcode-perf]
@@ -25,30 +34,61 @@ const AUTH_MESSAGES = {
   bad_password: `Mot de passe invalide : ${PASSWORD_MIN} à ${PASSWORD_MAX} caractères.`,
   bad_class: 'Classe inconnue.',
   name_taken: 'Ce nom est déjà pris.',
+  login_taken: 'Ce nom de compte est déjà pris.',
   wrong_credentials: 'Nom ou mot de passe incorrect.',
   already_online: 'Ce personnage est déjà connecté.',
   server_full: 'Le serveur est complet, réessayez plus tard.',
   bad_request: 'Requête invalide.',
   rate_limit: 'Trop de tentatives. Réessayez dans un instant.',
   banned: 'Ce compte est banni.',
+  // [accounts]
+  bad_token: 'Votre session a expiré. Reconnectez-vous.',
+  passkey_failed: 'Clé d’accès refusée ou inconnue.',
+  no_character: 'Ce compte n’a pas encore de personnage : rechargez la page pour en créer un.',
+  unavailable: 'Les clés d’accès ne sont pas disponibles sur cette adresse.',
+};
+
+const ACCOUNT_MESSAGES = {
+  ...AUTH_MESSAGES,
+  too_many_chars: `Vous avez déjà ${MAX_CHARS} personnages : supprimez-en un pour en créer un autre.`,
+  not_found: 'Personnage introuvable.',
+  bad_confirm: 'Pour confirmer, tapez exactement le nom du personnage.',
+  in_world: 'Quittez d’abord le monde (Changer de personnage).',
+  wrong_credentials: 'Mot de passe actuel incorrect.',
+  passkey_failed: 'La clé d’accès n’a pas pu être enregistrée.',
+  too_many_passkeys: `Vous avez déjà ${MAX_PASSKEYS} clés d’accès : supprimez-en une d’abord.`,
 };
 
 /** Message types that count as player activity for the idle kick. */
 const PASSIVE_TYPES = new Set([C2S.PING]);
+/** Anonymous connections: the only messages accepted. */
+const AUTH_TYPES = new Set([C2S.REGISTER, C2S.LOGIN, C2S.LOGIN_TOKEN, C2S.PASSKEY_LOGIN_OPTIONS, C2S.PASSKEY_LOGIN_VERIFY]);
+/** Account messages (character selection screen AND in world). */
+const ACCOUNT_TYPES = new Set([
+  C2S.CHAR_CREATE, C2S.CHAR_DELETE, C2S.CHAR_SELECT, C2S.CHAR_LOGOUT, C2S.LOGOUT, C2S.LOGOUT_ALL, C2S.ACCOUNT_GET,
+  C2S.PASSWORD_CHANGE, C2S.PASSKEY_REG_OPTIONS, C2S.PASSKEY_REG_VERIFY, C2S.PASSKEY_RENAME, C2S.PASSKEY_DELETE,
+]);
 
 let sessionSeq = 0;
 
 class Session {
-  constructor(ws, ip, ctx) {
+  constructor(ws, ip, ctx, req = null) {
     this.id = ++sessionSeq;
     this.ws = ws;
     this.ip = ip;
     this.ctx = ctx;
+    this.account = null;   // [accounts] authenticated account (character selection or in world)
+    this.tokenId = null;   // [accounts] remembered session used / issued by this connection (revoked by `logout`)
+    this.webauthn = null;  // [accounts] pending passkey challenge { purpose, challenge, exp }
     this.player = null;
     this.authBusy = false;
+    this.accBusy = false;
     this.authAttempts = 0;
     this.closed = false;
     this.alive = true;
+    this.origin = typeof req?.headers?.origin === 'string' ? req.headers.origin : null;
+    this.host = typeof req?.headers?.host === 'string' ? req.headers.host : null;
+    this.ua = typeof req?.headers?.['user-agent'] === 'string' ? req.headers['user-agent'].slice(0, 120) : '';
     const now = Date.now();
     const cfg = ctx.security.cfg;
     this.bucket = new TokenBucket(cfg.globalRate, cfg.globalBurst, now);
@@ -56,15 +96,21 @@ class Session {
     this.lastActivity = now;
     this.connectedAt = now;
     this.lastRateFlag = 0;
-    this.authTimer = setTimeout(() => {
-      if (!this.player && !this.closed) this.kick('Délai de connexion dépassé. Rechargez la page pour vous reconnecter.');
-    }, cfg.authTimeoutMs);
-    this.authTimer.unref?.();
+    this.authTimer = null;
+    this.armAuthTimer();
 
     ws.on('message', (data) => this.onMessage(data));
     ws.on('close', () => this.onClose());
     ws.on('error', () => { /* 'close' follows */ });
     ws.on('pong', () => { this.alive = true; });
+  }
+
+  armAuthTimer() {
+    clearTimeout(this.authTimer);
+    this.authTimer = setTimeout(() => {
+      if (!this.account && !this.player && !this.closed) this.kick('Délai de connexion dépassé. Rechargez la page pour vous reconnecter.');
+    }, this.ctx.security.cfg.authTimeoutMs);
+    this.authTimer.unref?.();
   }
 
   send(msg) {
@@ -94,7 +140,9 @@ class Session {
   }
 
   label() {
-    return this.player ? this.player.name : `connexion ${this.ip}`;
+    if (this.player) return this.player.name;
+    if (this.account) return `compte ${this.account.login}`;
+    return `connexion ${this.ip}`;
   }
 
   get security() { return this.ctx.security; }
@@ -114,7 +162,8 @@ class Session {
     const bad = validateC2S(msg);
     if (bad) {
       this.security.flag(this.player || this, 'bad_packet', bad === 'forbidden_key' ? 5 : 2, { t: String(msg.t).slice(0, 20), why: bad });
-      if (!this.player && (msg.t === C2S.LOGIN || msg.t === C2S.REGISTER)) this.authErr('bad_request');
+      if (!this.account && AUTH_TYPES.has(msg.t)) this.authErr('bad_request');
+      else if (ACCOUNT_TYPES.has(msg.t)) this.accErr(msg.t, 'bad_request');
       return;
     }
     if (!this.types.allow(msg.t, now)) {
@@ -123,7 +172,8 @@ class Session {
         this.lastRateFlag = now;
         this.security.flag(this.player || this, 'rate', 1, { t: msg.t });
       }
-      if (msg.t === C2S.LOGIN || msg.t === C2S.REGISTER) this.authErr('rate_limit');
+      if (!this.account && AUTH_TYPES.has(msg.t)) this.authErr('rate_limit');
+      else if (ACCOUNT_TYPES.has(msg.t)) this.accErr(msg.t, 'rate_limit');
       return;
     }
     if (!PASSIVE_TYPES.has(msg.t)) this.lastActivity = now;
@@ -140,18 +190,24 @@ class Session {
       if (isNum(msg.c)) this.send({ t: S2C.PONG, c: msg.c, s: Date.now() });
       return;
     }
-    if (!this.player) {
-      if (msg.t === C2S.REGISTER) this.guardAuth(() => this.register(msg));
-      else if (msg.t === C2S.LOGIN) this.guardAuth(() => this.login(msg));
-      return; // everything else is ignored before auth
+    if (!this.account) {
+      switch (msg.t) {
+        case C2S.REGISTER: return this.guardAuth(() => this.register(msg));
+        case C2S.LOGIN: return this.guardAuth(() => this.login(msg));
+        case C2S.LOGIN_TOKEN: return this.guardAuth(() => this.loginToken(msg));
+        case C2S.PASSKEY_LOGIN_OPTIONS: return this.guardAuth(() => this.passkeyLoginOptions(), false);
+        case C2S.PASSKEY_LOGIN_VERIFY: return this.guardAuth(() => this.passkeyLoginVerify(msg));
+        default: return; // everything else is ignored before auth
+      }
     }
-    if (msg.t === C2S.REGISTER || msg.t === C2S.LOGIN) return;
+    if (ACCOUNT_TYPES.has(msg.t)) return this.accountMessage(msg);
+    if (!this.player || AUTH_TYPES.has(msg.t)) return;
     game.handleMessage(this.player, msg);
   }
 
-  guardAuth(fn) {
-    if (this.authBusy || this.player) return;
-    if (++this.authAttempts > MAX_AUTH_ATTEMPTS) {
+  guardAuth(fn, counts = true) {
+    if (this.authBusy || this.account) return;
+    if (counts && ++this.authAttempts > MAX_AUTH_ATTEMPTS) {
       this.security.flag(this, 'brute_force', 5, { attempts: this.authAttempts });
       return this.kick('Trop de tentatives de connexion.');
     }
@@ -168,41 +224,60 @@ class Session {
     this.send({ t: S2C.AUTH_ERR, code, msg: msg || AUTH_MESSAGES[code] });
   }
 
-  async register(msg) {
+  accErr(op, code, msg) {
+    this.send({ t: S2C.ACCOUNT_ERR, op, code, msg: msg || ACCOUNT_MESSAGES[code] || ACCOUNT_MESSAGES.bad_request });
+  }
+
+  /** Why a NEW name (login or character) is refused, or null. Sends nothing. */
+  nameRefusal(name, { character }) {
     const { store, game } = this.ctx;
     const sec = this.security;
-    const { name, password, cls } = msg;
-    const ipBan = sec.ipBan(this.ip); // banned while this connection was already open
-    if (ipBan) return this.authErr('banned', sec.banMessage(ipBan));
-    if (!validName(name)) return this.authErr('bad_name');
+    if (!validName(name)) return ['bad_name'];
     // names listed in ADMIN_NAMES can only be created before being listed (nobody can grab a free admin name)
     const problem = sec.cfg.adminNames.includes(nameKey(name)) ? 'reserved' : nameProblem(name);
     if (problem) {
       sec.seclog.write({ type: 'auth', result: 'name_refused', name, why: problem, ip: this.ip });
-      return this.authErr('bad_name', NAME_PROBLEM_MESSAGES[problem]);
+      return ['bad_name', NAME_PROBLEM_MESSAGES[problem]];
     }
+    if (character) {
+      if (store.has(name) || game.byName.has(nameKey(name))) return ['name_taken'];
+      if (lookalikeTaken(name, store, game)) return ['name_taken', NAME_PROBLEM_MESSAGES.lookalike];
+    } else if (store.hasLogin(name)) return ['login_taken'];
+    return null;
+  }
+
+  // ------------------------------------------------------------------ anonymous -> account
+  async register(msg) {
+    const { store, game } = this.ctx;
+    const sec = this.security;
+    const { name, password, cls } = msg;
+    const legacy = cls !== undefined && cls !== null; // v0.1 / wave-1 client: account + first character + select
+    const ipBan = sec.ipBan(this.ip); // banned while this connection was already open
+    if (ipBan) return this.authErr('banned', sec.banMessage(ipBan));
+    const refusal = this.nameRefusal(name, { character: false }) || (legacy ? this.nameRefusal(name, { character: true }) : null);
+    if (refusal) return this.authErr(refusal[0] === 'login_taken' && legacy ? 'name_taken' : refusal[0], refusal[1]);
     if (!validPassword(password)) return this.authErr('bad_password');
-    if (!validClass(cls)) return this.authErr('bad_class');
-    if (store.has(name)) return this.authErr('name_taken');
-    if (lookalikeTaken(name, store, game)) return this.authErr('name_taken', NAME_PROBLEM_MESSAGES.lookalike);
+    if (legacy && !validClass(cls)) return this.authErr('bad_class');
     if (!sec.canRegister(this.ip)) {
       sec.seclog.write({ type: 'auth', result: 'register_limit', name, ip: this.ip }, `reglimit:${this.ip}`);
       return this.authErr('rate_limit', 'Trop de personnages créés depuis votre adresse. Réessayez plus tard.');
     }
-    if (game.players.size >= MAX_PLAYERS) return this.authErr('server_full');
+    if (legacy && game.players.size >= MAX_PLAYERS) return this.authErr('server_full');
     const { salt, hash } = await hashPassword(password);
     if (this.closed) return;
-    if (store.has(name)) return this.authErr('name_taken'); // registered meanwhile
-    if (game.players.size >= MAX_PLAYERS) return this.authErr('server_full');
-    const account = store.create(newAccount(name, cls, salt, hash));
+    // registered meanwhile?
+    const again = this.nameRefusal(name, { character: false }) || (legacy ? this.nameRefusal(name, { character: true }) : null);
+    if (again) return this.authErr(again[0] === 'login_taken' && legacy ? 'name_taken' : again[0], again[1]);
+    if (legacy && game.players.size >= MAX_PLAYERS) return this.authErr('server_full');
+    const account = store.create(newAccount(name, legacy ? cls : null, salt, hash));
     store.save();
     sec.registered(this, name);
-    this.ctx.log.info(`nouveau compte : ${name} (${CLASSES[cls].name})`);
-    this.enter(account);
+    this.ctx.log.info(`nouveau compte : ${name}${legacy ? ` (${CLASSES[cls].name})` : ''}`);
+    this.accountIn(account, { method: 'register', remember: msg.remember === true, legacy });
   }
 
   async login(msg) {
-    const { store, game } = this.ctx;
+    const { store } = this.ctx;
     const sec = this.security;
     const { name, password } = msg;
     if (typeof name !== 'string' || typeof password !== 'string' || name.length > 64 || password.length > 256) {
@@ -215,29 +290,352 @@ class Session {
       sec.loginRefusedWhileBlocked(this, name);
       return this.authErr('rate_limit', `Trop de tentatives de connexion. Réessayez dans ${formatDuration(wait)}.`);
     }
-    const account = store.get(name);
+    const account = store.getAccount(name);
     const ok = account ? await verifyPassword(password, account.salt, account.hash) : await dummyVerify(password);
     if (this.closed) return;
     if (!ok) {
       sec.loginFailed(this, name);
       return this.authErr('wrong_credentials');
     }
-    sec.loginSucceeded(this, account.name);
-    const ban = sec.accountBan(account.name);
-    if (ban) {
-      sec.seclog.write({ type: 'auth', result: 'banned', name: account.name, ip: this.ip }, `banned:${this.ip}`);
-      return this.authErr('banned', sec.banMessage(ban));
-    }
-    if (game.byName.has(nameKey(account.name))) return this.authErr('already_online');
-    if (game.players.size >= MAX_PLAYERS) return this.authErr('server_full');
-    this.enter(account);
+    // a login message without `remember` comes from a pre-accounts client: straight into the world as before
+    const legacy = !Object.prototype.hasOwnProperty.call(msg, 'remember');
+    this.accountIn(account, { method: 'password', remember: msg.remember === true, legacy });
   }
 
-  enter(account) {
-    const { game, log } = this.ctx;
+  async loginToken(msg) {
+    const { store } = this.ctx;
+    const sec = this.security;
+    const ipBan = sec.ipBan(this.ip);
+    if (ipBan) return this.authErr('banned', sec.banMessage(ipBan));
+    const wait = sec.loginBlockedFor(this.ip, '#token');
+    if (wait > 0) {
+      sec.loginRefusedWhileBlocked(this, '#token');
+      return this.authErr('rate_limit', `Trop de tentatives de connexion. Réessayez dans ${formatDuration(wait)}.`);
+    }
+    const found = validTokenFormat(msg.token) ? findToken(store, msg.token) : null;
+    if (!found) {
+      // expired / revoked tokens are normal; many unknown tokens from one address are token guessing
+      sec.flag(this, 'token_guess', validTokenFormat(msg.token) ? 1 : 3);
+      sec.loginFailed(this, '#token');
+      return this.authErr('bad_token');
+    }
+    store.markDirty(found.acc);
+    this.accountIn(found.acc, { method: 'token', rotate: found.session.id });
+  }
+
+  rp() {
+    const cfg = this.security.cfg;
+    return relyingParty({ origin: this.origin, host: this.host, allowedOrigins: cfg.allowedOrigins, env: this.ctx.env || process.env });
+  }
+
+  async passkeyLoginOptions() {
+    const rp = this.rp();
+    if (!rp) return this.authErr('unavailable');
+    const options = await authenticationOptions(rp);
+    this.webauthn = { purpose: 'login', challenge: options.challenge, exp: Date.now() + CHALLENGE_TTL_MS, rp };
+    this.send({ t: S2C.PASSKEY_OPTIONS, purpose: 'login', options });
+  }
+
+  async passkeyLoginVerify(msg) {
+    const { store } = this.ctx;
+    const sec = this.security;
+    const ch = this.webauthn;
+    this.webauthn = null; // single use
+    const ipBan = sec.ipBan(this.ip);
+    if (ipBan) return this.authErr('banned', sec.banMessage(ipBan));
+    const wait = sec.loginBlockedFor(this.ip, '#passkey');
+    if (wait > 0) {
+      sec.loginRefusedWhileBlocked(this, '#passkey');
+      return this.authErr('rate_limit', `Trop de tentatives de connexion. Réessayez dans ${formatDuration(wait)}.`);
+    }
+    const fail = (why, w = 1) => {
+      sec.flag(this, 'passkey_fail', w, { why });
+      sec.loginFailed(this, '#passkey');
+      this.ctx.log.info(`passkey refusée (${why}) depuis ${this.ip}`);
+      return this.authErr('passkey_failed');
+    };
+    if (!ch || ch.purpose !== 'login' || ch.exp < Date.now()) return fail('no_challenge');
+    if (!responseShapeOk(msg.resp, 'login')) return fail('shape', 2);
+    const acc = store.accountByCredential(msg.resp.id);
+    const key = acc?.passkeys.find((k) => k.id === msg.resp.id);
+    if (!acc || !key) return fail('unknown_credential');
+    try {
+      await verifyLogin(msg.resp, ch, ch.rp, acc, key);
+    } catch (err) {
+      return fail(String(err?.message || err).slice(0, 60), 2);
+    }
+    if (this.closed) return;
+    store.markDirty(acc);
+    this.accountIn(acc, { method: 'passkey', remember: msg.remember === true });
+  }
+
+  /** Common end of every successful authentication. */
+  accountIn(account, { method, remember = false, rotate = null, legacy = false }) {
+    const { store, game } = this.ctx;
+    const sec = this.security;
+    // a ban on the login or on ANY character of the account blocks the whole account
+    for (const n of [account.login, ...account.chars.map((c) => c.name)]) {
+      const ban = sec.accountBan(n);
+      if (ban) {
+        sec.seclog.write({ type: 'auth', result: 'banned', name: account.login, ip: this.ip }, `banned:${this.ip}`);
+        return this.authErr('banned', sec.banMessage(ban));
+      }
+    }
+    if (method !== 'token' && method !== 'register') sec.loginSucceeded(this, account.login);
+    if (method === 'token') sec.loginSucceeded(this, '#token');
+    if (method === 'passkey') sec.loginSucceeded(this, '#passkey');
     clearTimeout(this.authTimer);
-    const p = game.addPlayer(account, this);
+    this.account = account;
+    this.lastActivity = Date.now();
+    account.lastSeen = Date.now();
+    if (this.ip && this.ip !== '?') account.lastIp = this.ip;
+    store.markDirty(account);
+    let set = this.ctx.accountSessions.get(nameKey(account.login));
+    if (!set) this.ctx.accountSessions.set(nameKey(account.login), (set = new Set()));
+    set.add(this);
+    let token;
+    if (rotate || remember) {
+      const t = issueToken(store, account, { id: rotate, ua: this.ua });
+      token = t.token;
+      this.tokenId = t.id;
+    }
+    store.save();
+    if (legacy) {
+      const k = nameKey(account.login);
+      const ch = account.chars.find((c) => nameKey(c.name) === k) || account.chars.find((c) => c.id === account.lastChar) || account.chars[0];
+      if (!ch) {
+        this.leaveAccount();
+        return this.authErr('no_character');
+      }
+      if (game.byName.has(nameKey(ch.name))) {
+        this.leaveAccount();
+        return this.authErr('already_online');
+      }
+      if (game.players.size >= MAX_PLAYERS) {
+        this.leaveAccount();
+        return this.authErr('server_full');
+      }
+      return this.enter(ch);
+    }
+    this.sendAccount({ token, method });
+  }
+
+  sendAccount(extra = {}) {
+    const a = this.account;
+    if (!a) return;
+    const msg = { t: S2C.ACCOUNT_OK, account: accountSummary(a), chars: charList(a) };
+    for (const [k, v] of Object.entries(extra)) if (v !== undefined && v !== null) msg[k] = v;
+    this.send(msg);
+  }
+
+  /** Back to anonymous (logout): the connection stays open on the login screen. */
+  leaveAccount() {
+    this.leaveWorld();
+    const a = this.account;
+    if (a) this.ctx.accountSessions.get(nameKey(a.login))?.delete(this);
+    this.account = null;
+    this.tokenId = null;
+    this.webauthn = null;
+    this.armAuthTimer();
+  }
+
+  // ------------------------------------------------------------------ account messages
+  accountMessage(msg) {
+    if (this.accBusy) return this.accErr(msg.t, 'rate_limit', 'Opération déjà en cours.');
+    const run = async () => {
+      switch (msg.t) {
+        case C2S.ACCOUNT_GET: return this.sendAccount();
+        case C2S.CHAR_CREATE: return this.charCreate(msg);
+        case C2S.CHAR_DELETE: return this.charDelete(msg);
+        case C2S.CHAR_SELECT: return this.charSelect(msg);
+        case C2S.CHAR_LOGOUT: this.leaveWorld(); return this.sendAccount();
+        case C2S.LOGOUT: return this.logout(false);
+        case C2S.LOGOUT_ALL: return this.logout(true);
+        case C2S.PASSWORD_CHANGE: return this.passwordChange(msg);
+        case C2S.PASSKEY_REG_OPTIONS: return this.passkeyRegOptions();
+        case C2S.PASSKEY_REG_VERIFY: return this.passkeyRegVerify(msg);
+        case C2S.PASSKEY_RENAME: return this.passkeyRename(msg);
+        case C2S.PASSKEY_DELETE: return this.passkeyDelete(msg);
+        default: return undefined;
+      }
+    };
+    this.accBusy = true;
+    Promise.resolve()
+      .then(run)
+      .catch((err) => {
+        this.ctx.game.reportError(`compte (${msg.t})`, err);
+        this.accErr(msg.t, 'bad_request');
+      })
+      .finally(() => { this.accBusy = false; });
+  }
+
+  ownChar(id) {
+    return typeof id === 'string' ? this.account.chars.find((c) => c.id === id) || null : null;
+  }
+
+  async charCreate(msg) {
+    const { store } = this.ctx;
+    const acc = this.account;
+    const op = C2S.CHAR_CREATE;
+    if (this.player) return this.accErr(op, 'in_world');
+    if (acc.chars.length >= MAX_CHARS) return this.accErr(op, 'too_many_chars');
+    const refusal = this.nameRefusal(msg.name, { character: true });
+    if (refusal) return this.accErr(op, refusal[0], refusal[1]);
+    if (!validClass(msg.cls)) return this.accErr(op, 'bad_class');
+    const ch = store.addChar(acc, newCharacter(msg.name, msg.cls));
+    acc.lastChar = ch.id;
+    store.save();
+    this.security.seclog.write({ type: 'auth', result: 'char_create', name: ch.name, account: acc.login, ip: this.ip });
+    this.ctx.log.info(`nouveau personnage : ${ch.name} (${CLASSES[ch.cls].name}) — compte ${acc.login}`);
+    this.sendAccount({ created: ch.id });
+  }
+
+  async charDelete(msg) {
+    const { store, game } = this.ctx;
+    const acc = this.account;
+    const op = C2S.CHAR_DELETE;
+    const ch = this.ownChar(msg.id);
+    if (!ch) {
+      if (typeof msg.id === 'string' && msg.id) this.security.flag(this, 'foreign_char', 2, { op: 'delete' });
+      return this.accErr(op, 'not_found');
+    }
+    if (typeof msg.confirm !== 'string' || nameKey(msg.confirm.trim()) !== nameKey(ch.name)) return this.accErr(op, 'bad_confirm');
+    if (this.player?.account === ch || game.byName.has(nameKey(ch.name))) return this.accErr(op, 'already_online');
+    store.removeChar(acc, ch.id);
+    store.save();
+    this.security.seclog.write({ type: 'auth', result: 'char_delete', name: ch.name, account: acc.login, ip: this.ip });
+    this.ctx.log.info(`personnage supprimé : ${ch.name} — compte ${acc.login}`);
+    this.sendAccount({ info: `${ch.name} a été supprimé.` });
+  }
+
+  async charSelect(msg) {
+    const { game } = this.ctx;
+    const op = C2S.CHAR_SELECT;
+    const ch = this.ownChar(msg.id);
+    if (!ch) {
+      if (typeof msg.id === 'string' && msg.id) this.security.flag(this, 'foreign_char', 2, { op: 'select' });
+      return this.accErr(op, 'not_found');
+    }
+    if (this.player?.account === ch) return undefined; // already playing it
+    const ban = this.security.accountBan(ch.name) || this.security.accountBan(this.account.login);
+    if (ban) return this.accErr(op, 'banned', this.security.banMessage(ban));
+    this.leaveWorld(); // switching characters directly from the world
+    if (game.byName.has(nameKey(ch.name))) return this.accErr(op, 'already_online');
+    if (game.players.size >= MAX_PLAYERS) return this.accErr(op, 'server_full');
+    return this.enter(ch);
+  }
+
+  async logout(all) {
+    const { store, log } = this.ctx;
+    const acc = this.account;
+    if (all) {
+      const n = revokeAllSessions(store, acc);
+      for (const s of [...(this.ctx.accountSessions.get(nameKey(acc.login)) || [])]) {
+        if (s !== this) s.kick('Vous avez été déconnecté : déconnexion de tous les appareils.');
+      }
+      log.info(`compte ${acc.login} : déconnexion partout (${n} session(s) mémorisée(s) révoquée(s))`);
+    } else if (this.tokenId) revokeSession(store, acc, this.tokenId);
+    store.save();
+    this.leaveAccount();
+    this.send({ t: S2C.LOGGED_OUT, ...(all ? { all: true } : {}) });
+  }
+
+  async passwordChange(msg) {
+    const { store } = this.ctx;
+    const sec = this.security;
+    const acc = this.account;
+    const op = C2S.PASSWORD_CHANGE;
+    const wait = sec.loginBlockedFor(this.ip, acc.login);
+    if (wait > 0) return this.accErr(op, 'rate_limit', `Trop de tentatives. Réessayez dans ${formatDuration(wait)}.`);
+    const ok = await verifyPassword(msg.old, acc.salt, acc.hash);
+    if (this.closed || this.account !== acc) return undefined;
+    if (!ok) {
+      sec.loginFailed(this, acc.login);
+      return this.accErr(op, 'wrong_credentials');
+    }
+    if (!validPassword(msg.password)) return this.accErr(op, 'bad_password');
+    const { salt, hash } = await hashPassword(msg.password);
+    if (this.closed || this.account !== acc) return undefined;
+    acc.salt = salt;
+    acc.hash = hash;
+    // every other remembered session stops working (a stolen token dies with the old password)
+    revokeAllSessions(store, acc, this.tokenId);
+    store.markDirty(acc);
+    store.save();
+    sec.seclog.write({ type: 'auth', result: 'password_change', name: acc.login, ip: this.ip });
+    return this.sendAccount({ info: 'Mot de passe modifié. Les autres appareils devront se reconnecter.' });
+  }
+
+  async passkeyRegOptions() {
+    const op = C2S.PASSKEY_REG_OPTIONS;
+    if (this.account.passkeys.length >= MAX_PASSKEYS) return this.accErr(op, 'too_many_passkeys');
+    const rp = this.rp();
+    if (!rp) return this.accErr(op, 'unavailable');
+    const options = await registrationOptions(this.account, rp);
+    this.webauthn = { purpose: 'register', challenge: options.challenge, exp: Date.now() + CHALLENGE_TTL_MS, rp };
+    this.send({ t: S2C.PASSKEY_OPTIONS, purpose: 'register', options });
+    return undefined;
+  }
+
+  async passkeyRegVerify(msg) {
+    const { store } = this.ctx;
+    const acc = this.account;
+    const op = C2S.PASSKEY_REG_VERIFY;
+    const ch = this.webauthn;
+    this.webauthn = null;
+    if (!ch || ch.purpose !== 'register' || ch.exp < Date.now()) return this.accErr(op, 'passkey_failed', 'Délai dépassé : recommencez l’ajout de la clé.');
+    if (!responseShapeOk(msg.resp, 'register')) return this.accErr(op, 'passkey_failed');
+    if (acc.passkeys.length >= MAX_PASSKEYS) return this.accErr(op, 'too_many_passkeys');
+    let cred;
+    try {
+      cred = await verifyRegistration(msg.resp, ch, ch.rp, msg.label);
+    } catch (err) {
+      this.security.flag(this, 'passkey_fail', 1, { why: String(err?.message || err).slice(0, 60) });
+      return this.accErr(op, 'passkey_failed');
+    }
+    if (this.account !== acc) return undefined;
+    if (store.accountByCredential(cred.id)) return this.accErr(op, 'passkey_failed', 'Cette clé d’accès est déjà enregistrée.');
+    acc.passkeys.push(cred);
+    store.index(acc);
+    store.markDirty(acc);
+    store.save();
+    this.security.seclog.write({ type: 'auth', result: 'passkey_add', name: acc.login, ip: this.ip });
+    return this.sendAccount({ info: `Clé d’accès « ${cred.label} » ajoutée.`, passkeyAdded: cred.id });
+  }
+
+  async passkeyRename(msg) {
+    const key = this.account.passkeys.find((k) => k.id === msg.id);
+    if (!key) return this.accErr(C2S.PASSKEY_RENAME, 'not_found', 'Clé d’accès introuvable.');
+    const label = cleanLabel(msg.label);
+    if (!label) return this.accErr(C2S.PASSKEY_RENAME, 'bad_request', 'Nom de clé invalide.');
+    key.label = label;
+    this.ctx.store.markDirty(this.account);
+    this.ctx.store.save();
+    return this.sendAccount();
+  }
+
+  async passkeyDelete(msg) {
+    const { store } = this.ctx;
+    const acc = this.account;
+    const n = acc.passkeys.length;
+    acc.passkeys = acc.passkeys.filter((k) => k.id !== msg.id);
+    if (acc.passkeys.length === n) return this.accErr(C2S.PASSKEY_DELETE, 'not_found', 'Clé d’accès introuvable.');
+    store.index(acc);
+    store.markDirty(acc);
+    store.save();
+    this.security.seclog.write({ type: 'auth', result: 'passkey_delete', name: acc.login, ip: this.ip });
+    return this.sendAccount({ info: 'Clé d’accès supprimée.' });
+  }
+
+  // ------------------------------------------------------------------ world
+  enter(ch) {
+    const { game, log, store } = this.ctx;
+    const acc = this.account;
+    const p = game.addPlayer(ch, this);
+    p.login = acc; // [accounts] account-level role (Security.roleOf)
     this.player = p;
+    acc.lastChar = ch.id;
+    store.markDirty(acc);
     this.lastActivity = Date.now();
     this.security.onEnter(p);
     this.send({ t: S2C.AUTH_OK, id: p.id, self: p.selfState(), tod: game.tod(), online: game.players.size, motd: MOTD, ver: VERSION, build: buildId() }); // [netcode-perf] ver/build
@@ -246,10 +644,8 @@ class Session {
     if (role !== 'player') game.systemChat(`Vous êtes connecté en tant ${role === 'admin' ? 'qu\'administrateur' : 'que maître du jeu'}. Tapez /mj pour les commandes.`, { to: p });
   }
 
-  onClose() {
-    this.closed = true;
-    this.outbox?.discard(); // [netcode-perf]
-    clearTimeout(this.authTimer);
+  /** Leave the world (character change / logout / disconnect): entity removed, character saved. */
+  leaveWorld() {
     const p = this.player;
     if (!p) return;
     this.player = null;
@@ -261,15 +657,23 @@ class Session {
     }
     log.info(`- ${p.name} déconnecté — ${game.players.size} en ligne`);
   }
+
+  onClose() {
+    this.closed = true;
+    this.outbox?.discard(); // [netcode-perf]
+    clearTimeout(this.authTimer);
+    this.leaveWorld();
+    const a = this.account;
+    if (a) this.ctx.accountSessions?.get(nameKey(a.login))?.delete(this);
+  }
 }
 
 /** A name that looks like an existing character ("Élodie" vs "Elodie", "Bob" vs "B0b"). */
 function lookalikeTaken(name, store, game) {
   const key = confusableKey(name);
   for (const p of game.players.values()) if (confusableKey(p.name) === key) return true;
-  const accounts = store?.accounts;
-  if (accounts && typeof accounts.values === 'function') {
-    for (const a of accounts.values()) if (a && typeof a.name === 'string' && confusableKey(a.name) === key) return true;
+  if (store && typeof store.charNames === 'function') {
+    for (const n of store.charNames()) if (confusableKey(n) === key) return true;
   }
   return false;
 }
@@ -278,6 +682,7 @@ function lookalikeTaken(name, store, game) {
 export function attachNet(httpServer, ctx) {
   const security = ctx.security || ctx.game.security || new Security({ log: ctx.log });
   ctx.security = security;
+  ctx.accountSessions ||= new Map(); // [accounts] login key -> open sessions of that account (logout_all)
   const cfg = security.cfg;
   const wss = new WebSocketServer({
     server: httpServer,
@@ -301,7 +706,7 @@ export function attachNet(httpServer, ctx) {
       warnedProxy = true;
       ctx.log.warn('en-tête X-Forwarded-For reçu mais TRUST_PROXY n\'est pas activé : les limites par IP voient l\'adresse du proxy (voir docs/SECURITE.md)');
     }
-    const s = new Session(ws, ip, ctx);
+    const s = new Session(ws, ip, ctx, req);
     const refusal = security.connectionRefusal(ip);
     if (refusal) {
       kickSession(s, refusal);
@@ -332,7 +737,7 @@ export function attachNet(httpServer, ctx) {
   // idle (AFK) kick, checked often enough for short test delays
   const idleTimer = setInterval(() => {
     const now = Date.now();
-    for (const s of sessions) if (s.player && !s.closed && now - s.lastActivity > cfg.idleKickMs) s.kick(KICK_MESSAGES.idle);
+    for (const s of sessions) if ((s.player || s.account) && !s.closed && now - s.lastActivity > cfg.idleKickMs) s.kick(KICK_MESSAGES.idle);
   }, Math.max(200, Math.min(HEARTBEAT_MS, cfg.idleKickMs / 4)));
   idleTimer.unref();
 

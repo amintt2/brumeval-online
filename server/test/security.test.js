@@ -16,7 +16,7 @@ import { loadSecurityConfig } from '../src/security/config.js';
 import { checkPlayerInvariants } from '../src/security/invariants.js';
 import { parseDuration, formatDuration } from '../src/security/format.js';
 import { sanitizeSecurityFields } from '../src/security/accountFields.js';
-import { sanitizeAccount, newAccount } from '../src/persistence.js';
+import { sanitizeAccount, newAccount, newCharacter } from '../src/persistence.js';
 import { makeGame, addPlayer, FakeSession } from './helpers.js';
 
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'brumeval-sec-'));
@@ -242,7 +242,7 @@ test('suspicion: scores decay, warn -> kick -> temporary ban for repeat offender
 });
 
 test('flags on pre-auth sessions and IPs; loopback addresses are not scored per IP', () => {
-  const sec = new Security({ config: { kickAt: 20 } });
+  const sec = new Security({ config: { kickAt: 20 }, clock: () => 1_000_000 }); // fixed clock: no decay between two reads
   const s = new FakeSession('198.51.100.9');
   sec.flag(s, 'bad_packet', 5);
   assert.equal(sec.scoreOf({ ip: '198.51.100.9' }), 5);
@@ -345,13 +345,20 @@ test('economy invariants: detected after each action; strict mode throws, produc
 });
 
 test('account moderation fields survive a save/load round trip and old saves load unchanged', () => {
-  const acc = { ...newAccount('Ancien', 'mage', 'aa', 'bb'), role: 'gm', muteUntil: 123, muteReason: 'spam', muteCount: 2, ignore: ['bob', 'bob', 42, 'alice'], lastIp: '1.2.3.4' };
-  const s = sanitizeAccount(JSON.parse(JSON.stringify(acc)));
+  // a v0.2 (one character per account) record with moderation fields
+  const acc = { ...newCharacter('Ancien', 'mage'), salt: 'aa', hash: 'bb', role: 'gm', muteUntil: 123, muteReason: 'spam', muteCount: 2, ignore: ['bob', 'bob', 42, 'alice'], lastIp: '1.2.3.4' };
+  const a = sanitizeAccount(JSON.parse(JSON.stringify(acc)));
+  assert.equal(a.role, 'gm', 'the role moves up to the account');
+  assert.equal(a.lastIp, '1.2.3.4');
+  const s = a.chars[0];
   assert.equal(s.role, 'gm');
   assert.equal(s.muteUntil, 123);
   assert.deepEqual(s.ignore, ['bob', 'alice']);
   assert.equal(s.lastIp, '1.2.3.4');
+  const again = sanitizeAccount(JSON.parse(JSON.stringify(a)));
+  assert.equal(again.role, 'gm');
+  assert.deepEqual(again.chars[0].ignore, ['bob', 'alice']);
   const v1 = sanitizeAccount(newAccount('Vieux', 'mage', 'aa', 'bb'));
-  for (const k of ['role', 'muteUntil', 'ignore', 'lastIp']) assert.ok(!(k in v1), k);
+  for (const k of ['role', 'muteUntil', 'ignore', 'lastIp']) assert.ok(!(k in v1) && !(k in v1.chars[0]), k);
   assert.deepEqual(sanitizeSecurityFields({ role: 'superadmin', muteUntil: 'demain' }), {});
 });

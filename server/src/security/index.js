@@ -76,7 +76,9 @@ export class Security {
   roleOf(p) {
     if (!p) return 'player';
     if (this.cfg.adminNames.includes(nameKey(p.name))) return 'admin';
-    const r = p.account?.role;
+    // [accounts] the account login counts as well, and the account role wins over a character role
+    if (typeof p.login?.login === 'string' && this.cfg.adminNames.includes(nameKey(p.login.login))) return 'admin';
+    const r = p.login?.role || p.account?.role;
     return r === 'admin' || r === 'gm' ? r : 'player';
   }
 

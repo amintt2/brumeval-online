@@ -36,12 +36,13 @@ function resolveTarget(game, name) {
   const player = game.playerByName(name);
   const account = player?.account || game.store?.get?.(name) || null;
   if (!player && !account) return null;
-  return { player, account, name: player?.name || account.name, key: nameKey(player?.name || account.name) };
+  const login = player?.login || game.store?.accountOfChar?.(player?.name || account.name) || null; // [accounts]
+  return { player, account, login, name: player?.name || account.name, key: nameKey(player?.name || account.name) };
 }
 
 function roleOfTarget(sec, t) {
   if (t.player) return sec.roleOf(t.player);
-  return sec.roleOf({ name: t.name, account: t.account });
+  return sec.roleOf({ name: t.name, account: t.account, login: t.login });
 }
 
 /** Staff can only sanction lower ranks; admins can sanction anyone but themselves. */
@@ -331,9 +332,13 @@ const COMMANDS = {
       const t = resolveTarget(game, name);
       if (!t) return game.error(p, 'no_target', `Personnage inconnu : ${name}`);
       if (t.key === nameKey(p.name)) return game.error(p, 'bad_target', 'Vous ne pouvez pas changer votre propre rôle.');
-      if (role === 'player') delete t.account.role;
-      else t.account.role = role;
-      game.store?.markDirty();
+      // [accounts] the role belongs to the account (all its characters); the character copy is kept in sync
+      for (const rec of [t.account, t.login]) {
+        if (!rec) continue;
+        if (role === 'player') delete rec.role;
+        else rec.role = role;
+      }
+      game.store?.markDirty(t.login || t.account);
       game.security.gmLog(p, 'role', { target: t.name, role });
       const effective = roleOfTarget(game.security, t);
       if (t.player) game.systemChat(`Votre rôle est maintenant : ${ROLE_LABEL[effective]}.`, { to: t.player });

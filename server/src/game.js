@@ -130,7 +130,7 @@ export class Game {
     this.systemChat(`${p.name} a rejoint Brumeval.`, { except: p });
     restoreEcho(this, p); // [combat-souls] persisted death echo
     account.lastSeen = Date.now();
-    this.store?.markDirty();
+    this.store?.markDirty(account); // [accounts] the character's account file
     return p;
   }
 
@@ -147,7 +147,7 @@ export class Game {
     }
     this.systemChat(`${p.name} a quitté Brumeval.`);
     if (this.store) {
-      this.store.markDirty();
+      this.store.markDirty(p.account);
       this.store.save();
     }
   }
@@ -158,8 +158,10 @@ export class Game {
 
   /** Copy every online player into its account record. */
   syncAll() {
-    for (const p of this.players.values()) p.syncAccount();
-    if (this.players.size && this.store) this.store.markDirty();
+    for (const p of this.players.values()) {
+      p.syncAccount();
+      this.store?.markDirty(p.account); // [accounts] keeps the account file watched while it plays
+    }
   }
 
   // ------------------------------------------------------------------ messaging

@@ -8,7 +8,7 @@ import { damageMonster } from '../src/systems/combat.js';
 import { telegraphs } from '../src/systems/telegraph.js';
 import { damagePlayer } from '../src/systems/players.js';
 import { decide } from '../src/systems/ai/index.js';
-import { sanitizeAccount, newAccount } from '../src/persistence.js';
+import { migrateCharacter, newCharacter } from '../src/persistence.js';
 import { makeGame, addPlayer, place, advance, spawnAt, zoneOf } from './helpers.js';
 
 const r2 = (v) => Math.round(v * 100) / 100;
@@ -452,9 +452,9 @@ test('death echo: XP dropped at the death spot, owner-only entity, recovered by 
   assert.equal([...game.entities.values()].filter((e) => e.kind === 'echo').length, 1);
 
   // persistence: sanitised, restored on login
-  assert.deepEqual(sanitizeAccount({ ...newAccount('Echo', 'mage', 'a', 'b'), echo: { x: 50, z: 40, xp: 30 } }).echo, { x: 50, z: 40, xp: 30 });
-  assert.equal(sanitizeAccount({ ...newAccount('Echo', 'mage', 'a', 'b'), echo: { x: 'a', z: 1, xp: 3 } }).echo, null);
-  assert.equal(sanitizeAccount({ ...newAccount('Echo', 'mage', 'a', 'b'), echo: undefined }).echo, null);
+  assert.deepEqual(migrateCharacter({ ...newCharacter('Echo', 'mage'), echo: { x: 50, z: 40, xp: 30 } }).echo, { x: 50, z: 40, xp: 30 });
+  assert.equal(migrateCharacter({ ...newCharacter('Echo', 'mage'), echo: { x: 'a', z: 1, xp: 3 } }).echo, null);
+  assert.equal(migrateCharacter({ ...newCharacter('Echo', 'mage'), echo: undefined }).echo, null);
   const acc = p.account;
   game.removePlayer(p);
   assert.equal([...game.entities.values()].filter((e) => e.kind === 'echo').length, 0);

@@ -27,8 +27,8 @@ export const STATE = { IDLE: 0, MOVE: 1, DEAD: 2 };
 
 // ------------------------------------------------------------------ client -> server
 export const C2S = {
-  REGISTER: 'register',       // { name, password, cls }            -> auth_ok | auth_err
-  LOGIN: 'login',             // { name, password }                 -> auth_ok | auth_err
+  REGISTER: 'register',       // { name, password, cls }            -> auth_ok | auth_err  ([accounts] see below)
+  LOGIN: 'login',             // { name, password }                 -> auth_ok | auth_err  ([accounts] see below)
   MOVE: 'move',               // { x, z, ry }  local player position (client-simulated, server-validated)
   ABILITY: 'ability',         // { slot: 0..3, tg?: entityId, x?, z? }  (x,z = ground point for aoe_target)
                               //   slot 0 is the class auto-attack: it also (re)starts auto-attacking `tg`.
@@ -80,6 +80,51 @@ S2C.TELE = 'tele';         // { id, src, shape: 'circle'|'cone'|'line'|'ring', x
                            //   positions of the targets then (players in i-frames are unaffected).
                            //   ab = attack id (visual style), clip = animation to play on src, synced to the impact.
 S2C.TELE_END = 'tele_end'; // { id }  telegraph cancelled (attacker died / staggered)
+
+// ------------------------------------------------------------------ [accounts] v0.2 accounts & characters (docs/COMPTES.md)
+// An ACCOUNT (login + password, remembered sessions, passkeys) owns up to MAX_CHARS characters. The flow is:
+//   register | login | login_token | passkey_login_verify  ->  account_ok (character selection)
+//   char_create / char_delete                              ->  account_ok (updated list)
+//   char_select                                            ->  auth_ok   (unchanged: the game flow is identical)
+//   char_logout (in game)                                  ->  account_ok (back to the character selection)
+// Account messages are accepted in the world too (account panel: passkeys, password, logout everywhere).
+// Legacy clients (v0.1 / wave 1): `register { name, password, cls }` creates the account AND its first character
+// (same name) and selects it; `login { name, password }` WITHOUT a `remember` field selects the last played
+// character. Both answer auth_ok directly, exactly like before.
+export const MAX_CHARS = 5;
+C2S.LOGIN_TOKEN = 'login_token';     // { token }  remembered session (256-bit, 30 days, ROTATED: account_ok.token replaces it)
+C2S.CHAR_CREATE = 'char_create';     // { name, cls }                 -> account_ok { created: charId } | account_err
+C2S.CHAR_DELETE = 'char_delete';     // { id, confirm: <character name> } -> account_ok | account_err
+C2S.CHAR_SELECT = 'char_select';     // { id }  (a character of THIS account) -> auth_ok | account_err
+C2S.CHAR_LOGOUT = 'char_logout';     // {}  leave the world (saved)   -> account_ok
+C2S.LOGOUT = 'logout';               // {}  revoke this connection's remembered session -> logged_out
+C2S.LOGOUT_ALL = 'logout_all';       // {}  revoke every remembered session, disconnect the account's other connections -> logged_out
+C2S.ACCOUNT_GET = 'account_get';     // {}  -> account_ok (refresh)
+C2S.PASSWORD_CHANGE = 'password_change'; // { old, password }  -> account_ok { info } | account_err (other sessions revoked)
+C2S.PASSKEY_REG_OPTIONS = 'passkey_reg_options';     // {}  (logged in) -> passkey_options { purpose: 'register', options }
+C2S.PASSKEY_REG_VERIFY = 'passkey_reg_verify';       // { resp: RegistrationResponseJSON, label? } -> account_ok { info } | account_err
+C2S.PASSKEY_LOGIN_OPTIONS = 'passkey_login_options'; // {}  (not logged in) -> passkey_options { purpose: 'login', options }
+C2S.PASSKEY_LOGIN_VERIFY = 'passkey_login_verify';   // { resp: AuthenticationResponseJSON, remember? } -> account_ok | auth_err
+C2S.PASSKEY_RENAME = 'passkey_rename'; // { id, label } -> account_ok
+C2S.PASSKEY_DELETE = 'passkey_delete'; // { id }        -> account_ok
+// Additive fields of existing messages:
+//   register { name, password, remember?, cls? }  without cls: account only -> account_ok (token when remember)
+//   login    { name, password, remember }         -> account_ok (token when remember); name = account login
+//   auth_err codes + bad_token (unknown / expired / revoked token), passkey_failed, banned, rate_limit, no_character
+
+S2C.ACCOUNT_OK = 'account_ok';
+//   { account: { name, lastChar, maxChars, created, passkeys: [{ id, label, created, used }], sessions, role? },
+//     chars: [{ id, name, cls, level, zone, lastPlayed, eq: { weapon, armor } }],
+//     token?,   new remembered-session token (store it, replaces the previous one)
+//     method?,  'password' | 'token' | 'passkey' | 'register' on a fresh login (the client offers a passkey after 'password')
+//     created?, id of the character just created
+//     info? }   French confirmation to display (password changed, passkey added…)
+S2C.ACCOUNT_ERR = 'account_err'; // { op, code, msg }  an account operation was refused (French msg). codes: bad_name |
+                                 //   name_taken | bad_class | too_many_chars | not_found | bad_confirm | already_online |
+                                 //   in_world | server_full | banned | bad_password | wrong_credentials | passkey_failed |
+                                 //   too_many_passkeys | unavailable | rate_limit | bad_request
+S2C.PASSKEY_OPTIONS = 'passkey_options'; // { purpose: 'register' | 'login', options }  options = PublicKeyCredential*OptionsJSON
+S2C.LOGGED_OUT = 'logged_out';           // { all?: boolean }  the connection is back to the login screen (still open)
 
 /** FX kinds (`fx.k`). Pure visuals: the client plays animations / particles. */
 export const FX = {

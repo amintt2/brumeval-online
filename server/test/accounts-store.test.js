@@ -9,7 +9,7 @@ import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import WebSocket from 'ws';
 import {
-  AccountStore, newAccount, migrateAccount, sanitizeAccount, accountFileName, ACCOUNT_VERSION, BACKUP_KEEP,
+  AccountStore, newAccount, migrateAccount, migrateCharacter, sanitizeAccount, accountFileName, ACCOUNT_VERSION, BACKUP_KEEP,
 } from '../src/persistence.js';
 import { startServer } from '../src/index.js';
 
@@ -36,19 +36,28 @@ test('v0.1 accounts.json is imported once into one file per account and kept as 
     assert.deepEqual(fs.readdirSync(path.join(dir, 'accounts')).sort(), ['con-.json', 'mage_ancienne.json', 'vétéran.json']);
     assert.ok(logs.some((l) => /3 compte\(s\) importé\(s\)/.test(l)));
 
-    const v = readAcc(dir, 'vétéran');
+    const acc = readAcc(dir, 'vétéran');
     const old = JSON.parse(fs.readFileSync(FIXTURE, 'utf8')).accounts['vétéran'];
-    for (const k of ['name', 'cls', 'salt', 'hash', 'level', 'xp', 'gold', 'hp', 'mp', 'x', 'z', 'created', 'lastSeen']) assert.equal(v[k], old[k], k);
+    // [accounts] v0.1 record -> account (login = old name, same password) with ONE character keeping everything
+    assert.equal(acc.v, ACCOUNT_VERSION);
+    assert.equal(acc.login, old.name);
+    assert.equal(acc.salt, old.salt);
+    assert.equal(acc.hash, old.hash);
+    assert.equal(acc.chars.length, 1);
+    const v = acc.chars[0];
+    assert.equal(acc.lastChar, v.id);
+    for (const k of ['name', 'cls', 'level', 'xp', 'gold', 'hp', 'mp', 'x', 'z', 'created', 'lastSeen']) assert.equal(v[k], old[k], k);
+    assert.ok(!('salt' in v) && !('hash' in v), 'credentials only on the account');
     assert.deepEqual(v.quests, old.quests);
     assert.deepEqual(v.eq, old.eq);
     assert.deepEqual(v.inv[3], { id: 'wolf_pelt', q: 7 });
     assert.equal(v.inv[5], null, 'unknown item dropped by the migration');
-    assert.equal(v.v, ACCOUNT_VERSION);
 
     // second start: nothing to import, same accounts, the backup is not overwritten
     const again = new AccountStore(dir, quiet).load();
     assert.equal(again.size, 3);
     assert.deepEqual(again.get('VÉTÉRAN'), store.get('vétéran'));
+    assert.equal(again.getAccount('VÉTÉRAN').chars[0].id, v.id, 'character ids are stable across restarts');
     assert.deepEqual(fs.readdirSync(dir).sort(), ['accounts', 'accounts.v1.bak.json']);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
@@ -59,7 +68,7 @@ test('an interrupted import (per-account files + accounts.json) keeps the newer 
   const dir = withLegacy();
   try {
     fs.mkdirSync(path.join(dir, 'accounts'));
-    const newer = migrateAccount({ ...JSON.parse(fs.readFileSync(FIXTURE, 'utf8')).accounts['vétéran'], gold: 99999, lastSeen: Date.now() });
+    const newer = { ...JSON.parse(fs.readFileSync(FIXTURE, 'utf8')).accounts['vétéran'], gold: 99999, lastSeen: Date.now(), v: 2 };
     fs.writeFileSync(path.join(dir, 'accounts', 'vétéran.json'), JSON.stringify(newer));
     fs.writeFileSync(path.join(dir, 'accounts', 'vétéran.json.123.7.tmp'), '{"half":');
     fs.writeFileSync(path.join(dir, 'accounts', 'cassé.json'), '{ pas du json');
@@ -81,8 +90,8 @@ test('only changed accounts are written; background saves; sync save wins over a
   const dir = tmp();
   try {
     const store = new AccountStore(dir, quiet).load();
-    const a = store.create(newAccount('Alpha', 'mage', 's', 'h'));
-    const b = store.create(newAccount('Beta', 'warrior', 's', 'h'));
+    const a = store.create(newAccount('Alpha', 'mage', 's', 'h')).chars[0];
+    const b = store.create(newAccount('Beta', 'warrior', 's', 'h')).chars[0];
     assert.equal(store.save(true), true);
     assert.equal(store.stats.writes, 2);
     assert.equal(store.save(true), true);
@@ -94,8 +103,8 @@ test('only changed accounts are written; background saves; sync save wins over a
     assert.ok(store.writing, 'write in flight');
     await store.flush();
     assert.equal(store.stats.writes, 3, 'only the changed account');
-    assert.equal(readAcc(dir, 'alpha').gold, 777);
-    assert.equal(readAcc(dir, 'beta').gold, b.gold);
+    assert.equal(readAcc(dir, 'alpha').chars[0].gold, 777);
+    assert.equal(readAcc(dir, 'beta').chars[0].gold, b.gold);
 
     // a background write of gold=1, then gold=2 saved synchronously before it lands: 2 must win
     a.gold = 1;
@@ -105,7 +114,7 @@ test('only changed accounts are written; background saves; sync save wins over a
     store.save(true);
     await pending;
     await store.flush();
-    assert.equal(readAcc(dir, 'alpha').gold, 2);
+    assert.equal(readAcc(dir, 'alpha').chars[0].gold, 2);
     assert.ok(!fs.readdirSync(path.join(dir, 'accounts')).some((f) => f.endsWith('.tmp')));
     assert.equal(new AccountStore(dir, quiet).load().get('alpha').gold, 2);
   } finally {
@@ -115,8 +124,10 @@ test('only changed accounts are written; background saves; sync save wins over a
 
 test('migrateAccount: defaults for missing fields, unknown fields kept, prototype keys ignored', () => {
   const raw = JSON.parse('{"name":"Futur","cls":"ranger","salt":"a","hash":"b","guild":"Les Brumes","__proto__":{"admin":true}}');
-  const a = migrateAccount(raw);
+  const acc = migrateAccount(raw);
   assert.equal(sanitizeAccount, migrateAccount);
+  assert.equal(acc.v, ACCOUNT_VERSION);
+  const a = acc.chars[0];
   assert.equal(a.level, 1);
   assert.equal(a.xp, 0);
   assert.equal(a.gold, 25);
@@ -124,7 +135,6 @@ test('migrateAccount: defaults for missing fields, unknown fields kept, prototyp
   assert.equal(a.inv.length, 24);
   assert.deepEqual(a.eq, { weapon: null, armor: null });
   assert.deepEqual(a.quests, {});
-  assert.equal(a.v, ACCOUNT_VERSION);
   assert.equal(a.guild, 'Les Brumes', 'a field written by a newer feature survives');
   assert.equal(a.admin, undefined);
   assert.equal(Object.getPrototypeOf(a), Object.prototype);
@@ -149,7 +159,8 @@ test('daily backups: one gzip bundle per day in the accounts.json format, the 7 
     assert.equal(files[0], 'comptes-2026-09-04.json.gz');
     assert.equal(files.at(-1), 'comptes-2026-09-10.json.gz');
     const bundle = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(dir, 'backups', files.at(-1)))).toString('utf8'));
-    assert.equal(bundle.accounts['sauvé'].name, 'Sauvé');
+    assert.equal(bundle.accounts['sauvé'].login, 'Sauvé');
+    assert.equal(bundle.accounts['sauvé'].chars[0].name, 'Sauvé');
 
     // restoring a backup = importing it as accounts.json
     const restore = tmp();

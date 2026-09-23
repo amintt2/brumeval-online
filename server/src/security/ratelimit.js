@@ -56,6 +56,22 @@ export const TYPE_LIMITS = {
   ping: [3, 8],
   register: [1, 5],
   login: [1, 5],
+  // [accounts]
+  login_token: [0.5, 3],
+  char_create: [1, 10],
+  char_delete: [0.5, 3],
+  char_select: [1, 5],
+  char_logout: [1, 3],
+  logout: [1, 3],
+  logout_all: [0.2, 2],
+  account_get: [1, 5],
+  password_change: [0.2, 3],
+  passkey_reg_options: [0.5, 4],
+  passkey_reg_verify: [0.5, 4],
+  passkey_login_options: [0.5, 5],
+  passkey_login_verify: [0.5, 4],
+  passkey_rename: [1, 5],
+  passkey_delete: [1, 5],
   default: [20, 40],
 };
 

@@ -12,8 +12,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import { promisify } from 'node:util';
+import { randomBytes } from 'node:crypto';
 import { CLASSES, MAX_LEVEL, START_GOLD, xpToNext } from '../../shared/data.js';
 import { SPAWN_POINT, isWalkable } from '../../shared/world.js';
+import { MAX_CHARS } from '../../shared/protocol.js';
 import { emptyInventory, addItem, sanitizeInventory, isItem, equipSlotOf } from './inventory.js';
 import { sanitizeQuests } from './quests.js';
 import { nameKey, validName, validClass } from './auth.js';
@@ -22,8 +24,17 @@ import { sanitizeEcho } from './systems/echo.js'; // [combat-souls]
 
 const gzip = promisify(zlib.gzip);
 
-/** Schema version written in every account file (`v`). v1 = the v0.1 accounts.json records. */
-export const ACCOUNT_VERSION = 2;
+/**
+ * Schema version written in every account file (`v`).
+ *   v1 = the v0.1 accounts.json records (one character = one account: name + password + progression)
+ *   v2 = the same record, one file per account (v0.2 wave 1)
+ *   v3 = an account (login + password + remembered sessions + passkeys) holding up to MAX_CHARS characters
+ *        (docs/COMPTES.md)
+ */
+export const ACCOUNT_VERSION = 3;
+export { MAX_CHARS };
+export const MAX_SESSIONS = 10;
+export const MAX_PASSKEYS = 10;
 export const ACCOUNTS_DIR = 'accounts';
 export const LEGACY_FILE = 'accounts.json';
 export const LEGACY_BACKUP = 'accounts.v1.bak.json';
@@ -31,15 +42,23 @@ export const BACKUP_DIR = 'backups';
 export const BACKUP_KEEP = 7;
 const LEGACY_FILE_VERSION = 1;          // `version` of the accounts.json bundle format
 const HOT_TTL_MS = 15 * 60_000;         // accounts untouched this long stop being checked at each save
+export const DELETED_KEEP = 10;         // deleted characters kept in the account file (manual restore by an admin)
+export const PRE_V3_DIR = 'accounts.v2.bak'; // original v2 files, copied once before their upgrade to v3
 
-/** A brand-new level 1 character record with the class start gear. */
-export function newAccount(name, cls, salt, hash) {
+const CHAR_ID_RE = /^[a-z0-9]{6,20}$/;
+const B64URL_RE = /^[A-Za-z0-9_-]+$/;
+export const newCharId = () => randomBytes(6).toString('hex');
+const newUid = () => randomBytes(16).toString('base64url');
+
+/** A brand-new level 1 character with the class start gear (no credentials: those live on the account). */
+export function newCharacter(name, cls) {
   const c = CLASSES[cls];
   const inv = emptyInventory();
   for (const [id, q] of c.start.items) addItem(inv, id, q);
   const now = Date.now();
   const rec = {
-    name, cls, salt, hash,
+    id: newCharId(),
+    name, cls,
     level: 1, xp: 0, gold: START_GOLD,
     hp: null, mp: null, // null = full
     inv,
@@ -49,27 +68,46 @@ export function newAccount(name, cls, salt, hash) {
     created: now, lastSeen: now,
     echo: null, // [combat-souls] death echo { x, z, xp }
   };
-  return migrateAccount(rec) || rec; // every feature's defaults apply to new characters too
+  return migrateCharacter(rec) || rec; // every feature's defaults apply to new characters too
+}
+
+/**
+ * A brand-new account `login` with its password hash. With `cls`, it also gets a first character named like
+ * the login (what a v0.1 registration created; legacy clients and tests rely on it).
+ */
+export function newAccount(login, cls, salt, hash) {
+  const now = Date.now();
+  const acc = {
+    v: ACCOUNT_VERSION, login, salt, hash, uid: newUid(),
+    created: now, lastSeen: now, lastChar: null,
+    chars: [], sessions: [], passkeys: [],
+  };
+  if (cls) {
+    const ch = newCharacter(login, cls);
+    acc.chars.push(ch);
+    acc.lastChar = ch.id;
+  }
+  return acc;
 }
 
 const finite = (v, d) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
 
-/** Fields handled by the core of migrateAccount (everything else is carried over untouched). */
-const CORE_FIELDS = new Set(['name', 'cls', 'salt', 'hash', 'level', 'xp', 'gold', 'hp', 'mp', 'inv', 'eq', 'quests', 'x', 'z', 'created', 'lastSeen', 'v']);
+/** Fields handled by the core of migrateCharacter (everything else is carried over untouched). */
+const CORE_FIELDS = new Set(['id', 'name', 'cls', 'salt', 'hash', 'level', 'xp', 'gold', 'hp', 'mp', 'inv', 'eq', 'quests', 'x', 'z', 'created', 'lastSeen', 'v']);
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+/** Fields of a v3 account record (anything else found at its top level is carried over untouched). */
+const ACCOUNT_FIELDS = new Set(['v', 'login', 'salt', 'hash', 'uid', 'role', 'lastIp', 'created', 'lastSeen', 'lastChar', 'chars', 'sessions', 'passkeys', 'deleted']);
 
 /**
- * Validate / normalise / upgrade a persisted account (any version, v0.1 included) into the current schema.
- * Returns null when it cannot be used at all (no valid name, class or credentials).
+ * Validate / normalise one CHARACTER record (a v1/v2 account record is exactly a character plus salt/hash).
+ * Returns null when it cannot be used at all (no valid name or class). salt/hash are not kept here.
  *
- * Unknown top-level fields are kept as they are (a field written by a newer feature is never lost).
- * FEATURES ADD THEIR PERSISTENT FIELDS HERE: in the section at the end, one small block per feature, tagged
- * with the feature key, that validates `raw.<field>` and sets `acc.<field>` (default when missing/invalid).
+ * FEATURES ADD THEIR PERSISTENT CHARACTER FIELDS HERE: in the section at the end, one small block per feature,
+ * tagged with the feature key, that validates `raw.<field>` and sets `acc.<field>` (default when missing/invalid).
  */
-export function migrateAccount(raw) {
+export function migrateCharacter(raw) {
   if (!raw || typeof raw !== 'object') return null;
   if (!validName(raw.name) || !validClass(raw.cls)) return null;
-  if (typeof raw.salt !== 'string' || typeof raw.hash !== 'string') return null;
   const acc = {};
   for (const k of Object.keys(raw)) {
     if (!CORE_FIELDS.has(k) && !UNSAFE_KEYS.has(k) && raw[k] !== undefined) acc[k] = raw[k];
@@ -86,7 +124,8 @@ export function migrateAccount(raw) {
   let x = finite(raw.x, SPAWN_POINT.x), z = finite(raw.z, SPAWN_POINT.z);
   if (!isWalkable(x, z)) ({ x, z } = SPAWN_POINT);
   Object.assign(acc, {
-    name: raw.name, cls: raw.cls, salt: raw.salt, hash: raw.hash,
+    id: typeof raw.id === 'string' && CHAR_ID_RE.test(raw.id) ? raw.id : newCharId(),
+    name: raw.name, cls: raw.cls,
     level, xp,
     gold: Math.max(0, Math.floor(finite(raw.gold, START_GOLD))),
     hp: typeof raw.hp === 'number' && raw.hp > 0 ? raw.hp : null,
@@ -101,13 +140,112 @@ export function migrateAccount(raw) {
     echo: sanitizeEcho(raw.echo), // [combat-souls] death echo { x, z, xp }; v0.1 accounts have none
   });
 
-  // ---- [netcode-perf] schema version
-  acc.v = ACCOUNT_VERSION;
-
   // ---- per-feature fields (v0.2+): add your block below, e.g.
   //   // [my-feature] short description
   //   acc.myField = isValid(raw.myField) ? raw.myField : DEFAULT;
 
+  return acc;
+}
+
+const SESSION_ID_RE = /^[0-9a-f]{8,32}$/;
+const HASH_RE = /^[0-9a-f]{64}$/;
+const str = (v, max) => (typeof v === 'string' ? v.slice(0, max) : '');
+
+/** Remembered sessions ("Rester connecté"): { id, h: sha256(token) hex, created, exp, used, ua }. */
+function sanitizeSessions(list, now = Date.now()) {
+  if (!Array.isArray(list)) return [];
+  const out = [];
+  for (const s of list) {
+    if (!s || typeof s !== 'object' || !SESSION_ID_RE.test(s.id) || !HASH_RE.test(s.h)) continue;
+    const exp = finite(s.exp, 0);
+    if (exp <= now) continue; // expired sessions are forgotten
+    out.push({ id: s.id, h: s.h, created: finite(s.created, now), exp, used: finite(s.used, now), ua: str(s.ua, 120) });
+  }
+  return out.slice(-MAX_SESSIONS);
+}
+
+/** WebAuthn credentials: { id, pk (COSE public key, base64url), counter, transports, label, created, used }. */
+function sanitizePasskeys(list) {
+  if (!Array.isArray(list)) return [];
+  const out = [];
+  const seen = new Set();
+  for (const k of list) {
+    if (!k || typeof k !== 'object' || typeof k.id !== 'string' || !B64URL_RE.test(k.id) || k.id.length > 1400) continue;
+    if (typeof k.pk !== 'string' || !B64URL_RE.test(k.pk) || seen.has(k.id)) continue;
+    seen.add(k.id);
+    out.push({
+      id: k.id, pk: k.pk,
+      counter: Math.max(0, Math.floor(finite(k.counter, 0))),
+      transports: Array.isArray(k.transports) ? k.transports.filter((t) => typeof t === 'string' && t.length <= 16).slice(0, 8) : [],
+      label: str(k.label, 40) || 'Clé d’accès',
+      created: finite(k.created, Date.now()),
+      used: finite(k.used, 0),
+    });
+  }
+  return out;
+}
+
+/**
+ * Validate / normalise / upgrade a persisted ACCOUNT (any version, v0.1 included) into the current v3 schema.
+ * Returns null when it cannot be used at all (no valid login or credentials, or a v1/v2 record without a valid
+ * character).
+ *
+ * - v1/v2 (one character per account): the account keeps the old name as its login and gets ONE character
+ *   with the same name and ALL the progression (level, xp, gold, inventory, equipment, quests, position, echo,
+ *   moderation fields and any field written by another feature). The role is copied to the account.
+ * - v3: every character goes through migrateCharacter (an unusable one is set aside in `deleted`, never lost).
+ * Unknown top-level fields are kept as they are (a field written by a newer feature is never lost).
+ */
+export function migrateAccount(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  if (typeof raw.salt !== 'string' || typeof raw.hash !== 'string') return null;
+  const now = Date.now();
+  if (!Array.isArray(raw.chars)) {
+    // ---- v1 / v2: the record IS a character
+    const ch = migrateCharacter(raw);
+    if (!ch) return null;
+    const acc = {
+      v: ACCOUNT_VERSION, login: raw.name, salt: raw.salt, hash: raw.hash, uid: newUid(),
+      created: ch.created, lastSeen: ch.lastSeen, lastChar: ch.id,
+      chars: [ch], sessions: [], passkeys: [],
+    };
+    if (ch.role) acc.role = ch.role;
+    if (ch.lastIp) acc.lastIp = ch.lastIp;
+    return acc;
+  }
+  // ---- v3
+  if (!validName(raw.login)) return null;
+  const acc = {};
+  for (const k of Object.keys(raw)) {
+    if (!ACCOUNT_FIELDS.has(k) && !UNSAFE_KEYS.has(k) && raw[k] !== undefined) acc[k] = raw[k];
+  }
+  const chars = [];
+  const deleted = Array.isArray(raw.deleted) ? raw.deleted.filter((d) => d && typeof d === 'object') : [];
+  const ids = new Set();
+  for (const c of raw.chars) {
+    const ch = migrateCharacter(c);
+    if (!ch) {
+      if (c && typeof c === 'object') deleted.push({ ...c, invalid: true, deletedAt: now });
+      continue;
+    }
+    while (ids.has(ch.id)) ch.id = newCharId();
+    ids.add(ch.id);
+    chars.push(ch);
+  }
+  Object.assign(acc, {
+    v: ACCOUNT_VERSION,
+    login: raw.login, salt: raw.salt, hash: raw.hash,
+    uid: typeof raw.uid === 'string' && B64URL_RE.test(raw.uid) && raw.uid.length <= 64 ? raw.uid : newUid(),
+    created: finite(raw.created, now),
+    lastSeen: finite(raw.lastSeen, now),
+    lastChar: chars.some((c) => c.id === raw.lastChar) ? raw.lastChar : (chars[0]?.id ?? null),
+    chars,
+    sessions: sanitizeSessions(raw.sessions, now),
+    passkeys: sanitizePasskeys(raw.passkeys),
+  });
+  if (raw.role === 'admin' || raw.role === 'gm') acc.role = raw.role;
+  if (typeof raw.lastIp === 'string' && raw.lastIp.length <= 64) acc.lastIp = raw.lastIp;
+  if (deleted.length) acc.deleted = deleted;
   return acc;
 }
 
@@ -174,7 +312,11 @@ export class AccountStore {
     this.legacyFile = path.join(dataDir, LEGACY_FILE);
     this.backupDir = path.join(dataDir, BACKUP_DIR);
     this.log = log;
-    this.accounts = new Map(); // nameKey -> record
+    this.accounts = new Map(); // login key -> account record (v3)
+    this.charIndex = new Map(); // character name key -> account (character names are unique server-wide)
+    this.tokenIndex = new Map(); // sha256(remembered-session token) hex -> account
+    this.credIndex = new Map();  // passkey credential id -> account
+    this.indexed = new WeakMap(); // account -> { chars, tokens, creds } keys currently indexed for it
     this.hot = new Set();      // keys checked for changes at each save (logged in / created / flagged)
     this.disk = new Map();     // key -> JSON known to be on disk
     this.queued = new Map();   // key -> JSON handed to a writer (on disk or being written)
@@ -191,7 +333,7 @@ export class AccountStore {
 
   load() {
     fs.mkdirSync(this.accDir, { recursive: true });
-    let bad = 0;
+    let bad = 0, migrated = 0;
     for (const f of fs.readdirSync(this.accDir)) {
       const file = path.join(this.accDir, f);
       if (f.endsWith('.tmp')) { // interrupted write: the previous version is still in place
@@ -211,13 +353,24 @@ export class AccountStore {
       }
       const acc = migrateAccount(raw);
       if (!acc) { bad++; continue; }
-      const key = nameKey(acc.name);
+      const key = nameKey(acc.login);
       const prev = this.accounts.get(key);
       if (prev && (prev.lastSeen || 0) >= (acc.lastSeen || 0)) continue;
+      if (prev) this.unindex(prev);
       this.accounts.set(key, acc);
       this.disk.set(key, text);
       this.queued.set(key, text);
+      if (raw.v !== ACCOUNT_VERSION) {
+        // upgraded (v2 -> v3): the original file is copied once, and the account is rewritten at the next save
+        // so that its new character ids / passkey user handle are stable
+        this.keepPreMigration(f, text);
+        this.hot.add(key);
+        this.flagged = true;
+        migrated++;
+      }
+      this.index(acc);
     }
+    if (migrated) this.log?.info(`migration des comptes v0.2 → v0.3 (plusieurs personnages par compte) : ${migrated} compte(s) converti(s), originaux conservés dans ${PRE_V3_DIR}/`);
     if (bad) this.log?.warn(`${bad} fichier(s) de compte invalide(s) ignoré(s) dans ${ACCOUNTS_DIR}/`);
     if (fs.existsSync(this.legacyFile)) this.importLegacy();
     return this;
@@ -239,9 +392,10 @@ export class AccountStore {
     for (const raw of list) {
       const acc = migrateAccount(raw);
       if (!acc) { bad++; continue; }
-      const key = nameKey(acc.name);
+      const key = nameKey(acc.login);
       if (this.accounts.has(key)) { kept++; continue; } // a per-account file already exists: it is newer
       this.accounts.set(key, acc);
+      this.index(acc);
       const json = JSON.stringify(acc);
       try {
         writeFileAtomic(this.fileOf(key), json);
@@ -252,7 +406,7 @@ export class AccountStore {
         failed++;
         this.hot.add(key);
         this.flagged = true;
-        this.log?.error(`import du compte ${acc.name} impossible : ${err.message}`);
+        this.log?.error(`import du compte ${acc.login} impossible : ${err.message}`);
       }
     }
     if (bad) this.log?.warn(`${bad} compte(s) invalide(s) ignoré(s) dans accounts.json`);
@@ -271,30 +425,141 @@ export class AccountStore {
       `${kept ? `, ${kept} déjà présent(s)` : ''} (ancien fichier conservé sous ${path.basename(dest)})`);
   }
 
-  get size() { return this.accounts.size; }
-  has(name) { return typeof name === 'string' && this.accounts.has(nameKey(name)); }
+  /** Copy of an account file in its pre-v3 format (kept once, never overwritten). */
+  keepPreMigration(file, text) {
+    try {
+      const dir = path.join(this.dir, PRE_V3_DIR);
+      fs.mkdirSync(dir, { recursive: true });
+      const dest = path.join(dir, file);
+      if (!fs.existsSync(dest)) writeFileAtomic(dest, text);
+    } catch (err) {
+      this.log?.warn(`copie de sauvegarde de ${file} impossible : ${err.message}`);
+    }
+  }
 
-  /** Account by (case-insensitive) name, or null. A returned account is watched for changes until idle. */
-  get(name) {
-    if (typeof name !== 'string') return null;
-    const key = nameKey(name);
+  // ------------------------------------------------------------------ indexes
+  /** (Re)index the characters, remembered sessions and passkeys of an account. Call after changing them. */
+  index(acc) {
+    this.unindex(acc);
+    const keys = { chars: [], tokens: [], creds: [] };
+    for (const ch of acc.chars) {
+      const k = nameKey(ch.name);
+      const other = this.charIndex.get(k);
+      if (other && other !== acc) {
+        this.log?.warn(`personnage ${ch.name} présent dans deux comptes (${other.login} et ${acc.login}) : seul le premier est indexé`);
+        continue;
+      }
+      this.charIndex.set(k, acc);
+      keys.chars.push(k);
+    }
+    for (const s of acc.sessions) { this.tokenIndex.set(s.h, acc); keys.tokens.push(s.h); }
+    for (const c of acc.passkeys) { this.credIndex.set(c.id, acc); keys.creds.push(c.id); }
+    this.indexed.set(acc, keys);
+  }
+
+  unindex(acc) {
+    const keys = this.indexed.get(acc);
+    if (!keys) return;
+    for (const k of keys.chars) if (this.charIndex.get(k) === acc) this.charIndex.delete(k);
+    for (const k of keys.tokens) if (this.tokenIndex.get(k) === acc) this.tokenIndex.delete(k);
+    for (const k of keys.creds) if (this.credIndex.get(k) === acc) this.credIndex.delete(k);
+    this.indexed.delete(acc);
+  }
+
+  // ------------------------------------------------------------------ lookups
+  /** Number of accounts. */
+  get size() { return this.accounts.size; }
+  /** Number of characters (all accounts). */
+  get charCount() { return this.charIndex.size; }
+
+  /** Is this character name taken (case-insensitive, server-wide)? */
+  has(name) { return typeof name === 'string' && this.charIndex.has(nameKey(name)); }
+  hasChar(name) { return this.has(name); }
+  /** Is this login taken (case-insensitive)? */
+  hasLogin(login) { return typeof login === 'string' && this.accounts.has(nameKey(login)); }
+
+  /** Account by (case-insensitive) login, or null. A returned account is watched for changes until idle. */
+  getAccount(login) {
+    if (typeof login !== 'string') return null;
+    const key = nameKey(login);
     const acc = this.accounts.get(key);
     if (!acc) return null;
     this.hot.add(key);
     return acc;
   }
 
-  create(record) {
-    const key = nameKey(record.name);
-    this.accounts.set(key, record);
-    this.hot.add(key);
-    this.flagged = true;
-    return record;
+  /** Account owning the character `name`, or null. */
+  accountOfChar(name) {
+    if (typeof name !== 'string') return null;
+    const acc = this.charIndex.get(nameKey(name));
+    if (acc) this.hot.add(nameKey(acc.login));
+    return acc || null;
   }
 
-  /** Something changed: with an account, that one; without, any account in use (logged in recently). */
-  markDirty(account) {
-    if (account && typeof account.name === 'string') this.hot.add(nameKey(account.name));
+  /** CHARACTER record by (case-insensitive) name, or null (moderation, tests). Watched for changes until idle. */
+  get(name) {
+    const acc = this.accountOfChar(name);
+    if (!acc) return null;
+    const k = nameKey(name);
+    return acc.chars.find((c) => nameKey(c.name) === k) || null;
+  }
+
+  /** Account of a remembered-session token hash, or null. */
+  accountByTokenHash(h) { return (typeof h === 'string' && this.tokenIndex.get(h)) || null; }
+  /** Account of a passkey credential id, or null. */
+  accountByCredential(id) { return (typeof id === 'string' && this.credIndex.get(id)) || null; }
+
+  /** Every character name (display case), e.g. for the look-alike name check. */
+  *charNames() {
+    for (const acc of this.accounts.values()) for (const ch of acc.chars) yield ch.name;
+  }
+
+  // ------------------------------------------------------------------ changes
+  /** Add a new account (v3 record, see newAccount; an older record is migrated first). */
+  create(record) {
+    const acc = record && Array.isArray(record.chars) ? record : migrateAccount(record);
+    const key = nameKey(acc.login);
+    const prev = this.accounts.get(key);
+    if (prev) this.unindex(prev);
+    this.accounts.set(key, acc);
+    this.index(acc);
+    this.hot.add(key);
+    this.flagged = true;
+    return acc;
+  }
+
+  /** Add a character to an account (limits and name checks are the caller's job). */
+  addChar(acc, ch) {
+    acc.chars.push(ch);
+    this.index(acc);
+    this.markDirty(acc);
+    return ch;
+  }
+
+  /** Remove a character (kept aside in `acc.deleted` for a manual restore; its name becomes free). */
+  removeChar(acc, id) {
+    const i = acc.chars.findIndex((c) => c.id === id);
+    if (i < 0) return null;
+    const [ch] = acc.chars.splice(i, 1);
+    acc.deleted = [...(acc.deleted || []), { ...ch, deletedAt: Date.now() }].slice(-DELETED_KEEP);
+    if (acc.lastChar === id) acc.lastChar = acc.chars[0]?.id ?? null;
+    this.index(acc);
+    this.markDirty(acc);
+    return ch;
+  }
+
+  /**
+   * Something changed: with a record (account or character), its account; without, any account in use
+   * (logged in recently).
+   */
+  markDirty(record) {
+    if (record && typeof record === 'object') {
+      if (typeof record.login === 'string') this.hot.add(nameKey(record.login));
+      else if (typeof record.name === 'string') {
+        const acc = this.charIndex.get(nameKey(record.name));
+        if (acc) this.hot.add(nameKey(acc.login));
+      }
+    }
     this.flagged = true;
   }
 

@@ -126,8 +126,9 @@ test('disconnect removes the player for others and persists the account; relogin
     await b.waitFor((m) => m.t === 'chat' && m.ch === 'system' && m.text === 'Alix a quitté Brumeval.');
     await srv.store.flush(); // [netcode-perf] per-account files, written in the background
     const saved = JSON.parse(fs.readFileSync(path.join(dir, 'accounts', 'alix.json'), 'utf8'));
-    assert.equal(saved.x, 2);
-    assert.equal(saved.cls, 'warrior');
+    assert.equal(saved.login, 'Alix');
+    assert.equal(saved.chars[0].x, 2);
+    assert.equal(saved.chars[0].cls, 'warrior');
 
     const a2 = await connect(srv.port);
     a2.sendJson({ t: 'login', name: 'ALIX', password: 'secret1' });
@@ -154,7 +155,8 @@ test('server close disconnects clients and saves', async () => {
     const code = await ws.closed;
     assert.ok([1001, 1006].includes(code), String(code));
     const saved = JSON.parse(fs.readFileSync(path.join(dir, 'accounts', 'fermeture.json'), 'utf8'));
-    assert.equal(saved.name, 'Fermeture');
+    assert.equal(saved.login, 'Fermeture');
+    assert.equal(saved.chars[0].name, 'Fermeture');
     await srv.close(); // idempotent
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

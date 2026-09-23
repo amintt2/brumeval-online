@@ -241,9 +241,63 @@ async function main() {
 
   await server.store.flush(); // [netcode-perf] one file per account, written in the background
   const persisted = JSON.parse(fs.readFileSync(path.join(dataDir, 'accounts', `${NAME_A.toLowerCase()}.json`), 'utf8'));
-  ok(persisted.xp === before.xp && !('password' in persisted) && typeof persisted.hash === 'string',
+  ok(persisted.chars[0].xp === before.xp && !('password' in persisted) && typeof persisted.hash === 'string' && !('hash' in persisted.chars[0]),
     'accounts/<nom>.json écrit (xp persistée, mot de passe haché uniquement)');
+
+  await accountsFlow(url, A2);
 }
+
+/**
+ * [accounts] Account -> character -> play -> char_logout -> second character of another class -> play ->
+ * reconnect with the remembered-session token (docs/COMPTES.md).
+ */
+async function accountsFlow(url, watcher) {
+  const D = await new Bot(url, 'D').connect(); bots.push(D);
+  let r = await D.req({ t: 'register', name: 'CompteBot', password: PASSWORD, remember: true });
+  ok(r.t === 'account_ok' && r.chars.length === 0 && /^[A-Za-z0-9_-]{43}$/.test(r.token || ''), 'compte créé sans personnage, jeton « Rester connecté » reçu');
+  let token = r.token;
+  r = await D.req({ t: 'char_create', name: 'BotGuerrier', cls: 'warrior' });
+  ok(r.t === 'account_ok' && r.chars.length === 1 && r.created === r.chars[0].id && r.chars[0].level === 1, 'premier personnage créé (guerrier)');
+  const warriorId = r.created;
+  r = await D.req({ t: 'char_select', id: warriorId });
+  ok(r.t === 'auth_ok' && r.self.name === 'BotGuerrier' && r.self.cls === 'warrior', 'char_select → auth_ok, le guerrier entre dans le monde');
+  const firstId = r.id;
+  await watcher.waitType('snap', (m) => m.ents.some((e) => e.id === firstId), { timeout: 4000 });
+  await D.walkTo(D.x + 3, D.z + 1.5, { stop: 0.2 });
+  const walked = { x: D.x, z: D.z };
+  ok(D.corrections === 0, `le guerrier marche (${walked.x.toFixed(1)}, ${walked.z.toFixed(1)}) sans correction`);
+  let from = watcher.mark();
+  r = await D.req({ t: 'char_logout' });
+  ok(r.t === 'account_ok' && r.account.lastChar === warriorId, 'char_logout → retour à la sélection (account_ok)');
+  await watcher.waitType('snap', (m) => m.gone.includes(firstId), { from, timeout: 4000 });
+  ok(!server.game.players.has(firstId), 'le guerrier a quitté le monde (entité retirée pour les autres)');
+
+  r = await D.req({ t: 'char_create', name: 'BotRodeuse', cls: 'ranger' });
+  ok(r.t === 'account_ok' && r.chars.length === 2, 'deuxième personnage créé sur le même compte (rôdeuse)');
+  const rangerId = r.created;
+  r = await D.req({ t: 'char_select', id: rangerId });
+  ok(r.t === 'auth_ok' && r.self.cls === 'ranger' && r.self.abilities[0] !== 'firebolt' && r.self.level === 1, 'la rôdeuse joue (autre classe, autres compétences)');
+  from = D.mark();
+  D.send({ t: 'chat', text: 'Bonjour de la rôdeuse' });
+  await watcher.waitType('chat', (m) => m.from === 'BotRodeuse', { timeout: 4000 });
+  ok(true, 'la rôdeuse parle dans le chat global');
+  r = await D.req({ t: 'char_select', id: 'zzzzzzzz' }, ['account_err']);
+  ok(r.code === 'not_found', 'identifiant de personnage étranger refusé');
+  await D.close();
+
+  const E = await new Bot(url, 'E').connect(); bots.push(E);
+  r = await E.req({ t: 'login_token', token });
+  ok(r.t === 'account_ok' && r.method === 'token' && r.chars.length === 2 && r.account.lastChar === rangerId && r.token && r.token !== token,
+    'reconnexion par jeton : sélection des personnages, dernier joué retenu, jeton renouvelé');
+  const stale = await new Bot(url, 'F').connect(); bots.push(stale);
+  ok((await stale.req({ t: 'login_token', token })).code === 'bad_token', 'l’ancien jeton ne fonctionne plus');
+  token = r.token;
+  r = await E.req({ t: 'char_select', id: warriorId });
+  ok(r.t === 'auth_ok' && Math.hypot(r.self.x - walked.x, r.self.z - walked.z) < 1.5, 'le guerrier retrouve sa position');
+  r = await E.req({ t: 'logout' });
+  ok(r.t === 'logged_out' && (await stale.req({ t: 'login_token', token })).code === 'bad_token', 'déconnexion : jeton révoqué');
+}
+
 
 /**
  * [combat-souls] A telegraphed attack is resolved at impact against the positions of that moment:

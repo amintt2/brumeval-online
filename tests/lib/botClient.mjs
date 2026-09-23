@@ -150,6 +150,13 @@ export class Bot {
     return this.waitFor((m) => m.t === 'auth_ok' || m.t === 'auth_err', { from, timeout: 8000, desc: 'auth' });
   }
 
+  /** [accounts] send `msg` and wait for the first reply among `types`. */
+  async req(msg, types = ['account_ok', 'account_err', 'auth_ok', 'auth_err', 'logged_out']) {
+    const from = this.mark();
+    this.send(msg);
+    return this.waitFor((m) => types.includes(m.t), { from, timeout: 8000, desc: types.join(' | ') });
+  }
+
   async login(name, password) {
     const from = this.mark();
     this.send({ t: 'login', name, password });

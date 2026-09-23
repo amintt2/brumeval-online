@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { SPAWN_POINT, LAKES } from '../../shared/world.js';
-import { AccountStore, newAccount, sanitizeAccount, writeFileAtomic } from '../src/persistence.js';
+import { AccountStore, newAccount, sanitizeAccount, migrateCharacter, writeFileAtomic, ACCOUNT_VERSION } from '../src/persistence.js';
 import { makeGame, addPlayer, place } from './helpers.js';
 
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'brumeval-persist-'));
@@ -14,7 +14,8 @@ test('save / load round trip keeps every character field', () => {
   const dir = tmp();
   try {
     const store = new AccountStore(dir, quiet).load();
-    const acc = store.create(newAccount('Éloïse', 'mage', 'ab', 'cd'));
+    const account = store.create(newAccount('Éloïse', 'mage', 'ab', 'cd'));
+    const acc = account.chars[0];
     Object.assign(acc, { level: 7, xp: 123, gold: 456, hp: 80, mp: 12, x: 40.5, z: 21.25 });
     acc.inv[4] = { id: 'wolf_pelt', q: 9 };
     acc.quests = { q_slimes: { state: 'done', n: 8 }, q_wolves: { state: 'active', n: 2 } };
@@ -27,7 +28,9 @@ test('save / load round trip keeps every character field', () => {
     assert.equal(again.size, 1);
     const b = again.get('ÉLOÏSE');
     assert.ok(b, 'case-insensitive lookup');
-    for (const k of ['name', 'cls', 'level', 'xp', 'gold', 'hp', 'mp', 'x', 'z', 'salt', 'hash']) assert.equal(b[k], acc[k], k);
+    for (const k of ['id', 'name', 'cls', 'level', 'xp', 'gold', 'hp', 'mp', 'x', 'z']) assert.equal(b[k], acc[k], k);
+    const ab = again.getAccount('éloïse');
+    for (const k of ['login', 'salt', 'hash', 'uid', 'lastChar']) assert.equal(ab[k], account[k], k);
     assert.deepEqual(b.inv, acc.inv);
     assert.deepEqual(b.eq, acc.eq);
     assert.deepEqual(b.quests, acc.quests);
@@ -54,13 +57,14 @@ test('sanitizeAccount repairs or rejects persisted records', () => {
   assert.equal(sanitizeAccount({ name: 'Valide', cls: 'paladin', salt: 'a', hash: 'b' }), null);
   assert.equal(sanitizeAccount({ name: 'Valide', cls: 'mage' }), null);
   const lake = LAKES[0];
-  const a = sanitizeAccount({
+  const a = migrateCharacter({
     name: 'Valide', cls: 'warrior', salt: 'a', hash: 'b', level: 99, xp: -5, gold: 'lots',
     eq: { weapon: 'leather_tunic', armor: 'chainmail' }, inv: 'bad', quests: { q_slimes: { state: 'active', n: 3 } },
     x: lake.x, z: lake.z,
   });
   assert.equal(a.level, 20);
-  assert.equal(a.v, 2);
+  assert.equal(a.v, undefined, 'the schema version lives on the account');
+  assert.equal(sanitizeAccount({ name: 'Valide', cls: 'warrior', salt: 'a', hash: 'b', level: 99 }).v, ACCOUNT_VERSION);
   assert.equal(a.xp, 0);
   assert.equal(a.gold, 25);
   assert.deepEqual(a.eq, { weapon: null, armor: 'chainmail' }); // armor in the weapon slot is dropped
