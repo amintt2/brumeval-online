@@ -5,6 +5,8 @@ from mathutils import Vector, noise
 import geo as G
 import common as C
 from kit import materials as M, gn
+import grass_field
+import terrain as landscape
 
 B=None
 R=random.Random(20260923)
@@ -42,20 +44,49 @@ def ground(paving=False,settlement=False):
             a=j*(nx+1)+i;fs.append((a,a+1,a+nx+2,a+nx+1))
     mesh('CheminContinu',vs,fs,stone if paving else mud)
     G.box('Earth',(190,210,.5),mud,loc=(0,55,-.3))
-    grass=material('GrassUnderstorey','leaf_card',kind='grass',color='#465440',color2='#777457',seed=31)
-    gv=[];gf=[]
+    # Preserve the old scene RNG stream: vegetation changes must not move buildings.
+    centers=[]
     for i in range(9000):
         x=R.uniform(-26,26);y=R.uniform(-8,75)
         if abs(x-1.5*math.sin(y*.045))<3.75 or occupied(x,y):continue
         if noise.noise_vector(Vector((x*.24,y*.24,0)))[0]<-.2:continue
-        h=R.uniform(.08,.27);w=R.uniform(.16,.31);a=R.uniform(0,math.tau)
-        for turn in [0,math.pi/2]:
-            dx=math.cos(a+turn)*w/2;dy=math.sin(a+turn)*w/2;n=len(gv)
-            gv.extend([(x-dx,y-dy,-.052),(x+dx,y+dy,-.052),(x+dx+.035,y+dy,h),(x-dx+.035,y-dy,h)])
-            gf.append((n,n+1,n+2,n+3))
-    ob=mesh('HerbesBordure',gv,gf,grass,False);uv=ob.data.uv_layers.new()
-    for f in ob.data.polygons:
-        for i,v in zip(f.loop_indices,[(0,0),(1,0),(1,1),(0,1)]):uv.data[i].uv=v
+        R.uniform(.08,.27);R.uniform(.16,.31);R.uniform(0,math.tau)
+        centers.append((x,y))
+    # New seed locations are uniform candidates; only the continuous field controls coverage.
+    seeds=random.Random(84101)
+    centers=[]
+    for _ in range(7500):
+        x=seeds.uniform(-26,26);y=seeds.uniform(-8,75)
+        if abs(x-1.5*math.sin(y*.045))>3.65 and not occupied(x,y):centers.append((x,y))
+    blades=random.Random(71023)
+    palette=[material('GrassMeadow'+str(i),'flat',color=color,rough=.88)
+             for i,color in enumerate(['#48563b','#606343','#77714c','#394b32'])]
+    gv=[];gf=[];colors=[]
+    def clear(x,y):
+        return abs(x-1.5*math.sin(y*.045))>3.65 and not occupied(x,y)
+    for cx,cy in centers:
+        radius=blades.uniform(.45,.85)
+        for j in range(168):
+            angle=blades.uniform(0,math.tau);distance=radius*math.sqrt(blades.random())
+            x=cx+math.cos(angle)*distance;y=cy+math.sin(angle)*distance
+            density,height_scale=grass_field.field(x,y)
+            if blades.random()>density*grass_field.path_fade(x,y):continue
+            h=blades.uniform(.16,.47)*(1-.3*distance/radius)*height_scale
+            width=blades.uniform(.018,.042);lean=blades.uniform(.08,.24)
+            a=blades.uniform(0,math.tau);dx=math.cos(a);dy=math.sin(a)
+            if not clear(x,y) or not clear(x+dx*lean,y+dy*lean):continue
+            n=len(gv);color=blades.choices(range(4),[4,4,1,3])[0]
+            for t,taper in [(0,.55),(.35,1),(.72,.55),(1,0)]:
+                px=x+dx*lean*t*t;py=y+dy*lean*t*t
+                for side in [-1,1]:
+                    gv.append((px-dy*width*taper*side/2,py+dx*width*taper*side/2,-.055+h*t))
+            for k in range(3):
+                q=n+k*2;gf.append((q,q+1,q+3,q+2));colors.append(color)
+    ob=mesh('HerbesBordure',gv,gf,palette[0],False)
+    for mat in palette[1:]:ob.data.materials.append(mat)
+    for face,color in zip(ob.data.polygons,colors):face.material_index=color
+    ob['blade_count']=len(gv)//8
+    ob['vegetation_version']='warped-noise-meadow-v2'
     gravel=material('Gravel','rock',color='#53574c',moss=.25,bump=.6)
     for i in range(100):
         x=R.uniform(-23,23);y=R.uniform(-6,70)
@@ -215,31 +246,9 @@ def chapel(x,y,z=0,scale=1,ruined=False):
 def citadel():
     stone=material('Fortress','stone_blocks',color='#737e85',color2='#4c5b65',mortar_color='#4d575d',moss=.10,scale=1.65,dirt=.3,wear=.65)
     roof=material('FortressSlate','slate',color='#293842',moss=.1)
-    cliff=material('FortressCliff','rock',color='#606e76',color2='#34434e',moss=.10,scale=2.1,bump=.9,dirt=.2)
-    # A continuous steep escarpment with an actual plateau supporting the fortress.
-    # Angular ridges and shallow horizontal strata are geometry, not smooth boulders.
-    vs=[];fs=[];sectors=160;rings=45
-    for j in range(rings):
-        t=j/(rings-1)
-        for k in range(sectors):
-            a=k*math.tau/sectors
-            u=Vector((math.cos(a)*3.7,math.sin(a)*3.7,t*.65))
-            ridge=noise.noise_vector(u)[0]*.19+noise.noise_vector(u*2.8)[1]*.08
-            ledge=noise.noise_vector(Vector((math.cos(a)*4,math.sin(a)*4,t*5.4)))[2]*.065
-            radial=1.13-.22*t+ridge+ledge
-            x=12+23*radial*math.cos(a);y=90+14*radial*math.sin(a)
-            z=-.25+13.0*t+.20*math.sin(a*7)*t+.10*math.sin(a*21+t*2)
-            n=noise.noise_vector(Vector((x*.6,y*.6,z*.9)))[0]*.10
-            vs.append((x+n,y+n,z))
-    for j in range(rings-1):
-        for k in range(sectors):
-            a=j*sectors+k;b=j*sectors+(k+1)%sectors;fs.append((a,b,b+sectors,a+sectors))
-    center=len(vs);vs.append((12,90,12.6))
-    for k in range(sectors):fs.append(((rings-1)*sectors+k,(rings-1)*sectors+(k+1)%sectors,center))
-    mesh('FalaiseStratifiee',vs,fs,cliff,True)
-    for j in range(26):
-        a=math.pi+j*math.pi/25;x=12+25*math.cos(a);y=90+17*math.sin(a)
-        B.rock((x,y,.5),(R.uniform(1.3,3),R.uniform(1.5,3.4),R.uniform(.8,2.8)),cliff)
+    # Preserve the layout RNG while the old ring-shaped cliff is replaced.
+    for _ in range(26):
+        R.uniform(1.3,3);R.uniform(1.5,3.4);R.uniform(.8,2.8)
     # Split curtain wall leaves a real traversable portal, closed by an iron grille.
     G.box('CourtineGauche',(6.4,5,9),stone,loc=(1.2,85,16),bevel=.09)
     G.box('CourtineDroite',(18.4,5,9),stone,loc=(16.8,85,16),bevel=.09)
@@ -347,10 +356,11 @@ def village(banner=False):
     B.light('SoleilRasant',(-40,0,38),3.6,(1,.83,.61),target=(12,87,16),kind='SUN')
     B.light('CielBleu',(2,-7,15),1600,(.40,.60,1),size=22,target=(0,20,0))
     B.light('RemplissageFroid',(45,-30,35),.65,(.47,.66,1),target=(12,87,16),kind='SUN')
+    landscape.build_terrain(B,mesh,material)
     houses();citadel();tree(-14,3,17,.65,seed=24);tree(15,34,15,.5,seed=88)
     cloak_hero((-4,-.5,-.055),1.05);torch((-5,2,0),220)
     for x,y in [(-6,3),(-8,7),(7,15),(6,7)]:fern(x,y,1.6)
-    for i in range(9):B.rock((-80+i*23,160+R.uniform(0,20),13),(26,24,R.uniform(20,42)),material('Mountain','rock',color='#525e65',scale=.4,moss=0))
+    for _ in range(9):R.uniform(0,20);R.uniform(20,42) # retain unrelated scene randomness
     mist(.0012);motes((-3,3,2),40,4)
     # A narrow physical sun shaft crosses the road behind the traveller.
     lamp=B.light('RayonDore',(-9,15,18),32000,(1,.72,.40),target=(4,26,0),kind='SPOT')
