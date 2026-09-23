@@ -9,11 +9,13 @@ let sharedCollision = null;
 export const collisionWorld = () => (sharedCollision ||= new CollisionWorld());
 
 export class Bot {
-  constructor(url, label, { keepHistory = true, batch = true } = {}) {
+  constructor(url, label, { keepHistory = true, batch = true, origin = 'http://localhost', headers = null } = {}) {
     // `batch` asks the server to coalesce the messages of one tick into a single `batch` frame (unpacked here).
     this.url = batch ? `${url}${url.includes('?') ? '&' : '?'}batch=1` : url;
     this.label = label;
     this.keepHistory = keepHistory;
+    this.origin = origin;     // browsers always send an Origin (the server refuses Origin-less clients by default)
+    this.headers = headers;   // e.g. { 'X-Forwarded-For': ip } to simulate players behind a trusted proxy
     this.history = [];         // every message received (when keepHistory)
     this.count = 0;            // messages received
     this.frames = 0;           // WebSocket frames received (a batch frame carries several messages)
@@ -30,7 +32,7 @@ export class Bot {
 
   connect() {
     return new Promise((resolve, reject) => {
-      const ws = new WebSocket(this.url);
+      const ws = new WebSocket(this.url, { origin: this.origin, ...(this.headers ? { headers: this.headers } : {}) });
       this.ws = ws;
       ws.on('open', () => resolve(this));
       ws.on('error', (err) => {

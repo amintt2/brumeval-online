@@ -154,8 +154,10 @@ export function createLogin(parent, handlers, tooltip) {
       nameIn.focus();
       return;
     }
-    if (pass.length < 4 || pass.length > 64) {
-      setError('Le mot de passe doit comporter entre 4 et 64 caractères.');
+    // [anticheat] new characters need 6+ characters; existing accounts created with 4-5 still log in
+    const passMin = mode === 'create' ? 6 : 4;
+    if (pass.length < passMin || pass.length > 64) {
+      setError(`Le mot de passe doit comporter entre ${passMin} et 64 caractères.`);
       passIn.focus();
       return;
     }

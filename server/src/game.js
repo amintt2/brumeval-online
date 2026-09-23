@@ -19,6 +19,8 @@ import { handleUseItem, handleEquip, handleUnequip, handleDrop } from './systems
 import { handleChat } from './chat.js';
 import { has, isNum, normAngle, randInt, round4 } from './util.js';
 import { aoiOf } from './aoi.js'; // [netcode-perf]
+import { Security } from './security/index.js'; // [anticheat]
+import { handleMoveMsg } from './movement.js'; // [anticheat]
 
 const TICK_MS = 1000 / TICK_RATE;
 const EVENT_R2 = (VIEW_RADIUS + AOI_EXIT_MARGIN) ** 2;
@@ -54,6 +56,8 @@ export class Game {
     this.tickStats = { n: 0, total: 0, max: 0, last: 0 };
     this.errorCount = 0;
     this.lastSlowWarn = -Infinity;
+    // [anticheat] suspicion scores, bans, invariants (server/src/security)
+    this.security = (opts.security || new Security({ log: this.log })).attach(this);
 
     for (const s of NPC_SPAWNS) this.addEntity(new Npc(this.allocId(), s.key, s.x, s.z, s.ry));
     if (opts.spawnMonsters !== false) {
@@ -175,7 +179,10 @@ export class Game {
   }
 
   notify(p, kind, text) { p.session.send({ t: S2C.NOTIFY, kind, text }); }
-  error(p, code, msg) { p.session.send({ t: S2C.ERR, code, msg }); }
+  error(p, code, msg) {
+    p.session.send({ t: S2C.ERR, code, msg });
+    this.security?.onRefusal(p, code); // [anticheat] refused-action spam detection
+  }
 
   /** System chat line to everyone, to one player (`to`) or everyone but `except`. */
   systemChat(text, { to = null, except = null } = {}) {
@@ -230,21 +237,13 @@ export class Game {
     if (!has(HANDLERS, msg.t)) return;
     const h = HANDLERS[msg.t];
     h(this, p, msg);
+    if (this.players.get(p.id) === p) this.security?.afterAction(p, msg); // [anticheat] economy invariants
     this.flushSelf(p);
   }
 
   handleMove(p, msg) {
-    if (!isNum(msg.x) || !isNum(msg.z)) return;
-    if (p.dead) return this.sendCorrect(p);
-    const now = this.now();
-    const to = { x: msg.x, z: msg.z };
-    if (p.mv.check(to, now, p.stats.speed, this.collision)) return this.sendCorrect(p);
-    if (Math.hypot(to.x - p.x, to.z - p.z) > 0.01) p.moveUntil = now + MOVE_STATE_MS;
-    p.x = to.x;
-    p.z = to.z;
-    if (isNum(msg.ry)) p.ry = normAngle(msg.ry);
-    p.mv.accept(to, now, p.stats.speed);
-    checkDialogDistance(this, p);
+    // [anticheat] distance budget, teleport / wall / out-of-bounds detection: see movement.js
+    handleMoveMsg(this, p, msg);
   }
 
   // ------------------------------------------------------------------ loop
@@ -258,6 +257,7 @@ export class Game {
     this.guard('ai', () => updateMonsters(this, dt, now));
     this.guard('combat', () => updateAutoAttacks(this, now));
     this.guard('regen', () => updateRegen(this, dt, now));
+    this.guard('security', () => this.security?.tick(now)); // [anticheat]
     if (this.tickCount % SNAPSHOT_EVERY === 0) this.guard('snapshot', () => sendSnapshots(this, now));
     for (const p of this.players.values()) this.guard('self', () => this.flushSelf(p));
     this.inTick = false; // [netcode-perf]

@@ -17,6 +17,7 @@ import { SPAWN_POINT, isWalkable } from '../../shared/world.js';
 import { emptyInventory, addItem, sanitizeInventory, isItem, equipSlotOf } from './inventory.js';
 import { sanitizeQuests } from './quests.js';
 import { nameKey, validName, validClass } from './auth.js';
+import { sanitizeSecurityFields } from './security/accountFields.js'; // [anticheat]
 
 const gzip = promisify(zlib.gzip);
 
@@ -94,6 +95,7 @@ export function migrateAccount(raw) {
     x, z,
     created: finite(raw.created, Date.now()),
     lastSeen: finite(raw.lastSeen, Date.now()),
+    ...sanitizeSecurityFields(raw), // [anticheat] role, mute, ignore list, last IP (all optional)
   });
 
   // ---- [netcode-perf] schema version

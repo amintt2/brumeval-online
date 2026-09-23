@@ -4,7 +4,9 @@ import { CollisionWorld } from '../../shared/collision.js';
 import { PLAYER_RADIUS, MOVE_SEND_HZ, STATE } from '../../shared/protocol.js';
 import { LAKES, generateWorldObjects } from '../../shared/world.js';
 import { mulberry32 } from '../../shared/noise.js';
-import { validateMove, maxMoveDistance, MoveValidator } from '../src/movement.js';
+import {
+  validateMove, maxMoveDistance, MoveValidator, sweepObstacles, BURST_S, BURST_SLACK_M, TELEPORT_MIN_M,
+} from '../src/movement.js';
 import { makeGame, addPlayer, place, advance } from './helpers.js';
 
 const cw = new CollisionWorld();
@@ -53,7 +55,7 @@ function withStalls(msgs, everyMs, stallMs) {
   });
 }
 
-/** Run messages through the server validator (SPEC rule + window rule). Returns the rejection count. */
+/** Run messages through the server validator (distance budget + spot + sweep). Returns the rejection count. */
 function runValidation(msgs, start, speed) {
   const mv = new MoveValidator(start.x, start.z, 0);
   let rejected = 0;
@@ -103,14 +105,26 @@ test('low-fps clients (steps > 0.6 m) survive server stalls and message bursts',
   }
 });
 
-test('burst credit is bounded: a teleport after idling is capped at the 1 s allowance', () => {
+test('the distance budget is bounded: after idling, a burst is capped at BURST_S of movement', () => {
   const mv = new MoveValidator(50, 25, 0);
-  const cap = 6.5 * 1.35 + 0.6;
-  assert.equal(mv.check({ x: 50 + cap + 0.1, z: 25 }, 60_000, 6.5, cw), 'too_fast');
-  assert.equal(mv.check({ x: 50 + cap - 0.1, z: 25 }, 60_000, 6.5, cw), null);
-  // spend the credit, then a second jump right away is refused
-  mv.accept({ x: 50 + cap - 0.1, z: 25 }, 60_000, 6.5);
-  assert.equal(mv.check({ x: 50 + cap + 1.5, z: 25 }, 60_010, 6.5, cw), 'too_fast');
+  const cap = 6.5 * BURST_S + BURST_SLACK_M;
+  // many small steps arriving at the same instant (a burst) are accepted up to the capacity…
+  let x = 50, accepted = 0;
+  for (let i = 0; i < 60; i++) {
+    const to = { x: x + 0.45, z: 25 };
+    if (mv.check(to, 60_000, 6.5, cw)) break;
+    mv.accept(to, 60_000, 6.5);
+    x = to.x;
+    accepted++;
+  }
+  assert.ok(accepted * 0.45 <= cap + 1e-9 && accepted * 0.45 > cap - 0.45, `${accepted} steps`);
+  // …then refused until time refills it, at RATE_TOLERANCE × speed
+  assert.equal(mv.check({ x: x + 0.45, z: 25 }, 60_000, 6.5, cw).reason, 'speed');
+  assert.equal(mv.check({ x: x + 0.45, z: 25 }, 60_100, 6.5, cw), null);
+  // a single message covering more than the teleport threshold is a teleport, whatever the budget
+  const fresh = new MoveValidator(50, 25, 0);
+  assert.equal(fresh.check({ x: 50 + TELEPORT_MIN_M + 0.2, z: 25 }, 60_000, 6.5, cw).reason, 'teleport');
+  assert.equal(fresh.check({ x: 50 + TELEPORT_MIN_M - 0.2, z: 25 }, 60_000, 6.5, cw), null);
 });
 
 test('speed hacks are rejected', () => {
@@ -129,7 +143,7 @@ test('speed hacks are rejected', () => {
 test('moves into deep water or out of the world are rejected', () => {
   const lake = LAKES[0];
   assert.equal(validateMove({ x: lake.x, z: lake.z + 0.2 }, { x: lake.x, z: lake.z }, 1000, 6.5, cw), 'unwalkable');
-  assert.equal(validateMove({ x: 159.8, z: 0 }, { x: 160.4, z: 0 }, 1000, 6.5, cw), 'unwalkable');
+  assert.equal(validateMove({ x: 159.8, z: 0 }, { x: 160.4, z: 0 }, 1000, 6.5, cw), 'out_of_bounds');
 });
 
 test('moves into obstacles are rejected', () => {

@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "node --test \"test/*.test.js\" && node ../tests/bot.mjs"
+    "test": "node --test \"test/*.test.js\" && node ../tests/bot.mjs && node ../tests/security.mjs"
   },
   "dependencies": {
     "ws": "^8.21.3"

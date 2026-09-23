@@ -52,7 +52,7 @@ test('auth errors, pre-auth messages ignored, auth_ok payload', async () => {
     ws.sendJson({ t: 'register', name: 'Test', password: 'abc', cls: 'mage' });
     assert.equal((await ws.waitFor((m) => m.t === 'auth_err')).code, 'bad_password');
     ws.msgs.length = 0;
-    ws.sendJson({ t: 'register', name: 'Test', password: 'abcd', cls: 'druide' });
+    ws.sendJson({ t: 'register', name: 'Test', password: 'abcdef', cls: 'druide' });
     assert.equal((await ws.waitFor((m) => m.t === 'auth_err')).code, 'bad_class');
     ws.msgs.length = 0;
     ws.sendJson({ t: 'login', name: 'Inconnu', password: 'abcd' });
@@ -63,7 +63,7 @@ test('auth errors, pre-auth messages ignored, auth_ok payload', async () => {
     ws.sendJson({ t: 'login', name: { $gt: '' }, password: 'abcd' });
     assert.equal((await ws.waitFor((m) => m.t === 'auth_err')).code, 'bad_request');
     ws.msgs.length = 0;
-    ws.sendJson({ t: 'register', name: 'Testeur', password: 'abcd', cls: 'ranger' });
+    ws.sendJson({ t: 'register', name: 'Testeur', password: 'abcdef', cls: 'ranger' });
     const ok = await ws.waitFor((m) => m.t === 'auth_ok');
     assert.ok(ok.id > 0);
     assert.equal(ok.online, 1);
@@ -72,7 +72,7 @@ test('auth errors, pre-auth messages ignored, auth_ok payload', async () => {
     assert.equal(ok.self.cls, 'ranger');
     assert.ok(!ws.msgs.some((m) => m.t === 'chat' || m.t === 'err'), 'nothing answered to pre-auth gameplay messages');
     // a second register on the same socket is ignored
-    ws.sendJson({ t: 'register', name: 'Autre', password: 'abcd', cls: 'ranger' });
+    ws.sendJson({ t: 'register', name: 'Autre', password: 'abcdef', cls: 'ranger' });
     const snap = await ws.waitFor((m) => m.t === 'snap');
     assert.ok(snap.ents.some((e) => e.id === ok.id));
     await sleep(100);
@@ -82,10 +82,10 @@ test('auth errors, pre-auth messages ignored, auth_ok payload', async () => {
   });
 });
 
-test('flooding more than 60 messages per second gets kicked', async () => {
+test('flooding more messages than the global budget (60 / s, burst 120) gets kicked', async () => {
   await withServer(async (srv) => {
     const ws = await connect(srv.port);
-    for (let i = 0; i < 80; i++) ws.sendJson({ t: 'ping', c: i });
+    for (let i = 0; i < 150; i++) ws.sendJson({ t: 'ping', c: i });
     const code = await ws.closed;
     assert.ok(ws.msgs.some((m) => m.t === 'kick' && typeof m.msg === 'string'));
     assert.equal(code, 4000);
@@ -148,7 +148,7 @@ test('server close disconnects clients and saves', async () => {
   const srv = await startServer({ port: 0, dataDir: dir, staticDir: path.join(dir, 'none'), quiet: true });
   try {
     const ws = await connect(srv.port);
-    ws.sendJson({ t: 'register', name: 'Fermeture', password: 'abcd', cls: 'mage' });
+    ws.sendJson({ t: 'register', name: 'Fermeture', password: 'abcdef', cls: 'mage' });
     await ws.waitFor((m) => m.t === 'auth_ok');
     await srv.close();
     const code = await ws.closed;

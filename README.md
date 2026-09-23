@@ -76,6 +76,12 @@ cimetière. Tout le texte du jeu est en français.
 **Social**
 - Discussion générale, chuchotements (`/w`), réponse rapide (`/r`), `/who`, `/help`.
 - Noms et barres de vie au-dessus des personnages, nombre de joueurs en ligne, messages d'arrivée et de départ.
+- `/ignore` pour ne plus voir un joueur ; modération automatique (flood, liens, répétitions) et outils des
+  maîtres du jeu (`/kick`, `/ban`, `/mute`, `/tp`, `/announce`, `/inspect`…).
+
+**Sécurité**
+- Serveur faisant autorité, anti-triche (vitesse, téléportation, murs), protection contre la force brute, le
+  flood et les paquets malformés, bannissements et journal de sécurité — voir [docs/SECURITE.md](docs/SECURITE.md).
 
 **Interface**
 - Écran de connexion et de création de personnage avec portraits des classes, écran de chargement.
@@ -127,8 +133,13 @@ Variables d'environnement reconnues par `npm start` :
 | `PORT` | `3000` | Port HTTP et WebSocket (`/ws`) |
 | `DATA_DIR` | `server/data` | Dossier de sauvegarde des comptes (`accounts/<nom>.json`, `backups/`) |
 | `STATIC_DIR` | `client/dist` | Dossier du client compilé |
-| `TRUST_PROXY` | `0` | `1` derrière un proxy inverse (nginx, Caddy) : adresse IP des joueurs lue dans `X-Forwarded-For` |
+| `TRUST_PROXY` | `0` | `1` derrière un proxy inverse (nginx) : IP réelle des joueurs via `X-Forwarded-For` |
 | `MAX_PLAYERS` | `100` | Nombre maximal de joueurs connectés |
+| `ADMIN_NAMES` | *(vide)* | Noms des administrateurs (commandes de modération `/mj`), séparés par des virgules |
+| `ALLOWED_ORIGINS` | `https://brumel.mciut.fr` | Origines web autorisées à se connecter (en plus de localhost et de la même origine) |
+
+Anti-triche, limites, bannissements, commandes des maîtres du jeu et journal de sécurité :
+voir **[docs/SECURITE.md](docs/SECURITE.md)** (toutes les variables d'environnement y sont décrites).
 
 Les comptes (un fichier par compte) sont enregistrés toutes les 10 secondes s'ils ont changé, à chaque
 déconnexion et à l'arrêt du serveur (écriture atomique : fichier temporaire puis renommage) ; une sauvegarde
@@ -327,13 +338,17 @@ mettent à jour tout seuls.
 npm test
 ```
 
-- **78 tests unitaires** (`server/test/*.test.js`) : formules, inventaire, validation des déplacements,
-  quêtes, combat, authentification, persistance, HTTP, réseau.
+- **Tests unitaires** (`server/test/*.test.js`) : formules, inventaire, validation des déplacements,
+  quêtes, combat, authentification, persistance, HTTP, réseau, anti-triche, modération.
 - **Test de bout en bout** (`tests/bot.mjs`, environ 25 s) : le serveur démarre sur un port libre avec un
   dossier de données temporaire, deux bots créent leur compte, se voient, discutent et chuchotent ; le premier
   parle à l'Ancien, accepte la quête, achète une potion, marche jusqu'aux plaines à vitesse réelle, tue un
   gluant avec l'attaque automatique, gagne XP, or et progression de quête, se fait corriger en cas de
   *speed hack*, puis se reconnecte en retrouvant toute sa progression.
+- **Test de sécurité de bout en bout** (`tests/security.mjs`, environ 60 s) : un joueur honnête au réseau
+  capricieux ne reçoit aucune correction, puis speed hack, téléportation, traversée de maison, paquets
+  malformés, force brute, flood, noms interdits, commandes MJ par un joueur… sont bloqués, et un tricheur
+  récidiviste est expulsé puis banni automatiquement (voir [docs/SECURITE.md](docs/SECURITE.md)).
 - **Test de charge** : `node tests/soak.mjs --bots 20 --seconds 20` affiche la durée des ticks et la charge
   CPU du serveur.
 
