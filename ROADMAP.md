@@ -20,6 +20,8 @@
 | **P1** | **Carte plus grande avec plus de contenu** | Durée de vie | v0.3 |
 | **P1** | **Groupes** (partage d'XP et de butin), **guildes**, **PvP** | Le « M » de MMO | v0.3 |
 | **P1** | **Artisanat** (récolte, métiers, recettes, stations) | Économie et progression | v0.3 |
+| **P0 v0.3** | **Très grand arbre de compétences** : à chaque niveau, *on choisit* où mettre ses points (fini les améliorations automatiques) ; on commence avec **une seule compétence** (l'attaque de base) ; des **variantes** qui transforment toutes les compétences, même l'attaque de base ; **raccourcis librement assignables** | « Super important » pour les joueurs : c'est ce qui rend chaque personnage unique | v0.3 |
+| **P0 v0.3** | **Artisanat à partir du butin des monstres** : fourrures de loup + autres matériaux → armures du loup ; gelée de gluant → potions, etc. ; **beaucoup plus d'épées** | Plus de mécaniques, chaque monstre a un intérêt | v0.3 |
 | **P0 v0.3** | **Bien plus de variété d'équipement** : « on s'équipe vite et il n'y a rien de mieux ». Paliers d'objets par zone jusqu'au niveau 30, 5 raretés, affixes aléatoires, objets uniques de boss, ensembles, amélioration à la forge (+1 à +10) | Sans objectif d'équipement, on arrête de jouer | v0.3 |
 | **P0 v0.3** | **Échanger son butin simplement** : échange direct entre joueurs, **étals du marché** pour vendre son butin (même hors ligne), banque | Économie entre joueurs, simple et accessible | v0.3 |
 | **P0 v0.3** | **Zones rouges** : JcJ libre ; à la mort (joueur ou monstre), on lâche son butin dans un sac que tout le monde peut ramasser ; en échange, bien plus d'XP et de butin | Tension, risque contre récompense | v0.3 |
@@ -67,6 +69,18 @@ Principe : **simple et accessible** — une infobulle qui compare tout seule, de
 - 6 paliers, chacun avec son allure visuelle : **T1** Brumeval (niv. 1–5) · **T2** Forêt et camp gobelin (5–10) · **T3** Cimetière (10–15) · **T4** Marais et désert (15–20) · **T5** Givreval (20–25) · **T6** Aldmar et zones rouges (25–30).
 - Ensembles de 2 et 4 pièces (donjons, zones rouges) ; **amélioration à la forge** de +1 à +10 avec des pierres de forge trouvées en jeu ; **recyclage** des objets en matériaux.
 - Infobulle de comparaison automatique avec l'objet porté (gains en vert, pertes en rouge).
+
+**Arbre de compétences** (conception détaillée : `docs/design/ARBRE_COMPETENCES.md`)
+- Au niveau 1, chaque classe n'a **que son attaque de base**. Chaque niveau donne **1 point** (plus 1 point bonus tous les 5 niveaux), à placer où l'on veut.
+- Un **très grand arbre par classe** (3 branches par classe, plus une branche commune « Survie » pour l'endurance, la roulade et les déplacements) : nœuds de **nouvelles compétences**, nœuds de **variantes** (au choix, exclusives, qui transforment une compétence, **y compris l'attaque de base et la roulade**, ex. « Frappe → Frappe tournoyante / Frappe saignante / Frappe éclair »), petits bonus passifs, et **clés de voûte** (gros effets avec contrepartie).
+- **Réinitialisation** accessible : gratuite jusqu'au niveau 10, puis contre de l'or chez le Maître des arts. Les personnages existants reçoivent leurs points et une réinitialisation gratuite à la mise à jour.
+- **Raccourcis libres** : barre d'action à 8 emplacements, glisser-déposer depuis le livre de compétences, et toutes les touches réassignables dans les Options.
+- Tout est validé par le serveur (points, prérequis, variantes).
+
+**Artisanat de butin et armes** (conception détaillée : `docs/design/OBJETS_ARTISANAT.md`)
+- Chaque monstre lâche des matériaux utiles : **fourrure de loup** → ensemble du loup ; **gelée de gluant** → potions ; babioles gobelines → bijoux ; os anciens → armure d'os ; chitine de scorpion, fourrure de yéti, cœur de golem → paliers supérieurs et légendaires.
+- 3 métiers simples (**Forge**, **Alchimie**, **Couture**) aux stations du village. Les recettes s'apprennent auprès des PNJ ou en butin. La qualité est aléatoire (Normale, Supérieure, Chef-d'œuvre).
+- **Beaucoup plus d'épées** : plusieurs familles (épée courte, longue, bâtarde, rapière, cimeterre, lame courbe, espadon, épée runique…) qui changent la vitesse, la portée et le critique, sur les 6 paliers, plus des épées uniques de boss.
 
 **Échanges**
 - **Échange direct** : fenêtre à deux, double confirmation, toute modification annule la confirmation, joueurs à moins de 8 m, hors combat.
