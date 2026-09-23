@@ -41,7 +41,7 @@ Règles :
 
 ## 4. Tes tâches — dossiers réservés pour toi
 
-Ordre de priorité (mis à jour le 2026-09-23) : 3ᵉ passe de CX-2 → CX-3, CX-6, CX-9 (en cours) → **CX-12** (nouveau, prioritaire pour la v0.3) → CX-10 → CX-5 → CX-4 → CX-11 → CX-7 → CX-8.
+Ordre de priorité (mis à jour le 2026-09-23, après validation de CX-1, CX-2, CX-3, CX-6 et CX-9) : **CX-3b** → **CX-12** → CX-10 → CX-5 → CX-4 → CX-11 → CX-7 → CX-8.
 
 | Id | Tâche | Livrables | Dossiers réservés |
 |---|---|---|---|
@@ -59,5 +59,7 @@ Ordre de priorité (mis à jour le 2026-09-23) : 3ᵉ passe de CX-2 → CX-3, CX
 | **CX-11** | **Kit « Grotte gelée »** (v0.4, 2ᵉ donjon) — pièces sur la grille de 4 m : `ice_floor`, `ice_wall`, `ice_wall_corner`, `ice_entrance`, `ice_pillar` (stalagmite), `ice_icicles`, `ice_crystal` (émissif bleu), `ice_bridge`, `ice_frozen_warrior` (guerrier pris dans la glace), `ice_chest`. | `client/public/models/ice_*.glb` (+ LOD) | `assets/blender/codex/icecave/` |
 
 | **CX-12** | **Icônes de l'équipement v0.3** (butin v2 : voir `ROADMAP.md` §2 bis) — familles d'icônes 256×256 PNG générées de façon procédurale, **une allure visuelle par palier** (T1 fer brut et cuir usé → T2 acier et fourrure → T3 argent terni et os → T4 bronze patiné et écailles → T5 acier bleui et givre → T6 or noirci, runes d'Aldmar émissives). Pour chaque palier `t1`…`t6` : armes `sword_tN`, `greatsword_tN`, `staff_tN`, `bow_tN` ; main gauche `shield_tN`, `tome_tN`, `quiver_tN` ; armures `helm_<plate|leather|cloth>_tN`, `chest_…_tN`, `gloves_…_tN`, `boots_…_tN` ; bijoux `ring_tN`, `amulet_tN` (21 icônes × 6 = 126). Plus `forge_stone_1`, `forge_stone_2`, `forge_stone_3` (pierres de forge), `loot_bag` (sac de butin des zones rouges), `bank_chest`, `market_stall`, `trade`. La lisibilité à 40 px est obligatoire (planche de contrôle réduite). | `client/public/icons/*.png` | `client/public/icons/` (préfixes ci-dessus), `assets/blender/codex/gear_icons/` |
+
+| **CX-3b** | **Familles d'armes v0.3** — silhouettes immédiatement distinctes, 2 modèles par famille : `eq_shortsword_1..2`, `eq_bastard_1..2`, `eq_rapier_1..2`, `eq_scimitar_1..2`, `eq_curved_1..2`, `eq_runesword_1..2`, espadons lourds `eq_greatsword_3..4`, `eq_axe_1..2`, `eq_mace_1..2`, `eq_spear_1..2`, `eq_dagger_1..2`, `eq_sceptre_1..2`, `eq_tome_1..2`, `eq_crossbow_1..2`, `eq_quiver_1..2`. Mêmes conventions que CX-3, planche de silhouettes. | `client/public/models/eq_*.glb` (+ LOD) | `assets/blender/codex/equipment/` |
 
 L'intégration dans le jeu (code, `shared/data.js`, interface) est faite par Claude : tu livres les fichiers et tu le signales dans ta boîte d'envoi.
