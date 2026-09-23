@@ -34,7 +34,7 @@ export const WALL_MIN_DEPTH = 0.3;
 export const WALL_DEPTH_RATIO = 0.45;
 /** After a correction / server teleport, rejected moves are not flagged until the client is back in sync. */
 export const SYNC_RADIUS_M = 2;
-export const GRACE_MAX_MS = 4000;
+export const GRACE_MAX_MS = 2500;
 /** Moves received this long after death are flagged (earlier ones were in flight). */
 export const DEAD_MOVE_GRACE_MS = 1500;
 

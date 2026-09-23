@@ -53,6 +53,7 @@ class Session {
     this.types = new TypeLimiter();
     this.lastActivity = now;
     this.connectedAt = now;
+    this.lastRateFlag = 0;
     this.authTimer = setTimeout(() => {
       if (!this.player && !this.closed) this.kick('Délai de connexion dépassé. Rechargez la page pour vous reconnecter.');
     }, cfg.authTimeoutMs);
@@ -113,7 +114,11 @@ class Session {
       return;
     }
     if (!this.types.allow(msg.t, now)) {
-      this.security.flag(this.player || this, 'rate', 0.5, { t: msg.t });
+      // dropped; flagged at most once per second (a long network stall can legitimately release a burst)
+      if (now - this.lastRateFlag >= 1000) {
+        this.lastRateFlag = now;
+        this.security.flag(this.player || this, 'rate', 1, { t: msg.t });
+      }
       if (msg.t === C2S.LOGIN || msg.t === C2S.REGISTER) this.authErr('rate_limit');
       return;
     }

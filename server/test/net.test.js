@@ -82,10 +82,10 @@ test('auth errors, pre-auth messages ignored, auth_ok payload', async () => {
   });
 });
 
-test('flooding more than 60 messages per second gets kicked', async () => {
+test('flooding more messages than the global budget (60 / s, burst 120) gets kicked', async () => {
   await withServer(async (srv) => {
     const ws = await connect(srv.port);
-    for (let i = 0; i < 80; i++) ws.sendJson({ t: 'ping', c: i });
+    for (let i = 0; i < 150; i++) ws.sendJson({ t: 'ping', c: i });
     const code = await ws.closed;
     assert.ok(ws.msgs.some((m) => m.t === 'kick' && typeof m.msg === 'string'));
     assert.equal(code, 4000);

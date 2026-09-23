@@ -46,7 +46,9 @@ export const HELP_LINES = [
 export function handleChat(game, p, msg) {
   const text = sanitizeChat(msg.text);
   if (!text) return;
-  if (!allowChat(p.chatTimes, game.now())) {
+  // staff commands are never rate limited (moderating a raid needs many commands in a row)
+  const staffCommand = text[0] === '/' && game.security?.isStaff(p);
+  if (!staffCommand && !allowChat(p.chatTimes, game.now())) {
     chatStrike(game, p, 'chat_flood');
     return game.error(p, 'rate_limit', 'Vous parlez trop vite, patientez un instant.');
   }

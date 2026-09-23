@@ -9,10 +9,12 @@ let sharedCollision = null;
 export const collisionWorld = () => (sharedCollision ||= new CollisionWorld());
 
 export class Bot {
-  constructor(url, label, { keepHistory = true } = {}) {
+  constructor(url, label, { keepHistory = true, origin = 'http://localhost', headers = null } = {}) {
     this.url = url;
     this.label = label;
     this.keepHistory = keepHistory;
+    this.origin = origin;     // browsers always send an Origin (the server refuses Origin-less clients by default)
+    this.headers = headers;   // e.g. { 'X-Forwarded-For': ip } to simulate players behind a trusted proxy
     this.history = [];         // every message received (when keepHistory)
     this.count = 0;            // messages received
     this.waiters = [];
@@ -27,8 +29,7 @@ export class Bot {
 
   connect() {
     return new Promise((resolve, reject) => {
-      // browsers always send an Origin; the server refuses Origin-less clients unless ALLOW_NO_ORIGIN=1
-      const ws = new WebSocket(this.url, { origin: this.origin || 'http://localhost' });
+      const ws = new WebSocket(this.url, { origin: this.origin, ...(this.headers ? { headers: this.headers } : {}) });
       this.ws = ws;
       ws.on('open', () => resolve(this));
       ws.on('error', (err) => { if (ws.readyState !== WebSocket.OPEN) reject(err); });

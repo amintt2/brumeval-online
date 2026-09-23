@@ -49,7 +49,7 @@ export function loadSecurityConfig(overrides = {}, env = process.env) {
     idleKickMs: Math.max(1, num(env.IDLE_KICK_MIN, 30)) * 60_000,
     /** Global message budget per connection: sustained rate and burst (token bucket). Beyond → kick. */
     globalRate: num(env.MSG_RATE_PER_S, 60),
-    globalBurst: num(env.MSG_BURST, 75),
+    globalBurst: num(env.MSG_BURST, 120),
 
     // ---- authentication
     loginFreeFailsIp: int(env.LOGIN_FREE_FAILS_IP, 8),

@@ -39,7 +39,7 @@ export class TokenBucket {
  * (e.g. `dodge`, `sprint`) use `default`.
  */
 export const TYPE_LIMITS = {
-  move: [30, 70],
+  move: [30, 100],
   ability: [12, 24],
   stop: [10, 20],
   chat: [3, 8],
