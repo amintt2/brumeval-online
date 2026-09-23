@@ -55,11 +55,16 @@ vec2 equirect(vec3 d) {
 }
 vec3 hdrSample(vec3 d) {
   vec2 uv = equirect(d);
+  // explicit gradients: the atan() wrap-around would otherwise pick the smallest mip along one column (a visible
+  // seam line), and implicit derivatives are undefined inside the branches below
+  vec2 uvW = vec2(fract(uv.x + 0.5), uv.y);
+  vec2 gx = dFdx(uv), gy = dFdy(uv), gxW = dFdx(uvW), gyW = dFdy(uvW);
+  if (dot(gxW, gxW) + dot(gyW, gyW) < dot(gx, gx) + dot(gy, gy)) { gx = gxW; gy = gyW; }
   vec3 c = vec3(0.0);
-  if (uHdrW.x > 0.0) c += texture2D(uHdr0, uv).rgb * uHdrW.x;
-  if (uHdrW.y > 0.0) c += texture2D(uHdr1, uv).rgb * uHdrW.y;
-  if (uHdrW.z > 0.0) c += texture2D(uHdr2, uv).rgb * uHdrW.z;
-  if (uHdrW.w > 0.0) c += texture2D(uHdr3, uv).rgb * uHdrW.w;
+  if (uHdrW.x > 0.0) c += textureGrad(uHdr0, uv, gx, gy).rgb * uHdrW.x;
+  if (uHdrW.y > 0.0) c += textureGrad(uHdr1, uv, gx, gy).rgb * uHdrW.y;
+  if (uHdrW.z > 0.0) c += textureGrad(uHdr2, uv, gx, gy).rgb * uHdrW.z;
+  if (uHdrW.w > 0.0) c += textureGrad(uHdr3, uv, gx, gy).rgb * uHdrW.w;
   float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
   return l > uHdrClamp ? c * (uHdrClamp / l) : c;
 }

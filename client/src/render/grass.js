@@ -7,8 +7,8 @@
 import * as THREE from 'three';
 import { WIND, WIND_PARS, BENDER_PARS } from './wind.js';
 
-const TILE = 16;
-const MAX_PER_TILE = 3600; // clumps per tile at full density (≈ 14 clumps / m², 3 blades each)
+const TILE = 24;
+const MAX_PER_TILE = 8100; // clumps per 24 m tile at full density (≈ 14 clumps / m², 3 blades each)
 
 const GRASS_VERT_PARS = /* glsl */ `
 ${WIND_PARS}

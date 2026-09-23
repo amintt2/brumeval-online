@@ -110,9 +110,9 @@ const num = (v, lo, hi, d) => (Number.isFinite(+v) ? Math.min(hi, Math.max(lo, +
 export function parseFlipbookEntry(name, e) {
   if (!e || typeof e !== 'object' || typeof e.file !== 'string' || !e.file) return null;
   if (!/^[\w./-]+$/.test(e.file) || e.file.includes('..')) return null;
-  const cols = Math.round(num(e.cols, 1, 64, 0));
-  const rows = Math.round(num(e.rows, 1, 64, 0));
-  if (!cols || !rows) return null;
+  if (!(+e.cols >= 1) || !(+e.rows >= 1)) return null;
+  const cols = Math.round(num(e.cols, 1, 64, 1));
+  const rows = Math.round(num(e.rows, 1, 64, 1));
   const frames = Math.round(num(e.frames, 1, cols * rows, cols * rows));
   const blend = String(e.blending || 'additive').toLowerCase();
   return {

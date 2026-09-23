@@ -21,7 +21,7 @@ const SMALL = new Set(['flowers', 'bush', 'crate', 'barrel', 'gravestone']);
 const SMALL_DIST = 105;
 const SINK = { rock_a: 0.12, rock_b: 0.15, tree_pine: 0.05, tree_oak: 0.05, tree_dead: 0.05, bush: 0.05, gravestone: 0.04 };
 const GLOW_TYPES = { lamp_post: { color: '#ffb25a', size: 1.7, light: 26, flicker: 0.08 }, campfire: { color: '#ff7a24', size: 3.0, light: 60, flicker: 0.35 } };
-const CHUNK = 64;
+const CHUNK = 96;
 /** LOD switch distances (metres, × the view-distance setting). */
 const LOD_DIST = [45, 95];
 

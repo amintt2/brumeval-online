@@ -230,7 +230,8 @@ function chunkGeometry(data, x0, z0, wx, wz, cells, skirt) {
   for (let r = 0; r < ring.length; r++) {
     const a = ring[r], b = ring[(r + 1) % ring.length];
     const sa = skirtStart + r, sb = skirtStart + ((r + 1) % ring.length);
-    idx.push(a, sa, b, b, sa, sb);
+    // both windings: a crack can be seen from either side of the seam
+    idx.push(a, sa, b, b, sa, sb, a, b, sa, b, sb, sa);
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -290,7 +291,7 @@ export class Terrain {
         const lods = [];
         for (let l = 0; l < 3; l++) {
           const cells = Math.max(1, Math.round(ic / (1 << l)));
-          const geo = chunkGeometry(d, x0, z0, wx, wz, cells, 1.5 + l * 1.5);
+          const geo = chunkGeometry(d, x0, z0, wx, wz, cells, 3 + l * 4); // skirts deep enough for steep LOD seams
           const m = new THREE.Mesh(geo, this.material);
           m.name = `terrain_${ci}_${cj}_lod${l}`;
           m.receiveShadow = true;
