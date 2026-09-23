@@ -76,7 +76,7 @@ Principe : **simple et accessible** — une infobulle qui compare tout seule, de
 - **« Pas de don pour ça »** : les nœuds de sa classe, de Survie et des passerelles voisines coûtent 1 point ; ceux d'une autre classe coûtent **2 points**, et leurs compétences subissent une pénalité d'**Inaptitude** (−25 % de puissance, +25 % de coût, +20 % de recharge), que certaines clés de voûte réduisent (« Touche-à-tout »). Les armes requises suivent les compétences (une compétence d'épée demande une arme de mêlée).
 - Types de nœuds : **nouvelles compétences**, **variantes** (au choix, exclusives, qui transforment une compétence, **y compris l'attaque de base et la roulade**, ex. « Frappe → Frappe tournoyante / Frappe saignante / Frappe éclair »), petits bonus passifs, et **clés de voûte** (gros effets avec contrepartie).
 - L'équipement n'est plus réservé à une classe : les armures ont un « poids » (plaques = défense mais endurance plus lente, tissu = mana et vitesse d'incantation, cuir = équilibré).
-- **Réinitialisation** accessible : gratuite jusqu'au niveau 10, puis contre de l'or chez le Maître des arts. Les personnages existants reçoivent leurs points et une réinitialisation gratuite à la mise à jour.
+- **Pas de réinitialisation de l'arbre : la Renaissance.** Au niveau 30, on peut renaître au pied de l'Arbre-Brume : retour au niveau 1, tous les points rendus (il faut tout rechoisir), mais on garde son équipement et son or, et on gagne des bonus permanents cumulables (jusqu'à 5 fois) : +15 % d'XP par Renaissance, Inaptitude réduite, une classe d'affinité dont les nœuds coûtent 1 point, +1 point bonus, un titre et une aura. Détails : `docs/design/DECISIONS.md`.
 - **Raccourcis libres** : barre d'action à 8 emplacements, glisser-déposer depuis le livre de compétences, et toutes les touches réassignables dans les Options.
 - Tout est validé par le serveur (points, prérequis, variantes).
 
@@ -87,7 +87,7 @@ Principe : **simple et accessible** — une infobulle qui compare tout seule, de
 
 **Échanges**
 - **Échange direct** : fenêtre à deux, double confirmation, toute modification annule la confirmation, joueurs à moins de 8 m, hors combat.
-- **Étals du marché** (place du marché de Brumeval, puis Port-Salin) : on dépose ses objets avec un prix, ils se vendent **même quand on est hors ligne** ; recherche et filtres (emplacement, rareté, niveau, classe, prix) ; taxe de 5 % pour retirer de l'or du jeu ; l'argent arrive à la banque.
+- **Étals du marché** (place du marché de Brumeval, puis Port-Salin) : on dépose ses objets avec un prix libre, ils se vendent **même quand on est hors ligne** ; recherche et filtres ; **marché intelligent** qui s'équilibre tout seul : historique et prix suggéré (médiane des ventes récentes), alerte si le prix est aberrant, **ordres d'achat** associés automatiquement, prix de rachat des marchands qui baissent quand un objet inonde le marché ; taxe de 5 % ; l'argent arrive à la banque.
 - **Banque** : coffre personnel en ville (40 emplacements, extensible). Indispensable avec les zones rouges.
 
 **Zones rouges**

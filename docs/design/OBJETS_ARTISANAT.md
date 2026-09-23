@@ -1,5 +1,8 @@
 # Objets et artisanat — butin v2, épées, forge, métiers (v0.3)
 
+> ⚠️ **Décisions du 23/09 prioritaires** : voir [`DECISIONS.md`](DECISIONS.md) (pas de roulade au niveau 1, marché intelligent à prix libres, **pas de réinitialisation : Renaissance au niveau 30**).
+
+
 > **Document final de conception** (synthèse de `docs/design/drafts/items.*` et `crafting.*`, gardés en annexe).
 > Données : `docs/design/items.json` (familles, bases, légendaires, consommables, ensembles, séries, affixes, raretés,
 > tables de butin, forge, recyclage) et `docs/design/crafting.json` (matériaux, récolte, métiers, recettes, ensembles

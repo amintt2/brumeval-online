@@ -1,0 +1,30 @@
+# Décisions du joueur-producteur — prioritaires sur les autres documents
+
+Ces décisions ont été prises par l'utilisateur le 23/09/2026 après lecture de la conception v0.3. **Elles remplacent** les passages contraires de `ARBRE_COMPETENCES.md` et de `OBJETS_ARTISANAT.md`.
+
+## 1. Pas de roulade au niveau 1
+On garde la conception : au niveau 1, seulement l'attaque de base. La Roulade s'apprend avec le premier point (niveau 2), comme les autres Fondamentaux.
+
+## 2. Prix libres entre joueurs, avec un marché « intelligent » qui s'équilibre tout seul
+- Chez les marchands PNJ, un objet fabriqué se revend pour la valeur de ses matériaux (aucune création d'or).
+- Entre joueurs, le prix est libre, mais le marché aide à trouver le juste prix :
+  - **Historique des prix** : pour chaque objet (base + rareté + palier), prix médian des ventes des 7 derniers jours, avec un petit graphique.
+  - **Prix suggéré** au moment de mettre en vente (médiane récente, avec une fourchette basse et haute). Un prix hors fourchette (moins de 30 % ou plus de 300 % de la médiane) demande une confirmation, pour éviter les erreurs et les arnaques.
+  - **Ordres d'achat** : un acheteur fixe un prix maximum pour un objet, et le serveur les associe automatiquement aux annonces compatibles, même quand les deux joueurs sont hors ligne.
+  - **Prix de rachat PNJ dynamiques** : si beaucoup d'exemplaires d'un objet ont été revendus au marchand récemment, son prix de rachat baisse temporairement, puis remonte.
+  - **Garde-fous** : taxe de 5 % sur les ventes et frais de dépôt de 1 % non remboursables (contre le spam d'annonces), nombre d'annonces limité par joueur, médiane robuste qui ignore les ventes isolées et les petits volumes (anti-manipulation), et toutes les transactions sont validées par le serveur.
+
+## 3. Pas de réinitialisation de l'arbre : la **Renaissance**
+La réinitialisation contre de l'or chez le Maître des arts est **supprimée**, ainsi que la gratuité jusqu'au niveau 10. À la place :
+- **La Renaissance** est disponible au **niveau 30**, par un rituel au pied de l'Arbre-Brume.
+- **Effets** : le personnage revient au **niveau 1** et **tous ses points sont rendus**, y compris les Fondamentaux : il doit **tout rechoisir** en remontant. Il garde son équipement, son or, son inventaire, sa banque, ses quêtes terminées et ses métiers. L'équipement dont le niveau requis est trop haut ne peut plus être porté jusqu'à ce qu'il ait regagné le niveau.
+- **Bonus de Renaissance**, cumulables et permanents, jusqu'à 5 Renaissances (« Né de la Brume I à V ») :
+  - **+15 % d'XP permanents** par Renaissance (+75 % à la cinquième).
+  - **Inaptitude réduite** de 5 points par Renaissance : −25 % → −20 % → … → 0 % à la cinquième.
+  - **Classe d'affinité** : dès la 2ᵉ Renaissance, on choisit une autre classe dont les nœuds ne coûtent plus que **1 point** au lieu de 2 (une nouvelle classe tous les 2 cycles).
+  - **+1 point de compétence** bonus par Renaissance.
+  - Un **titre** et une **aura visuelle** (brume spectrale) qui montrent le nombre de Renaissances.
+- Les personnages existants (v0.2) n'ont pas besoin de réinitialisation : ils reçoivent leurs points pour leur niveau actuel et la migration place d'office les Fondamentaux qu'ils utilisaient déjà (roulade, sprint).
+
+## 4. Touches (en attente de confirmation)
+Par défaut : Saut sur C, Garde sur E (maintenue). Toutes les touches restent réassignables dans les Options.
