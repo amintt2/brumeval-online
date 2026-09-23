@@ -29,7 +29,7 @@
 ## 2. Ce qu'on attend d'un MMO : la liste étendue
 
 **P1 — v0.3 « Le monde s'agrandit »**
-- Carte de 800 × 800 m : 5 nouvelles régions (Marais de Brumenoire, Pics de Givreval, Désert de Sable-Rouge, Ruines d'Aldmar, Côte de Port-Salin), une 2ᵉ ville, des points d'intérêt, des coffres cachés
+- **Monde ouvert immense et varié à la Zelda** (au moins 4 × 4 km, extensible à 8 × 8 km, chargé par morceaux), une quinzaine de régions : **désert à palmiers et oasis au sud-ouest** (ville du désert, dunes pour le « char à sable »), **prairies** centrales dorées, **côtes** sud et est (plages, lagons turquoise, îles, Port-Salin), **grande forêt** et **bois perdus** dans la brume, pics enneigés de Givreval, volcan, marais de Brumenoire, canyons, ruines d'Aldmar, lacs et rivières jusqu'à la mer, l'Arbre-Brume visible de partout. Le relief (sommets, plateaux, vallées, falaises) est dessiné avec une vraie carte topographique. Le village de Brumeval devient la région de départ. **Nuages volumétriques.** Conception détaillée : `docs/world/MONDE.md` et `docs/world/carte_monde.png`
 - Pierres de téléportation (voyage rapide) + carte du monde (touche M) avec brouillard de guerre
 - Météo dynamique : pluie, orage, neige en montagne, tempête de sable, brume matinale
 - Bestiaire : sanglier, araignée, scorpion, loup de givre, yéti, rôdeur des marais, chaman gobelin, archer squelette, bandit, spectre, troll ; boss liche, sorcière des marais, géant de givre, ver des sables
