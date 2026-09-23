@@ -41,7 +41,7 @@ export function gearAt(cls, level) {
 }
 
 /** Per-class dodge skill (probability to roll a readable attack in time). Same for all classes. */
-const DODGE = { tele: 0.75, proj: 0.6, melee: 0.3 };
+export const DODGE = { tele: 0.75, proj: 0.6, melee: 0.3 };
 /** Probability that a ranged player escapes a monster that reached melee range (roll away and keep kiting). */
 const KITE_SKILL = 0.6;
 
