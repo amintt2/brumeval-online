@@ -9,12 +9,15 @@ let sharedCollision = null;
 export const collisionWorld = () => (sharedCollision ||= new CollisionWorld());
 
 export class Bot {
-  constructor(url, label, { keepHistory = true } = {}) {
-    this.url = url;
+  constructor(url, label, { keepHistory = true, batch = true } = {}) {
+    // `batch` asks the server to coalesce the messages of one tick into a single `batch` frame (unpacked here).
+    this.url = batch ? `${url}${url.includes('?') ? '&' : '?'}batch=1` : url;
     this.label = label;
     this.keepHistory = keepHistory;
     this.history = [];         // every message received (when keepHistory)
     this.count = 0;            // messages received
+    this.frames = 0;           // WebSocket frames received (a batch frame carries several messages)
+    this.bytes = 0;            // payload bytes received (after permessage-deflate decompression)
     this.waiters = [];
     this.self = null;
     this.id = 0;
@@ -41,9 +44,25 @@ export class Bot {
     });
   }
 
+  /** Bytes read on the TCP socket so far (what really crossed the network, compressed). */
+  wireBytes() {
+    return this.ws?._socket?.bytesRead ?? this.bytes;
+  }
+
   onMessage(data) {
+    this.frames++;
+    this.bytes += data.length;
     let msg;
     try { msg = JSON.parse(data.toString()); } catch { return; }
+    if (msg && msg.t === 'batch' && Array.isArray(msg.m)) {
+      for (const m of msg.m) this.dispatch(m);
+      return;
+    }
+    this.dispatch(msg);
+  }
+
+  dispatch(msg) {
+    if (!msg || typeof msg !== 'object') return;
     this.count++;
     this.apply(msg);
     if (this.keepHistory) this.history.push(msg);
@@ -73,7 +92,7 @@ export class Bot {
           if (cur) Object.assign(cur, e);
           else this.ents.set(e.id, { ...e });
         }
-        for (const id of msg.gone) this.ents.delete(id);
+        for (const id of msg.gone || []) this.ents.delete(id);
         break;
       case 'correct':
         this.corrections++;
