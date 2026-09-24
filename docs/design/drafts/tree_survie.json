@@ -43,7 +43,7 @@
     "mobilite",
     "defense"
    ],
-   "defaultKey": "Space",
+   "defaultKey": "ShiftLeft (appui court)",
    "weapon": null,
    "souls": "Engagement total pendant 0,55 s (aucune action, direction fixée). Les i-frames annulent tout coup résolu dans la fenêtre (télégraphes, projectiles, coups légers). Aucune résistance au vacillement pendant la roulade. 3 roulades d'affilée vident une jauge de 100."
   },
@@ -63,7 +63,7 @@
    "tags": [
     "mobilite"
    ],
-   "defaultKey": "ShiftLeft",
+   "defaultKey": "ShiftLeft (maintenir)",
    "weapon": null,
    "souls": "Utilisable en combat. Toute attaque, garde, charge ou saut coupe le sprint. La régénération d'endurance est bloquée pendant le sprint. Les attaques de base à distance restent impossibles en sprint (règle v0.2 : moins de 40 % de la vitesse)."
   },
@@ -88,7 +88,7 @@
     "mobilite",
     "defense"
    ],
-   "defaultKey": "KeyC",
+   "defaultKey": "Space",
    "weapon": null,
    "souls": "Aucune i-frame : en l'air, on esquive seulement les attaques marquées « rasantes » (lo). Direction et vitesse figées au décollage (pas de contrôle en l'air). Pas d'escalade : le saut ne franchit ni mur, ni clôture, ni falaise (aucune composante verticale côté serveur). Touché en l'air = vacillement 0,4 s à l'atterrissage."
   },
@@ -272,7 +272,7 @@
    "type": "skill",
    "ability": "roulade",
    "name": "Roulade",
-   "desc": "Débloque la Roulade d'esquive (Espace).",
+   "desc": "Débloque la Roulade d'esquive.",
    "x": -65,
    "y": -89,
    "fondamental": true,
@@ -325,7 +325,7 @@
    "type": "skill",
    "ability": "sprint",
    "name": "Sprint",
-   "desc": "Débloque le Sprint (Maj).",
+   "desc": "Débloque le Sprint.",
    "x": 105,
    "y": 34,
    "fondamental": true,

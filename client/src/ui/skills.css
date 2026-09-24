@@ -152,6 +152,7 @@
 .bv-sp-fonds kbd { font-size: 0.7em; justify-self: start; }
 .bv-sp-guide { display: flex; align-items: center; gap: 0.35em; color: #ffe08a !important; }
 .bv-sp-guide .bv-glyph { width: 1em; height: 1em; fill: #ffd45a; }
+.bv-sp-notes { margin: 0.35em 0 0; padding-left: 1.1em; display: grid; gap: 0.25em; }
 .bv-sp-btns { display: flex; justify-content: flex-end; gap: 0.5em; margin-top: 0.55em; }
 
 /* ------------------------------------------------------------------ tree screen */

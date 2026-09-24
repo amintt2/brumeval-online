@@ -591,22 +591,21 @@ ${['warrior', 'mage', 'ranger'].map((c) => `| ${({ warrior: 'Guerrier', mage: 'M
 
 ### 14.2 Validation serveur et protocole
 
-- État persistant : \`skills: { ver, alloc: { nodeId: rang }, gift: ['fond_roulade', 'fond_sprint'], respecFree, loadout: [8] }\`.
+- État persistant : \`skills: { ver, alloc: { nodeId: rang }, gift: ['fond_roulade', 'fond_sprint'], legacyFloor, rb, affinity, loadout: [8] }\`.
 - \`validateTree(cls, level, alloc, gift)\` vérifie l'état complet : ids, rangs, niveau minimum, points, groupe
   exclusif, porte, points dans la région, connexité, variante de capacité connue (implémentation de référence :
   \`docs/design/tools/lib/treelib.mjs\`). Codes : \`tree_unknown\`, \`tree_points\`, \`tree_gate\`, \`tree_link\`,
   \`tree_exclusive\`, \`tree_rank\`, \`tree_level\`, \`tree_req\`, \`tree_variant\`, \`tree_combat\`, \`tree_gold\`, \`tree_npc\`, \`loadout_bad\`.
 - Messages (additifs) : C2S \`skill_alloc { add: [{ id, r? }] }\` (tout ou rien), \`skill_respec { mode, id?, npc? }\`,
   \`loadout { slots }\`, \`ability { slot, tg?, x?, z?, ph?: 'start' | 'release' }\`, \`jump { dx, dz }\`, \`guard { on }\`,
-  \`settings { keys }\` ; S2C \`skills { pts, spent, alloc, gift, respecFree, loadout }\`, FX \`jump\`, \`land\`, \`guard\`,
+  \`settings { keys }\` ; S2C \`skills { pts, spent, alloc, gift, loadout }\`, FX \`jump\`, \`land\`, \`guard\`,
   \`block\`, \`parry\`, \`perfect\`, \`charge\`, \`charged\`, \`vacille\`, \`guard_break\`, télégraphes \`lo\`/\`nb\`/\`mag\`.
 - Limites : 5 messages d'arbre par seconde, 64 nœuds par message (au-delà : \`security.flag(player, 'tree_spam', 1)\`).
   Le serveur ne fait jamais confiance aux valeurs du client : il résout la capacité et vérifie l'arme à chaque usage.
 
-### 14.3 Réinitialisation et migration
+### 14.3 Pas de réinitialisation ; migration
 
-- Gratuite jusqu'au niveau ${tree.rules.respec.freeUntilLevel} ; ensuite chez le ${tree.rules.respec.npc} : tout l'arbre ${tree.rules.respec.fullGold} po,
-  une feuille ${tree.rules.respec.leafGold} po. Interdite en combat, mort ou zone rouge.
+- Aucune réinitialisation (DECISIONS.md §3) : la Renaissance, au niveau 30, rend tous les points.
 - **Personnages v0.2** : ${tree.rules.migration.text}
 
 | Classe | Préréglage « Reprendre mon style » | Points |

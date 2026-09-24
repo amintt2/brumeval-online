@@ -734,29 +734,32 @@
    "ccImmunityS": 8,
    "bossNeverStunned": true
   },
-  "respec": {
-   "freeUntilLevel": 10,
-   "npc": "npc_master (Maître des arts)",
-   "fullGold": "25 × niveau",
-   "leafGold": "5 × niveau × coût du nœud",
-   "forbidden": [
-    "combat",
-    "mort",
-    "zone rouge"
-   ]
-  },
   "migration": {
    "gift": [
     "fond_roulade",
     "fond_sprint"
    ],
-   "respecFree": 1,
    "legacyFloor": {
     "warrior": 4,
-    "mage": 5,
+    "mage": 6,
     "ranger": 6
    },
-   "text": "Roulade et Sprint offerts (ils comptent pour la porte), une réinitialisation gratuite, un plancher de points (Guerrier 4, Mage 5, Rôdeur 6 : le coût du préréglage) tant que points(niveau) est plus petit, et le préréglage « Reprendre mon style » appliqué automatiquement à la première connexion : chacun retrouve ses 4 compétences v0.2."
+   "text": "Roulade et Sprint placés d'office et offerts (ils comptent pour la porte, sans coûter de point : un avantage permanent des vétérans), un plancher de points (Guerrier 4, Mage 6, Rôdeur 6 : le coût du préréglage) tant que points(niveau) est plus petit, et le préréglage « Reprendre mon style » appliqué automatiquement à la première connexion : chacun retrouve ses 4 compétences v0.2 (le Mage garde un Soin de 35 % avec la variante Rémanence). Pas de réinitialisation : la Renaissance au niveau 30 la remplace.",
+   "notes": {
+    "warrior": [
+     "Frappe puissante, Cri de guerre et Tourbillon sont conservés (Tourbillon plus fort : ×1,9).",
+     "Un coup télégraphié vous fait vaciller 0,4 s : esquivez-le ou bloquez-le."
+    ],
+    "mage": [
+     "Soin : la variante Rémanence vous est offerte (35 % des PV en 6 s, sans incantation, recharge 18 s).",
+     "Nova de givre : 2 charges de Froid (−30 % de déplacement au lieu de −50 %), mais plus de dégâts (×1,3).",
+     "Un coup télégraphié vous fait vaciller 0,4 s : esquivez-le ou bloquez-le."
+    ],
+    "ranger": [
+     "Tir perçant, Tir rapide et Pluie de flèches sont conservés.",
+     "Un coup télégraphié vous fait vaciller 0,4 s : esquivez-le ou bloquez-le."
+    ]
+   }
   },
   "loadout": {
    "slots": 8,
@@ -767,9 +770,9 @@
    }
   },
   "keys": {
-   "roulade": "Space",
+   "roulade": "ShiftLeft (appui court)",
    "sprint": "ShiftLeft (maintenir)",
-   "saut": "KeyC",
+   "saut": "Space",
    "garde": "KeyE (maintenir)",
    "attaque_chargee": "maintenir l'attaque de base",
    "slots": "Digit1..Digit8",
@@ -780,7 +783,7 @@
   },
   "damageFormula": "dégâts = atk × puissance × (0,85..1,15) × crit × K / (K + déf), K = 60 + 6 × max(0, niveau de l’attaquant − 10)",
   "guide": {
-   "text": "À chaque montée de niveau jusqu'au niveau 10, la fenêtre propose le prochain nœud du parcours conseillé de la classe (un clic : « Apprendre »). Le joueur peut toujours choisir autre chose ; le parcours reprend au nœud suivant encore libre. Réinitialisation gratuite jusqu'au niveau 10.",
+   "text": "À chaque montée de niveau jusqu'au niveau 10, la fenêtre propose le prochain nœud du parcours conseillé de la classe (un clic : « Apprendre »). Le joueur peut toujours choisir autre chose ; le parcours reprend au nœud suivant encore libre. Pas de réinitialisation : chaque point est définitif jusqu'à la Renaissance (niveau 30).",
    "paths": {
     "warrior": [
      {
@@ -1183,7 +1186,7 @@
     "mobilite",
     "defense"
    ],
-   "defaultKey": "Space",
+   "defaultKey": "ShiftLeft (appui court)",
    "weapon": null,
    "souls": "Engagement total pendant 0,55 s (aucune action, direction fixée). Les i-frames annulent tout coup résolu dans la fenêtre (télégraphes, projectiles, coups légers). Aucune résistance au vacillement pendant la roulade. 3 roulades d'affilée vident une jauge de 100.",
    "icon": "ab_roulade"
@@ -1204,7 +1207,7 @@
    "tags": [
     "mobilite"
    ],
-   "defaultKey": "ShiftLeft",
+   "defaultKey": "ShiftLeft (maintenir)",
    "weapon": null,
    "souls": "Utilisable en combat. Toute attaque, garde, charge ou saut coupe le sprint. La régénération d'endurance est bloquée pendant le sprint. Les attaques de base à distance restent impossibles en sprint (règle v0.2 : moins de 40 % de la vitesse).",
    "st": 0,
@@ -1231,7 +1234,7 @@
     "mobilite",
     "defense"
    ],
-   "defaultKey": "KeyC",
+   "defaultKey": "Space",
    "weapon": null,
    "souls": "Aucune i-frame : en l'air, on esquive seulement les attaques marquées « rasantes » (lo). Direction et vitesse figées au décollage (pas de contrôle en l'air). Pas d'escalade : le saut ne franchit ni mur, ni clôture, ni falaise (aucune composante verticale côté serveur). Touché en l'air = vacillement 0,4 s à l'atterrissage.",
    "icon": "ab_saut"
@@ -3683,7 +3686,7 @@
    "branch": "fondamentaux",
    "type": "skill",
    "name": "Roulade",
-   "desc": "Débloque la Roulade d'esquive (Espace).",
+   "desc": "Débloque la Roulade d'esquive.",
    "x": -65,
    "y": -89,
    "links": [
@@ -3776,7 +3779,7 @@
    "branch": "fondamentaux",
    "type": "skill",
    "name": "Sprint",
-   "desc": "Débloque le Sprint (Maj).",
+   "desc": "Débloque le Sprint.",
    "x": 105,
    "y": 34,
    "links": [
@@ -15279,9 +15282,10 @@
      "ma_fireball",
      "ma_v_bolt_feu",
      "ma_frost_nova",
-     "ma_heal"
+     "ma_heal",
+     "ma_v_heal_remanence"
     ],
-    "cost": 5
+    "cost": 6
    },
    "ranger": {
     "nodes": [

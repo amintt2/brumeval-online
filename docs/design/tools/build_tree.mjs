@@ -714,19 +714,32 @@ const rules = {
     stRegenDelayMinMs: 500, sprintMinStPerS: 10, sprintMaxMult: 1.65, cdrMax: 0.3, equilibreMax: 60, resistMax: 0.6,
     lifestealMax: 0.09, rangedMoveMax: 0.4, guardFullBlockNeedsShield: true, ccImmunityS: 8, bossNeverStunned: true,
   },
-  respec: {
-    freeUntilLevel: 10, npc: 'npc_master (Maître des arts)', fullGold: '25 × niveau', leafGold: '5 × niveau × coût du nœud',
-    forbidden: ['combat', 'mort', 'zone rouge'],
-  },
+  // DECISIONS.md §3: no tree reset (no free reset, no gold respec): the Renaissance at level 30 replaces it
   migration: {
     gift: ['fond_roulade', 'fond_sprint'],
-    respecFree: 1,
     legacyFloor: 5,
-    text: "Roulade et Sprint offerts (ils comptent pour la porte), une réinitialisation gratuite, un plancher de points (Guerrier 4, Mage 5, Rôdeur 6 : le coût du préréglage) tant que points(niveau) est plus petit, et le préréglage « Reprendre mon style » appliqué automatiquement à la première connexion : chacun retrouve ses 4 compétences v0.2.",
+    text: "Roulade et Sprint placés d'office et offerts (ils comptent pour la porte, sans coûter de point : un avantage permanent des vétérans), un plancher de points (Guerrier 4, Mage 5, Rôdeur 6 : le coût du préréglage) tant que points(niveau) est plus petit, et le préréglage « Reprendre mon style » appliqué automatiquement à la première connexion : chacun retrouve ses 4 compétences v0.2 (le Mage garde un Soin de 35 % avec la variante Rémanence). Pas de réinitialisation : la Renaissance au niveau 30 la remplace.",
+    // first-login card of a migrated character (client/src/ui/skillhints.js, which adds the controls line with the
+    // real bindings): what changed for its v0.2 abilities
+    notes: {
+      warrior: [
+        'Frappe puissante, Cri de guerre et Tourbillon sont conservés (Tourbillon plus fort : ×1,9).',
+        'Un coup télégraphié vous fait vaciller 0,4 s : esquivez-le ou bloquez-le.',
+      ],
+      mage: [
+        'Soin : la variante Rémanence vous est offerte (35 % des PV en 6 s, sans incantation, recharge 18 s).',
+        'Nova de givre : 2 charges de Froid (−30 % de déplacement au lieu de −50 %), mais plus de dégâts (×1,3).',
+        'Un coup télégraphié vous fait vaciller 0,4 s : esquivez-le ou bloquez-le.',
+      ],
+      ranger: [
+        'Tir perçant, Tir rapide et Pluie de flèches sont conservés.',
+        'Un coup télégraphié vous fait vaciller 0,4 s : esquivez-le ou bloquez-le.',
+      ],
+    },
   },
   loadout: { slots: 8, defaults: { 0: 'attaque de base', 4: 'item:potion_hp_s', 5: 'item:potion_mp_s' } },
   keys: {
-    roulade: 'Space', sprint: 'ShiftLeft (maintenir)', saut: 'KeyC', garde: 'KeyE (maintenir)', attaque_chargee: "maintenir l'attaque de base",
+    roulade: 'ShiftLeft (appui court)', sprint: 'ShiftLeft (maintenir)', saut: 'Space', garde: 'KeyE (maintenir)', attaque_chargee: "maintenir l'attaque de base",
     slots: 'Digit1..Digit8', arbre: 'KeyN', livre: 'KeyK', carte: 'KeyM', cible: 'Tab',
   },
   damageFormula: 'dégâts = atk × puissance × (0,85..1,15) × crit × K / (K + déf), K = 60 + 6 × max(0, niveau de l’attaquant − 10)',
@@ -878,7 +891,7 @@ for (const [id, name] of Object.entries(RENAME_NODE)) {
 }
 // (accessibilité) Parcours conseillé des niveaux 2 à 10, un par classe (bouton « Suivre le parcours conseillé »).
 tree.rules.guide = {
-  text: "À chaque montée de niveau jusqu'au niveau 10, la fenêtre propose le prochain nœud du parcours conseillé de la classe (un clic : « Apprendre »). Le joueur peut toujours choisir autre chose ; le parcours reprend au nœud suivant encore libre. Réinitialisation gratuite jusqu'au niveau 10.",
+  text: "À chaque montée de niveau jusqu'au niveau 10, la fenêtre propose le prochain nœud du parcours conseillé de la classe (un clic : « Apprendre »). Le joueur peut toujours choisir autre chose ; le parcours reprend au nœud suivant encore libre. Pas de réinitialisation : chaque point est définitif jusqu'à la Renaissance (niveau 30).",
   paths: {
     warrior: [
       { level: 2, nodes: ['fond_roulade'], why: 'Esquiver les coups télégraphiés.' },
@@ -921,7 +934,8 @@ tree.meta.criticChanges = criticChanges;
 // migration presets: 3rd Fondamental + cheapest path to the v0.2 abilities (+ Trait de feu for mages)
 const V02 = {
   warrior: { fond: 'fond_garde', targets: ['gu_coup_puissant', 'gu_ga_cri', 'gu_be_tourbillon'] },
-  mage: { fond: 'fond_saut', targets: ['ma_fireball', 'ma_v_bolt_feu', 'ma_frost_nova', 'ma_heal'] },
+  // the Mage also gets Rémanence: its v0.2 Soin healed 35 % (the v0.3 Soin heals 25 %), nobody feels nerfed at first login
+  mage: { fond: 'fond_saut', targets: ['ma_fireball', 'ma_v_bolt_feu', 'ma_frost_nova', 'ma_heal', 'ma_v_heal_remanence'] },
   ranger: { fond: 'fond_saut', targets: ['ro_ti_tir_percant', 'ro_ti_tir_rapide', 'ro_ti_pluie'] },
 };
 tree.migration = { presets: {} };

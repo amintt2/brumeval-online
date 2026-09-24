@@ -40,4 +40,6 @@ La réinitialisation contre de l'or chez le Maître des arts est **supprimée**,
   - passé un seuil, le joueur est **désorienté puis ramené doucement vers la sortie** (fondu, il se retrouve tourné vers la lisière d'où il vient), comme s'il s'était perdu : **la Brume repousse les intrus** ;
   - aucun mur invisible, aucun message technique : c'est un élément du monde (des PNJ en parlent : « la Brume ne laisse passer personne vers le nord… pour l'instant ») ;
   - quand une région ouvre dans une mise à jour, sa Brume se lève (événement annoncé).
-- Zones rouges de la v0.3.0 et cycle jour/nuit : valeurs proposées dans `docs/world/MONDE.md` conservées par défaut.
+- **Deux zones rouges dès la v0.3.0** : la Mer de Dunes et le Cœur d'Aldmar.
+- **Cycle jour/nuit d'environ 48 min** validé (avec les secrets liés à l'heure).
+- Moteur : les données du monde restent indépendantes du moteur (client Unreal possible plus tard).

@@ -218,7 +218,7 @@ export const xpMultOf = (p) => 1 + Math.min(p.skills?.rb || 0, RENAISSANCE.max) 
 export function onLevelUp(game, p) {
   p.markDirty('points', 'renaissance');
   if (p.level >= MAX_LEVEL && (p.skills.rb || 0) < RENAISSANCE.max) {
-    game.notify(p, 'level', 'La Renaissance vous attend au pied de l\'Arbre-Brume.');
+    game.notify(p, 'level', 'La Renaissance est disponible : ouvrez l\'Arbre des Brumes.');
   }
 }
 

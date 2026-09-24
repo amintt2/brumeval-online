@@ -118,6 +118,10 @@ export function jumpAttack(game, p, slot, target, now) {
 }
 
 // ------------------------------------------------------------------ Garde
+/** A raise opens a parry window at most once per second (Sekiro / Elden Ring-like lockout). */
+export const PARRY_COOLDOWN_MS = 1000;
+/** Guard raises per second above which the account is flagged (guard_spam). */
+export const GUARD_SPAM_PER_S = 4;
 /** C2S guard { on } */
 export function handleGuard(game, p, msg) {
   const on = msg.on === true;
@@ -137,6 +141,15 @@ export function handleGuard(game, p, msg) {
     p.guardUp = true;
     p.guardAuto = false;
     p.guardStartAt = now;
+    // Parade parfaite lockout: a raise opens a parry window only once every PARRY_COOLDOWN_MS (toggling the
+    // guard key cannot keep the window open), other raises only block after raiseMs
+    p.guardParry = now - (p.parryRaiseAt ?? -Infinity) >= PARRY_COOLDOWN_MS;
+    if (p.guardParry) p.parryRaiseAt = now;
+    // anti-cheat: more than GUARD_SPAM_PER_S raises within 1 s is a macro
+    const w = (p.guardRaises ||= []);
+    w.push(now);
+    while (w.length && now - w[0] > 1000) w.shift();
+    if (w.length === GUARD_SPAM_PER_S + 1) game.security?.flag?.(p, 'guard_spam', 0.5, { n: w.length });
   }
 }
 
@@ -149,7 +162,7 @@ function guardHit(game, p, src, amount, info, now) {
   if (Math.abs(angDiff(p.ry, a)) > ((g.arcDeg || 120) * Math.PI) / 360) return null;
   const since = now - (p.guardStartAt ?? now);
   // Parade parfaite: the hit is cancelled, the attacker loses its balance, « Contre parfait »
-  if (g.parryWindowMs && !p.guardAuto && since <= g.parryWindowMs) {
+  if (g.parryWindowMs && !p.guardAuto && p.guardParry && since <= g.parryWindowMs) {
     p.lastBlockAt = now;
     game.broadcastNear(p.x, p.z, { t: S2C.FX, k: FX.PARRY, src: p.id, tg: src.id });
     if (src.kind === 'monster') applyPoise(game, src, g.parryPoise || 60, now);

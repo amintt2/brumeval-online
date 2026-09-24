@@ -60,6 +60,9 @@ const decFmt = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
 export const fmt = (n) => intFmt.format(Math.round(Number(n) || 0));
 /** Up to one decimal, French comma. */
 export const fmt1 = (n) => decFmt.format(Number(n) || 0);
+const dec2Fmt = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 });
+/** Up to two decimals, French comma (exact numbers of the skill tooltips: 0,35 s, ×1,85). */
+export const fmt2 = (n) => dec2Fmt.format(Number(n) || 0);
 /** Percentage from a 0..1 ratio. */
 export const pct = (r) => `${decFmt.format((Number(r) || 0) * 100)} %`;
 

@@ -1,7 +1,7 @@
 // [skilltree] Ability tooltips with the values RESOLVED for the character (variants, passives, Inaptitude, weapon —
 // shared/skills.js resolveAbility), used by the action bar, the skill book and the tree screen.
 import { ABILITY_DEFS, NODES, WEAPON_NEED_TEXT, RULES } from '@shared/skills.js';
-import { h, fmt1 } from './dom.js';
+import { h, fmt2 as fmt1 } from './dom.js';
 import { specOf, treeState } from '../game/skillState.js';
 
 export const KIND_LABEL = {
@@ -50,7 +50,8 @@ export function abilityNumbers(a) {
   if (a.range > 0) rows.push(['Portée', `${fmt1(a.range)} m`]);
   if (a.radius > 0) rows.push(['Rayon', `${fmt1(a.radius)} m`]);
   if (a.cast > 0) rows.push(['Incantation', `${fmt1(a.cast)} s`]);
-  if (a.heal > 0) rows.push(['Soin', `${Math.round(a.heal * 100)} % des PV`]);
+  if (a.hot?.pct > 0) rows.push(['Soin', `${Math.round(a.hot.pct * 100)} % des PV en ${fmt1(a.hot.dur)} s`]);
+  else if (a.heal > 0) rows.push(['Soin', `${Math.round(a.heal * 100)} % des PV`]);
   if (a.iframeMs > 0) rows.push(['Invulnérable', `${fmt1(a.iframeMs / 1000)} s`]);
   if (a.airMs > 0) rows.push(['En l\'air', `${fmt1(a.airMs / 1000)} s`]);
   if (a.mult > 1 && a.id === 'sprint') rows.push(['Vitesse', `×${fmt1(a.mult)}`]);

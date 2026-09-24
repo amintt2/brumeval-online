@@ -9,12 +9,13 @@ import { ABILITIES, MAX_LEVEL, xpToNext, ITEMS } from '../../shared/data.js';
 import {
   TREE, NODES, points, nodeCost, validateTree, allocate, unlockedAbilities, resolveAbility, buildTree, legacySkills,
   freshSkills, checkLoadout, sanitizeSkills, budgetOf, spentOf, BASE_ABILITY, NOT_SLOTTABLE, repairLoadout, reachCosts,
-  RENAISSANCE, renaissanceTitle, isInapt, CLASS_START, cheapestPath,
+  RENAISSANCE, renaissanceTitle, isInapt, CLASS_START, cheapestPath, pointsSummary,
 } from '../../shared/skills.js';
 import { migrateAccount, migrateCharacter, newCharacter } from '../src/persistence.js';
 import { telegraphs } from '../src/systems/telegraph.js';
 import { damagePlayer, grantXp } from '../src/systems/players.js';
 import { EXOTIC } from '../src/systems/abilities.js';
+import { onLevelUp } from '../src/systems/skills.js';
 import { render, SOURCE, TARGET } from '../../scripts/build-skilltree.mjs';
 import { makeGame, addPlayer, place, advance, spawnAt, zoneOf } from './helpers.js';
 import { skillsFor, WEAPON_FOR } from './support/treekit.js';
@@ -267,7 +268,28 @@ test('migrated characters are not nerfed on first login: same abilities, same sl
     assert.deepEqual(p.abilities, { warrior: ['strike', 'heavy_blow', 'whirlwind', 'war_cry'], mage: ['firebolt', 'fireball', 'frost_nova', 'heal'], ranger: ['shot', 'piercing_shot', 'arrow_rain', 'rapid_fire'] }[cls]);
     assert.ok(p.tree.unlocked.has('roulade') && p.tree.unlocked.has('sprint'));
     for (const id of p.abilities) assert.ok(resolveAbility(p.tree, id, { weapon: p.eq.weapon }).usable, `${cls}: ${id} utilisable avec l'arme de départ`);
+    // the v0.3 patch notes of the first-login card exist for every class
+    assert.ok(TREE.rules.migration.notes[cls].length >= 2);
   }
+  // v0.2 Soin healed 35 %: a migrated Mage keeps 35 % (Rémanence, offered by the preset), at every level
+  for (const lvl of [1, 10, 30]) {
+    const heal = resolveAbility(buildTree('mage', legacySkills('mage', lvl)), 'heal');
+    assert.ok(Math.max(heal.heal || 0, heal.hot?.pct || 0) >= 0.35, `Soin du Mage migré niv. ${lvl}`);
+  }
+  // Roulade / Sprint stay free for veterans (DECISIONS §3, documented in docs/COMPTES.md)
+  assert.equal(pointsSummary('warrior', 30, legacySkills('warrior', 30)).spent, TREE.migration.presets.warrior.cost);
+});
+
+test('tree data follows DECISIONS §3 / §4: no reset, Espace = Saut, Maj = Roulade / Sprint, no hard-coded key in descriptions', () => {
+  assert.equal(TREE.rules.respec, undefined);
+  assert.equal(TREE.rules.migration.respecFree, undefined);
+  assert.ok(!/[Rr]éinitialisation gratuite/.test(JSON.stringify(TREE.rules)));
+  assert.equal(TREE.rules.keys.saut, 'Space');
+  assert.match(TREE.rules.keys.roulade, /^ShiftLeft/);
+  const ab = (id) => TREE.abilities.find((a) => a.id === id);
+  assert.equal(ab('saut').defaultKey, 'Space');
+  assert.match(ab('roulade').defaultKey, /^ShiftLeft/);
+  for (const id of ['fond_roulade', 'fond_sprint', 'fond_saut']) assert.ok(!/\((Espace|Maj|C)\)/.test(NODES.get(id).desc), id);
 });
 
 // ------------------------------------------------------------------ Renaissance
@@ -279,6 +301,9 @@ test('Renaissance: level 30, back to level 1, every point refunded, gear / gold 
   game.handleMessage(p, { t: 'renaissance', confirm: true });
   assert.equal(s.last('err').code, 'renaissance_level');
   p.level = 30;
+  onLevelUp(game, p);
+  // no Arbre-Brume in the world yet: the ritual is done from the tree screen, the notification says so
+  assert.ok(s.notes('level').some((t) => t.includes('Renaissance est disponible') && !t.includes('Arbre-Brume')));
   p.lastCombat = game.now();
   game.handleMessage(p, { t: 'renaissance', confirm: true });
   assert.equal(s.last('err').code, 'tree_combat');
@@ -645,6 +670,43 @@ test('guard: frontal block costs stamina, guard break, parry window (variant), r
   // the Riposte now works (it follows a block)
   place(game, q, 60, 30);
   q.mp = q.mmp;
+});
+
+test('parry lockout: toggling the guard at 5 Hz parries < 30 % of the hits, raises > 4/s are flagged guard_spam', () => {
+  const game = makeGame();
+  const base = legacySkills('warrior', 10);
+  const q = addPlayer(game, { cls: 'warrior', level: 10, skills: { ...base, alloc: { ...base.alloc, sv_bras: 1, sv_parade: 1 } } });
+  place(game, q, 60, 30);
+  const m = spawnAt(game, 'skeleton', 60, 32);
+  m.atkReady = Infinity;
+  q.ry = 0;
+  const flags = [];
+  const flag0 = game.security.flag.bind(game.security);
+  game.security.flag = (t, code, ...rest) => { flags.push(code); return flag0(t, code, ...rest); };
+  let parried = 0, hits = 0, rng = 1;
+  for (let i = 0; i < 60; i++) {
+    game.handleMessage(q, { t: 'guard', on: false });
+    game.handleMessage(q, { t: 'guard', on: true });
+    const phase = 50 * (rng = (rng * 7 + 3) % 4); // the hit lands 0..150 ms after the raise
+    advance(game, phase);
+    q.hp = q.mhp;
+    damagePlayer(game, q, m, 40, false, 'skel_swing', { kind: 'melee' });
+    hits++;
+    if (q.hp === q.mhp) parried++;
+    advance(game, 200 - phase);
+    q.staggerUntil = 0;
+  }
+  assert.ok(parried / hits < 0.3, `parades : ${parried}/${hits}`);
+  assert.ok(parried > 0, 'une parade par seconde reste possible');
+  assert.ok(flags.includes('guard_spam'));
+  // a patient player (guard lowered for > 1 s) still gets his parry
+  game.handleMessage(q, { t: 'guard', on: false });
+  advance(game, 1100);
+  game.handleMessage(q, { t: 'guard', on: true });
+  advance(game, 50);
+  q.hp = q.mhp;
+  damagePlayer(game, q, m, 40, false, 'skel_swing', { kind: 'melee' });
+  assert.equal(q.hp, q.mhp, 'parade');
 });
 
 test('charged attack: hold the base attack, ×1.0 → ×1.8 power, poise ×2, cooldown from the release, lost on hit', () => {

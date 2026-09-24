@@ -1,5 +1,6 @@
 // [skilltree] Level-up flow: « +1 point de compétence » card with a button to open the tree (and the suggested node of
-// the « parcours conseillé »), and the first-time tutorial about the Fondamentaux (once per character, remembered).
+// the « parcours conseillé »), the first-time tutorial about the Fondamentaux (once per character, remembered), and
+// the v0.3 patch notes of a migrated v0.1 / v0.2 character (once, on its first login: its abilities changed).
 import { NODES, FOND_IDS, RULES } from '@shared/skills.js';
 import { h, setText, clear, lsGet, lsSet } from './dom.js';
 import { glyph } from './icons.js';
@@ -27,14 +28,40 @@ export function createSkillHints(parent, { onOpenTree }) {
   let prevLevel = null;
   let prevFree = null;
   let tutorial = false;
+  let patch = false;
 
   function hide(dismiss = false) {
     card.hidden = true;
     clearTimeout(timer);
     if (dismiss && tutorial && charKey) lsSet(`bv.tut.fond.${charKey}`, '1');
+    if (patch && charKey) lsSet(`bv.mig03.${charKey}`, '1');
+    patch = false;
+  }
+
+  /** First login of a migrated character (the gifts only exist on migrated characters): what changed in v0.3. */
+  function showPatch(self) {
+    patch = true;
+    tutorial = false;
+    setText(openBtn.querySelector('kbd'), keybinds.label('tree'));
+    setText(title, 'Bienvenue dans la v0.3 : l\'Arbre des Brumes');
+    clear(body);
+    const k = (id) => keybinds.label(id) || '—';
+    const notes = [
+      'Vos compétences v0.2 sont reprises dans l\'arbre, et vos points restants vous attendent.',
+      `Roulade : ${k('roll')} (appui court) ; Sprint : ${k('sprint')} maintenue ; Saut : ${k('jump')} ; Garde : ${k('guard')} maintenue.`,
+      ...(RULES.migration?.notes?.[self.cls] || []),
+    ];
+    body.append(h('ul', { class: 'bv-sp-notes' }, notes.map((n) => h('li', { text: n }))));
+    laterBtn.hidden = false;
+    card.hidden = false;
+    card.classList.remove('pop');
+    void card.offsetWidth;
+    card.classList.add('pop');
+    clearTimeout(timer);
   }
 
   function show(self, gained) {
+    if (patch) return; // never replace the patch notes before they are read
     const free = self.points?.free || 0;
     const t = treeState(self) || { alloc: {}, gift: [] };
     const owned = new Set([...Object.keys(t.alloc || {}), ...(t.gift || [])]);
@@ -73,6 +100,11 @@ export function createSkillHints(parent, { onOpenTree }) {
         charKey = key;
         prevLevel = self.level;
         prevFree = free;
+        const t = treeState(self);
+        if ((t.gift || []).length && lsGet(`bv.mig03.${key}`, '') !== '1') {
+          setTimeout(() => showPatch(self), 1500);
+          return;
+        }
         // first connection of a character with unspent points and no Fondamentaux yet: the tutorial
         if (free > 0 && lsGet(`bv.tut.fond.${key}`, '') !== '1') setTimeout(() => show(self, 0), 1500);
         return;
