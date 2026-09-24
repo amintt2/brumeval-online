@@ -72,6 +72,13 @@ export const TYPE_LIMITS = {
   passkey_login_verify: [0.5, 4],
   passkey_rename: [1, 5],
   passkey_delete: [1, 5],
+  // [skilltree] (the tree handlers also flag `tree_spam` above 5 messages per second)
+  skill_alloc: [5, 12],
+  skill_alloc_batch: [2, 6],
+  loadout: [5, 12],
+  renaissance: [0.2, 3],
+  jump: [4, 8],
+  guard: [10, 20],
   default: [20, 40],
 };
 

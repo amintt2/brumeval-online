@@ -3,6 +3,8 @@ import { VILLAGE } from '../../../../shared/world.js';
 import { PLAYER_RADIUS } from '../../../../shared/protocol.js';
 import { dist2 } from '../../util.js';
 import { aoiOf } from '../../aoi.js';
+import { moveMult } from '../status.js'; // [skilltree] Froid, Gel, Enraciné, ralentissements
+import { wallBlocks } from '../zones.js';
 
 export const MOVE_FLAG_MS = 150;    // `s` = MOVE for this long after a step
 
@@ -19,9 +21,16 @@ export function stepToward(game, m, tx, tz, speed, dt, stop, now, face = true) {
   const d = Math.hypot(dx, dz);
   if (face && d > 1e-6) m.ry = Math.atan2(dx, dz);
   if (d <= stop + 1e-3) return 0;
+  // [skilltree] statuses slow / immobilise
+  if (m.status || m.baitSlow) {
+    const k = moveMult(m, now);
+    if (k <= 0) return 0;
+    speed *= k;
+  }
   const step = Math.min(speed * dt, d - stop, Math.max(1, speed * dt));
   const nx = m.x + (dx / d) * step, nz = m.z + (dz / d) * step;
   if (touchesVillage(nx, nz, m.radius)) return 0;
+  if (game.zones?.size && wallBlocks(game, m.x, m.z, nx, nz)) return 0; // [skilltree] Mur de glace
   const r = game.collision.move(m.x, m.z, nx, nz, m.radius);
   if (touchesVillage(r.x, r.z, m.radius)) return 0;
   bodyStop(game, m, r);

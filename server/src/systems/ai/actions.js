@@ -9,6 +9,9 @@ import { damagePlayer } from '../players.js';
 import { telegraphs, hostilesOf } from '../telegraph.js';
 import { stepToward } from './movement.js';
 import { provoke } from './index.js';
+// [skilltree] statuses (Froid slows the wind-ups, Aveuglé / Nuage toxique weaken the hits), ice walls
+import { windupMult, dealtMult } from '../status.js';
+import { wallBlocks } from '../zones.js';
 
 const MELEE_ARC = (80 * Math.PI) / 180;     // half-angle in front of the monster where a light swing lands
 const MELEE_SLACK = 0.6;                    // extra reach at impact (server position lag)
@@ -32,8 +35,11 @@ export const windupOf = (m, atk) => {
 };
 
 function hitPlayer(game, m, p, atk) {
-  const { amount, crit } = computeDamage(m.atk, atk.power || 1, p.stats.def, m.crit, game.rng(), game.rng());
-  damagePlayer(game, p, m, amount, crit, atk.id);
+  const now = game.now();
+  const { amount, crit } = computeDamage(m.atk * dealtMult(m, now), atk.power || 1, p.stats.def, m.crit, game.rng(), game.rng());
+  // [skilltree] what the defender needs to know: telegraphed (stagger, guard cost ×1.5), rasant / imblocable / spell
+  const info = { kind: atk.kind, tele: atk.kind === 'tele', lo: !!atk.lo, nb: !!atk.nb, mag: !!atk.mag, boss: !!m.boss };
+  damagePlayer(game, p, m, amount, crit, atk.id, info);
 }
 
 /** Velocity estimate of a player from its last accepted moves (m/s). */
@@ -64,7 +70,7 @@ export function teleShape(m, atk, target, offset = 0) {
  * (melee / projectile / howl / heal) or in the telegraph system (tele).
  */
 export function startAttack(game, m, atk, target, now) {
-  const wind = windupOf(m, atk);
+  const wind = Math.round(windupOf(m, atk) * windupMult(m, now)); // [skilltree] Froid: slower attacks
   const cdMult = m.enraged ? 0.7 : 1;
   m.cds[atk.id] = now + (atk.cd || 1.5) * 1000 * cdMult;
   if (atk.once) m.used[atk.id] = true;
@@ -96,6 +102,7 @@ export function startAttack(game, m, atk, target, now) {
         const id = telegraphs(game).start(m, shape, wind, {
           ab: atk.id,
           clip: i === 0 ? atk.clip : undefined,
+          lo: atk.lo, nb: atk.nb, mag: atk.mag, // [skilltree]
           onHit: (p) => hitPlayer(game, m, p, atk),
         });
         act.teleIds.push(id);
@@ -175,7 +182,7 @@ export function tickAttack(game, m, target, dt, now) {
     if (target && atk.kind !== 'tele') m.ry = angleTo(m, target.x, target.z);
     // light swings keep closing in on a retreating target (no free kiting by walking backwards)
     if (target && atk.kind === 'melee' && dist(m.x, m.z, target.x, target.z) > (atk.max || 2) * 0.8) {
-      stepToward(game, m, target.x, target.z, m.speed * (m.brain.run || 1) * (m.isSlowed(now) ? 0.5 : 1), dt, (atk.max || 2) * 0.7, now);
+      stepToward(game, m, target.x, target.z, m.speed * (m.brain.run || 1), dt, (atk.max || 2) * 0.7, now); // [skilltree] slows: status.moveMult
     }
     if (now < act.impactAt) return true;
     act.phase = 'recover';
@@ -245,7 +252,9 @@ function launchProjectile(game, m, atk, target, now) {
   game.schedule(ms, () => {
     if (m.dead || game.entities.get(m.id) !== m) return;
     for (const p of hostilesOf(game, m)) {
-      if (dist(p.x, p.z, x, z) <= hitR) hitPlayer(game, m, p, atk);
+      if (dist(p.x, p.z, x, z) > hitR) continue;
+      if (wallBlocks(game, m.x, m.z, p.x, p.z)) continue; // [skilltree] Mur de glace
+      hitPlayer(game, m, p, atk);
     }
   });
 }

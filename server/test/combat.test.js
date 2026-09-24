@@ -39,9 +39,12 @@ test('ability validation: slot, target, safe zone, range, mana, cooldown, dead',
   const mp0 = p.mp;
   game.handleMessage(p, { t: 'ability', slot: 1, tg: m.id });
   assert.deepEqual(s.of('err'), []);
-  assert.deepEqual(s.last('cd'), { t: 'cd', slot: 1, ms: ABILITIES.heavy_blow.cd * 1000 });
+  assert.deepEqual(s.last('cd'), { t: 'cd', slot: 1, ms: ABILITIES.heavy_blow.cd * 1000, ab: 'heavy_blow' });
   assert.equal(p.mp, mp0 - ABILITIES.heavy_blow.mp);
   assert.ok(s.last('fx', (f) => f.k === 'swing' && f.src === p.id && f.tg === m.id && f.ab === 'heavy_blow'));
+  // [skilltree] the blow lands after its wind-up (0.35 s)
+  assert.equal(s.of('dmg').length, 0);
+  advance(game, ABILITIES.heavy_blow.windup * 1000 + 50);
   const dmg = s.last('dmg');
   assert.equal(dmg.src, p.id);
   assert.equal(dmg.tg, m.id);
@@ -85,10 +88,10 @@ test('slot 0 auto-attack keeps swinging until stop / target death; cooldown pres
   advance(game, 3000);
   assert.equal(swings(), 3);
 
-  // restart and kill
+  // restart and kill (the swing lands after its 0.15 s wind-up)
   m.hp = 5;
   game.handleMessage(p, { t: 'ability', slot: 0, tg: m.id });
-  advance(game, 100);
+  advance(game, 250);
   assert.ok(m.dead);
   assert.equal(p.autoTarget, 0);
 });
@@ -160,6 +163,7 @@ test('area abilities: whirlwind radius, frost nova slow, arrow rain ground targe
   for (const m of [near1, near2, far]) { m.hp = m.mhp = 5000; m.speed = 0; m.atkReady = Infinity; }
   place(game, w, 50, 32);
   game.handleMessage(w, { t: 'ability', slot: 2 });
+  advance(game, ABILITIES.whirlwind.windup * 1000 + 50); // [skilltree] wind-up
   const aoe = w.session.last('fx', (f) => f.k === 'aoe');
   assert.deepEqual({ x: aoe.x, z: aoe.z, r: aoe.r, ab: aoe.ab }, { x: 50, z: 32, r: ABILITIES.whirlwind.radius, ab: 'whirlwind' });
   const hit = new Set(w.session.of('dmg').map((d) => d.tg));
@@ -168,9 +172,12 @@ test('area abilities: whirlwind radius, frost nova slow, arrow rain ground targe
   const mage = addPlayer(game, { cls: 'mage' });
   place(game, mage, 58, 31);
   game.handleMessage(mage, { t: 'ability', slot: 2 });
+  // [skilltree] v0.3: the nova applies 2 stacks of Froid (3 s) instead of a flat 50 % slow
   assert.ok(far.slowUntil > game.now());
   assert.equal(far.entState(game.now()).sl, 1);
-  advance(game, ABILITIES.frost_nova.slow.dur * 1000 + 100);
+  assert.equal(far.status.froid.n, 2);
+  assert.ok(far.entState(game.now()).stt & 2);
+  advance(game, 3000 + 100);
   assert.equal(far.entState(game.now()).sl, 0);
 
   const ranger = addPlayer(game, { cls: 'ranger' });
@@ -181,6 +188,9 @@ test('area abilities: whirlwind radius, frost nova slow, arrow rain ground targe
   assert.equal(ranger.session.last('err').code, 'out_of_range');
   ranger.session.clear();
   game.handleMessage(ranger, { t: 'ability', slot: 2, x: 51.5, z: 30 });
+  // [skilltree] the arrows fall 0.6 s later (the zone is shown to everyone meanwhile)
+  assert.ok(ranger.session.last('fx', (f) => f.k === 'zone' && f.ab === 'arrow_rain' && f.delay === 600));
+  advance(game, 650);
   const rain = ranger.session.last('fx', (f) => f.k === 'aoe');
   assert.equal(rain.ab, 'arrow_rain');
   const rainHits = new Set(ranger.session.of('dmg', (d) => d.src === ranger.id).map((d) => d.tg));
@@ -193,10 +203,11 @@ test('self heal abilities restore a share of max hp', () => {
   place(game, w, 50, 30);
   w.hp = 10;
   game.handleMessage(w, { t: 'ability', slot: 3 });
+  advance(game, ABILITIES.war_cry.windup * 1000 + 50); // [skilltree] wind-up
   const heal = w.session.last('heal');
   assert.equal(heal.tg, w.id);
   assert.equal(heal.v, Math.round(w.mhp * ABILITIES.war_cry.heal));
-  assert.equal(w.hp, 10 + heal.v);
+  assert.ok(Math.abs(w.hp - (10 + heal.v)) < 3, 'healed (+ a little in-combat regeneration during the wind-up)');
   assert.ok(w.session.last('fx', (f) => f.k === 'heal' && f.ab === 'war_cry'));
   assert.equal(w.session.last('self', (x) => 'hp' in x).hp, w.hpShown());
 });

@@ -30,7 +30,7 @@ export const C2S = {
   REGISTER: 'register',       // { name, password, cls }            -> auth_ok | auth_err  ([accounts] see below)
   LOGIN: 'login',             // { name, password }                 -> auth_ok | auth_err  ([accounts] see below)
   MOVE: 'move',               // { x, z, ry }  local player position (client-simulated, server-validated)
-  ABILITY: 'ability',         // { slot: 0..3, tg?: entityId, x?, z? }  (x,z = ground point for aoe_target)
+  ABILITY: 'ability',         // { slot: 0..7, tg?: entityId, x?, z?, ph? }  (x,z = ground point for aoe_target; [skilltree] see below)
                               //   slot 0 is the class auto-attack: it also (re)starts auto-attacking `tg`.
   STOP: 'stop',               // {}  stop auto-attacking
   CHAT: 'chat',               // { text }  "/w <nom> <message>" whisper, "/who" online list, "/help"
@@ -126,6 +126,40 @@ S2C.ACCOUNT_ERR = 'account_err'; // { op, code, msg }  an account operation was 
 S2C.PASSKEY_OPTIONS = 'passkey_options'; // { purpose: 'register' | 'login', options }  options = PublicKeyCredential*OptionsJSON
 S2C.LOGGED_OUT = 'logged_out';           // { all?: boolean }  the connection is back to the login screen (still open)
 
+// ------------------------------------------------------------------ [skilltree] v0.3 L'Arbre des Brumes
+// (docs/design/ARBRE_COMPETENCES.md, DECISIONS.md; rules in shared/skills.js, everything validated server-side)
+// Level 1 = base attack only. Every level gives points (1, +1 every 5 levels) spent in the tree; no respec:
+// the Renaissance (level 30) gives everything back with permanent bonuses.
+C2S.SKILL_ALLOC = 'skill_alloc';             // { node } one rank of a node — or { add: [{ id, r? }] } (all or nothing)
+                                             //   -> self { tree, points, loadout } + notify | err tree_* (see TREE_ERRORS)
+C2S.SKILL_ALLOC_BATCH = 'skill_alloc_batch'; // { nodes: [nodeId, …] } (≤ 64, one rank each, all or nothing: the tree
+                                             //   screen's « Valider (n points) »)
+C2S.LOADOUT = 'loadout';                     // { slots: [abilityId | 'item:<consumableId>' | null] × 8 }  action bar,
+                                             //   saved per character. Slot 0 = an unlocked base attack (auto-attack);
+                                             //   abilities must be unlocked; Fondamentaux have their own keys (not slotted)
+                                             //   -> self { loadout } | err loadout_bad
+C2S.RENAISSANCE = 'renaissance';             // { confirm: true, affinity?: cls }  level 30, alive, 10 s out of combat;
+                                             //   affinity required at the 2nd and 4th Renaissance -> self + fx renaissance
+C2S.JUMP = 'jump';                           // { dx, dz }  Saut (needs the Fondamental): direction of travel (unit, or
+                                             //   0,0 on the spot). Airborne `airMs`: ground shockwaves (`lo`) miss.
+C2S.GUARD = 'guard';                         // { on: boolean }  Garde held (needs the Fondamental)
+// ability (additive fields): { slot: 0..7, tg?, x?, z?, ph?: 'start' | 'release' }
+//   slot indexes the LOADOUT (0..7; v0.2 clients send 0..3, the same first four slots). An 'item:' entry uses the
+//   consumable. ph: 'start' on the base attack (slot 0) begins an Attaque chargée (Fondamental), 'release' fires it
+//   (released before 0.4 s = normal attack; auto-release at 2 s). While airborne the base attack is the Attaque sautée.
+// dodge / sprint (existing) now need the Roulade / Sprint Fondamentaux (offered to v0.2 characters).
+// SelfState (additive):
+//   tree:        { alloc: { nodeId: rank }, gift: [nodeId], affinity: [cls] }
+//   points:      { total, spent, free, floor }   (floor = v0.2 migration floor, see shared/skills.js)
+//   loadout:     [abilityId | 'item:<id>' | null] × 8
+//   renaissance: { n, max, title, available, xpPct, needsAffinity }
+//   abilities:   loadout[0..3] (v0.2 view, kept for older clients)
+// S2C cd (additive): { slot, ms, ab }  ab = ability id (every loadout slot holding it gets its own `cd`)
+// S2C tele (additive): lo?: 1 (rasant: jump it) · nb?: 1 (imblocable) · mag?: 1 (sort: only the Égide blocks it)
+// EntState (additive): players `ac` = action flags (1 guard, 2 airborne, 4 charging, 8 casting / channelling,
+//   16 staggered); static `rb` = Renaissances (aura + title). Monsters `stt` = status flags (1 brûlure, 2 froid,
+//   4 gel, 8 enraciné, 16 empoisonné, 32 saignement, 64 marqué, 128 étourdi, 256 aveuglé).
+
 /** FX kinds (`fx.k`). Pure visuals: the client plays animations / particles. */
 export const FX = {
   SWING: 'swing',       // { src, tg, ab }       melee swing (play Attack on src)
@@ -146,6 +180,27 @@ FX.HOWL = 'howl';         // { src, r }             pack call: nearby allies joi
 FX.GUARD = 'guard';       // { src, tg }            frontal guard absorbed part of a hit
 FX.ECHO = 'echo';         // { src, v }             death echo recovered by its owner (v = XP)
 FX.NOTICE = 'notice';     // { src }                a monster noticed a player ("!" above its head)
+// [skilltree] (all optional visuals)
+FX.SKILL = 'skill';             // { src }                 a node was learnt (sparkle)
+FX.RENAISSANCE = 'renaissance'; // { src, n }              Renaissance ritual
+FX.JUMP = 'jump';               // { src, dx, dz, ms }     jump take-off (airborne for ms)
+FX.LAND = 'land';               // { src, r? }             landing (r = jump attack area)
+FX.BLOCK = 'block';             // { src, tg, v }          src blocked a hit from tg (v = damage let through)
+FX.PARRY = 'parry';             // { src, tg }             perfect parry
+FX.GUARD_BREAK = 'guard_break'; // { src, ms }             guard broken (stamina 0)
+FX.PERFECT = 'perfect';         // { src, ms }             « Contre parfait » granted (perfect dodge / parry)
+FX.CHARGE = 'charge';           // { src, ab, ms }         charged attack started (full after ms)
+FX.CHARGED = 'charged';         // { src, ab, lvl }        charged attack released (lvl 0..1)
+FX.VACILLE = 'vacille';         // { src, ms }             player staggered by a telegraphed hit
+FX.DASH = 'dash';               // { src, x, z, ms, ab }   ability movement (leap, lunge, blink…) to (x, z)
+FX.ZONE = 'zone';               // { id, src, ab, shape, x, z, r?, a?, len?, w?, ms, delay? }  ground zone (wall of fire,
+                                //   toxic cloud, blizzard, meteor mark…): lasts ms (after delay ms)
+FX.ZONE_END = 'zone_end';       // { id }
+FX.BUFF = 'buff';               // { src, ab, ms }         buff / shield on src
+FX.CHANNEL = 'channel';         // { src, ab, ms }         channelling / casting started (ms = max duration)
+FX.CHANNEL_END = 'channel_end'; // { src, ab }             channelling / casting ended or cancelled
+FX.STATUS = 'status';           // { tg, st, n?, ms }      status applied (st = brulure | froid | gel | …)
+FX.TRAP = 'trap';               // { id, src, x, z, ab }   trap / summon / wall placed (removed with ZONE_END)
 // Monster projectiles use FX.PROJ without `tg`: { src, x, z, ab, ms } flies to the ground point (x, z) and is
 // resolved there at arrival (dodgeable).
 

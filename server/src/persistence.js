@@ -21,6 +21,7 @@ import { sanitizeQuests } from './quests.js';
 import { nameKey, validName, validClass } from './auth.js';
 import { sanitizeSecurityFields } from './security/accountFields.js'; // [anticheat]
 import { sanitizeEcho } from './systems/echo.js'; // [combat-souls]
+import { freshSkills, legacySkills, sanitizeSkills } from '../../shared/skills.js'; // [skilltree]
 
 const gzip = promisify(zlib.gzip);
 
@@ -67,6 +68,7 @@ export function newCharacter(name, cls) {
     x: SPAWN_POINT.x, z: SPAWN_POINT.z,
     created: now, lastSeen: now,
     echo: null, // [combat-souls] death echo { x, z, xp }
+    skills: freshSkills(cls), // [skilltree] level 1: base attack only (DECISIONS.md §1)
   };
   return migrateCharacter(rec) || rec; // every feature's defaults apply to new characters too
 }
@@ -143,6 +145,13 @@ export function migrateCharacter(raw) {
   // ---- per-feature fields (v0.2+): add your block below, e.g.
   //   // [my-feature] short description
   //   acc.myField = isValid(raw.myField) ? raw.myField : DEFAULT;
+
+  // [skilltree] L'Arbre des Brumes (shared/skills.js). A character without `skills` comes from v0.1 / v0.2: it gets
+  // Roulade + Sprint offered, the point floor of its class and the preset « Reprendre mon style » (its 4 v0.2
+  // abilities back on the same keys) — docs/COMPTES.md « Migration v0.3 ».
+  acc.skills = raw.skills && typeof raw.skills === 'object' && !Array.isArray(raw.skills)
+    ? sanitizeSkills(raw.skills, acc.cls, acc.level)
+    : legacySkills(acc.cls, acc.level);
 
   return acc;
 }

@@ -1,14 +1,20 @@
 // Game data + pure formulas shared by server (authoritative) and client (UI, tooltips, prediction).
 // All player-facing text is French.
+import TREE from './skilltree.js'; // [skilltree]
 
 export const GAME_TITLE = 'Brumeval Online';
-export const MAX_LEVEL = 20;
+export const MAX_LEVEL = 30; // [skilltree] v0.3: 20 → 30 (docs/design/ARBRE_COMPETENCES.md §3.1)
 export const INV_SIZE = 24;
 export const START_GOLD = 25;
 
-/** XP needed to go from `level` to `level + 1` (0 at max level). */
+/**
+ * XP needed to go from `level` to `level + 1` (0 at max level). Unchanged up to level 20 (v0.2 saves keep their
+ * progress); [skilltree] levels 20 → 30 cost 10 % more per level above 19 (×1.1 at 20 … ×2.0 at 29).
+ */
 export function xpToNext(level) {
-  return level >= MAX_LEVEL ? 0 : Math.floor(100 * Math.pow(level, 1.5));
+  if (level >= MAX_LEVEL) return 0;
+  const base = 100 * Math.pow(level, 1.5);
+  return Math.floor(level < 20 ? base : base * (1 + 0.1 * (level - 19)));
 }
 
 // ------------------------------------------------------------------ classes
@@ -17,7 +23,8 @@ export const CLASSES = {
     name: 'Guerrier', model: 'warrior', color: '#c0392b',
     desc: 'Combattant au corps à corps, robuste et redoutable.',
     hp: 130, hpLvl: 18, mp: 40, mpLvl: 4, atk: 11, atkLvl: 2.2, def: 4, defLvl: 1.2, crit: 0.08, speed: 6.5,
-    abilities: ['strike', 'heavy_blow', 'whirlwind', 'war_cry'],
+    abilities: ['strike', 'heavy_blow', 'whirlwind', 'war_cry'], // v0.2 bar (migration mapping, character screen)
+    base: 'strike', // [skilltree] level 1: only the base attack
     start: { weapon: 'rusty_sword', armor: 'leather_tunic', items: [['potion_hp_s', 3]] },
   },
   mage: {
@@ -25,6 +32,7 @@ export const CLASSES = {
     desc: 'Maître des arcanes : sorts puissants à distance, mais fragile.',
     hp: 85, hpLvl: 11, mp: 95, mpLvl: 12, atk: 9, atkLvl: 2.7, def: 2, defLvl: 0.7, crit: 0.1, speed: 6.3,
     abilities: ['firebolt', 'fireball', 'frost_nova', 'heal'],
+    base: 'firebolt',
     start: { weapon: 'apprentice_staff', armor: 'leather_tunic', items: [['potion_hp_s', 2], ['potion_mp_s', 2]] },
   },
   ranger: {
@@ -32,52 +40,19 @@ export const CLASSES = {
     desc: 'Archer agile qui frappe de loin avec précision.',
     hp: 100, hpLvl: 14, mp: 80, mpLvl: 7, atk: 10, atkLvl: 2.3, def: 3, defLvl: 0.9, crit: 0.15, speed: 6.8,
     abilities: ['shot', 'piercing_shot', 'arrow_rain', 'rapid_fire'],
+    base: 'shot',
     start: { weapon: 'short_bow', armor: 'leather_tunic', items: [['potion_hp_s', 3]] },
   },
 };
 
 // ------------------------------------------------------------------ abilities
-// kind: 'melee' | 'projectile' | 'aoe_self' | 'aoe_target' | 'self_heal'
-// slot 0 of every class is the auto-attack (auto: true).
-// power = multiplier on attacker atk. range/radius in metres. cd in seconds.
-export const ABILITIES = {
-  strike: { name: 'Frappe', kind: 'melee', auto: true, range: 2.8, cd: 1.3, mp: 0, power: 1.2, desc: 'Attaque de base au corps à corps.' },
-  heavy_blow: { name: 'Coup puissant', kind: 'melee', range: 2.8, cd: 6, mp: 12, power: 2.8, desc: 'Un coup dévastateur infligeant de lourds dégâts.' },
-  whirlwind: { name: 'Tourbillon', kind: 'aoe_self', radius: 4.5, cd: 10, mp: 20, power: 1.7, desc: 'Frappe tous les ennemis proches.' },
-  war_cry: { name: 'Cri de guerre', kind: 'self_heal', cd: 25, mp: 15, heal: 0.3, desc: 'Récupère 30 % de vos points de vie.' },
-
-  firebolt: { name: 'Trait de feu', kind: 'projectile', auto: true, range: 18, cd: 1.6, mp: 0, power: 0.8, speed: 22, desc: 'Projectile de feu de base.' },
-  fireball: { name: 'Boule de feu', kind: 'projectile', range: 18, cd: 6, mp: 20, power: 2.0, speed: 16, desc: 'Une boule de feu explosive.' },
-  frost_nova: { name: 'Nova de givre', kind: 'aoe_self', radius: 6, cd: 12, mp: 25, power: 1.1, slow: { pct: 0.5, dur: 3 }, desc: 'Gèle les ennemis proches et les ralentit de 50 %.' },
-  heal: { name: 'Soin', kind: 'self_heal', cd: 8, mp: 20, heal: 0.35, desc: 'Restaure 35 % de vos points de vie.' },
-
-  shot: { name: 'Tir', kind: 'projectile', auto: true, range: 20, cd: 1.3, mp: 0, power: 0.85, speed: 34, desc: 'Tir à l\'arc de base.' },
-  piercing_shot: { name: 'Tir perçant', kind: 'projectile', range: 22, cd: 6, mp: 12, power: 1.9, speed: 40, desc: 'Une flèche qui transperce les armures.' },
-  arrow_rain: { name: 'Pluie de flèches', kind: 'aoe_target', range: 20, radius: 5, cd: 12, mp: 22, power: 1.25, desc: 'Une pluie de flèches sur la zone ciblée.' },
-  rapid_fire: { name: 'Tir rapide', kind: 'projectile', range: 20, cd: 9, mp: 15, power: 0.8, hits: 3, speed: 34, desc: 'Trois flèches en succession rapide.' },
-};
-
-// [combat-souls] Soulslike tuning of the abilities (see docs/EQUILIBRAGE.md):
-//   st      = stamina cost (the ability is refused below it)
-//   rec     = recovery in seconds after the cast, during which the caster moves at recSlow × speed
-//             (attack commitment: no more free kiting)
-//   recSlow = speed factor during the recovery
-//   poise   = poise damage dealt to monsters (enough of it within POISE.windowMs staggers them)
-const ABILITY_SOULS = {
-  strike: { st: 5, rec: 0.25, recSlow: 0.5, poise: 7 },
-  heavy_blow: { st: 16, rec: 0.5, recSlow: 0.3, poise: 42 },
-  whirlwind: { st: 18, rec: 0.55, recSlow: 0.35, poise: 24 },
-  war_cry: { st: 0, rec: 0.4, recSlow: 0.5, poise: 0 },
-  firebolt: { st: 7, rec: 0.35, recSlow: 0.3, poise: 3 },
-  fireball: { st: 14, rec: 0.6, recSlow: 0.25, poise: 16 },
-  frost_nova: { st: 16, rec: 0.45, recSlow: 0.3, poise: 10 },
-  heal: { st: 0, rec: 0.6, recSlow: 0.3, poise: 0 },
-  shot: { st: 7, rec: 0.35, recSlow: 0.3, poise: 3 },
-  piercing_shot: { st: 14, rec: 0.55, recSlow: 0.25, poise: 14 },
-  arrow_rain: { st: 16, rec: 0.5, recSlow: 0.3, poise: 8 },
-  rapid_fire: { st: 14, rec: 0.6, recSlow: 0.3, poise: 3 },
-};
-for (const [id, v] of Object.entries(ABILITY_SOULS)) Object.assign(ABILITIES[id], v);
+// [skilltree] v0.3: the 65 abilities of l'Arbre des Brumes (shared/skilltree.js, generated from
+// docs/design/skilltree.json). The 12 v0.2 abilities keep their id. Base values only: what a given character really
+// casts is resolveAbility() in shared/skills.js (variants, passives, Inaptitude, weapon).
+// kind: melee | projectile | aoe_self | aoe_target | self_heal | buff | debuff | dash | channel | summon | trap |
+//       toggle | jump | guard | charge. power = multiplier on attacker atk; range/radius in metres; cd in seconds;
+//   st = stamina cost · rec / recSlow = recovery (attack commitment) · poise = poise damage (docs/EQUILIBRAGE.md).
+export const ABILITIES = Object.fromEntries(TREE.abilities.map((a) => [a.id, a]));
 
 // ------------------------------------------------------------------ monsters
 // level: [min, max]; stats grow per level above 1. aggro/leash/range in metres. respawn in seconds.
@@ -189,7 +164,7 @@ const MONSTER_AI = {
         ai: {
           arch: 'caster', pref: [7, 12], guard: null, flee: 0, poise: 30,
           attacks: [
-            { id: 'skel_curse', kind: 'tele', shape: 'circle', at: 'target', r: 2.6, min: 3, max: 16, cd: 4.5, w: 3, power: 1.3, windup: 1150, rec: 500, clip: 'Attack2' },
+            { id: 'skel_curse', kind: 'tele', mag: true, shape: 'circle', at: 'target', r: 2.6, min: 3, max: 16, cd: 4.5, w: 3, power: 1.3, windup: 1150, rec: 500, clip: 'Attack2' },
             { id: 'skel_mend', kind: 'heal', min: 0, max: 30, cd: 9, w: 5, heal: 0.2, r: 14, windup: 700, rec: 300 },
             { id: 'skel_swing', kind: 'melee', max: 2.1, cd: 2.0, w: 1, power: 0.8, windup: 450, rec: 400 },
           ],
@@ -204,10 +179,10 @@ const MONSTER_AI = {
       attacks: [
         { id: 'golem_punch', kind: 'melee', max: 3.4, cd: 2.2, w: 3, power: 1, windup: 600, rec: 500 },
         { id: 'golem_slam', kind: 'tele', shape: 'circle', at: 'self', r: 5.5, min: 0, max: 5, cd: 8, w: 2.2, power: 1.6, windup: 1100, rec: 900, clip: 'Attack2' },
-        { id: 'golem_stomp', kind: 'tele', shape: 'ring', at: 'self', r: 10, r2: 4.2, min: 3.5, max: 10, cd: 10, w: 2, power: 1.4, windup: 1250, rec: 800, clip: 'Attack2' },
+        { id: 'golem_stomp', kind: 'tele', lo: true, shape: 'ring', at: 'self', r: 10, r2: 4.2, min: 3.5, max: 10, cd: 10, w: 2, power: 1.4, windup: 1250, rec: 800, clip: 'Attack2' },
         { id: 'golem_rock', kind: 'tele', shape: 'line', at: 'front', len: 20, wid: 2.4, min: 6, max: 22, cd: 6, w: 2.6, power: 1.35, windup: 1300, rec: 600, phase: 2, count: 2, clip: 'Attack2' },
-        { id: 'golem_sweep', kind: 'tele', shape: 'cone', at: 'front', r: 6.5, arc: 2.3, min: 0, max: 6, cd: 7, w: 1.8, power: 1.3, windup: 900, rec: 700, phase: 2, clip: 'Attack2' },
-        { id: 'golem_quake', kind: 'tele', shape: 'circle', at: 'self', r: 6.5, min: 0, max: 9, cd: 12, w: 2.5, power: 1.7, windup: 1000, rec: 300, phase: 3, next: 'golem_stomp', clip: 'Special' },
+        { id: 'golem_sweep', kind: 'tele', lo: true, shape: 'cone', at: 'front', r: 6.5, arc: 2.3, min: 0, max: 6, cd: 7, w: 1.8, power: 1.3, windup: 900, rec: 700, phase: 2, clip: 'Attack2' },
+        { id: 'golem_quake', kind: 'tele', nb: true, shape: 'circle', at: 'self', r: 6.5, min: 0, max: 9, cd: 12, w: 2.5, power: 1.7, windup: 1000, rec: 300, phase: 3, next: 'golem_stomp', clip: 'Special' },
       ],
     },
   },
@@ -228,15 +203,15 @@ export const ITEMS = {
   ancient_bone: { name: 'Os ancien', type: 'junk', icon: 'ancient_bone', stack: 50, sell: 16, rarity: 'uncommon', desc: 'Il émane de cet os une étrange aura.' },
   golem_core: { name: 'Cœur de golem', type: 'junk', icon: 'golem_core', stack: 10, sell: 150, rarity: 'epic', desc: 'Une gemme vibrante d\'énergie ancienne.' },
 
-  rusty_sword: { name: 'Épée rouillée', type: 'weapon', icon: 'rusty_sword', cls: ['warrior'], lvl: 1, atk: 4, price: 20, sell: 5, rarity: 'common' },
-  steel_sword: { name: 'Épée d\'acier', type: 'weapon', icon: 'steel_sword', cls: ['warrior'], lvl: 6, atk: 12, price: 180, sell: 45, rarity: 'uncommon' },
-  runeblade: { name: 'Lame runique', type: 'weapon', icon: 'runeblade', cls: ['warrior'], lvl: 12, atk: 24, price: 0, sell: 160, rarity: 'epic' },
-  apprentice_staff: { name: 'Bâton d\'apprenti', type: 'weapon', icon: 'apprentice_staff', cls: ['mage'], lvl: 1, atk: 5, price: 20, sell: 5, rarity: 'common' },
-  arcane_staff: { name: 'Bâton arcanique', type: 'weapon', icon: 'arcane_staff', cls: ['mage'], lvl: 6, atk: 13, mp: 20, price: 180, sell: 45, rarity: 'uncommon' },
-  ember_staff: { name: 'Bâton des braises', type: 'weapon', icon: 'ember_staff', cls: ['mage'], lvl: 12, atk: 26, mp: 40, price: 0, sell: 160, rarity: 'epic' },
-  short_bow: { name: 'Arc court', type: 'weapon', icon: 'short_bow', cls: ['ranger'], lvl: 1, atk: 4, price: 20, sell: 5, rarity: 'common' },
-  long_bow: { name: 'Arc long', type: 'weapon', icon: 'long_bow', cls: ['ranger'], lvl: 6, atk: 12, crit: 0.03, price: 180, sell: 45, rarity: 'uncommon' },
-  elven_bow: { name: 'Arc elfique', type: 'weapon', icon: 'elven_bow', cls: ['ranger'], lvl: 12, atk: 25, crit: 0.05, price: 0, sell: 160, rarity: 'epic' },
+  rusty_sword: { name: 'Épée rouillée', type: 'weapon', wt: ['melee', 'une_main'], family: 'epee_courte', icon: 'rusty_sword', cls: ['warrior'], lvl: 1, atk: 4, price: 20, sell: 5, rarity: 'common' },
+  steel_sword: { name: 'Épée d\'acier', type: 'weapon', wt: ['melee', 'une_main'], family: 'epee_longue', icon: 'steel_sword', cls: ['warrior'], lvl: 6, atk: 12, price: 180, sell: 45, rarity: 'uncommon' },
+  runeblade: { name: 'Lame runique', type: 'weapon', wt: ['melee', 'une_main'], family: 'epee_runique', icon: 'runeblade', cls: ['warrior'], lvl: 12, atk: 24, price: 0, sell: 160, rarity: 'epic' },
+  apprentice_staff: { name: 'Bâton d\'apprenti', type: 'weapon', wt: ['focalisateur'], family: 'baton', icon: 'apprentice_staff', cls: ['mage'], lvl: 1, atk: 5, price: 20, sell: 5, rarity: 'common' },
+  arcane_staff: { name: 'Bâton arcanique', type: 'weapon', wt: ['focalisateur'], family: 'baton', icon: 'arcane_staff', cls: ['mage'], lvl: 6, atk: 13, mp: 20, price: 180, sell: 45, rarity: 'uncommon' },
+  ember_staff: { name: 'Bâton des braises', type: 'weapon', wt: ['focalisateur'], family: 'baton', icon: 'ember_staff', cls: ['mage'], lvl: 12, atk: 26, mp: 40, price: 0, sell: 160, rarity: 'epic' },
+  short_bow: { name: 'Arc court', type: 'weapon', wt: ['distance'], family: 'arc_court', icon: 'short_bow', cls: ['ranger'], lvl: 1, atk: 4, price: 20, sell: 5, rarity: 'common' },
+  long_bow: { name: 'Arc long', type: 'weapon', wt: ['distance'], family: 'arc_long', icon: 'long_bow', cls: ['ranger'], lvl: 6, atk: 12, crit: 0.03, price: 180, sell: 45, rarity: 'uncommon' },
+  elven_bow: { name: 'Arc elfique', type: 'weapon', wt: ['distance'], family: 'arc_long', icon: 'elven_bow', cls: ['ranger'], lvl: 12, atk: 25, crit: 0.05, price: 0, sell: 160, rarity: 'epic' },
 
   leather_tunic: { name: 'Tunique de cuir', type: 'armor', icon: 'leather_tunic', lvl: 1, def: 3, price: 20, sell: 5, rarity: 'common' },
   mage_robe: { name: 'Robe de mage', type: 'armor', icon: 'mage_robe', cls: ['mage'], lvl: 5, def: 6, mp: 40, price: 150, sell: 38, rarity: 'uncommon' },
@@ -245,7 +220,10 @@ export const ITEMS = {
 };
 export const RARITY_COLORS = { common: '#e8e8e8', uncommon: '#3fd46a', rare: '#3f8cff', epic: '#b85cff' };
 export const EQUIP_SLOTS = ['weapon', 'armor'];
-export const canUse = (item, cls, level) => (!item.cls || item.cls.includes(cls)) && level >= (item.lvl || 1);
+// [skilltree] v0.3: equipment is no longer reserved to a class (ROADMAP §2 bis): a hybrid wields the weapon of the
+// abilities it learnt (weapon tags `wt`: melee | une_main | focalisateur | distance; `family` for tree conditions).
+// `cls` stays on items as the recommended classes (tooltips).
+export const canUse = (item, cls, level) => level >= (item.lvl || 1);
 
 // ------------------------------------------------------------------ NPCs & quests
 export const NPCS = {

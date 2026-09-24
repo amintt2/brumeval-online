@@ -16,8 +16,9 @@ import { startAttack, tickAttack, cancelTelegraphs, hasInjuredAlly, hasAlliesToC
 import { checkPhase } from './boss.js';
 import { stepToward, stepDir, touchesVillage } from './movement.js';
 import { aoiOf } from '../../aoi.js'; // [netcode-perf]
+import { guardBroken } from '../status.js'; // [skilltree]
 
-export { stepToward, touchesVillage };
+export { stepToward, touchesVillage, cancelTelegraphs };
 
 const WANDER_SPEED = 0.35;   // fraction of speed while wandering
 const RETURN_SPEED = 1.5;    // fraction of speed while leashing back
@@ -174,7 +175,7 @@ function leashRadius(m) {
 /** Movement speed in combat (slows, enrage, running to close a gap). */
 function combatSpeed(m, now, running) {
   let s = m.speed;
-  if (m.isSlowed(now)) s *= 0.5;
+  // [skilltree] slows (Froid, Filet, Pluie persistante…) are applied by stepToward (status.moveMult)
   if (m.enraged) s *= 1.25;
   if (running) s *= m.brain.run || 1;
   return s;
@@ -190,6 +191,16 @@ function combat(game, m, dt, now) {
   if (dist2(m.x, m.z, target.x, target.z) > GIVE_UP_DIST * GIVE_UP_DIST || now - m.lastCombat > GIVE_UP_MS) return startReturn(m, game);
   m.target = target.id;
   checkPhase(game, m, now);
+  // [skilltree] Appât: beasts run to the bait and worry it (no attack) until it expires
+  if (m.bait) {
+    if (now < m.bait.until && m.act?.kind !== 'stagger') {
+      if (m.act?.kind === 'attack') cancelTelegraphs(game, m);
+      m.act = null;
+      stepToward(game, m, m.bait.x, m.bait.z, combatSpeed(m, now, true), dt, 0.8, now);
+      return;
+    }
+    m.bait = null;
+  }
 
   if (m.act) {
     if (runAction(game, m, target, dt, now)) return;
@@ -383,9 +394,10 @@ export function applyPoise(game, m, poise, now) {
 }
 
 /** Frontal guard (skeletons): fraction of the damage absorbed, 0 if the guard does not apply. */
-export function guardReduction(m, attacker) {
+export function guardReduction(m, attacker, now = 0) {
   const g = m.brain?.guard;
   if (!g || !attacker) return 0;
+  if (guardBroken(m, now)) return 0; // [skilltree] Brise-garde
   const k = m.act?.kind;
   if (k === 'stagger' || (k === 'attack' && m.act.phase === 'windup')) return 0; // open while attacking
   const a = angleTo(m, attacker.x, attacker.z);

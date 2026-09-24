@@ -13,7 +13,7 @@ function slotItem(game, p, slot) {
 
 /** Why the player cannot equip this item, or null. */
 export function equipError(item, cls, level) {
-  if (item.cls && !item.cls.includes(cls)) return `Réservé à : ${item.cls.map((c) => CLASSES[c].name).join(', ')}.`;
+  // [skilltree] v0.3: no class restriction any more (a hybrid wields the weapon of its abilities); item.cls = recommended
   if (level < (item.lvl || 1)) return `Niveau ${item.lvl} requis.`;
   return null;
 }

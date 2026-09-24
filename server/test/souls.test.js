@@ -92,7 +92,7 @@ test('dodge roll: validation, stamina cost, cooldown, i-frames, fx roll, recover
   const now = game.now();
   assert.equal(p.iframeUntil, now + ROLL.iframeMs);
   assert.equal(p.rollUntil, now + ROLL.ms);
-  assert.deepEqual(other.session.last('fx', (f) => f.k === 'roll'), { t: 'fx', k: 'roll', src: p.id, dx: 0.6, dz: 0.8 });
+  assert.deepEqual(other.session.last('fx', (f) => f.k === 'roll'), { t: 'fx', k: 'roll', src: p.id, dx: 0.6, dz: 0.8, ms: 550 });
   assert.ok(p.maxSpeedAt(now + 100) >= ROLL_SPEED);
 
   game.handleMessage(p, { t: 'dodge', dx: 1, dz: 0 });

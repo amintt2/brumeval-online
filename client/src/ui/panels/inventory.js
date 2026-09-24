@@ -55,7 +55,6 @@ export function createInventoryPanel(wm, { handlers, tooltip, menus, notify, isS
 
   function reasonCantUse(item) {
     if (!self) return null;
-    if (item.cls && !item.cls.includes(self.cls)) return `Réservé : ${item.cls.map((c) => CLASSES[c]?.name).join(', ')}`;
     if ((item.lvl || 1) > self.level) return `Niveau ${item.lvl} requis`;
     return null;
   }

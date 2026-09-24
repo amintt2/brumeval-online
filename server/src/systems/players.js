@@ -9,12 +9,15 @@ import { closeDialog } from './npc.js';
 // [combat-souls]
 import { KIND } from '../../../shared/protocol.js';
 import { dropEcho } from './echo.js';
-import { inIframes } from './telegraph.js';
 import { initCombatState } from './stamina.js';
+// [skilltree]
+import { defendPlayer, cheatDeath } from './fundamentals.js';
+import { xpMultOf, onLevelUp } from './skills.js';
+import { stat } from '../../../shared/skills.js';
 
 /** Give XP (handles several level-ups at once; no XP at max level). */
 export function grantXp(game, p, amount) {
-  amount = Math.floor(amount);
+  amount = Math.floor(amount * xpMultOf(p)); // [skilltree] Renaissance: +15 % XP each
   if (!(amount > 0) || p.level >= MAX_LEVEL) return;
   const r = applyXp(p.level, p.xp, amount);
   game.notify(p, 'xp', `+${amount} XP`);
@@ -33,6 +36,7 @@ export function grantXp(game, p, amount) {
     game.notify(p, 'level', `Niveau ${p.level} atteint !`);
     game.systemChat(`${p.name} a atteint le niveau ${p.level} !`);
     game.log.info(`${p.name} atteint le niveau ${p.level}`);
+    onLevelUp(game, p); // [skilltree] new skill points
     game.store?.markDirty();
   }
 }
@@ -40,6 +44,8 @@ export function grantXp(game, p, amount) {
 /** Heal a player by `amount` (clamped), broadcasting `heal` + fx HEAL. Returns the amount really healed. */
 export function healPlayer(game, p, amount, abId) {
   if (p.dead) return 0;
+  // [skilltree] potions: Alchimiste de fortune
+  if (!abId && p.tree) amount = Math.round(amount * (1 + stat(p.tree, 'potionPct')));
   const before = p.hp;
   p.hp = Math.min(p.mhp, p.hp + amount);
   const v = Math.round(p.hp - before);
@@ -51,16 +57,21 @@ export function healPlayer(game, p, amount, abId) {
   return v;
 }
 
-/** Monster (or other source) damages a player. */
-export function damagePlayer(game, p, src, amount, crit, abId) {
+/**
+ * Monster (or other source) damages a player. [skilltree] info = { tele, lo, nb, mag, boss, kind }: the defensive
+ * pipeline (i-frames + perfect dodge, jump over « rasant », guard / parry, shields, stagger) is in fundamentals.js.
+ */
+export function damagePlayer(game, p, src, amount, crit, abId, info = {}) {
   if (p.dead) return;
-  // [combat-souls] dodge roll i-frames negate monster attacks
-  if (src && src.kind === KIND.MONSTER && inIframes(p, game.now())) {
-    game.broadcastNear(p.x, p.z, { t: S2C.FX, k: FX.DODGE, tg: p.id });
-    return;
-  }
+  const now = game.now();
+  // [combat-souls] dodge roll i-frames negate monster attacks — [skilltree] now part of defendPlayer
+  const d = defendPlayer(game, p, src, amount, info, now);
+  if (d.negated) return;
+  amount = d.amount;
+  p.lastHitTakenAt = now;
   p.hp -= amount;
-  p.lastCombat = game.now();
+  if (p.hp <= 0 && cheatDeath(game, p, now)) p.hp = 1;
+  p.lastCombat = now;
   p.markDirty('hp');
   const msg = { t: S2C.DMG, src: src ? src.id : 0, tg: p.id, v: amount, crit: !!crit, hp: p.hp <= 0 ? 0 : Math.max(1, Math.ceil(p.hp)) };
   if (abId) msg.ab = abId;

@@ -89,9 +89,23 @@ export function telegraphReach(t) {
   return t.r || 0;
 }
 
-/** Stamina after `dtMs` of regeneration, given the time since the last spend. Pure helper (client + server). */
-export function regenStamina(st, mst, sinceSpendMs, dtMs) {
-  if (st >= mst || sinceSpendMs < STAMINA.regenDelayMs) return Math.min(st, mst);
-  const eff = Math.min(dtMs, sinceSpendMs - STAMINA.regenDelayMs);
-  return Math.min(mst, st + (STAMINA.regen * eff) / 1000);
+/**
+ * Stamina after `dtMs` of regeneration, given the time since the last spend. Pure helper (client + server).
+ * [skilltree] `regen` (per second) and `delayMs` default to STAMINA (tree passives change them).
+ */
+export function regenStamina(st, mst, sinceSpendMs, dtMs, regen = STAMINA.regen, delayMs = STAMINA.regenDelayMs) {
+  if (st >= mst || sinceSpendMs < delayMs) return Math.min(st, mst);
+  const eff = Math.min(dtMs, sinceSpendMs - delayMs);
+  return Math.min(mst, st + (regen * eff) / 1000);
 }
+
+// ------------------------------------------------------------------ [skilltree] Fondamentaux (docs/design §5)
+/**
+ * Player stagger (« vacillement »): a telegraphed hit that lands staggers the player (no attack, roll, guard or
+ * jump) for teleMs (boss: bossMs), × (1 − Équilibre / 100). Guard broken: guardBreakMs.
+ */
+export const PLAYER_STAGGER = { teleMs: 400, bossMs: 600, guardBreakMs: 1000, airHitMs: 400 };
+/** Telegraph markers (S2C tele): lo = rasant (a jump clears it), nb = imblocable, mag = spell (Égide only). */
+export const TELE_FLAGS = ['lo', 'nb', 'mag'];
+/** Perfect dodge window: a hit negated by i-frames within this long after the roll started. */
+export const PERFECT_DODGE_MS = 150;

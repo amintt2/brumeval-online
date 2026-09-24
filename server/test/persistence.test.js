@@ -62,7 +62,7 @@ test('sanitizeAccount repairs or rejects persisted records', () => {
     eq: { weapon: 'leather_tunic', armor: 'chainmail' }, inv: 'bad', quests: { q_slimes: { state: 'active', n: 3 } },
     x: lake.x, z: lake.z,
   });
-  assert.equal(a.level, 20);
+  assert.equal(a.level, 30); // MAX_LEVEL (v0.3: 30)
   assert.equal(a.v, undefined, 'the schema version lives on the account');
   assert.equal(sanitizeAccount({ name: 'Valide', cls: 'warrior', salt: 'a', hash: 'b', level: 99 }).v, ACCOUNT_VERSION);
   assert.equal(a.xp, 0);

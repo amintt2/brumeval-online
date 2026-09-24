@@ -1,11 +1,15 @@
 // Player entity: live character state built from a persisted account record.
-import { CLASSES, playerStats, xpToNext } from '../../../shared/data.js';
+import { CLASSES, ITEMS, playerStats, xpToNext } from '../../../shared/data.js';
 import { KIND, STATE } from '../../../shared/protocol.js';
 import { SPAWN_POINT } from '../../../shared/world.js';
 import { cloneInventory } from '../inventory.js';
 import { MoveValidator } from '../movement.js';
 import { round2, round3 } from '../util.js';
 import { initCombatState, maxSpeedAt } from '../systems/stamina.js'; // [combat-souls]
+// [skilltree]
+import { buildTree, sanitizeSkills, freshSkills, repairLoadout } from '../../../shared/skills.js';
+import { applyTreeStats, treeField, pointsField, renaissanceField } from '../systems/skills.js';
+import { buffStat } from '../systems/buffs.js';
 
 export class Player {
   constructor(id, account, session, now) {
@@ -30,6 +34,11 @@ export class Player {
 
     this.stats = null;
     this.mhp = 1; this.mmp = 0;
+    // [skilltree] tree state (sanitized again: never trust a record) + cache, before the stats that depend on it
+    this.skills = sanitizeSkills(account.skills, this.cls, this.level) || freshSkills(this.cls);
+    this.tree = buildTree(this.cls, this.skills);
+    this.skills.loadout = repairLoadout(this.skills.loadout, this.tree.unlocked, this.cls);
+    this.buffs = new Map(); // ability id -> { until, … } (systems/buffs.js)
     this.recomputeStats();
     this.hp = account.hp == null ? this.mhp : Math.max(1, Math.min(this.mhp, account.hp));
     this.mp = account.mp == null ? this.mmp : Math.max(0, Math.min(this.mmp, account.mp));
@@ -39,7 +48,7 @@ export class Player {
     this.lastCorrectAt = -Infinity;
     this.moveUntil = 0;
     // combat
-    this.cooldowns = [0, 0, 0, 0];
+    this.cds = new Map(); // [skilltree] ability id -> ready time (ms); the bar slots only point at abilities
     this.autoTarget = 0;
     this.lastCombat = -Infinity;
     // npc dialog
@@ -60,7 +69,12 @@ export class Player {
   /** [combat-souls] Movement allowance contract: metres/second allowed at `nowMs`. */
   maxSpeedAt(nowMs) { return maxSpeedAt(this, nowMs); }
 
-  get abilities() { return CLASSES[this.cls].abilities; }
+  /** [skilltree] v0.2 view of the action bar (first four loadout slots) for older clients. */
+  get abilities() { return this.skills.loadout.slice(0, 4); }
+  /** [skilltree] 8-slot action bar. */
+  get loadout() { return this.skills.loadout; }
+  /** Cooldown ready time of an ability (0 = ready). */
+  cdOf(id) { return this.cds.get(id) || 0; }
 
   /** hp as shown to clients: never 0 while alive. */
   hpShown() { return this.dead ? 0 : Math.max(1, Math.ceil(this.hp)); }
@@ -69,10 +83,20 @@ export class Player {
 
   /** Recompute derived stats from class/level/equipment and clamp hp/mp. */
   recomputeStats() {
-    const s = playerStats(this.cls, this.level, this.eq);
+    // [skilltree] gear above the character's level (kept after a Renaissance) gives nothing until the level is regained
+    const eq = {};
+    for (const k of ['weapon', 'armor']) eq[k] = this.eq[k] && this.level >= (ITEMS[this.eq[k]]?.lvl || 1) ? this.eq[k] : null;
+    const s = playerStats(this.cls, this.level, eq);
+    applyTreeStats(this, s); // [skilltree] passives (PV, mana, défense, critique, vitesse, endurance…)
+    // [skilltree] active buffs (Rage, Bastion, Armure de givre…)
+    if (this.buffs?.size) {
+      s.def = Math.max(0, Math.round(s.def * (1 + buffStat(this, 'defPct'))));
+      s.speed = +(s.speed * Math.max(0.2, 1 + buffStat(this, 'speedPct'))).toFixed(3);
+    }
     this.mhp = s.mhp;
     this.mmp = s.mmp;
     this.stats = { atk: s.atk, def: s.def, crit: s.crit, speed: s.speed };
+    if (this.st !== undefined && this.st > this.mst) this.st = this.mst;
     if (this.hp !== undefined) {
       this.hp = Math.min(this.hp, this.mhp);
       this.mp = Math.min(this.mp, this.mmp);
@@ -100,6 +124,11 @@ export class Player {
       case 'ry': return round3(this.ry);
       case 'st': return Math.floor(this.st); // [combat-souls]
       case 'echo': return this.echo ? { ...this.echo } : null; // [combat-souls]
+      // [skilltree]
+      case 'tree': return treeField(this);
+      case 'points': return pointsField(this);
+      case 'loadout': return [...this.skills.loadout];
+      case 'renaissance': return renaissanceField(this);
       default: return this[f];
     }
   }
@@ -128,11 +157,25 @@ export class Player {
       hp: this.hpShown(), mhp: this.mhp,
       s: this.dead ? STATE.DEAD : now < this.moveUntil ? STATE.MOVE : STATE.IDLE,
       tg: this.autoTarget || 0,
+      ac: this.actionFlags(now), // [skilltree]
     };
   }
 
+  /** [skilltree] EntState.ac: 1 guard, 2 airborne, 4 charging, 8 casting / channelling, 16 staggered. */
+  actionFlags(now) {
+    let f = 0;
+    if (this.guardUp) f |= 1;
+    if (now < (this.airUntil || 0)) f |= 2;
+    if (this.charging) f |= 4;
+    if (this.casting) f |= 8;
+    if (now < (this.staggerUntil || 0)) f |= 16;
+    return f;
+  }
+
   staticState() {
-    return { k: this.kind, n: this.name, m: this.model, lv: this.level, c: this.cls };
+    const s = { k: this.kind, n: this.name, m: this.model, lv: this.level, c: this.cls };
+    if (this.skills.rb > 0) s.rb = this.skills.rb; // [skilltree] Renaissance aura + title
+    return s;
   }
 
   /** Copy live state back into the account record (for saving). */
@@ -144,6 +187,7 @@ export class Player {
     a.inv = cloneInventory(this.inv);
     a.eq = { ...this.eq };
     a.quests = JSON.parse(JSON.stringify(this.quests));
+    a.skills = JSON.parse(JSON.stringify(this.skills)); // [skilltree]
     if (this.dead) {
       a.hp = null; a.mp = null;
       a.x = SPAWN_POINT.x; a.z = SPAWN_POINT.z;
@@ -161,3 +205,4 @@ export const SELF_FIELDS = [
   'stats', 'inv', 'eq', 'quests', 'abilities', 'x', 'z', 'ry', 'dead',
 ];
 SELF_FIELDS.push('st', 'mst', 'echo'); // [combat-souls]
+SELF_FIELDS.push('tree', 'points', 'loadout', 'renaissance'); // [skilltree]

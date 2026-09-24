@@ -98,7 +98,7 @@ test('unchanged entities are omitted, changed fields only, full refresh every FU
     const eb = snap.ents.find((e) => e.id === b.id);
     if (eb) {
       withB++;
-      assert.deepEqual(Object.keys(eb).sort(), ['hp', 'id', 'mhp', 'ry', 's', 'tg', 'x', 'z'], 'periodic refresh is whole');
+      assert.deepEqual(Object.keys(eb).sort(), ['ac', 'hp', 'id', 'mhp', 'ry', 's', 'tg', 'x', 'z'], 'periodic refresh is whole');
     }
   }
   assert.equal(rounds, FULL_EVERY * 2);

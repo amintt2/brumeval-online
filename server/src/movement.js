@@ -220,7 +220,10 @@ export function handleMoveMsg(game, p, msg) {
   }
   const stepD = Math.hypot(to.x - p.x, to.z - p.z);
   trackMoveSpeed(p, stepD, now - mv.last.t); // [combat-souls] ranged autos need a (nearly) standing caster
-  if (stepD > 0.01) p.moveUntil = now + MOVE_STATE_MS;
+  if (stepD > 0.01) {
+    p.moveUntil = now + MOVE_STATE_MS;
+    p.lastMoveAt = now; // [skilltree] « immobile 0,6 s » conditions (Posture de l'archer)
+  }
   p.x = to.x;
   p.z = to.z;
   if (isNum(msg.ry)) p.ry = normAngle(msg.ry);

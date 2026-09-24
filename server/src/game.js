@@ -25,6 +25,13 @@ import { handleMoveMsg } from './movement.js'; // [anticheat]
 import { handleDodge, handleSprint, updateStamina, trackMoveSpeed } from './systems/stamina.js';
 import { setupMonster } from './systems/ai/brain.js';
 import { updateEchoes, restoreEcho, removeEchoEntity } from './systems/echo.js';
+// [skilltree] l'Arbre des Brumes: tree, action bar, Renaissance, ability engine, Fondamentaux, statuses, zones
+import { handleSkillAlloc, handleSkillAllocBatch, handleLoadout, handleRenaissance } from './systems/skills.js';
+import { updateAbilities } from './systems/abilities.js';
+import { handleJump, handleGuard, updateFundamentals } from './systems/fundamentals.js';
+import { updateStatuses } from './systems/status.js';
+import { updateZones } from './systems/zones.js';
+import { updateBuffs } from './systems/buffs.js';
 
 const TICK_MS = 1000 / TICK_RATE;
 const EVENT_R2 = (VIEW_RADIUS + AOI_EXIT_MARGIN) ** 2;
@@ -265,6 +272,11 @@ export class Game {
     this.guard('timers', () => this.runTimers(now));
     this.guard('ai', () => updateMonsters(this, dt, now));
     this.guard('combat', () => updateAutoAttacks(this, now));
+    this.guard('abilities', () => updateAbilities(this, now)); // [skilltree] casts, channels
+    this.guard('fundamentals', () => updateFundamentals(this, now)); // [skilltree] charge, guard
+    this.guard('statuses', () => updateStatuses(this, now)); // [skilltree] burns, poisons, bleeds…
+    this.guard('zones', () => updateZones(this, now)); // [skilltree] ground zones, traps, walls, summons
+    this.guard('buffs', () => updateBuffs(this, now)); // [skilltree]
     this.guard('regen', () => updateRegen(this, dt, now));
     this.guard('security', () => this.security?.tick(now)); // [anticheat]
     this.guard('stamina', () => updateStamina(this, dt, now)); // [combat-souls]
@@ -342,3 +354,10 @@ const HANDLERS = {
 // [combat-souls]
 HANDLERS[C2S.DODGE] = handleDodge;
 HANDLERS[C2S.SPRINT] = handleSprint;
+// [skilltree]
+HANDLERS[C2S.SKILL_ALLOC] = handleSkillAlloc;
+HANDLERS[C2S.SKILL_ALLOC_BATCH] = handleSkillAllocBatch;
+HANDLERS[C2S.LOADOUT] = handleLoadout;
+HANDLERS[C2S.RENAISSANCE] = handleRenaissance;
+HANDLERS[C2S.JUMP] = handleJump;
+HANDLERS[C2S.GUARD] = handleGuard;

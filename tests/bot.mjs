@@ -12,7 +12,9 @@ import { Bot, sleep, collisionWorld } from './lib/botClient.mjs';
 import { PLAYER_RADIUS } from '../shared/protocol.js';
 import { ROLL } from '../shared/combat.js';
 import { telegraphs } from '../server/src/systems/telegraph.js';
-import { damagePlayer } from '../server/src/systems/players.js';
+import { damagePlayer, grantXp } from '../server/src/systems/players.js';
+// [skilltree]
+import { xpToNext } from '../shared/data.js';
 
 const T0 = performance.now();
 const DEADLINE_MS = 85_000;
@@ -209,6 +211,9 @@ async function main() {
   await A.waitFor((m) => m.t === 'snap' && m.gone.includes(killed.id), { from: killed.index, timeout: 7000, desc: 'gone du cadavre' });
   ok(true, 'cadavre retiré (gone) après CORPSE_TIME_S');
 
+  // ---------------------------------------------------------------- [skilltree] l'Arbre des Brumes
+  await treeChecks(A);
+
   // ---------------------------------------------------------------- [combat-souls] telegraphs & dodge roll
   await soulsChecks(A);
 
@@ -303,6 +308,80 @@ async function accountsFlow(url, watcher) {
  * [combat-souls] A telegraphed attack is resolved at impact against the positions of that moment:
  * rolling out of it avoids the damage (and the roll is never corrected by the server), staying in it hurts.
  */
+/**
+ * [skilltree] A fresh v0.3 character: base attack only, no roll; points from level 2; Fondamentaux first; a newly
+ * learnt skill lands on the bar and is used; a jump clears a golem stomp (ring telegraph marked `lo`).
+ */
+async function treeChecks(A) {
+  const game = server.game;
+  const serverA = game.players.get(A.id);
+  A.send({ t: 'stop' });
+  ok(A.self.loadout?.[0] === 'firebolt' && A.self.loadout.slice(1, 4).every((v) => v === null) && A.self.tree && A.self.points,
+    'nouveau personnage v0.3 : seulement l’attaque de base, arbre et points dans SelfState');
+  let fa = A.mark();
+  A.send({ t: 'dodge', dx: 1, dz: 0 });
+  const locked = await A.waitType('err', () => true, { from: fa });
+  ok(locked.code === 'locked', 'pas de roulade avant de l’apprendre (niveau 1, décision du 23/09)');
+  fa = A.mark();
+  A.send({ t: 'skill_alloc', node: 'ma_fireball' });
+  const gate = await A.waitType('err', () => true, { from: fa });
+  ok(gate.code === 'tree_points' || gate.code === 'tree_gate', `nœud de classe refusé sans points ni Fondamentaux (${gate.code})`);
+  // level 5 (5 points) — XP granted server-side
+  let need = 0;
+  for (let l = serverA.level; l < 5; l++) need += xpToNext(l);
+  grantXp(game, serverA, Math.max(0, need - serverA.xp) + 1);
+  game.flushSelf(serverA);
+  await A.waitFor(() => A.self.level === 5 && A.self.points?.total === 5, { desc: 'niveau 5 et 5 points' });
+  fa = A.mark();
+  A.send({ t: 'skill_alloc', node: 'ma_fireball' });
+  const gate2 = await A.waitType('err', () => true, { from: fa });
+  ok(gate2.code === 'tree_gate', 'porte des Fondamentaux : 3 Fondamentaux avant la région de la classe (tree_gate)');
+  A.send({ t: 'skill_alloc_batch', nodes: ['fond_roulade', 'fond_sprint', 'fond_saut'] });
+  await A.waitFor(() => A.self.points?.spent === 3, { desc: 'Fondamentaux appris' });
+  ok(A.self.tree.alloc.fond_roulade === 1 && A.self.tree.alloc.fond_saut === 1, 'Roulade, Sprint et Saut appris en une fois (skill_alloc_batch)');
+  A.send({ t: 'skill_alloc', node: 'ma_fireball' });
+  await A.waitFor(() => A.self.loadout?.includes('fireball'), { desc: 'Boule de feu dans la barre' });
+  const slot = A.self.loadout.indexOf('fireball');
+  ok(slot > 0 && A.self.points.spent === 4 && A.self.points.free === 1, `nouvelle compétence apprise et placée dans la barre (emplacement ${slot + 1})`);
+  // use it on a slime
+  const slime = [...A.ents.values()].filter((e) => e.mt === 'slime' && e.s !== 2)
+    .sort((a, b) => Math.hypot(a.x - A.x, a.z - A.z) - Math.hypot(b.x - A.x, b.z - A.z))[0];
+  if (!slime) throw new Error('aucun gluant visible pour la Boule de feu');
+  const d = Math.hypot(slime.x - A.x, slime.z - A.z);
+  if (d > 15) {
+    const k = (d - 14) / d;
+    await A.walkTo(A.x + (slime.x - A.x) * k, A.z + (slime.z - A.z) * k, { stop: 0.2, maxMs: 8000 });
+  }
+  await sleep(300);
+  fa = A.mark();
+  A.send({ t: 'ability', slot, tg: slime.id });
+  const fb = await A.waitType('dmg', (m) => m.src === A.id && m.ab === 'fireball', { from: fa, timeout: 4000 });
+  ok(fb.v > 0, `Boule de feu lancée depuis la barre (${fb.v} dégâts, incantation 0,35 s)`);
+  A.send({ t: 'stop' });
+  await sleep(1500);
+  // jump over a golem stomp: ring telegraph (safe inner circle 4.2 m), marked « rasant »
+  const src = [...game.monsters.values()].find((m) => !m.dead && !m.invulnerable);
+  const stomp = () => telegraphs(game).start(src, { shape: 'ring', x: A.x + 7, z: A.z, r: 10, r2: 4.2 }, 900, {
+    ab: 'golem_stomp', lo: true, onHit: (p) => damagePlayer(game, p, src, 9, false, 'golem_stomp', { tele: true, lo: true, boss: true }),
+  });
+  fa = A.mark();
+  stomp();
+  const tele = await A.waitType('tele', (m) => m.ab === 'golem_stomp', { from: fa });
+  ok(tele.shape === 'ring' && tele.lo === 1, 'onde de choc annoncée comme rasante (tele.lo)');
+  await sleep(560);
+  A.send({ t: 'jump', dx: 0, dz: 0 });
+  await sleep(800);
+  ok(!A.history.slice(fa).some((m) => m.t === 'dmg' && m.tg === A.id && m.ab === 'golem_stomp')
+    && A.history.slice(fa).some((m) => m.t === 'fx' && m.k === 'jump' && m.src === A.id)
+    && A.history.slice(fa).some((m) => m.t === 'fx' && m.k === 'dodge' && m.tg === A.id), 'saut au-dessus de l’onde de choc du golem : aucun dégât');
+  await sleep(800);
+  fa = A.mark();
+  stomp();
+  const hit = await A.waitType('dmg', (m) => m.tg === A.id && m.ab === 'golem_stomp', { from: fa, timeout: 3000 });
+  ok(hit.v === 9, 'sans sauter, l’onde de choc touche');
+  await sleep(700); // stagger (vacillement) over
+}
+
 async function soulsChecks(A) {
   const game = server.game;
   A.send({ t: 'stop' });

@@ -73,7 +73,8 @@ test('equip / unequip with class and level checks; stats recomputed and hp/mp cl
   game.handleMessage(p, { t: 'equip', slot: 5 });
   assert.deepEqual(p.session.last('err'), { t: 'err', code: 'cant_use', msg: 'Niveau 5 requis.' });
   game.handleMessage(p, { t: 'equip', slot: 6 });
-  assert.deepEqual(p.session.last('err'), { t: 'err', code: 'cant_use', msg: 'Réservé à : Guerrier.' });
+  // [skilltree] v0.3: no class restriction any more, only the level (a hybrid wields the weapon of its abilities)
+  assert.deepEqual(p.session.last('err'), { t: 'err', code: 'cant_use', msg: 'Niveau 6 requis.' });
   game.handleMessage(p, { t: 'equip', slot: 0 });
   assert.equal(p.session.last('err').code, 'cant_use'); // potion
 
@@ -342,7 +343,7 @@ test('snapshots: AOI, static fields on first sight / change only, field deltas, 
   assert.ok(snap.tod >= 0 && snap.tod < 1);
   assert.ok(Number.isInteger(snap.tick));
   const selfEnt = snap.ents.find((e) => e.id === a.id);
-  assert.deepEqual(Object.keys(selfEnt).sort(), ['c', 'hp', 'id', 'k', 'lv', 'm', 'mhp', 'n', 'ry', 's', 'tg', 'x', 'z'].sort());
+  assert.deepEqual(Object.keys(selfEnt).sort(), ['ac', 'c', 'hp', 'id', 'k', 'lv', 'm', 'mhp', 'n', 'ry', 's', 'tg', 'x', 'z'].sort());
   assert.equal(selfEnt.k, KIND.PLAYER);
   assert.ok(!snap.ents.some((e) => e.id === b.id), 'b is out of the AOI');
   assert.ok(!snap.ents.some((e) => e.id === golem.id), 'golem is far away');

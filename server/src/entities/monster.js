@@ -2,6 +2,7 @@
 import { MONSTERS, monsterStats } from '../../../shared/data.js';
 import { KIND, STATE } from '../../../shared/protocol.js';
 import { round2, round3 } from '../util.js';
+import { statusFlags } from '../systems/status.js'; // [skilltree]
 
 export class Monster {
   constructor(id, type, level, zone, x, z, ry, now) {
@@ -53,6 +54,7 @@ export class Monster {
       s: this.dead ? STATE.DEAD : now < this.moveUntil ? STATE.MOVE : STATE.IDLE,
       tg: this.target || 0,
       sl: !this.dead && now < this.slowUntil ? 1 : 0,
+      stt: this.dead ? 0 : statusFlags(this, now), // [skilltree] brûlure, froid, gel, poison… (protocol.js)
     };
   }
 

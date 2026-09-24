@@ -165,7 +165,9 @@ export class Targeting {
       notify('Le combat est interdit dans le village.', 'error');
       return;
     }
-    switch (ab.kind) {
+    // [skilltree] v0.3 kinds: marks and targeted channels (Tir rapide, Danse des lames, Trait fatal) need a target too
+    const kind = ab.kind === 'debuff' || (ab.kind === 'channel' && !ab.shape) ? 'projectile' : ab.kind;
+    switch (kind) {
       case 'melee':
       case 'projectile': {
         let t = this.hostileTarget();

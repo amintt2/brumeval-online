@@ -23,6 +23,10 @@ export function hostilesOf(game, src) {
 
 const radiusOf = (e) => (e.kind === KIND.PLAYER ? PLAYER_RADIUS : e.radius || 0.5);
 
+// [skilltree] fundamentals.js registers the perfect dodge (roll i-frames) and the airborne test (Saut vs `lo`)
+const hooks = { dodged: null, airborne: null };
+export function setTelegraphHooks(h) { Object.assign(hooks, h); }
+
 export class TelegraphSystem {
   constructor(game) {
     this.game = game;
@@ -35,7 +39,8 @@ export class TelegraphSystem {
    * @param src    attacker entity (the telegraph is cancelled if it dies or is removed)
    * @param shape  { shape, x, z, r?, r2?, a?, arc?, w?, len? }
    * @param ms     delay until impact
-   * @param opts   { ab?, clip?, onHit(target), onImpact(hits[]) }
+   * @param opts   { ab?, clip?, lo?, nb?, mag?, onHit(target), onImpact(hits[]) }
+   *               [skilltree] lo = rasant (airborne targets are missed), nb = imblocable, mag = spell
    * @returns telegraph id
    */
   start(src, shape, ms, opts = {}) {
@@ -54,6 +59,9 @@ export class TelegraphSystem {
     if (t.shape === 'line') { msg.w = round2(t.w); msg.len = round2(t.len); }
     if (opts.ab) msg.ab = opts.ab;
     if (opts.clip) msg.clip = opts.clip;
+    if (opts.lo) msg.lo = 1; // [skilltree]
+    if (opts.nb) msg.nb = 1;
+    if (opts.mag) msg.mag = 1;
     this.game.broadcastNear(t.x, t.z, msg);
     this.game.schedule(ms, () => this.resolve(id));
     return id;
@@ -72,6 +80,12 @@ export class TelegraphSystem {
     for (const e of hostilesOf(game, src)) {
       if (!inTelegraph(t, e.x, e.z, radiusOf(e))) continue;
       if (inIframes(e, now)) {
+        if (e.kind === KIND.PLAYER && hooks.dodged) hooks.dodged(game, e, now);
+        else game.broadcastNear(e.x, e.z, { t: S2C.FX, k: FX.DODGE, tg: e.id });
+        continue;
+      }
+      // [skilltree] a jump clears « rasant » attacks (shockwaves, low sweeps)
+      if (t.opts.lo && e.kind === KIND.PLAYER && hooks.airborne?.(e, now)) {
         game.broadcastNear(e.x, e.z, { t: S2C.FX, k: FX.DODGE, tg: e.id });
         continue;
       }

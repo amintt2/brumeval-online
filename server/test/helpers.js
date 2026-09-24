@@ -1,6 +1,7 @@
 // Test helpers: a Game with a manual clock, fake sessions that record every message, player factories.
 import { Game } from '../src/game.js';
 import { newCharacter } from '../src/persistence.js';
+import { legacySkills } from '../../shared/skills.js';
 import { mulberry32 } from '../../shared/noise.js';
 import { SPAWN_ZONES } from '../../shared/world.js';
 import { setupMonster } from '../src/systems/ai/brain.js';
@@ -35,10 +36,16 @@ export function advance(game, ms) {
 }
 
 let counter = 0;
-/** Create an online player. `over` overrides account fields (level, x, z, gold, inv, eq, quests…). */
-export function addPlayer(game, { name, cls = 'warrior', ...over } = {}) {
+/**
+ * Create an online player. `over` overrides account fields (level, x, z, gold, inv, eq, quests…).
+ * [skilltree] By default the character is a migrated v0.2 one (Roulade + Sprint offered, its 4 v0.2 abilities on
+ * slots 1–4, shared/skills.js legacySkills) so that the combat tests keep exercising those abilities; `fresh: true`
+ * gives a brand-new v0.3 character (base attack only), `skills` an explicit tree state.
+ */
+export function addPlayer(game, { name, cls = 'warrior', fresh = false, ...over } = {}) {
   const acc = newCharacter(name || `Joueur${++counter}`, cls);
   Object.assign(acc, over);
+  if (!fresh && !('skills' in over)) acc.skills = legacySkills(cls, acc.level);
   const s = new FakeSession();
   const p = game.addPlayer(acc, s);
   s.clear();
