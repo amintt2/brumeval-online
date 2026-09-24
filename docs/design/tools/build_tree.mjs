@@ -667,6 +667,51 @@ tuneAbility('blade_wave', { cd: 7 }, 'Onde tranchante : recharge 8 → 7 s.');
 redesc(byId.get('gm_lance_spectrale'), 'recharge 8 → 12 s', 'recharge 7 → 11 s');
 tuneNode('gm_lance_spectrale', () => setMod('gm_lance_spectrale', 'blade_wave.cd', 11), 'Suit la recharge de l’Onde (7 s).');
 tuneAbility('rend', { power: 1.0, dot: { type: 'saignement', total: 1.8, dur: 6 } }, 'Entaille : ×0,9 → ×1,0 et saignement 180 % de l’attaque en 6 s (outil principal du Berserker avant le niveau 20).');
+// Pass 11 (review of 24/09, tests/balance/sim.mjs): bring the builds closer to the mean XP/min at levels 20 and 30
+// (Tireur was +33 %, Givre −24 %, Lame spirituelle −25 %). A v0.2 ability is never weaker than in v0.2 on the first
+// v0.3 login: the Rôdeur's small cuts are covered by Main sûre (+5 %, in its migration preset) and, for the Tir
+// perçant, by its new 30 % armour penetration. The Inapte hybrid « Mage de bataille » stays under the mean at
+// level 30 (Inaptitude is meant to cost something).
+tuneAbility('ice_lance', { power: 2.4 }, 'Lance de glace : ×1,6 → ×2,4 (le Mage de Givre restait 24 % sous la moyenne au niveau 30).');
+tuneNode('ma_v_lance_glacier', () => setMod('ma_v_lance_glacier', 'ice_lance.power', 2.1), 'Suit la Lance de glace ×2,4.');
+redesc(byId.get('ma_v_lance_glacier'), 'puissance 1,6 → 1,4', 'puissance 2,4 → 2,1');
+tuneNode('ma_v_lance_trio', () => setMod('ma_v_lance_trio', 'ice_lance.power', 1.1), 'Suit la Lance de glace ×2,4 (×0,75 → ×1,1 par lance).');
+redesc(byId.get('ma_v_lance_trio'), '(×0,75 chacune)', '(×1,1 chacune)');
+tuneAbility('rapid_fire', { power: 0.77 }, 'Tir rapide : ×0,8 → ×0,77 par flèche (Main sûre, dans le préréglage des Rôdeurs v0.2, compense : aucun vétéran n’y perd).');
+tuneNode('ro_ti_rafale', () => setMod('ro_ti_rafale', 'rapid_fire.power', 0.57), 'Suit le Tir rapide ×0,77.');
+redesc(byId.get('ro_ti_rafale'), '(×0,6 chacune)', '(×0,57 chacune)');
+tuneNode('ro_ti_salve_eventail', () => setMod('ro_ti_salve_eventail', 'rapid_fire.power', 0.66), 'Suit le Tir rapide ×0,77.');
+redesc(byId.get('ro_ti_salve_eventail'), '(×0,7 chacune', '(×0,66 chacune');
+tuneAbility('arrow_rain', { power: 1.2 }, 'Pluie de flèches : ×1,25 → ×1,2 (compensé par Main sûre pour les vétérans).');
+tuneNode('ro_ti_averse_acier', () => setMod('ro_ti_averse_acier', 'arrow_rain.power', 1.8), 'Suit la Pluie de flèches ×1,2.');
+redesc(byId.get('ro_ti_averse_acier'), '×1,25 → ×1,9', '×1,2 → ×1,8');
+tuneAbility('piercing_shot', { power: 1.7 }, 'Tir perçant : ×1,9 → ×1,7 (il ignore désormais 30 % de l’armure et transperce : au moins aussi fort qu’en v0.2 sur une cible en armure).');
+tuneNode('ro_ti_oeil_exerce', (n) => { n.effects[0].value = 0.02; }, 'Œil exercé : +3 % → +2 % de critique par rang (le Tireur dépassait la moyenne de 31 % au niveau 20).');
+redesc(byId.get('ro_ti_oeil_exerce'), '+3 %', '+2 %');
+tuneNode('ro_ti_point_faible', (n) => { n.effects[0].value = 0.06; }, 'Défaut de la cuirasse : +10 % → +6 % de dégâts critiques par rang.');
+redesc(byId.get('ro_ti_point_faible'), '+10 %', '+6 %');
+tuneAbility('fleche_empoisonnee', { power: 0.8 }, 'Flèche empoisonnée : ×0,6 → ×0,8 (le Venin remonte vers la moyenne).');
+tuneAbility('fleche_barbelee', { power: 1.2 }, 'Flèche barbelée : ×1,0 → ×1,2.');
+tuneAbility('shield_bash', { power: 1.3 }, 'Coup de bouclier : ×1,0 → ×1,3 (le Gardien restait sous la moyenne au niveau 30).');
+tuneAbility('ignite', { power: 0.45, detonate: 1.2 }, 'Embrasement : 150 % → 120 % de la brûlure restante, ×0,6 → ×0,45 sans brûlure (le Pyromancien dépassait la moyenne de 19 % au niveau 20).');
+redesc(abById('ignite'), '150 %', '120 %');
+redesc(byId.get('ma_ignite'), '150 %', '120 %');
+abById('ignite').souls = abById('ignite').souls.replace('×0,6', '×0,45');
+tuneNode('ma_v_ignite_detonation', () => setMod('ma_v_ignite_detonation', 'ignite.detonate', 1.6), 'Suit l’Embrasement (120 %).');
+redesc(byId.get('ma_v_ignite_detonation'), '200 % de la brûlure restante au lieu de 150 %', '160 % de la brûlure restante au lieu de 120 %');
+tuneNode('ma_p_flamme_attisee', (n) => { n.effects[0].value = 0.03; }, 'Flamme attisée : +4 % → +3 % de dégâts de feu par rang.');
+redesc(byId.get('ma_p_flamme_attisee'), '+4 %', '+3 %');
+tuneNode('ma_p_fournaise', (n) => { n.effects[0].value = 0.04; }, 'Fournaise : +5 % → +4 % de dégâts de feu par rang.');
+redesc(byId.get('ma_p_fournaise'), '+5 %', '+4 %');
+tuneAbility('rage', { buff: { ...abById('rage').buff, dmgPct: 0.25 } }, 'Rage sanguinaire : +30 % → +25 % de dégâts (le Berserker dépassait la moyenne de 18 % au niveau 30).');
+tuneAbility('blade_wave', { power: 1.8, mp: 13 }, 'Onde tranchante : ×1,7 → ×1,8, mana 18 → 13 (la Lame spirituelle, à court de mana, restait 25 % sous la moyenne au niveau 20).');
+tuneNode('gm_lance_spectrale', () => setMod('gm_lance_spectrale', 'blade_wave.power', 2.2), 'Suit l’Onde tranchante ×1,8.');
+redesc(byId.get('gm_lance_spectrale'), 'puissance 1,7 → 2,1', 'puissance 1,8 → 2,2');
+tuneNode('gm_croissant', () => setMod('gm_croissant', 'blade_wave.power', 1.55), 'Suit l’Onde tranchante ×1,8.');
+redesc(byId.get('gm_croissant'), 'puissance 1,7 → 1,45', 'puissance 1,8 → 1,55');
+tuneAbility('enchant_blade', { mp: 20, buff: { meleeBonusDmg: 0.5, element: 'arcane' } }, 'Lame enchantée : +40 % → +50 %, mana 25 → 20.');
+tuneNode('gm_lame_arcanique', (n) => { n.effects[0].value = { meleeBonusDmg: 0.4, element: 'arcane' }; }, 'Suit la Lame enchantée (+40 % avec l’élément arcane).');
+redesc(byId.get('gm_lame_arcanique'), 'bonus 40 % → 30 %', 'bonus 50 % → 40 %');
 
 
 

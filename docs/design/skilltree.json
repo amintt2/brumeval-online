@@ -524,6 +524,214 @@
      }
     },
     "why": "Entaille : ×0,9 → ×1,0 et saignement 180 % de l’attaque en 6 s (outil principal du Berserker avant le niveau 20)."
+   },
+   {
+    "target": "ice_lance",
+    "before": {
+     "power": 1.6
+    },
+    "after": {
+     "power": 2.4
+    },
+    "why": "Lance de glace : ×1,6 → ×2,4 (le Mage de Givre restait 24 % sous la moyenne au niveau 30)."
+   },
+   {
+    "target": "ma_v_lance_glacier",
+    "before": "[{\"mod\":\"ice_lance.pierce\",\"op\":\"set\",\"value\":99},{\"mod\":\"ice_lance.power\",\"op\":\"set\",\"value\":1.4},{\"mod\":\"ice_lance.cast\",\"op\":\"set\",\"value\":0.7}]",
+    "after": "[{\"mod\":\"ice_lance.pierce\",\"op\":\"set\",\"value\":99},{\"mod\":\"ice_lance.power\",\"op\":\"set\",\"value\":2.1},{\"mod\":\"ice_lance.cast\",\"op\":\"set\",\"value\":0.7}]",
+    "why": "Suit la Lance de glace ×2,4."
+   },
+   {
+    "target": "ma_v_lance_trio",
+    "before": "[{\"mod\":\"ice_lance.projectiles\",\"op\":\"set\",\"value\":3},{\"mod\":\"ice_lance.spreadDeg\",\"op\":\"set\",\"value\":20},{\"mod\":\"ice_lance.power\",\"op\":\"set\",\"value\":0.75}]",
+    "after": "[{\"mod\":\"ice_lance.projectiles\",\"op\":\"set\",\"value\":3},{\"mod\":\"ice_lance.spreadDeg\",\"op\":\"set\",\"value\":20},{\"mod\":\"ice_lance.power\",\"op\":\"set\",\"value\":1.1}]",
+    "why": "Suit la Lance de glace ×2,4 (×0,75 → ×1,1 par lance)."
+   },
+   {
+    "target": "rapid_fire",
+    "before": {
+     "power": 0.8
+    },
+    "after": {
+     "power": 0.77
+    },
+    "why": "Tir rapide : ×0,8 → ×0,77 par flèche (Main sûre, dans le préréglage des Rôdeurs v0.2, compense : aucun vétéran n’y perd)."
+   },
+   {
+    "target": "ro_ti_rafale",
+    "before": "[{\"mod\":\"rapid_fire.hits\",\"op\":\"set\",\"value\":5},{\"mod\":\"rapid_fire.power\",\"op\":\"set\",\"value\":0.6},{\"mod\":\"rapid_fire.channelMs\",\"op\":\"set\",\"value\":1000},{\"mod\":\"rapid_fire.moveDuring\",\"op\":\"set\",\"value\":0.2},{\"mod\":\"rapid_fire.mp\",\"op\":\"set\",\"value\":20}]",
+    "after": "[{\"mod\":\"rapid_fire.hits\",\"op\":\"set\",\"value\":5},{\"mod\":\"rapid_fire.power\",\"op\":\"set\",\"value\":0.57},{\"mod\":\"rapid_fire.channelMs\",\"op\":\"set\",\"value\":1000},{\"mod\":\"rapid_fire.moveDuring\",\"op\":\"set\",\"value\":0.2},{\"mod\":\"rapid_fire.mp\",\"op\":\"set\",\"value\":20}]",
+    "why": "Suit le Tir rapide ×0,77."
+   },
+   {
+    "target": "ro_ti_salve_eventail",
+    "before": "[{\"mod\":\"rapid_fire.pattern\",\"op\":\"set\",\"value\":\"fan30\"},{\"mod\":\"rapid_fire.power\",\"op\":\"set\",\"value\":0.7},{\"mod\":\"rapid_fire.poise\",\"op\":\"set\",\"value\":6},{\"mod\":\"rapid_fire.channelMs\",\"op\":\"set\",\"value\":0}]",
+    "after": "[{\"mod\":\"rapid_fire.pattern\",\"op\":\"set\",\"value\":\"fan30\"},{\"mod\":\"rapid_fire.power\",\"op\":\"set\",\"value\":0.66},{\"mod\":\"rapid_fire.poise\",\"op\":\"set\",\"value\":6},{\"mod\":\"rapid_fire.channelMs\",\"op\":\"set\",\"value\":0}]",
+    "why": "Suit le Tir rapide ×0,77."
+   },
+   {
+    "target": "arrow_rain",
+    "before": {
+     "power": 1.25
+    },
+    "after": {
+     "power": 1.2
+    },
+    "why": "Pluie de flèches : ×1,25 → ×1,2 (compensé par Main sûre pour les vétérans)."
+   },
+   {
+    "target": "ro_ti_averse_acier",
+    "before": "[{\"mod\":\"arrow_rain.radius\",\"op\":\"set\",\"value\":3},{\"mod\":\"arrow_rain.power\",\"op\":\"set\",\"value\":1.9},{\"mod\":\"arrow_rain.poise\",\"op\":\"set\",\"value\":28}]",
+    "after": "[{\"mod\":\"arrow_rain.radius\",\"op\":\"set\",\"value\":3},{\"mod\":\"arrow_rain.power\",\"op\":\"set\",\"value\":1.8},{\"mod\":\"arrow_rain.poise\",\"op\":\"set\",\"value\":28}]",
+    "why": "Suit la Pluie de flèches ×1,2."
+   },
+   {
+    "target": "piercing_shot",
+    "before": {
+     "power": 1.9
+    },
+    "after": {
+     "power": 1.7
+    },
+    "why": "Tir perçant : ×1,9 → ×1,7 (il ignore désormais 30 % de l’armure et transperce : au moins aussi fort qu’en v0.2 sur une cible en armure)."
+   },
+   {
+    "target": "ro_ti_oeil_exerce",
+    "before": "[{\"stat\":\"crit\",\"op\":\"add\",\"value\":0.03,\"perRank\":true}]",
+    "after": "[{\"stat\":\"crit\",\"op\":\"add\",\"value\":0.02,\"perRank\":true}]",
+    "why": "Œil exercé : +3 % → +2 % de critique par rang (le Tireur dépassait la moyenne de 31 % au niveau 20)."
+   },
+   {
+    "target": "ro_ti_point_faible",
+    "before": "[{\"stat\":\"critDmgPct\",\"op\":\"add\",\"value\":0.1,\"perRank\":true}]",
+    "after": "[{\"stat\":\"critDmgPct\",\"op\":\"add\",\"value\":0.06,\"perRank\":true}]",
+    "why": "Défaut de la cuirasse : +10 % → +6 % de dégâts critiques par rang."
+   },
+   {
+    "target": "fleche_empoisonnee",
+    "before": {
+     "power": 0.6
+    },
+    "after": {
+     "power": 0.8
+    },
+    "why": "Flèche empoisonnée : ×0,6 → ×0,8 (le Venin remonte vers la moyenne)."
+   },
+   {
+    "target": "fleche_barbelee",
+    "before": {
+     "power": 1
+    },
+    "after": {
+     "power": 1.2
+    },
+    "why": "Flèche barbelée : ×1,0 → ×1,2."
+   },
+   {
+    "target": "shield_bash",
+    "before": {
+     "power": 1
+    },
+    "after": {
+     "power": 1.3
+    },
+    "why": "Coup de bouclier : ×1,0 → ×1,3 (le Gardien restait sous la moyenne au niveau 30)."
+   },
+   {
+    "target": "ignite",
+    "before": {
+     "power": 0.6,
+     "detonate": 1.5
+    },
+    "after": {
+     "power": 0.45,
+     "detonate": 1.2
+    },
+    "why": "Embrasement : 150 % → 120 % de la brûlure restante, ×0,6 → ×0,45 sans brûlure (le Pyromancien dépassait la moyenne de 19 % au niveau 20)."
+   },
+   {
+    "target": "ma_v_ignite_detonation",
+    "before": "[{\"mod\":\"ignite.detonate\",\"op\":\"set\",\"value\":2},{\"mod\":\"ignite.radius\",\"op\":\"set\",\"value\":2.5},{\"mod\":\"ignite.poise\",\"op\":\"add\",\"value\":30}]",
+    "after": "[{\"mod\":\"ignite.detonate\",\"op\":\"set\",\"value\":1.6},{\"mod\":\"ignite.radius\",\"op\":\"set\",\"value\":2.5},{\"mod\":\"ignite.poise\",\"op\":\"add\",\"value\":30}]",
+    "why": "Suit l’Embrasement (120 %)."
+   },
+   {
+    "target": "ma_p_flamme_attisee",
+    "before": "[{\"stat\":\"dmgPct.feu\",\"op\":\"add\",\"value\":0.04,\"perRank\":true}]",
+    "after": "[{\"stat\":\"dmgPct.feu\",\"op\":\"add\",\"value\":0.03,\"perRank\":true}]",
+    "why": "Flamme attisée : +4 % → +3 % de dégâts de feu par rang."
+   },
+   {
+    "target": "ma_p_fournaise",
+    "before": "[{\"stat\":\"dmgPct.feu\",\"op\":\"add\",\"value\":0.05,\"perRank\":true}]",
+    "after": "[{\"stat\":\"dmgPct.feu\",\"op\":\"add\",\"value\":0.04,\"perRank\":true}]",
+    "why": "Fournaise : +5 % → +4 % de dégâts de feu par rang."
+   },
+   {
+    "target": "rage",
+    "before": {
+     "buff": {
+      "dmgPct": 0.3,
+      "attackSpeedPct": 0.1,
+      "defPct": -0.1
+     }
+    },
+    "after": {
+     "buff": {
+      "dmgPct": 0.25,
+      "attackSpeedPct": 0.1,
+      "defPct": -0.1
+     }
+    },
+    "why": "Rage sanguinaire : +30 % → +25 % de dégâts (le Berserker dépassait la moyenne de 18 % au niveau 30)."
+   },
+   {
+    "target": "blade_wave",
+    "before": {
+     "power": 1.7,
+     "mp": 18
+    },
+    "after": {
+     "power": 1.8,
+     "mp": 13
+    },
+    "why": "Onde tranchante : ×1,7 → ×1,8, mana 18 → 13 (la Lame spirituelle, à court de mana, restait 25 % sous la moyenne au niveau 20)."
+   },
+   {
+    "target": "gm_lance_spectrale",
+    "before": "[{\"mod\":\"blade_wave.range\",\"op\":\"set\",\"value\":16},{\"mod\":\"blade_wave.power\",\"op\":\"set\",\"value\":2.1},{\"mod\":\"blade_wave.cd\",\"op\":\"set\",\"value\":11}]",
+    "after": "[{\"mod\":\"blade_wave.range\",\"op\":\"set\",\"value\":16},{\"mod\":\"blade_wave.power\",\"op\":\"set\",\"value\":2.2},{\"mod\":\"blade_wave.cd\",\"op\":\"set\",\"value\":11}]",
+    "why": "Suit l’Onde tranchante ×1,8."
+   },
+   {
+    "target": "gm_croissant",
+    "before": "[{\"mod\":\"blade_wave.shape\",\"op\":\"set\",\"value\":{\"cone\":90,\"r\":7}},{\"mod\":\"blade_wave.power\",\"op\":\"set\",\"value\":1.45}]",
+    "after": "[{\"mod\":\"blade_wave.shape\",\"op\":\"set\",\"value\":{\"cone\":90,\"r\":7}},{\"mod\":\"blade_wave.power\",\"op\":\"set\",\"value\":1.55}]",
+    "why": "Suit l’Onde tranchante ×1,8."
+   },
+   {
+    "target": "enchant_blade",
+    "before": {
+     "mp": 25,
+     "buff": {
+      "meleeBonusDmg": 0.4,
+      "element": "arcane"
+     }
+    },
+    "after": {
+     "mp": 20,
+     "buff": {
+      "meleeBonusDmg": 0.5,
+      "element": "arcane"
+     }
+    },
+    "why": "Lame enchantée : +40 % → +50 %, mana 25 → 20."
+   },
+   {
+    "target": "gm_lame_arcanique",
+    "before": "[{\"mod\":\"enchant_blade.buff\",\"op\":\"set\",\"value\":{\"meleeBonusDmg\":0.3,\"element\":\"arcane\"}},{\"mod\":\"enchant_blade.manaPerHit\",\"op\":\"set\",\"value\":2}]",
+    "after": "[{\"mod\":\"enchant_blade.buff\",\"op\":\"set\",\"value\":{\"meleeBonusDmg\":0.4,\"element\":\"arcane\"}},{\"mod\":\"enchant_blade.manaPerHit\",\"op\":\"set\",\"value\":2}]",
+    "why": "Suit la Lame enchantée (+40 % avec l’élément arcane)."
    }
   ],
   "units": "Fractions partout (0,04 = +4 %) ; durées en secondes sauf champs suffixés Ms ; power = multiplicateur de l'attaque ; mp/st en points.",
@@ -1475,7 +1683,7 @@
    "cd": 12,
    "mp": 8,
    "st": 18,
-   "power": 1,
+   "power": 1.3,
    "poise": 48,
    "windup": 0.12,
    "rec": 0.35,
@@ -1554,7 +1762,7 @@
    "hpCost": 0.1,
    "dur": 12,
    "buff": {
-    "dmgPct": 0.3,
+    "dmgPct": 0.25,
     "attackSpeedPct": 0.1,
     "defPct": -0.1
    },
@@ -1770,11 +1978,11 @@
    "desc": "Votre lame s’embrase d’énergie : chaque coup de mêlée ajoute des dégâts arcaniques.",
    "kind": "buff",
    "cd": 20,
-   "mp": 25,
+   "mp": 20,
    "st": 0,
    "dur": 12,
    "buff": {
-    "meleeBonusDmg": 0.4,
+    "meleeBonusDmg": 0.5,
     "element": "arcane"
    },
    "windup": 0.4,
@@ -1802,9 +2010,9 @@
    "speed": 24,
    "pierce": true,
    "cd": 7,
-   "mp": 18,
+   "mp": 13,
    "st": 12,
-   "power": 1.7,
+   "power": 1.8,
    "poise": 14,
    "windup": 0.3,
    "rec": 0.5,
@@ -1989,7 +2197,7 @@
   {
    "id": "ignite",
    "name": "Embrasement",
-   "desc": "Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 150 % de la brûlure restante.",
+   "desc": "Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 120 % de la brûlure restante.",
    "kind": "aoe_target",
    "home": "mage",
    "mp": 22,
@@ -2000,10 +2208,10 @@
    "recSlow": 0.3,
    "range": 16,
    "radius": 4,
-   "power": 0.6,
-   "detonate": 1.5,
+   "power": 0.45,
+   "detonate": 1.2,
    "poise": 18,
-   "souls": "Sans brûlure sur la cible, ne fait que ×0,6 : il faut préparer le terrain.",
+   "souls": "Sans brûlure sur la cible, ne fait que ×0,45 : il faut préparer le terrain.",
    "vfx": "Chaque cible brûlante éclate en gerbe de flammes (flash blanc-orange).",
    "tags": [
     "feu",
@@ -2097,7 +2305,7 @@
    "recSlow": 0.25,
    "range": 20,
    "speed": 30,
-   "power": 1.6,
+   "power": 2.4,
    "poise": 22,
    "shatter": {
     "minStacks": 2,
@@ -2490,7 +2698,7 @@
    "range": 22,
    "speed": 40,
    "cd": 6,
-   "power": 1.9,
+   "power": 1.7,
    "windup": 0.25,
    "rec": 0.55,
    "recSlow": 0.25,
@@ -2518,7 +2726,7 @@
    "range": 20,
    "speed": 34,
    "cd": 9,
-   "power": 0.8,
+   "power": 0.77,
    "hits": 3,
    "moveDuring": 0.3,
    "rec": 0.6,
@@ -2545,7 +2753,7 @@
    "range": 20,
    "radius": 5,
    "cd": 12,
-   "power": 1.25,
+   "power": 1.2,
    "rec": 0.5,
    "recSlow": 0.3,
    "poise": 8,
@@ -2793,7 +3001,7 @@
    "range": 20,
    "speed": 34,
    "cd": 5,
-   "power": 0.6,
+   "power": 0.8,
    "poison": {
     "perStackPerS": 0.25,
     "dur": 6,
@@ -2823,7 +3031,7 @@
    "range": 20,
    "speed": 34,
    "cd": 7,
-   "power": 1,
+   "power": 1.2,
    "bleedBuild": 30,
    "windup": 0.2,
    "rec": 0.45,
@@ -8153,7 +8361,7 @@
    "branch": "lame_spirituelle",
    "type": "variant",
    "name": "Lance spectrale",
-   "desc": "Portée 10 → 16 m, puissance 1,7 → 2,1 ; recharge 7 → 11 s.",
+   "desc": "Portée 10 → 16 m, puissance 1,8 → 2,2 ; recharge 7 → 11 s.",
    "x": -695,
    "y": 331,
    "links": [
@@ -8176,7 +8384,7 @@
     {
      "mod": "blade_wave.power",
      "op": "set",
-     "value": 2.1
+     "value": 2.2
     },
     {
      "mod": "blade_wave.cd",
@@ -8192,7 +8400,7 @@
    "branch": "lame_spirituelle",
    "type": "variant",
    "name": "Croissant de lune",
-   "desc": "Onde en cône de 90° sur 7 m qui touche tout ; puissance 1,7 → 1,45.",
+   "desc": "Onde en cône de 90° sur 7 m qui touche tout ; puissance 1,8 → 1,55.",
    "x": -627,
    "y": 464,
    "links": [
@@ -8218,7 +8426,7 @@
     {
      "mod": "blade_wave.power",
      "op": "set",
-     "value": 1.45
+     "value": 1.55
     }
    ],
    "vfx": "Croissant bleu pâle qui s’élargit en avançant."
@@ -8420,7 +8628,7 @@
    "branch": "lame_spirituelle",
    "type": "variant",
    "name": "Lame arcanique",
-   "desc": "Élément arcane : bonus 40 % → 30 %, mais chaque coup rend 2 mana.",
+   "desc": "Élément arcane : bonus 50 % → 40 %, mais chaque coup rend 2 mana.",
    "x": -931,
    "y": 537,
    "links": [
@@ -8441,7 +8649,7 @@
      "mod": "enchant_blade.buff",
      "op": "set",
      "value": {
-      "meleeBonusDmg": 0.3,
+      "meleeBonusDmg": 0.4,
       "element": "arcane"
      }
     },
@@ -9343,7 +9551,7 @@
    "branch": "pyromancie",
    "type": "passive",
    "name": "Flamme attisée",
-   "desc": "+4 % de dégâts de feu par rang.",
+   "desc": "+3 % de dégâts de feu par rang.",
    "x": -788,
    "y": -55,
    "links": [
@@ -9361,7 +9569,7 @@
     {
      "stat": "dmgPct.feu",
      "op": "add",
-     "value": 0.04,
+     "value": 0.03,
      "perRank": true
     }
    ]
@@ -9531,7 +9739,7 @@
    "branch": "givre",
    "type": "variant",
    "name": "Triple lance",
-   "desc": "3 lances en éventail de 20° (×0,75 chacune) ; le Fracas ne s'applique qu'à la première qui touche.",
+   "desc": "3 lances en éventail de 20° (×1,1 chacune) ; le Fracas ne s'applique qu'à la première qui touche.",
    "x": -604,
    "y": -726,
    "links": [
@@ -9559,7 +9767,7 @@
     {
      "mod": "ice_lance.power",
      "op": "set",
-     "value": 0.75
+     "value": 1.1
     }
    ],
    "vfx": "Trois lances fines en éventail."
@@ -9614,7 +9822,7 @@
    "branch": "givre",
    "type": "variant",
    "name": "Lance-glacier",
-   "desc": "Traverse tous les ennemis sur 20 m ; puissance 1,6 → 1,4, incantation 0,4 → 0,7 s.",
+   "desc": "Traverse tous les ennemis sur 20 m ; puissance 2,4 → 2,1, incantation 0,4 → 0,7 s.",
    "x": -447,
    "y": -832,
    "links": [
@@ -9637,7 +9845,7 @@
     {
      "mod": "ice_lance.power",
      "op": "set",
-     "value": 1.4
+     "value": 2.1
     },
     {
      "mod": "ice_lance.cast",
@@ -10206,7 +10414,7 @@
    "branch": "pyromancie",
    "type": "skill",
    "name": "Embrasement",
-   "desc": "Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 150 % de la brûlure restante.",
+   "desc": "Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 120 % de la brûlure restante.",
    "x": -1090,
    "y": -186,
    "links": [
@@ -10418,7 +10626,7 @@
    "branch": "pyromancie",
    "type": "variant",
    "name": "Détonation",
-   "desc": "200 % de la brûlure restante au lieu de 150 %, déséquilibre +30, mais rayon 4 → 2,5 m.",
+   "desc": "160 % de la brûlure restante au lieu de 120 %, déséquilibre +30, mais rayon 4 → 2,5 m.",
    "x": -1143,
    "y": -290,
    "links": [
@@ -10436,7 +10644,7 @@
     {
      "mod": "ignite.detonate",
      "op": "set",
-     "value": 2
+     "value": 1.6
     },
     {
      "mod": "ignite.radius",
@@ -10578,7 +10786,7 @@
    "branch": "pyromancie",
    "type": "passive",
    "name": "Fournaise",
-   "desc": "+5 % de dégâts de feu par rang.",
+   "desc": "+4 % de dégâts de feu par rang.",
    "x": -1257,
    "y": -88,
    "links": [
@@ -10596,7 +10804,7 @@
     {
      "stat": "dmgPct.feu",
      "op": "add",
-     "value": 0.05,
+     "value": 0.04,
      "perRank": true
     }
    ]
@@ -12533,7 +12741,7 @@
    "branch": "tireur",
    "type": "variant",
    "name": "Rafale soutenue",
-   "desc": "Tir rapide : 5 flèches sur 1 s (×0,6 chacune), marche à 20 % pendant la rafale, mana 15 → 20.",
+   "desc": "Tir rapide : 5 flèches sur 1 s (×0,57 chacune), marche à 20 % pendant la rafale, mana 15 → 20.",
    "x": 752,
    "y": -274,
    "links": [
@@ -12556,7 +12764,7 @@
     {
      "mod": "rapid_fire.power",
      "op": "set",
-     "value": 0.6
+     "value": 0.57
     },
     {
      "mod": "rapid_fire.channelMs",
@@ -12650,7 +12858,7 @@
    "branch": "tireur",
    "type": "variant",
    "name": "Salve en éventail",
-   "desc": "Tir rapide : les 3 flèches partent ensemble en éventail de 30° (×0,7 chacune, 6 de poise chacune), sans canalisation.",
+   "desc": "Tir rapide : les 3 flèches partent ensemble en éventail de 30° (×0,66 chacune, 6 de poise chacune), sans canalisation.",
    "x": 743,
    "y": -339,
    "links": [
@@ -12673,7 +12881,7 @@
     {
      "mod": "rapid_fire.power",
      "op": "set",
-     "value": 0.7
+     "value": 0.66
     },
     {
      "mod": "rapid_fire.poise",
@@ -12767,7 +12975,7 @@
    "branch": "tireur",
    "type": "passive",
    "name": "Œil exercé",
-   "desc": "+3 % de chances de coup critique par rang.",
+   "desc": "+2 % de chances de coup critique par rang.",
    "x": 779,
    "y": -450,
    "links": [
@@ -12786,7 +12994,7 @@
     {
      "stat": "crit",
      "op": "add",
-     "value": 0.03,
+     "value": 0.02,
      "perRank": true
     }
    ]
@@ -13370,7 +13578,7 @@
    "branch": "tireur",
    "type": "variant",
    "name": "Averse d'acier",
-   "desc": "Pluie de flèches : rayon 5 → 3 m, ×1,25 → ×1,9, poise 8 → 28.",
+   "desc": "Pluie de flèches : rayon 5 → 3 m, ×1,2 → ×1,8, poise 8 → 28.",
    "x": 839,
    "y": -680,
    "links": [
@@ -13393,7 +13601,7 @@
     {
      "mod": "arrow_rain.power",
      "op": "set",
-     "value": 1.9
+     "value": 1.8
     },
     {
      "mod": "arrow_rain.poise",
@@ -13936,7 +14144,7 @@
    "branch": "tireur",
    "type": "passive",
    "name": "Défaut de la cuirasse",
-   "desc": "+10 % de dégâts critiques par rang.",
+   "desc": "+6 % de dégâts critiques par rang.",
    "x": 1193,
    "y": -434,
    "links": [
@@ -13952,7 +14160,7 @@
     {
      "stat": "critDmgPct",
      "op": "add",
-     "value": 0.1,
+     "value": 0.06,
      "perRank": true
     }
    ]

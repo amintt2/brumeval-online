@@ -416,7 +416,7 @@ Les étourdissements et interruptions ne touchent jamais un boss.
 | `whirlwind` | **Tourbillon** *(v0.2)* | zone autour de soi | 20 + 18 | 10 s | r 4,5 m | ×1,9 | 24 | prép. 0,2 s · récup. 0,55 s à 35 % | arme de mêlée | physique, melee, zone | Guerrier |
 | `war_cry` | **Cri de guerre** *(v0.2)* | soin | 15 + 0 | 25 s | — | soin 30 % | — | prép. 0,3 s · récup. 0,4 s à 50 % | — | soin, cri | Guerrier |
 | `taunt` | **Provocation** | zone autour de soi | 10 + 0 | 14 s | r 8 m | — | — | prép. 0,2 s · récup. 0,3 s à 50 % | — | cri, defense, groupe | Guerrier |
-| `shield_bash` | **Coup de bouclier** | mêlée | 8 + 18 | 12 s | 2,2 m | ×1 | 48 | prép. 0,12 s · récup. 0,35 s à 40 % | arme de mêlée | physique, melee, defense, interruption | Guerrier |
+| `shield_bash` | **Coup de bouclier** | mêlée | 8 + 18 | 12 s | 2,2 m | ×1,3 | 48 | prép. 0,12 s · récup. 0,35 s à 40 % | arme de mêlée | physique, melee, defense, interruption | Guerrier |
 | `riposte` | **Riposte** | mêlée | 0 + 12 | 3 s | 2,8 m | ×1,9 | 30 | prép. 0,1 s · récup. 0,3 s à 50 % | arme de mêlée | physique, melee, contre | Guerrier |
 | `bastion` | **Bastion** | renfort | 20 + 0 | 30 s | — | — | — | prép. 0,2 s · récup. 0,3 s à 50 % | — | defense | Guerrier |
 | `rage` | **Rage sanguinaire** | renfort | 0 + 0 + 10 % PV | 30 s | — | — | — | prép. 0,3 s · récup. 0,3 s à 50 % | — | rage | Guerrier |
@@ -660,10 +660,10 @@ vers la Lame spirituelle) réduit l'Inaptitude des compétences de Guerrier.
 | `fireball` | **Boule de feu** *(v0.2)* | projectile | 20 + 14 | 6 s | 18 m | ×2 | 16 | incant. 0,35 s · récup. 0,6 s à 25 % | focalisateur (sinon −20 %) | feu, projectile, zone, sort | Mage |
 | `fire_wall` | **Mur de flammes** | zone ciblée | 28 + 12 | 16 s | 14 m | ×0,35 | 2 | incant. 0,5 s · récup. 0,5 s à 30 % | focalisateur (sinon −20 %) | feu, zone, controle, sort | Mage |
 | `flame_breath` | **Souffle ardent** | canalisation | 10 + 6 (12/s) | 10 s | r 6 m | ×0,3 par tic (0,25 s) | 3 | incant. 0,2 s · canal. 2 s · récup. 0,4 s à 30 % | focalisateur (sinon −20 %) | feu, zone, canalisation, sort | Mage |
-| `ignite` | **Embrasement** | zone ciblée | 22 + 10 | 12 s | 16 m / r 4 m | ×0,6 | 18 | incant. 0,3 s · récup. 0,45 s à 30 % | focalisateur (sinon −20 %) | feu, zone, sort | Mage |
+| `ignite` | **Embrasement** | zone ciblée | 22 + 10 | 12 s | 16 m / r 4 m | ×0,45 | 18 | incant. 0,3 s · récup. 0,45 s à 30 % | focalisateur (sinon −20 %) | feu, zone, sort | Mage |
 | `meteor` | **Météore** | zone ciblée | 50 + 20 | 35 s | 20 m / r 4 m | ×4,2 | 70 | incant. 1,2 s · récup. 0,9 s à 25 % | focalisateur (sinon −20 %) | feu, zone, sort | Mage |
 | `frost_nova` | **Nova de givre** *(v0.2)* | zone autour de soi | 25 + 16 | 12 s | r 6 m | ×1,3 | 10 | récup. 0,45 s à 30 % | focalisateur (sinon −20 %) | givre, zone, controle, sort | Mage |
-| `ice_lance` | **Lance de glace** | projectile | 16 + 12 | 5 s | 20 m | ×1,6 | 22 | incant. 0,4 s · récup. 0,5 s à 25 % | focalisateur (sinon −20 %) | givre, projectile, sort | Mage |
+| `ice_lance` | **Lance de glace** | projectile | 16 + 12 | 5 s | 20 m | ×2,4 | 22 | incant. 0,4 s · récup. 0,5 s à 25 % | focalisateur (sinon −20 %) | givre, projectile, sort | Mage |
 | `ice_wall` | **Mur de glace** | invocation | 30 + 14 | 24 s | 10 m | — | 0 | incant. 0,4 s · récup. 0,5 s à 30 % | focalisateur (sinon −20 %) | givre, defense, controle, sort | Mage |
 | `blizzard` | **Blizzard** | canalisation | 15 + 10 | 18 s | 18 m / r 5 m | ×0,35 par tic (0,5 s) | 2 | incant. 0,3 s · canal. 3 s · récup. 0,4 s à 30 % | focalisateur (sinon −20 %) | givre, zone, canalisation, controle, sort | Mage |
 | `frost_armor` | **Armure de givre** | renfort | 25 + 0 | 25 s | — | — | 0 | incant. 0,3 s · récup. 0,3 s à 50 % | focalisateur (sinon −20 %) | givre, defense, buff, sort | Mage |
@@ -681,8 +681,8 @@ vers la Lame spirituelle) réduit l'Inaptitude des compétences de Guerrier.
   *Soulslike :* Les monstres traversent le mur (ils ne le contournent pas) : c'est une zone de dégâts, pas un rempart. Puissance par tic de 0,5 s.
 - **Souffle ardent** (`flame_breath`) — Canalise un cône de flammes devant soi, jusqu'à 2 s.
   *Soulslike :* Vide l'endurance (12/s) : impossible de rouler juste après une canalisation complète. Relâcher la touche arrête le souffle.
-- **Embrasement** (`ignite`) — Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 150 % de la brûlure restante.
-  *Soulslike :* Sans brûlure sur la cible, ne fait que ×0,6 : il faut préparer le terrain.
+- **Embrasement** (`ignite`) — Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 120 % de la brûlure restante.
+  *Soulslike :* Sans brûlure sur la cible, ne fait que ×0,45 : il faut préparer le terrain.
 - **Météore** (`meteor`) — Appelle un rocher enflammé du ciel. Il s'écrase 1 s après l'incantation sur la zone marquée.
   *Soulslike :* Le mage est immobile 1,2 s puis la zone est télégraphiée 1 s (cercle orange visible par tous, y compris en JcJ). Idéal pendant la récupération d'un boss.
 - **Nova de givre** (`frost_nova`) — Une onde de givre autour de soi qui inflige 2 charges de Froid aux ennemis proches.
@@ -731,8 +731,8 @@ vers la Lame spirituelle) réduit l'Inaptitude des compétences de Guerrier.
 | `ma_v_nova_glaciale` | Variante | **Nova glaciale** | Gèle 1 s les ennemis non-boss qui avaient déjà du Froid ; les autres reçoivent 2 charges. Recharge 12 → 16 s. *(groupe `ma_g_frost_nova`)* | 1 | 2/1/2 | -487, -552 | `ma_frost_nova` |
 | `ma_p_vigueur_erudit` | Passif | **Vigueur de l'érudit** | +5 % de PV maximum par rang. | 2 | 2/1/2 | -442, -655 | `ma_frost_nova` `ma_ice_lance` `mr_p_seve_arcanique` |
 | `ma_ice_lance` | Compétence | **Lance de glace** | Une lance de glace. Sur une cible Gelée ou à 2 charges de Froid ou plus : Fracas (×1,6), qui consomme le Froid. | 1 | 2/1/2 | -492, -730 | `ma_p_vigueur_erudit` `ma_v_lance_trio` `ma_v_lance_glacier` `ma_p_morsure_froid` |
-| `ma_v_lance_trio` | Variante | **Triple lance** | 3 lances en éventail de 20° (×0,75 chacune) ; le Fracas ne s'applique qu'à la première qui touche. *(groupe `ma_g_ice_lance`)* | 1 | 2/1/2 | -604, -726 | `ma_ice_lance` |
-| `ma_v_lance_glacier` | Variante | **Lance-glacier** | Traverse tous les ennemis sur 20 m ; puissance 1,6 → 1,4, incantation 0,4 → 0,7 s. *(groupe `ma_g_ice_lance`)* | 1 | 2/1/2 | -447, -832 | `ma_ice_lance` |
+| `ma_v_lance_trio` | Variante | **Triple lance** | 3 lances en éventail de 20° (×1,1 chacune) ; le Fracas ne s'applique qu'à la première qui touche. *(groupe `ma_g_ice_lance`)* | 1 | 2/1/2 | -604, -726 | `ma_ice_lance` |
+| `ma_v_lance_glacier` | Variante | **Lance-glacier** | Traverse tous les ennemis sur 20 m ; puissance 2,4 → 2,1, incantation 0,4 → 0,7 s. *(groupe `ma_g_ice_lance`)* | 1 | 2/1/2 | -447, -832 | `ma_ice_lance` |
 | `ma_p_morsure_froid` | Passif | **Morsure du froid** | +4 % de dégâts de givre par rang. | 3 | 2/1/2 | -565, -837 | `ma_ice_lance` `ma_ice_wall` `ma_frost_armor` |
 | `ma_v_wall_prison` | Variante | **Prison de glace** | Au lieu d'un mur, enferme un monstre non-boss 2,5 s (il ne peut ni agir ni subir de dégâts). Recharge 24 → 28 s. *(groupe `ma_g_ice_wall`)* | 1 | 2/1/2 | -742, -742 | `ma_ice_wall` |
 | `ma_v_armor_carapace` | Variante | **Carapace** | Plus de bonus de défense : absorbe entièrement un coup (jusqu'à 25 % des PV max) puis se brise. *(groupe `ma_g_frost_armor`)* | 1 | 2/1/2 | -410, -966 | `ma_frost_armor` |
@@ -818,7 +818,7 @@ vers la Lame spirituelle) réduit l'Inaptitude des compétences de Guerrier.
 | `ma_v_fireball_collante` | Variante | **Boule collante** | Se colle à la cible et explose après 1,5 s : ×2,6, déséquilibre 16 → 34 ; ne touche qu'elle. *(groupe `ma_g_fireball`)* | 1 | 2/1/2 | -660, 114 | `ma_fireball` |
 | `ma_v_fireball_grande` | Variante | **Grande boule de feu** | Puissance 2,0 → 2,8, explosion 2 → 3,5 m (60 %), incantation 0,35 → 0,8 s, mana 20 → 30, vitesse 16 → 12 m/s. *(groupe `ma_g_fireball`)* | 1 | 2/1/2 | -735, 44 | `ma_fireball` |
 | `ma_v_fireball_chapelet` | Variante | **Chapelet de braises** | À l'impact (×1,5), se divise en 3 braises qui retombent à 3 m (×0,5 chacune, brûlure). *(groupe `ma_g_fireball`)* | 1 | 2/1/2 | -722, -146 | `ma_fireball` |
-| `ma_p_flamme_attisee` | Passif | **Flamme attisée** | +4 % de dégâts de feu par rang. | 3 | 2/1/2 | -788, -55 | `ma_fireball` `ma_fire_wall` `gm_onde_tranchante` |
+| `ma_p_flamme_attisee` | Passif | **Flamme attisée** | +3 % de dégâts de feu par rang. | 3 | 2/1/2 | -788, -55 | `ma_fireball` `ma_fire_wall` `gm_onde_tranchante` |
 | `ma_fire_wall` | Compétence | **Mur de flammes** | Dresse une ligne de feu qui brûle tout ce qui la traverse pendant 5 s. | 1 | 2/1/2 | -878, -61 | `ma_p_flamme_attisee` `ma_v_fire_wall_cercle` `ma_v_fire_wall_vague` `ma_p_braises_tenaces` |
 | `ma_v_fire_wall_cercle` | Variante | **Cercle de flammes** | Le mur devient un anneau de 3 m de rayon centré sur vous ; durée 5 → 4 s. *(groupe `ma_g_fire_wall`)* | 1 | 2/1/2 | -944, 29 | `ma_fire_wall` |
 | `ma_v_fire_wall_vague` | Variante | **Vague de flammes** | Le mur avance de 10 m à 4 m/s et touche chaque ennemi une fois (×1,2, brûlure) ; ne persiste pas. *(groupe `ma_g_fire_wall`)* | 1 | 2/1/2 | -931, -160 | `ma_fire_wall` |
@@ -826,11 +826,11 @@ vers la Lame spirituelle) réduit l'Inaptitude des compétences de Guerrier.
 | `ma_v_breath_dragon` | Variante | **Souffle du dragon** | Cône 6 → 9 m mais 70 → 50°, tics +25 %, endurance 12 → 18 par seconde. *(groupe `ma_g_flame_breath`)* | 1 | 2/1/2 | -1041, 128 | `ma_flame_breath` |
 | `ma_v_ignite_contagion` | Variante | **Contagion** | Les brûlures consommées se propagent (brûlure complète) aux ennemis à 4 m des cibles. *(groupe `ma_g_ignite`)* | 1 | 2/1/2 | -1014, -271 | `ma_ignite` |
 | `ma_flame_breath` | Compétence | **Souffle ardent** | Canalise un cône de flammes devant soi, jusqu'à 2 s. | 1 | 2/1/2 | -1105, 33 | `ma_p_braises_tenaces` `ma_v_breath_dragon` `ma_v_breath_cendres` `ma_p_sang_chaud` `ma_p_fournaise` |
-| `ma_ignite` | Compétence | **Embrasement** | Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 150 % de la brûlure restante. | 1 | 2/1/2 | -1090, -186 | `ma_p_braises_tenaces` `ma_v_ignite_contagion` `ma_v_ignite_detonation` `ma_p_etincelle` `ma_p_fournaise` |
+| `ma_ignite` | Compétence | **Embrasement** | Fait détoner les brûlures des ennemis dans la zone : dégâts immédiats égaux à 120 % de la brûlure restante. | 1 | 2/1/2 | -1090, -186 | `ma_p_braises_tenaces` `ma_v_ignite_contagion` `ma_v_ignite_detonation` `ma_p_etincelle` `ma_p_fournaise` |
 | `ma_v_breath_cendres` | Variante | **Cendres aveuglantes** | Tics −30 %, les ennemis touchés sont Aveuglés (−20 % de dégâts, 3 s). *(groupe `ma_g_flame_breath`)* | 1 | 2/1/2 | -1172, 129 | `ma_flame_breath` |
-| `ma_v_ignite_detonation` | Variante | **Détonation** | 200 % de la brûlure restante au lieu de 150 %, déséquilibre +30, mais rayon 4 → 2,5 m. *(groupe `ma_g_ignite`)* | 1 | 2/1/2 | -1143, -290 | `ma_ignite` |
+| `ma_v_ignite_detonation` | Variante | **Détonation** | 160 % de la brûlure restante au lieu de 120 %, déséquilibre +30, mais rayon 4 → 2,5 m. *(groupe `ma_g_ignite`)* | 1 | 2/1/2 | -1143, -290 | `ma_ignite` |
 | `ma_ks_erudit_martial` | Clé de voûte | **Érudit martial** | Votre bâton ou sceptre compte comme une arme de mêlée : les compétences de mêlée ne sont plus grisées (−15 % de puissance au bâton). L'Inaptitude des compétences de Guerrier est réduite de moitié. En contrepartie, vos sorts coûtent 10 % de mana en plus. | 1 | 3/1/3 | -1198, 217 | `ma_p_sang_chaud` |
-| `ma_p_fournaise` | Passif | **Fournaise** | +5 % de dégâts de feu par rang. | 3 | 2/1/2 | -1257, -88 | `ma_flame_breath` `ma_ignite` `ma_meteor` |
+| `ma_p_fournaise` | Passif | **Fournaise** | +4 % de dégâts de feu par rang. | 3 | 2/1/2 | -1257, -88 | `ma_flame_breath` `ma_ignite` `ma_meteor` |
 | `ma_p_sang_chaud` | Passif | **Sang chaud** | Vos sorts de feu coûtent 10 % d'endurance en moins. | 1 | 2/1/2 | -1289, 85 | `ma_flame_breath` `ma_ks_erudit_martial` |
 | `ma_p_etincelle` | Passif | **Étincelle** | +3 % de chances de critique contre les cibles qui brûlent, par rang. | 2 | 2/1/2 | -1265, -264 | `ma_ignite` `ma_p_doigts_agiles` |
 | `ma_meteor` | Compétence | **Météore** | Appelle un rocher enflammé du ciel. Il s'écrase 1 s après l'incantation sur la zone marquée. | 1 | 2/1/2 | -1377, -96 | `ma_p_fournaise` `ma_v_meteor_pluie` `ma_v_meteor_astre` `ma_ks_coeur_de_braise` |
@@ -890,9 +890,9 @@ une roulade. Ultimes et clés de voûte demandent des points dépensés dans la 
 | id | Nom | Type | Coût (mana + end.) | Recharge | Portée | Puissance | Poise | Engagement | Arme | Étiquettes | Origine |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | `shot` | **Tir** *(base)* | projectile | 0 + 7 | 1,3 s | 20 m | ×0,85 | 3 | récup. 0,35 s à 30 % | arc ou arbalète | physique, projectile, arc | Rôdeur |
-| `piercing_shot` | **Tir perçant** | projectile | 12 + 14 | 6 s | 22 m | ×1,9 | 14 | prép. 0,25 s · récup. 0,55 s à 25 % | arc ou arbalète | physique, projectile, arc, perforation | Rôdeur |
-| `rapid_fire` | **Tir rapide** | canalisation | 15 + 14 | 9 s | 20 m | ×0,8 ×3 | 3 | canal. 0,6 s · récup. 0,6 s à 30 % | arc ou arbalète | physique, projectile, arc | Rôdeur |
-| `arrow_rain` | **Pluie de flèches** | zone ciblée | 22 + 16 | 12 s | 20 m / r 5 m | ×1,25 | 8 | récup. 0,5 s à 30 % | arc ou arbalète | physique, zone, arc | Rôdeur |
+| `piercing_shot` | **Tir perçant** | projectile | 12 + 14 | 6 s | 22 m | ×1,7 | 14 | prép. 0,25 s · récup. 0,55 s à 25 % | arc ou arbalète | physique, projectile, arc, perforation | Rôdeur |
+| `rapid_fire` | **Tir rapide** | canalisation | 15 + 14 | 9 s | 20 m | ×0,77 ×3 | 3 | canal. 0,6 s · récup. 0,6 s à 30 % | arc ou arbalète | physique, projectile, arc | Rôdeur |
+| `arrow_rain` | **Pluie de flèches** | zone ciblée | 22 + 16 | 12 s | 20 m / r 5 m | ×1,2 | 8 | récup. 0,5 s à 30 % | arc ou arbalète | physique, zone, arc | Rôdeur |
 | `fleche_assommante` | **Flèche assommante** | projectile | 10 + 18 | 10 s | 18 m | ×1,1 | 55 | prép. 0,45 s · récup. 0,6 s à 25 % | arc ou arbalète | physique, projectile, arc, controle | Rôdeur |
 | `trait_fatal` | **Trait fatal** | canalisation | 35 + 25 | 40 s | 32 m | ×4 | 70 | canal. 1,5 s · récup. 0,8 s à 20 % | arc ou arbalète | physique, projectile, arc, perforation | Rôdeur |
 | `coup_de_dague` | **Coup de dague** | mêlée | 0 + 12 | 4 s | 2,4 m | ×0,8 ×2 | 14 | prép. 0,15 s · récup. 0,3 s à 50 % | couteau de ceinture | physique, melee, dague | Rôdeur |
@@ -901,8 +901,8 @@ une roulade. Ultimes et clés de voûte demandent des points dépensés dans la 
 | `piege_a_machoires` | **Piège à mâchoires** | piège | 12 + 10 | 14 s | 3 m / r 1,2 m | ×1,5 | 30 | récup. 0,5 s à 0 % | — | physique, piege, controle | Rôdeur |
 | `filet` | **Filet lesté** | projectile | 14 + 12 | 16 s | 12 m | ×0,3 | 10 | prép. 0,3 s · récup. 0,45 s à 30 % | — | controle, projectile, chasse | Rôdeur |
 | `hallali` | **Hallali** | renfort | 25 + 0 | 60 s | — | — | 0 | prép. 0,3 s · récup. 0,4 s à 50 % | — | buff, chasse, marque | Rôdeur |
-| `fleche_empoisonnee` | **Flèche empoisonnée** | projectile | 10 + 10 | 5 s | 20 m | ×0,6 | 3 | prép. 0,15 s · récup. 0,4 s à 30 % | arc ou arbalète | poison, projectile, arc | Rôdeur |
-| `fleche_barbelee` | **Flèche barbelée** | projectile | 12 + 12 | 7 s | 20 m | ×1 | 8 | prép. 0,2 s · récup. 0,45 s à 30 % | arc ou arbalète | saignement, projectile, arc | Rôdeur |
+| `fleche_empoisonnee` | **Flèche empoisonnée** | projectile | 10 + 10 | 5 s | 20 m | ×0,8 | 3 | prép. 0,15 s · récup. 0,4 s à 30 % | arc ou arbalète | poison, projectile, arc | Rôdeur |
+| `fleche_barbelee` | **Flèche barbelée** | projectile | 12 + 12 | 7 s | 20 m | ×1,2 | 8 | prép. 0,2 s · récup. 0,45 s à 30 % | arc ou arbalète | saignement, projectile, arc | Rôdeur |
 | `nuage_toxique` | **Nuage toxique** | zone ciblée | 24 + 14 | 18 s | 16 m / r 4 m | — | 0 | récup. 0,55 s à 30 % | — | poison, zone | Rôdeur |
 | `entaille_venimeuse` | **Entaille venimeuse** | mêlée | 8 + 16 | 8 s | 2,6 m | ×1,1 | 12 | prép. 0,2 s · récup. 0,35 s à 40 % | couteau de ceinture | poison, saignement, melee, dague | Rôdeur |
 | `fleau` | **Fléau** | zone autour de soi | 30 + 10 | 35 s | r 12 m | — | 20 | prép. 0,4 s · récup. 0,6 s à 30 % | — | poison, saignement, zone | Rôdeur |
@@ -1013,20 +1013,20 @@ une roulade. Ultimes et clés de voûte demandent des points dépensés dans la 
 | `ro_ti_tir_rapide` | Compétence | **Tir rapide** | Trois flèches en succession rapide. | 1 | 2/2/1 | 658, -293 | `ro_ti_main_sure` `ro_ti_salve_eventail` `ro_ti_rafale` `ro_ti_oeil_exerce` |
 | `ro_ti_tir_traversant` | Variante | **Tir traversant** | Tir perçant : traverse TOUS les ennemis en ligne sur 26 m (−10 % de dégâts par ennemi traversé). *(groupe `var_tir_percant`)* | 1 | 2/2/1 | 675, -399 | `ro_ti_tir_percant` |
 | `ro_ti_trait_breche` | Variante | **Trait de brèche** | Tir perçant : ne transperce plus, mais la cible perd 25 % de défense pendant 5 s (boss 15 %). *(groupe `var_tir_percant`)* | 1 | 2/2/1 | 630, -493 | `ro_ti_tir_percant` |
-| `ro_ti_rafale` | Variante | **Rafale soutenue** | Tir rapide : 5 flèches sur 1 s (×0,6 chacune), marche à 20 % pendant la rafale, mana 15 → 20. *(groupe `var_tir_rapide`)* | 1 | 2/2/1 | 752, -274 | `ro_ti_tir_rapide` |
-| `ro_ti_salve_eventail` | Variante | **Salve en éventail** | Tir rapide : les 3 flèches partent ensemble en éventail de 30° (×0,7 chacune, 6 de poise chacune), sans canalisation. *(groupe `var_tir_rapide`)* | 1 | 2/2/1 | 743, -339 | `ro_ti_tir_rapide` |
-| `ro_ti_oeil_exerce` | Passif | **Œil exercé** | +3 % de chances de coup critique par rang. | 3 | 2/2/1 | 779, -450 | `ro_ti_tir_percant` `ro_ti_tir_rapide` `ro_ti_pluie` `ro_ti_fleche_assommante` |
+| `ro_ti_rafale` | Variante | **Rafale soutenue** | Tir rapide : 5 flèches sur 1 s (×0,57 chacune), marche à 20 % pendant la rafale, mana 15 → 20. *(groupe `var_tir_rapide`)* | 1 | 2/2/1 | 752, -274 | `ro_ti_tir_rapide` |
+| `ro_ti_salve_eventail` | Variante | **Salve en éventail** | Tir rapide : les 3 flèches partent ensemble en éventail de 30° (×0,66 chacune, 6 de poise chacune), sans canalisation. *(groupe `var_tir_rapide`)* | 1 | 2/2/1 | 743, -339 | `ro_ti_tir_rapide` |
+| `ro_ti_oeil_exerce` | Passif | **Œil exercé** | +2 % de chances de coup critique par rang. | 3 | 2/2/1 | 779, -450 | `ro_ti_tir_percant` `ro_ti_tir_rapide` `ro_ti_pluie` `ro_ti_fleche_assommante` |
 | `ro_ti_fleche_assommante` | Compétence | **Flèche assommante** | Une flèche à tête ronde qui déséquilibre ; +50 % de poise si elle touche un ennemi en pleine préparation d'attaque. | 1 | 2/2/1 | 904, -403 | `ro_ti_oeil_exerce` `ro_ti_fracassante` `ro_ti_fleche_arret` `ro_ti_tir_tendu` |
 | `ro_ti_pluie` | Compétence | **Pluie de flèches** | Une pluie de flèches sur la zone ciblée. | 1 | 2/2/1 | 801, -582 | `ro_ti_oeil_exerce` `ro_ti_averse_acier` `ro_ti_pluie_persistante` `ro_ti_tir_tendu` |
 | `ro_ti_fracassante` | Variante | **Flèche fracassante** | Flèche assommante : poise 55 → 80, ×1,1 → ×1,4, recharge 10 → 14 s. *(groupe `var_assommante`)* | 1 | 2/2/1 | 925, -516 | `ro_ti_fleche_assommante` |
 | `ro_ti_fleche_arret` | Variante | **Flèche d'arrêt** | Flèche assommante : si elle touche pendant une préparation télégraphiée, l'attaque est annulée net (hors boss : +100 % de poise au lieu de +50 %). Poise de base 55 → 40. *(groupe `var_assommante`)* | 1 | 2/2/1 | 1001, -405 | `ro_ti_fleche_assommante` |
-| `ro_ti_averse_acier` | Variante | **Averse d'acier** | Pluie de flèches : rayon 5 → 3 m, ×1,25 → ×1,9, poise 8 → 28. *(groupe `var_pluie`)* | 1 | 2/2/1 | 839, -680 | `ro_ti_pluie` |
+| `ro_ti_averse_acier` | Variante | **Averse d'acier** | Pluie de flèches : rayon 5 → 3 m, ×1,2 → ×1,8, poise 8 → 28. *(groupe `var_pluie`)* | 1 | 2/2/1 | 839, -680 | `ro_ti_pluie` |
 | `ro_ti_pluie_persistante` | Variante | **Pluie persistante** | Pluie de flèches : dure 3 s (4 vagues ×0,45), rayon 5,5 m, ralentit de 30 % tant qu'on reste dedans. *(groupe `var_pluie`)* | 1 | 2/2/1 | 916, -620 | `ro_ti_pluie` |
 | `ro_ti_tir_tendu` | Passif | **Tir tendu** | +8 % de vitesse des projectiles et +1 m de portée des tirs à l'arc par rang. | 2 | 2/2/1 | 1013, -585 | `ro_ti_pluie` `ro_ti_fleche_assommante` `ro_ti_tir_ricochet` `ro_ti_sang_froid` `ro_ti_carquois_profond` `ro_ti_trait_fatal` |
 | `ro_ti_sang_froid` | Passif | **Sang-froid** | Tir chargé (Attaque chargée) : charge 25 % plus rapide, et la pleine charge perce 2 ennemis au lieu d'1. | 1 | 2/2/1 | 1089, -440 | `ro_ti_tir_tendu` `ro_ti_point_faible` |
 | `ro_ti_tir_ricochet` | Variante | **Tir ricochet** | Tir : la flèche rebondit sur 1 ennemi à moins de 6 m (×0,5). Exclusif avec « Pointes enduites » et « Tir à bout portant ». *(groupe `var_tir_approche`)* | 1 | 2/2/1 | 926, -723 | `ro_ti_tir_tendu` |
 | `ro_ti_carquois_profond` | Passif | **Carquois profond** | +8 mana max et −6 % de coût en mana des compétences d'arc par rang. | 2 | 2/2/1 | 1010, -761 | `ro_ti_tir_tendu` `ro_ti_tir_de_maitre` |
-| `ro_ti_point_faible` | Passif | **Défaut de la cuirasse** | +10 % de dégâts critiques par rang. | 2 | 2/2/1 | 1193, -434 | `ro_ti_sang_froid` |
+| `ro_ti_point_faible` | Passif | **Défaut de la cuirasse** | +6 % de dégâts critiques par rang. | 2 | 2/2/1 | 1193, -434 | `ro_ti_sang_froid` |
 | `ro_ti_trait_fatal` | Compétence | **Trait fatal** | Vous visez 1,5 s, immobile, puis décochez un trait qui traverse tout sur 32 m. (Demande 10 points dépensés dans la région Rôdeur.) *(10 points dans la région)* | 1 | 2/2/1 | 1111, -616 | `ro_ti_tir_tendu` `ro_ti_visee_eclair` `ro_ti_perce_coeur` `ro_ti_posture_archer` |
 | `ro_ti_perce_coeur` | Variante | **Perce-cœur** | Trait fatal : contre une cible déséquilibrée, ×1,6 et critique garanti ; visée 1,5 → 1,7 s. *(groupe `var_trait_fatal`)* | 1 | 2/2/1 | 1153, -721 | `ro_ti_trait_fatal` |
 | `ro_ti_visee_eclair` | Variante | **Visée éclair** | Trait fatal : visée 1,5 → 0,9 s, ×4,0 → ×2,9. *(groupe `var_trait_fatal`)* | 1 | 2/2/1 | 1233, -575 | `ro_ti_trait_fatal` |
@@ -1127,8 +1127,8 @@ PV et mana).
 
 | id | Nom | Type | Coût (mana + end.) | Recharge | Portée | Puissance | Poise | Engagement | Arme | Étiquettes | Origine |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| `enchant_blade` | **Lame enchantée** | renfort | 25 + 0 | 20 s | — | — | — | prép. 0,4 s · récup. 0,3 s à 50 % | arme de mêlée | arcane, enchantement, melee | Guerrier + Mage |
-| `blade_wave` | **Onde tranchante** | projectile | 18 + 12 | 7 s | 10 m | ×1,7 | 14 | prép. 0,3 s · récup. 0,5 s à 25 % | arme de mêlée | arcane, projectile, melee | Guerrier + Mage |
+| `enchant_blade` | **Lame enchantée** | renfort | 20 + 0 | 20 s | — | — | — | prép. 0,4 s · récup. 0,3 s à 50 % | arme de mêlée | arcane, enchantement, melee | Guerrier + Mage |
+| `blade_wave` | **Onde tranchante** | projectile | 13 + 12 | 7 s | 10 m | ×1,8 | 14 | prép. 0,3 s · récup. 0,5 s à 25 % | arme de mêlée | arcane, projectile, melee | Guerrier + Mage |
 | `rune_aegis` | **Égide runique** | renfort | 30 + 0 | 25 s | — | — | — | prép. 0,3 s · récup. 0,3 s à 50 % | — | arcane, defense | Guerrier + Mage |
 
 - **Lame enchantée** (`enchant_blade`) — Votre lame s’embrase d’énergie : chaque coup de mêlée ajoute des dégâts arcaniques.
@@ -1142,15 +1142,15 @@ PV et mana).
 
 | id | Type | Nom | Effet | Rangs | Coût G/M/R | (x, y) | Liens |
 |---|---|---|---|---|---|---|---|
-| `gm_lance_spectrale` | Variante | **Lance spectrale** | Portée 10 → 16 m, puissance 1,7 → 2,1 ; recharge 7 → 11 s. *(groupe `onde_forme`)* | 1 | 1/1/2 | -695, 331 | `gm_onde_tranchante` |
-| `gm_croissant` | Variante | **Croissant de lune** | Onde en cône de 90° sur 7 m qui touche tout ; puissance 1,7 → 1,45. *(groupe `onde_forme`)* | 1 | 1/1/2 | -627, 464 | `gm_onde_tranchante` |
+| `gm_lance_spectrale` | Variante | **Lance spectrale** | Portée 10 → 16 m, puissance 1,8 → 2,2 ; recharge 7 → 11 s. *(groupe `onde_forme`)* | 1 | 1/1/2 | -695, 331 | `gm_onde_tranchante` |
+| `gm_croissant` | Variante | **Croissant de lune** | Onde en cône de 90° sur 7 m qui touche tout ; puissance 1,8 → 1,55. *(groupe `onde_forme`)* | 1 | 1/1/2 | -627, 464 | `gm_onde_tranchante` |
 | `gm_onde_tranchante` | Compétence | **Onde tranchante** | Débloque Onde tranchante. | 1 | 1/1/2 | -745, 430 | `gm_flux_martial` `gm_croissant` `gm_lance_spectrale` `gm_egide` `ma_p_flamme_attisee` |
 | `gm_flux_martial` | Passif | **Flux martial** | Chaque coup de mêlée qui touche rend 1 point de mana (au plus 4 par seconde). | 1 | 1/1/2 | -611, 633 | `gu_md_brise_garde` `gm_lame_enchantee` `gm_onde_tranchante` |
 | `gm_egide_mana` | Variante | **Égide du savant** | Absorbe 12 % PV + 25 % mana → 40 % du mana max, et rend 20 % des dégâts absorbés en mana. *(groupe `egide_forme`)* | 1 | 1/1/2 | -873, 218 | `gm_egide` |
 | `gm_egide` | Compétence | **Égide runique** | Débloque Égide runique. | 1 | 1/1/2 | -896, 344 | `gm_onde_tranchante` `gm_lame_arcanique` `gm_egide_renvoi` `gm_egide_mana` |
 | `gm_lame_enchantee` | Compétence | **Lame enchantée** | Débloque Lame enchantée. | 1 | 1/1/2 | -762, 617 | `gm_flux_martial` `gm_lame_ardente` `gm_lame_givre` `gm_lame_arcanique` |
 | `gm_egide_renvoi` | Variante | **Égide éclatante** | Quand le bouclier se brise, il explose : ×1,2 de dégâts arcaniques dans un rayon de 4 m. *(groupe `egide_forme`)* | 1 | 1/1/2 | -1014, 310 | `gm_egide` `gm_ks_serment` |
-| `gm_lame_arcanique` | Variante | **Lame arcanique** | Élément arcane : bonus 40 % → 30 %, mais chaque coup rend 2 mana. *(groupe `lame_enchantee_element`)* | 1 | 1/1/2 | -931, 537 | `gm_lame_enchantee` `gm_maitrise_runique` `gm_egide` |
+| `gm_lame_arcanique` | Variante | **Lame arcanique** | Élément arcane : bonus 50 % → 40 %, mais chaque coup rend 2 mana. *(groupe `lame_enchantee_element`)* | 1 | 1/1/2 | -931, 537 | `gm_lame_enchantee` `gm_maitrise_runique` `gm_egide` |
 | `gm_lame_ardente` | Variante | **Lame ardente** | Élément feu : les coups brûlent (20 % de l’attaque sur 3 s, 3 cumuls). *(groupe `lame_enchantee_element`)* | 1 | 1/1/2 | -794, 740 | `gm_lame_enchantee` `gm_maitrise_runique` |
 | `gm_lame_givre` | Variante | **Lame de givre** | Élément givre : chaque coup ralentit de 10 % pendant 3 s (2 cumuls, 20 %). *(groupe `lame_enchantee_element`)* | 1 | 1/1/2 | -884, 654 | `gm_lame_enchantee` `gm_maitrise_runique` |
 | `gm_maitrise_runique` | Passif | **Maîtrise de l’épée runique** | Épée runique : +15 % de dégâts élémentaires, et elle sert de focus sans pénalité aux sorts (au lieu de −20 %). | 1 | 1/1/2 | -978, 660 | `gm_lame_arcanique` `gm_lame_givre` `gm_lame_ardente` `gm_ks_serment` |
@@ -1334,7 +1334,7 @@ Javelots et lances, *Coup d'épieu*, appâts, deux armes (Ambidextrie) et la cl�
 - **Victimes par vie** = (DPS / PV du monstre) × temps avant de mourir. L'**exposition** de chaque classe (la part des
   coups du monstre qui la touchent : la mêlée reste au contact, le mage et le rôdeur non) est calibrée **une seule fois**
   sur le kit v0.2 (préréglage de migration + armes v0.2) aux niveaux 5, 10 et 14, que la simulation v0.2
-  (`tests/balance/sim.mjs`, `docs/EQUILIBRAGE.md`) mesurait à ±9 %. Exposition obtenue : Guerrier 1,779, Mage 0,465, Rôdeur 0,745.
+  (`tests/balance/sim.mjs`, `docs/EQUILIBRAGE.md`) mesurait à ±9 %. Exposition obtenue : Guerrier 1,799, Mage 0,47, Rôdeur 0,72.
 - Cibles : classes (moyenne de leurs deux constructions) à **±15 %** à chaque niveau, aucune construction à plus de
   ±25 % de la moyenne ; hybrides entre **80 % et 100 %** de la meilleure construction pure de leur classe.
 - Ce modèle est une **vérification rapide**, pas la simulation de combat : elle devra être refaite avec
@@ -1344,48 +1344,48 @@ Javelots et lances, *Coup d'épieu*, appâts, deux armes (Ambidextrie) et la cl�
 
 | Niv. | Guerrier | Mage | Rôdeur | Écart max | Résultat |
 |---|---|---|---|---|---|
-| 5 | 5,61 (-1,2 %) | 6,13 (+8 %) | 5,28 (-6,9 %) | 8 % | hors cible |
-| 15 | 7,52 (-2,6 %) | 8,76 (+13,5 %) | 6,88 (-10,8 %) | 13,5 % | OK |
-| 30 | 9,65 (-1,5 %) | 10,11 (+3,1 %) | 9,65 (-1,6 %) | 3,1 % | OK |
+| 5 | 5,51 (-3,4 %) | 6,03 (+5,7 %) | 5,57 (-2,4 %) | 5,7 % | OK |
+| 15 | 7,37 (-7,1 %) | 9,34 (+17,6 %) | 7,1 (-10,5 %) | 17,6 % | hors cible |
+| 30 | 9,46 (-4,9 %) | 10,55 (+6,2 %) | 9,81 (-1,3 %) | 6,2 % | hors cible |
 
 | Niv. | Build | Points | PV | Attaque | Défense | DPS | Contrôle | Survie (s) | Victimes par vie | Écart au niveau |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 5 | `g_gardien` | 5/5 | 219 | 34 | 41 | 34,9 | 27 % | 34,2 | 6,63 | +16,9 % |
-| 15 | `g_gardien` | 17/17 | 467 | 77 | 102 | 100,8 | 32 % | 43,9 | 8,85 | +14,7 % |
-| 30 | `g_gardien` | 35/35 | 832 | 141 | 221 | 215,5 | 24 % | 42,7 | 9,39 | -4,2 % |
-| 5 | `g_berserker` | 5/5 | 219 | 39 | 32 | 34,3 | 30 % | 24,1 | 4,58 | -19,2 % |
-| 15 | `g_berserker` | 17/17 | 465 | 90 | 80 | 111,4 | 20 % | 27,7 | 6,18 | -19,9 % |
-| 30 | `g_berserker` | 35/35 | 894 | 166 | 136 | 327,7 | 32 % | 29,6 | 9,91 | +1,1 % |
-| 5 | `m_pyro` | 5/5 | 146 | 34 | 13 | 28,5 | 0 % | 45,4 | 7,19 | +26,8 % |
-| 15 | `m_pyro` | 17/17 | 279 | 83 | 33 | 95,3 | 11 % | 41,5 | 7,91 | +2,5 % |
-| 30 | `m_pyro` | 35/35 | 536 | 156 | 61 | 267,9 | 8 % | 33,5 | 9,15 | -6,6 % |
-| 5 | `m_givre` | 5/5 | 146 | 34 | 13 | 18,4 | 5 % | 49,5 | 5,07 | -10,7 % |
-| 15 | `m_givre` | 17/17 | 307 | 83 | 33 | 95,6 | 16 % | 50,3 | 9,61 | +24,5 % |
-| 30 | `m_givre` | 35/35 | 584 | 156 | 67 | 182,9 | 31 % | 59,3 | 11,06 | +12,9 % |
-| 5 | `r_tireur` | 5/5 | 173 | 36 | 21 | 32,1 | 0 % | 28,9 | 5,15 | -9,2 % |
-| 15 | `r_tireur` | 17/17 | 336 | 85 | 52 | 102,4 | 0 % | 31,1 | 6,36 | -17,6 % |
-| 30 | `r_tireur` | 35/35 | 651 | 157 | 96 | 287,9 | 9 % | 33,7 | 9,91 | +1,1 % |
-| 5 | `r_venin` | 5/5 | 173 | 33 | 21 | 33,7 | 0 % | 28,9 | 5,42 | -4,6 % |
-| 15 | `r_venin` | 17/17 | 336 | 79 | 52 | 119,1 | 0 % | 31,1 | 7,4 | -4,1 % |
-| 30 | `r_venin` | 35/35 | 651 | 145 | 96 | 316,2 | 0 % | 29,1 | 9,38 | -4,3 % |
-| 15 | *hybride* `h_lame_spirituelle` | 17/17 | 279 | 82 | 33 | 98,6 | 8 % | 40,8 | 8,04 | — |
-| 30 | *hybride* `h_lame_spirituelle` | 35/35 | 469 | 153 | 61 | 258 | 12 % | 36 | 9,47 | — |
-| 15 | *hybride* `h_rodeur_givre` | 17/17 | 336 | 85 | 52 | 104,4 | 8 % | 33,6 | 7,02 | — |
-| 30 | *hybride* `h_rodeur_givre` | 35/35 | 610 | 157 | 96 | 274,2 | 3 % | 28,8 | 8,05 | — |
+| 5 | `g_gardien` | 5/5 | 219 | 34 | 41 | 34,9 | 27 % | 33,6 | 6,51 | +14,2 % |
+| 15 | `g_gardien` | 17/17 | 467 | 77 | 102 | 100,8 | 32 % | 43,4 | 8,76 | +10,3 % |
+| 30 | `g_gardien` | 35/35 | 832 | 141 | 221 | 215,5 | 24 % | 42,2 | 9,29 | -6,6 % |
+| 5 | `g_berserker` | 5/5 | 219 | 39 | 32 | 34,3 | 30 % | 23,7 | 4,51 | -20,9 % |
+| 15 | `g_berserker` | 17/17 | 465 | 90 | 80 | 109,1 | 20 % | 27,4 | 5,99 | -24,6 % |
+| 30 | `g_berserker` | 35/35 | 894 | 166 | 136 | 321,9 | 32 % | 29,3 | 9,63 | -3,2 % |
+| 5 | `m_pyro` | 5/5 | 146 | 34 | 13 | 28,5 | 0 % | 44,5 | 7,05 | +23,6 % |
+| 15 | `m_pyro` | 17/17 | 279 | 83 | 33 | 90,7 | 11 % | 41,1 | 7,45 | -6,1 % |
+| 30 | `m_pyro` | 35/35 | 536 | 156 | 61 | 255,8 | 8 % | 33,1 | 8,65 | -13 % |
+| 5 | `m_givre` | 5/5 | 146 | 34 | 13 | 18,4 | 5 % | 49 | 5,01 | -12,1 % |
+| 15 | `m_givre` | 17/17 | 307 | 83 | 33 | 112,8 | 16 % | 49,7 | 11,22 | +41,4 % |
+| 30 | `m_givre` | 35/35 | 584 | 156 | 67 | 209,7 | 31 % | 58,2 | 12,46 | +25,3 % |
+| 5 | `r_tireur` | 5/5 | 173 | 36 | 21 | 30,9 | 0 % | 30,4 | 5,22 | -8,5 % |
+| 15 | `r_tireur` | 17/17 | 336 | 85 | 52 | 98,3 | 0 % | 32,1 | 6,32 | -20,3 % |
+| 30 | `r_tireur` | 35/35 | 651 | 157 | 96 | 265,9 | 9 % | 34,9 | 9,47 | -4,7 % |
+| 5 | `r_venin` | 5/5 | 173 | 33 | 21 | 35 | 0 % | 30,4 | 5,92 | +3,7 % |
+| 15 | `r_venin` | 17/17 | 336 | 79 | 52 | 122,6 | 0 % | 32,1 | 7,88 | -0,7 % |
+| 30 | `r_venin` | 35/35 | 651 | 145 | 96 | 320,7 | 0 % | 31 | 10,16 | +2,2 % |
+| 15 | *hybride* `h_lame_spirituelle` | 17/17 | 279 | 82 | 33 | 99,4 | 8 % | 40,4 | 8,02 | — |
+| 30 | *hybride* `h_lame_spirituelle` | 35/35 | 469 | 153 | 61 | 257,5 | 12 % | 35,6 | 9,35 | — |
+| 15 | *hybride* `h_rodeur_givre` | 17/17 | 336 | 85 | 52 | 107,2 | 8 % | 34,8 | 7,45 | — |
+| 30 | *hybride* `h_rodeur_givre` | 35/35 | 610 | 157 | 96 | 281,2 | 3 % | 29,8 | 8,54 | — |
 
 | Hybride | Niv. | Victimes par vie | Meilleur pur de sa classe | Ratio | Cible 80–100 % |
 |---|---|---|---|---|---|
-| `h_lame_spirituelle` | 15 | 8,04 | `m_givre` (9,61) | 83,7 % | OK |
-| `h_lame_spirituelle` | 30 | 9,47 | `m_givre` (11,06) | 85,6 % | OK |
-| `h_rodeur_givre` | 15 | 7,02 | `r_venin` (7,4) | 94,8 % | OK |
-| `h_rodeur_givre` | 30 | 8,05 | `r_tireur` (9,91) | 81,2 % | OK |
+| `h_lame_spirituelle` | 15 | 8,02 | `m_givre` (11,22) | 71,5 % | hors cible |
+| `h_lame_spirituelle` | 30 | 9,35 | `m_givre` (12,46) | 75 % | hors cible |
+| `h_rodeur_givre` | 15 | 7,45 | `r_venin` (7,88) | 94,5 % | OK |
+| `h_rodeur_givre` | 30 | 8,54 | `r_venin` (10,16) | 84,1 % | OK |
 
 Lecture : le Gardien est la construction la plus sûre et le Berserker la plus risquée (même classe, ±20 %), le Mage
 de givre domine vers le niveau 15 par le contrôle et le pyromancien au niveau 30 par les dégâts ; les hybrides sont
-viables (81 à 95 % du meilleur pur) mais jamais meilleurs, parce qu'ils paient les nœuds 2 points et gardent au moins
+viables (72 à 95 % du meilleur pur) mais jamais meilleurs, parce qu'ils paient les nœuds 2 points et gardent au moins
 une partie de l'Inaptitude.
 
-### 12.3 Changements d'équilibrage appliqués aux brouillons (60)
+### 12.3 Changements d'équilibrage appliqués aux brouillons (84)
 
 | Cible | Changement et raison |
 |---|---|
@@ -1449,6 +1449,30 @@ une partie de l'Inaptitude.
 | `blade_wave` | Onde tranchante : recharge 8 → 7 s. |
 | `gm_lance_spectrale` | Suit la recharge de l’Onde (7 s). |
 | `rend` | Entaille : ×0,9 → ×1,0 et saignement 180 % de l’attaque en 6 s (outil principal du Berserker avant le niveau 20). |
+| `ice_lance` | Lance de glace : ×1,6 → ×2,4 (le Mage de Givre restait 24 % sous la moyenne au niveau 30). |
+| `ma_v_lance_glacier` | Suit la Lance de glace ×2,4. |
+| `ma_v_lance_trio` | Suit la Lance de glace ×2,4 (×0,75 → ×1,1 par lance). |
+| `rapid_fire` | Tir rapide : ×0,8 → ×0,77 par flèche (Main sûre, dans le préréglage des Rôdeurs v0.2, compense : aucun vétéran n’y perd). |
+| `ro_ti_rafale` | Suit le Tir rapide ×0,77. |
+| `ro_ti_salve_eventail` | Suit le Tir rapide ×0,77. |
+| `arrow_rain` | Pluie de flèches : ×1,25 → ×1,2 (compensé par Main sûre pour les vétérans). |
+| `ro_ti_averse_acier` | Suit la Pluie de flèches ×1,2. |
+| `piercing_shot` | Tir perçant : ×1,9 → ×1,7 (il ignore désormais 30 % de l’armure et transperce : au moins aussi fort qu’en v0.2 sur une cible en armure). |
+| `ro_ti_oeil_exerce` | Œil exercé : +3 % → +2 % de critique par rang (le Tireur dépassait la moyenne de 31 % au niveau 20). |
+| `ro_ti_point_faible` | Défaut de la cuirasse : +10 % → +6 % de dégâts critiques par rang. |
+| `fleche_empoisonnee` | Flèche empoisonnée : ×0,6 → ×0,8 (le Venin remonte vers la moyenne). |
+| `fleche_barbelee` | Flèche barbelée : ×1,0 → ×1,2. |
+| `shield_bash` | Coup de bouclier : ×1,0 → ×1,3 (le Gardien restait sous la moyenne au niveau 30). |
+| `ignite` | Embrasement : 150 % → 120 % de la brûlure restante, ×0,6 → ×0,45 sans brûlure (le Pyromancien dépassait la moyenne de 19 % au niveau 20). |
+| `ma_v_ignite_detonation` | Suit l’Embrasement (120 %). |
+| `ma_p_flamme_attisee` | Flamme attisée : +4 % → +3 % de dégâts de feu par rang. |
+| `ma_p_fournaise` | Fournaise : +5 % → +4 % de dégâts de feu par rang. |
+| `rage` | Rage sanguinaire : +30 % → +25 % de dégâts (le Berserker dépassait la moyenne de 18 % au niveau 30). |
+| `blade_wave` | Onde tranchante : ×1,7 → ×1,8, mana 18 → 13 (la Lame spirituelle, à court de mana, restait 25 % sous la moyenne au niveau 20). |
+| `gm_lance_spectrale` | Suit l’Onde tranchante ×1,8. |
+| `gm_croissant` | Suit l’Onde tranchante ×1,8. |
+| `enchant_blade` | Lame enchantée : +40 % → +50 %, mana 25 → 20. |
+| `gm_lame_arcanique` | Suit la Lame enchantée (+40 % avec l’élément arcane). |
 
 Les valeurs exactes avant / après de chaque changement sont dans `skilltree.json › meta.balanceChanges`.
 

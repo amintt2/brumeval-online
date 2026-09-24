@@ -41,4 +41,14 @@ test('balance (tree): 2 builds per class + 2 hybrids at levels 10, 20 and 30', a
     assert.ok(r.deathRate <= 0.1, `${r.build} niv. ${r.level} contre ${r.type} : ${Math.round(r.deathRate * 100)} % de morts`);
   }
   assert.equal(Object.keys(tree.eff[30]).length, BUILDS.length);
+  // XP/min spread around the mean at levels 20 and 30 (review of 24/09: it was −25 % … +33 %). The Tireur stays a bit
+  // above (its v0.2 abilities are never weaker than in v0.2), the Inapte hybrid a bit under (docs/EQUILIBRAGE.md §7)
+  for (const level of [20, 30]) {
+    const e = tree.eff[level];
+    const mean = Object.values(e).reduce((a, b) => a + b, 0) / BUILDS.length;
+    for (const [name, v] of Object.entries(e)) {
+      const d = v / mean - 1;
+      assert.ok(d > -0.22 && d < 0.25, `${name} niv. ${level} : ${Math.round(d * 100)} % de la moyenne`);
+    }
+  }
 });

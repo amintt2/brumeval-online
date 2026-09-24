@@ -288,6 +288,25 @@ test('migrated characters are not nerfed on first login: same abilities, same sl
   assert.equal(pointsSummary('warrior', 30, legacySkills('warrior', 30)).spent, TREE.migration.presets.warrior.cost);
 });
 
+test('first v0.3 login: no v0.2 ability is weaker than in v0.2 (power × tree damage bonus, armour penetration, heal)', () => {
+  // v0.2 values (git fe2ab7c:shared/data.js)
+  const V02 = {
+    strike: 1.2, heavy_blow: 2.8, whirlwind: 1.7, war_cry: 0.3, firebolt: 0.8, fireball: 2.0, frost_nova: 1.1, heal: 0.35,
+    shot: 0.85, piercing_shot: 1.9, arrow_rain: 1.25, rapid_fire: 0.8,
+  };
+  for (const cls of CLS) {
+    for (const lvl of [1, 10, 20]) {
+      const tree = buildTree(cls, legacySkills(cls, lvl));
+      for (const id of Object.keys(V02).filter((x) => ABILITIES[x] && (tree.unlocked.has(x)))) {
+        const a = resolveAbility(tree, id);
+        // 30 % armour penetration is worth at least +10 % against the armoured monsters of the level (def ≈ K / 2)
+        const v = a.kind === 'self_heal' ? Math.max(a.heal || 0, a.hot?.pct || 0) : a.power * (1 + (a.dmgPct || 0)) * (1 + (a.armorPen || 0) / 3);
+        assert.ok(v >= V02[id] - 1e-9, `${cls} niv. ${lvl} : ${id} ${v.toFixed(3)} < v0.2 ${V02[id]}`);
+      }
+    }
+  }
+});
+
 test('tree data follows DECISIONS §3 / §4: no reset, Espace = Saut, Maj = Roulade / Sprint, no hard-coded key in descriptions', () => {
   assert.equal(TREE.rules.respec, undefined);
   assert.equal(TREE.rules.migration.respecFree, undefined);

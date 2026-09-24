@@ -222,41 +222,45 @@ peut utiliser toute sa barre avec son arme, tue en moins de 40 s et meurt dans a
 
 | Build | Niv. 10 (XP/min) | Niv. 20 (XP/min) | Niv. 30 (XP/min) | Points niv. 30 | Barre (1 à 4) |
 |---|---:|---:|---:|---:|---|
-| Guerrier Gardien | 572 | 893 | 1106 | 35/35 | Frappe, Coup puissant, Coup de bouclier, Cri de guerre |
-| Guerrier Berserker | 540 | 949 | 1401 | 35/35 | Frappe, Tourbillon, Entaille, Rage sanguinaire |
-| Mage Pyromancien | 567 | 1088 | 1266 | 35/35 | Trait arcanique (Trait de feu), Boule de feu, Embrasement, Soin |
-| Mage de Givre | 471 | 757 | 902 | 35/35 | Trait arcanique, Lance de glace, Nova de givre, Soin |
-| Rôdeur Tireur | 587 | 1191 | 1582 | 35/35 | Tir, Tir perçant, Tir rapide, Pluie de flèches |
-| Rôdeur Venin | 517 | 809 | 1117 | 35/35 | Tir, Flèche empoisonnée, Flèche barbelée, Marque du chasseur |
-| Hybride Lame spirituelle (Guerrier → Mage) | 406 | 677 | 1157 | 35/35 | Frappe, Onde tranchante, Lame enchantée, Coup puissant |
-| Hybride Mage de bataille (Mage + Tourbillon) | 637 | 899 | 995 | 35/35 | Trait arcanique, Tourbillon (Inapte), Boule de feu, Soin |
+| Guerrier Gardien | 580 | 911 | 1129 | 35/35 | Frappe, Coup puissant, Coup de bouclier, Cri de guerre |
+| Guerrier Berserker | 533 | 935 | 1378 | 35/35 | Frappe, Tourbillon, Entaille, Rage sanguinaire |
+| Mage Pyromancien | 540 | 1034 | 1192 | 35/35 | Trait arcanique (Trait de feu), Boule de feu, Embrasement, Soin |
+| Mage de Givre | 556 | 850 | 1138 | 35/35 | Trait arcanique, Lance de glace, Nova de givre, Soin |
+| Rôdeur Tireur | 563 | 1124 | 1441 | 35/35 | Tir, Tir perçant, Tir rapide, Pluie de flèches |
+| Rôdeur Venin | 556 | 855 | 1164 | 35/35 | Tir, Flèche empoisonnée, Flèche barbelée, Marque du chasseur |
+| Hybride Lame spirituelle (Guerrier → Mage) | 451 | 781 | 1336 | 35/35 | Frappe, Onde tranchante, Lame enchantée, Coup puissant |
+| Hybride Mage de bataille (Mage + Tourbillon) | 628 | 875 | 1004 | 35/35 | Trait arcanique, Tourbillon (Inapte), Boule de feu, Soin |
 
 Au niveau 30 (monstres niveau 29) :
 
 | Build | Squelette : TTK · dégâts subis | Occultiste : TTK · dégâts | Gobelin : TTK · dégâts | Morts |
 |---|---|---|---|---:|
-| Guerrier Gardien | 14,6 s · 22 % | 9,3 s · 0 % | 7,8 s · 10 % | 0 % |
-| Guerrier Berserker | 10,8 s · 14 % | 7,8 s · 0 % | 4,7 s · 5 % | 0 % |
-| Mage Pyromancien | 15,0 s · 1 % | 8,6 s · 0 % | 6,5 s · 0 % | 0 % |
-| Mage de Givre | 19,1 s · 2 % | 17,1 s · 0 % | 10,7 s · 3 % | 0 % |
-| Rôdeur Tireur | 11,5 s · 0 % | 5,7 s · 0 % | 3,8 s · 0 % | 0 % |
-| Rôdeur Venin | 15,9 s · 1 % | 11,8 s · 0 % | 7,8 s · 1 % | 0 % |
-| Hybride Lame spirituelle | 9,1 s · 12 % | 6,3 s · 0 % | 4,5 s · 2 % | 0 % |
-| Hybride Mage de bataille | 14,8 s · 72 % | 6,9 s · 0 % | 6,6 s · 31 % | 3 % au squelette |
+| Guerrier Gardien | 14,4 s · 20 % | 9,2 s · 1 % | 7,7 s · 9 % | 0 % |
+| Guerrier Berserker | 10,8 s · 13 % | 7,9 s · 0 % | 5,2 s · 5 % | 0 % |
+| Mage Pyromancien | 16,8 s · 0 % | 9,5 s · 0 % | 7,0 s · 0 % | 0 % |
+| Mage de Givre | 15,9 s · 2 % | 12,9 s · 0 % | 6,6 s · 0 % | 0 % |
+| Rôdeur Tireur | 12,4 s · 0 % | 6,9 s · 0 % | 5,1 s · 0 % | 0 % |
+| Rôdeur Venin | 15,0 s · 0 % | 11,2 s · 0 % | 7,2 s · 0 % | 0 % |
+| Hybride Lame spirituelle | 8,7 s · 11 % | 5,0 s · 0 % | 3,9 s · 0 % | 0 % |
+| Hybride Mage de bataille | 15,1 s · 68 % | 7,1 s · 0 % | 6,6 s · 31 % | 0 % |
 
 Les presets v0.2 (§5) donnent toujours un écart de 2 à 10 % entre les classes aux niveaux 1 à 14 avec les
 valeurs v0.3 (Soin 25 % / 15 s avec 1 s d'incantation, Tourbillon ×1,9, Nova de givre à 2 charges de Froid…).
 
 Lecture :
 
-- Aucun build ne meurt en solo contre son niveau, sauf l'hybride mage au corps à corps (3 % contre la brute) :
-  c'est le prix de l'Inaptitude et d'un mage sans armure au contact — l'hybride reste jouable mais n'est pas un
+- Aucun build ne meurt en solo contre son niveau ; l'hybride mage au corps à corps encaisse 68 % de ses PV contre
+  la brute : c'est le prix de l'Inaptitude et d'un mage sans armure au contact — l'hybride reste jouable mais n'est pas un
   « meilleur mage ».
-- **Écart au niveau 30** : de −24 % (Mage de Givre) à +33 % (Rôdeur Tireur) autour de la moyenne. Le modèle
-  ne compte pas la valeur défensive du Froid (monstres ralentis, préparations plus lentes) ni les monstres
-  multiples où la Pluie de flèches et le Tourbillon valent plus : le Givre est sous-estimé, le Tireur surestimé
-  (il tue les lanceurs en une volée). À surveiller avec les vraies régions de niveau 20 à 30 : pistes
-  `ice_lance.power` 1,6 → 1,8 ou `ma_ks_hiver_eternel`, et `rapid_fire.cd` 9 → 10 s.
+- **Écart** (passe 11 du 24/09, `build_tree.mjs`) : au niveau 30, de −18 % (hybride Inapte Mage de bataille)
+  et −8 % (Gardien) à +18 % (Tireur) ; au niveau 20, de −15 % à +22 % (Tireur). Avant : −24 % (Givre) à +33 %
+  (Tireur) au niveau 30. Lance de glace ×2,4, Onde tranchante moins chère, Venin et Coup de bouclier renforcés ;
+  Embrasement, passifs de feu, Rage, Œil exercé et Défaut de la cuirasse réduits. Le Tireur reste au-dessus parce
+  que ses 4 compétences sont celles de la v0.2 et qu'**aucune compétence v0.2 ne doit être plus faible à la
+  première connexion v0.3** : Tir rapide ×0,77 et Pluie ×1,2 (−4 %, compensés par Main sûre +5 % du préréglage),
+  Tir perçant ×1,7 (compensé par ses 30 % de pénétration d'armure). Le modèle surestime aussi le Tireur (il tue
+  les lanceurs et les loups en une volée) et ne compte pas la valeur défensive du Froid. À revoir avec les vraies
+  régions de niveau 20 à 30.
 - Les hybrides de passerelle (Lame spirituelle) sont au niveau des builds purs (sans Inaptitude pour le
   guerrier) : c'est voulu par la conception.
 
