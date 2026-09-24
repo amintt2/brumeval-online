@@ -1,7 +1,8 @@
 // HUD pieces: player & target unit frames, XP bar, gold counter and menu buttons.
 import { CLASSES, NPCS, xpToNext, MAX_LEVEL } from '@shared/data.js';
 import { h, setText, toggleClass, fmt, clamp01 } from './dom.js';
-import { iconBox, setIcon, classIconSpec, glyph } from './icons.js';
+import { iconBox, setIcon, classIconSpec, glyph, statusList } from './icons.js';
+import { STATUS_DEFS, renaissanceTitle } from '@shared/skills.js'; // [skilltree]
 import { simpleTooltip } from './tooltip.js';
 
 /** Resource bar with a lagging "damage" ghost and inner shine. */
@@ -96,11 +97,14 @@ export function createTargetFrame(parent) {
   const sub = h('div', { class: 'bv-uf-sub' });
   const hp = createBar('hp');
   const dead = h('div', { class: 'bv-uf-dead', text: 'Mort' });
+  const statuses = h('div', { class: 'bv-uf-st', 'aria-label': 'Effets' }); // [skilltree]
+  let lastSt = -1;
   const el = h('div', { class: 'bv-uf bv-uf-target bv-frame is-empty' },
     h('div', { class: 'bv-uf-portrait' }, portrait, dead, lvl, boss),
     h('div', { class: 'bv-uf-main' },
       h('div', { class: 'bv-uf-top' }, name, sub),
-      hp.el));
+      hp.el,
+      statuses));
   parent.appendChild(el);
   let cur = null;
   let selfLevel = 1;
@@ -119,7 +123,7 @@ export function createTargetFrame(parent) {
       spec = { url: null, letter: (t.name || '?').replace(/^(Ancien|Marchande|Marchand)\s+/, '').charAt(0), c1: '#b8862b', c2: '#2a1c08' };
     } else if (kind === 'player') {
       color = '#8cc8ff';
-      subText = 'Joueur';
+      subText = t.rb > 0 ? renaissanceTitle(t.rb) : 'Joueur';
       spec = { url: null, glyph: 'person', c1: '#2f6fb0', c2: '#0b1830' };
     } else {
       color = t.hostile === false ? '#ffd84a' : levelColor(t.level, selfLevel);
@@ -141,6 +145,16 @@ export function createTargetFrame(parent) {
     hp.el.hidden = !showBar;
     if (showBar) hp.set(hpv, mhp, `${fmt(hpv)} / ${fmt(mhp)}  ·  ${Math.round((hpv / mhp) * 100)} %`);
     toggleClass(el, 'is-dead', kind !== 'npc' && mhp > 0 && hpv <= 0);
+    // [skilltree] status effects of the target (brûlure, froid, gel, poison, saignement, marque…)
+    const st = hpv > 0 ? t.stt || 0 : 0;
+    if (st !== lastSt) {
+      lastSt = st;
+      statuses.replaceChildren(...statusList(st).map((s) => h('span', {
+        class: `bv-uf-chip st-${s.id}`, style: { '--c': s.color },
+        title: `${s.name} — ${STATUS_DEFS.get(s.id)?.desc || ''}`.replace(/ — $/, ''),
+      }, glyph(s.glyph), h('span', { text: s.name }))));
+      statuses.hidden = st === 0;
+    }
   }
 
   return {
@@ -210,6 +224,8 @@ export function createXpBar(parent, tooltip) {
 
 // ------------------------------------------------------------------ menu + gold
 export const MENU = [
+  { id: 'tree', label: 'Arbre', key: 'N', glyph: 'tree', action: 'tree' }, // [skilltree]
+  { id: 'book', label: 'Livre', key: 'K', glyph: 'book', action: 'book' },  // [skilltree]
   { id: 'inventory', label: 'Sac', key: 'I', glyph: 'bag' },
   { id: 'character', label: 'Personnage', key: 'C', glyph: 'person' },
   { id: 'quests', label: 'Quêtes', key: 'L', glyph: 'scroll' },
@@ -217,19 +233,22 @@ export const MENU = [
   { id: 'settings', label: 'Options', key: 'O', glyph: 'gear' }, // [render-souls] + [accounts] audio, controls
 ];
 
-export function createMenu(parent, onToggle, tooltip) {
+export function createMenu(parent, onToggle, tooltip, keyLabelOf = null) {
+  const badges = {}; // [skilltree] free skill points on the tree button
   const goldVal = h('span', { class: 'bv-gold-v', text: '0' });
   const goldIcon = iconBox({ url: '/icons/gold.png', glyph: 'coin', c1: '#d9a93a', c2: '#5a3b0a', fit: 'contain' }, 'bv-gold-i');
   const gold = h('div', { class: 'bv-gold' }, goldIcon, goldVal);
   tooltip.bind(gold, () => simpleTooltip('Or', 'Pièces d\'or (po). Dépensez-les chez Marchande Élise.'));
   const buttons = {};
   const bar = h('nav', { class: 'bv-menu', 'aria-label': 'Menu' });
+  const keyOf = (m) => (keyLabelOf ? keyLabelOf(m.action || (m.id === 'settings' ? 'options' : m.id)) : m.key) || m.key;
   for (const m of MENU) {
     const b = h('button', {
       class: 'bv-mbtn', type: 'button', 'aria-label': `${m.label} (${m.key})`,
       onclick: () => onToggle(m.id),
-    }, glyph(m.glyph), h('span', { class: 'bv-mbtn-l', text: m.label }), h('kbd', { text: m.key }));
-    tooltip.bind(b, () => simpleTooltip(m.label, null, `Raccourci : ${m.key}`));
+    }, glyph(m.glyph), h('span', { class: 'bv-mbtn-l', text: m.label }), h('kbd', { text: m.key }), h('span', { class: 'bv-mbtn-badge', hidden: true }));
+    tooltip.bind(b, () => simpleTooltip(m.id === 'tree' ? 'Arbre des Brumes' : m.id === 'book' ? 'Livre de compétences' : m.label,
+      m.id === 'tree' && badges.tree ? `${badges.tree} point${badges.tree > 1 ? 's' : ''} de compétence à dépenser.` : null, `Raccourci : ${keyOf(m)}`));
     buttons[m.id] = b;
     bar.appendChild(b);
   }
@@ -250,6 +269,24 @@ export function createMenu(parent, onToggle, tooltip) {
     },
     setActive(id, on) {
       buttons[id]?.classList.toggle('active', !!on);
+    },
+    /** [skilltree] Real bindings on the buttons (Options › Commandes). */
+    refreshKeys() {
+      for (const m of MENU) {
+        const k = keyOf(m);
+        const b = buttons[m.id];
+        setText(b.querySelector('kbd'), k);
+        b.setAttribute('aria-label', `${m.label} (${k})`);
+      }
+    },
+    /** [skilltree] Number badge on a button (free points on « Arbre »). */
+    setBadge(id, n) {
+      badges[id] = n;
+      const el = buttons[id]?.querySelector('.bv-mbtn-badge');
+      if (!el) return;
+      el.hidden = !(n > 0);
+      setText(el, n > 9 ? '9+' : String(n || ''));
+      buttons[id].classList.toggle('has-badge', n > 0);
     },
   };
 }

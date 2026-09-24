@@ -4,6 +4,7 @@
 import './settings.css';
 import { h, setText } from '../dom.js';
 import { createWindow } from './window.js';
+import { createControlsSection } from './controls.js'; // [skilltree] rebindable controls
 import {
   PRESET_IDS, PRESET_LABELS, FPS_CAPS, getSettings, applyPreset, updateSettings, onSettingsChange, graphicsHooks,
 } from '../../render/quality.js';
@@ -87,7 +88,7 @@ function rangeRow(label, hint, { min, max, step }, format, onChange) {
   };
 }
 
-export function createSettingsPanel(wm, { onToggle, H = null, onHelp = null } = {}) {
+export function createSettingsPanel(wm, { onToggle, H = null, onHelp = null, menus = null, notify = null } = {}) {
   let statsTimer = 0;
   const win = wm.add(createWindow({
     id: 'settings', title: 'Options', subtitle: 'Graphismes, son et commandes', keyHint: 'O',
@@ -98,6 +99,7 @@ export function createSettingsPanel(wm, { onToggle, H = null, onHelp = null } = 
       onToggle?.(true);
     },
     onHide: () => {
+      controls.cancel(); // [skilltree]
       clearInterval(statsTimer);
       statsTimer = 0;
       onToggle?.(false);
@@ -170,7 +172,8 @@ export function createSettingsPanel(wm, { onToggle, H = null, onHelp = null } = 
   const volume = rangeRow('Volume', 'Effets sonores du jeu', { min: 0, max: 1, step: 0.05 },
     (v) => (v <= 0.001 ? 'Muet' : pct(v)), (v) => H?.setVolume(v));
   const mute = toggleRow('Couper le son', null, (v) => H?.setMuted(v));
-  const helpBtn = h('button', { type: 'button', class: 'bv-btn small secondary', text: 'Voir les commandes', onclick: () => onHelp?.() });
+  const helpBtn = h('button', { type: 'button', class: 'bv-btn small secondary', text: 'Aide complète', onclick: () => onHelp?.() });
+  const controls = createControlsSection({ menus, notify }); // [skilltree]
   function refreshAudio() {
     const a = H?.getAudio?.() || { volume: 1, muted: false };
     volume.set(a.volume);
@@ -182,8 +185,9 @@ export function createSettingsPanel(wm, { onToggle, H = null, onHelp = null } = 
     volume.row, mute.row,
     h('div', { class: 'bv-sec-title', text: 'Commandes' }),
     h('div', { class: 'bv-set-row' },
-      h('span', { class: 'bv-set-label' }, h('span', { text: 'Clavier et souris' }), h('small', { text: 'Déplacements, combat, fenêtres, discussion (touche H)' })),
+      h('span', { class: 'bv-set-label' }, h('span', { text: 'Clavier et souris' }), h('small', { text: 'Toutes les touches se changent ci-dessous' })),
       helpBtn),
+    controls.el,
     h('div', { class: 'bv-sec-title', text: 'Graphismes : préréglage' }),
     presetBar,
     presetNote,
@@ -243,5 +247,5 @@ export function createSettingsPanel(wm, { onToggle, H = null, onHelp = null } = 
     if (win.isOpen) refresh(s);
   });
   refresh(getSettings());
-  return { win, refresh: () => refresh(getSettings()) };
+  return { win, refresh: () => refresh(getSettings()), controls };
 }

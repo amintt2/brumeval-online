@@ -221,7 +221,7 @@ export function createAccountSheet(layer, stack, H, menus) {
  * Escape (no window open) or the menu button: Reprendre, Carte, Options, Compte, Changer de personnage,
  * Se déconnecter, Quitter (launcher only).
  */
-export function createGameMenu(layer, stack, H, { canQuit }) {
+export function createGameMenu(layer, stack, H, { canQuit, openTree = null, openBook = null }) {
   const sheet = sheetShell(layer, stack, { id: 'bv-gm', title: 'Menu', cls: 'bv-gamemenu' });
   const item = (g, label, fn, cls = '') => h('button', { class: `bv-gm-item ${cls}`.trim(), type: 'button', onclick: () => fn() }, glyph(g), h('span', { text: label }));
   const run = (fn) => () => { sheet.close(); fn(); };
@@ -230,12 +230,14 @@ export function createGameMenu(layer, stack, H, { canQuit }) {
   const items = [
     item('play', 'Reprendre', () => sheet.close(), 'primary'),
     item('map', 'Carte', run(() => H.openMap())),
+    openTree ? item('tree', 'Arbre des Brumes', run(() => openTree())) : null, // [skilltree]
+    openBook ? item('book', 'Livre de compétences', run(() => openBook())) : null,
     item('gear', 'Options', run(() => H.openOptions())),
     item('person', 'Compte', run(() => H.openAccount())),
     item('back', 'Changer de personnage', run(() => H.charLogout())),
     item('logout', 'Se déconnecter', run(() => H.logout())),
     quit,
-  ];
+  ].filter(Boolean);
   sheet.body.append(h('nav', { class: 'bv-gm-list', 'aria-label': 'Menu principal' }, items));
   sheet.body.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;

@@ -1,8 +1,32 @@
 # Journal des versions — Brumeval Online
 
-## v0.3.0 (en préparation) — L'Arbre des Brumes (moteur serveur)
+## v0.3.0-a — L'Arbre des Brumes (interface du jeu)
 
-L'interface de l'arbre arrive avec la mise à jour du client ; le serveur est prêt.
+- **Écran de l'Arbre des Brumes** (touche **N**, bouton « Arbre » et menu principal) : les 318 nœuds en plein écran,
+  qu'on déplace à la souris et qu'on zoome à la molette. Régions colorées (Guerrier, Mage, Rôdeur, Survie, passerelles),
+  une forme par type de nœud (compétence, variante, passif à rangs, clé de voûte, Fondamental), nœuds acquis, disponibles
+  ou verrouillés, pastille orange « pas de don » (2 ou 3 points) et alerte d'Inaptitude.
+- **Infobulles chiffrées** : ce que change le nœud sur la compétence (avant → après), son coût, ses conditions, et
+  pourquoi il est verrouillé. **Recherche** (Ctrl+F), **chemin le moins cher** au survol, puis en un clic.
+- **Rien n'est dépensé sans « Confirmer »** : les nœuds choisis restent en attente (clic droit pour en retirer un).
+  **Parcours conseillé** : jusqu'au niveau 10, un clic propose les nœuds de votre classe (Roulade d'abord).
+- **Renaissance** au niveau 30, depuis l'arbre : explication, bonus, choix de la classe d'affinité, double confirmation.
+- **Livre de compétences** (touche **K**) : vos compétences avec leurs vraies valeurs (variantes, passifs, Inaptitude
+  en orange), les Fondamentaux et leurs touches, les potions ; **glisser-déposer** sur la barre d'action.
+- **Barre d'action à 8 emplacements** (touches 1 à 8), enregistrée sur le serveur ; glisser une entrée hors de la barre
+  la retire. Les Fondamentaux (Roulade, Saut, Garde, Sprint) s'affichent à côté avec leur touche.
+- **Nouvelles touches** : Espace = Saut, Maj = Roulade (appui court) / Sprint (maintien), E = Garde (maintenue),
+  maintenir 1 = Attaque chargée. **Toutes les touches se changent** dans Options › Commandes (clavier et boutons de
+  souris, conflits signalés, retour aux touches par défaut) ; l'aide et la barre montrent les touches choisies.
+- **Montée de niveau** : « +1 point de compétence » avec un bouton vers l'arbre et le nœud conseillé ; la première
+  fois, un petit tutoriel explique les Fondamentaux. Le bouton « Arbre » affiche vos points à dépenser.
+- **Effets visuels** : saut, pose de garde, blocage et parade parfaite, garde brisée, lueur de l'attaque chargée,
+  vacillement, zones au sol (mur de feu, nuage toxique, blizzard, météore), pièges, boucliers, canalisations, bonds,
+  statuts (brûlure, froid, gel, poison, saignement, marque…) en icônes sur les monstres et dans le cadre de la cible,
+  aura et titre « Né de la Brume ». Les télégraphes **rasants** ont des vagues, les **imblocables** une bordure
+  crénelée, les **sorts** des runes violettes.
+
+## v0.3.0 (en préparation) — L'Arbre des Brumes (moteur serveur)
 
 - **L'Arbre des Brumes** : un seul grand arbre de 318 nœuds pour tout le monde. Au niveau 1, seulement l'attaque de
   base ; 1 point par niveau (+1 tous les 5 niveaux), **35 points au niveau 30**. D'abord 3 **Fondamentaux**

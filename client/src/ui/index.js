@@ -30,6 +30,13 @@ import { createWorldMap } from './worldmap.js';
 import { brumevalMap } from './mapdata.js';
 import { lsGet, lsSet } from './dom.js';
 import { glyph } from './icons.js';
+// [skilltree] L'Arbre des Brumes, skill book, level-up hints, rebindable keys
+import './skills.css';
+import { createSkillTree } from './skilltree.js';
+import { createSkillBook } from './skillbook.js';
+import { createSkillHints } from './skillhints.js';
+import { isCapturing } from './panels/controls.js';
+import { keybinds, eventCode } from '../game/keybinds.js';
 
 const NOTIFY_KINDS = new Set(['info', 'error', 'xp', 'loot', 'quest', 'level', 'gold']);
 const FONTS_URL = 'https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700;800&display=swap';
@@ -47,8 +54,8 @@ function ensureFonts() {
   css.dataset.bvFonts = '1';
   document.head.append(pre, css);
 }
-const PANEL_KEYS = { i: 'inventory', c: 'character', l: 'quests', h: 'help' };
-PANEL_KEYS.o = 'settings'; // [render-souls]
+/** [skilltree] Rebindable window actions (game/keybinds.js) → window ids. */
+const PANEL_ACTIONS = { inventory: 'inventory', character: 'character', quests: 'quests', help: 'help', options: 'settings', book: 'book' };
 
 export function createUI(root, handlers = {}) {
   ensureFonts();
@@ -83,6 +90,7 @@ export function createUI(root, handlers = {}) {
   let prevLevel = null;
 
   const isTyping = () => {
+    if (isCapturing()) return true; // [skilltree] Options › Commandes is waiting for a key
     const a = document.activeElement;
     return !!a && ui.contains(a) && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.isContentEditable);
   };
@@ -119,8 +127,9 @@ export function createUI(root, handlers = {}) {
   const menu = createMenu(hud, (id) => {
     if (id === 'map') worldMap.toggle(); // [accounts]
     else if (id === 'menu') gameMenu.toggle();
+    else if (id === 'tree') toggleTree(); // [skilltree]
     else wm.toggle(id);
-  }, tooltip);
+  }, tooltip, (action) => keybinds.label(action));
   const xpbar = createXpBar(hud, tooltip);
 
   // ---------------------------------------------------------------- windows
@@ -133,8 +142,29 @@ export function createUI(root, handlers = {}) {
   });
   const character = createCharacterPanel(wm, { handlers: H, tooltip, menus, onToggle: onToggle('character') });
   const quests = createQuestPanel(wm, { tooltip, onToggle: onToggle('quests') });
-  createHelpPanel(wm, { onToggle: onToggle('help') });
-  createSettingsPanel(wm, { onToggle: onToggle('settings'), H, onHelp: () => wm.open('help') }); // [render-souls] + [accounts] audio, controls
+  const help = createHelpPanel(wm, { onToggle: onToggle('help') });
+  createSettingsPanel(wm, { onToggle: onToggle('settings'), H, onHelp: () => wm.open('help'), menus, notify }); // [render-souls] + [accounts] audio, [skilltree] controls
+  // [skilltree] skill book (window), tree (full screen, above the HUD), level-up card
+  const book = createSkillBook(wm, { tooltip, handlers: H, notify, onToggle: onToggle('book'), onOpenTree: () => openTree() });
+  const skillTree = createSkillTree(mapLayer, {
+    handlers: H, menus, notify,
+    onOpenBook: () => { skillTree.close(); wm.open('book'); },
+    onClose: () => menu.setActive('tree', false),
+  });
+  const hints = createSkillHints(fxLayer, { onOpenTree: () => { openTree(); skillTree.openGuide(); } });
+  function openTree() {
+    if (!hudActive()) return;
+    worldMap.close();
+    mapBtn.classList.remove('active');
+    tooltip.hide();
+    hints.hide();
+    skillTree.open();
+    menu.setActive('tree', true);
+  }
+  function toggleTree() {
+    if (skillTree.isOpen) skillTree.close();
+    else openTree();
+  }
   let invAutoOpened = false;
   const dialog = createDialog(wm, {
     handlers: H,
@@ -157,7 +187,7 @@ export function createUI(root, handlers = {}) {
 
   // ---------------------------------------------------------------- [accounts] account panel, main menu, map
   const accountSheet = createAccountSheet(sheetLayer, sheets, H, menus);
-  const gameMenu = createGameMenu(sheetLayer, sheets, H, { canQuit: () => !!H.canQuit() });
+  const gameMenu = createGameMenu(sheetLayer, sheets, H, { canQuit: () => !!H.canQuit(), openTree: () => openTree(), openBook: () => wm.open('book') });
   const markerKey = () => (self?.name ? `bv.marker.${self.name.toLowerCase()}` : null);
   const worldMap = createWorldMap(mapLayer, {
     onMarker: (m) => {
@@ -204,6 +234,7 @@ export function createUI(root, handlers = {}) {
       tooltip.hide();
       worldMap.close();
       gameMenu.close();
+      skillTree.close(); // [skilltree]
     }
   }
   /** Fade to an artwork once it is loaded; a missing file simply keeps the procedural backdrop. */
@@ -244,31 +275,47 @@ export function createUI(root, handlers = {}) {
       }
       tooltip.hide();
       if (worldMap.isOpen) { worldMap.close(); consume(); return; }
+      // [skilltree] the Renaissance dialog, then the tree
+      if (skillTree.isOpen) { if (skillTree.renaissanceOpen) skillTree.closeRenaissance(); else skillTree.close(); consume(); return; }
       if (menus.closeTop() || wm.closeTop()) { consume(); return; }
       // nothing to close: the target is cleared by the game (main.js); otherwise open the main menu
       if (self && !H.hasTarget()) { gameMenu.open(); consume(); }
       return;
     }
     if (!self) return;
+    // [skilltree] every shortcut goes through the rebindable controls (Options › Commandes)
+    const acts = keybinds.actionsOf(eventCode(e));
     // [accounts] M: world map
-    if ((e.key === 'm' || e.key === 'M') && !e.repeat && !menus.modalOpen) {
+    if (acts.includes('map') && !e.repeat && !menus.modalOpen) {
       consume();
+      skillTree.close();
       worldMap.toggle();
       mapBtn.classList.toggle('active', worldMap.isOpen);
       return;
     }
     if (worldMap.isOpen) return;
-    if (e.key === 'Enter' || e.key === 'NumpadEnter') {
+    // [skilltree] N: the tree (full screen), K: the book
+    if (acts.includes('tree') && !e.repeat && !menus.modalOpen) {
+      consume();
+      toggleTree();
+      return;
+    }
+    if (skillTree.isOpen) {
+      if (acts.includes('book') && !e.repeat && !menus.modalOpen) { consume(); skillTree.close(); wm.open('book'); }
+      return;
+    }
+    if (acts.includes('chat')) {
       if (menus.modalOpen) return;
       consume();
       chat.open();
       return;
     }
     if (e.repeat || menus.modalOpen) return;
-    const id = PANEL_KEYS[(e.key || '').toLowerCase()];
-    if (id) {
+    const act = acts.find((a) => PANEL_ACTIONS[a]);
+    if (act) {
       e.preventDefault();
-      wm.toggle(id);
+      e.stopImmediatePropagation(); // a window key never also triggers a game action
+      wm.toggle(PANEL_ACTIONS[act]);
     }
   }, true);
 
@@ -332,6 +379,11 @@ export function createUI(root, handlers = {}) {
       actionbar.update(s);
       menu.setGold(s.gold || 0);
       tracker.update(s);
+      // [skilltree]
+      skillTree.update(s);
+      book.update(s);
+      hints.update(s);
+      menu.setBadge('tree', s.points?.free || 0);
       inventory.update(s);
       character.update(s);
       quests.update(s);
@@ -438,6 +490,12 @@ export function createUI(root, handlers = {}) {
     setStatus(s) {
       minimap.setStatus(s);
     },
+    // [skilltree]
+    openTree() { openTree(); },
+    openBook() { if (hudActive()) wm.open('book'); },
+    get treeOpen() { return skillTree.isOpen; },
+    pressSlot(slot, down) { actionbar.press(slot, down); },
+    refreshKeys() { actionbar.refreshKeys(); menu.refreshKeys(); help.render(); },
     isTyping,
   };
 
@@ -446,6 +504,8 @@ export function createUI(root, handlers = {}) {
   syncVisibility();
 
   // Non-API helpers for the sandbox page / debugging.
-  Object.defineProperty(api, '_dev', { value: { wm, chat, menus, tooltip, charSelect, charCreate, accountSheet, gameMenu, worldMap }, enumerable: false });
+  Object.defineProperty(api, '_dev', { value: { wm, chat, menus, tooltip, charSelect, charCreate, accountSheet, gameMenu, worldMap, skillTree, book, hints }, enumerable: false });
+  keybinds.onChange(() => api.refreshKeys()); // [skilltree]
+  menu.refreshKeys();
   return api;
 }

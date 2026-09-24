@@ -1,79 +1,147 @@
-// Action bar: 4 ability slots (keys 1-4) with cooldown sweeps + potion quick slots (5 = soin, 6 = mana).
-import { ABILITIES, ITEMS } from '@shared/data.js';
+// Action bar ([skilltree] v0.3): 8 slots (keys 1–8 by default, rebindable) holding the loadout saved on the server —
+// abilities of the tree (slot 1 = base attack, hold it for the Attaque chargée) or consumables ('item:<id>', potions on
+// 5 and 6 by default). Drag & drop from the skill book (K), between slots, or out of the bar to empty a slot.
+// Cooldown sweeps per slot, mana / weapon / stamina states, and the Fondamentaux (Roulade, Saut, Garde, Sprint) with
+// their real keys on the left.
+import { ITEMS } from '@shared/data.js';
+import { checkLoadout, ABILITY_DEFS, LOADOUT_SLOTS } from '@shared/skills.js';
 import { h, setText, toggleClass, fmt1 } from './dom.js';
-import { iconBox, setIcon, abilityIconSpec, itemIconSpec } from './icons.js';
-import { abilityTooltip, simpleTooltip } from './tooltip.js';
+import { iconBox, setIcon, abilityIconSpec, itemIconSpec, glyph } from './icons.js';
+import { simpleTooltip, itemTooltip } from './tooltip.js';
+import { abilityTip } from './skillTips.js';
+import { makeDraggable } from './dragdrop.js';
+import { keybinds } from '../game/keybinds.js';
+import { loadoutOf, specOf, knows, hasTree, treeOf, isItemEntry } from '../game/skillState.js';
 
-const HP_POTIONS = ['potion_hp_l', 'potion_hp_s']; // best first
-const MP_POTIONS = ['potion_mp_s'];
+const FOND_SLOTS = [
+  { id: 'roulade', action: 'roll', label: 'Roulade', glyph: 'swirl' },
+  { id: 'saut', action: 'jump', label: 'Saut', glyph: 'wing' },
+  { id: 'garde', action: 'guard', label: 'Garde', glyph: 'shield' },
+  { id: 'sprint', action: 'sprint', label: 'Sprint', glyph: 'arrow' },
+];
+const FOND_HINT = {
+  roulade: 'Appui court : esquive invulnérable un instant.',
+  saut: 'Passe au-dessus des ondes de choc au sol (télégraphes à vagues).',
+  garde: 'Maintenir : bloque les coups de face contre de l\'endurance.',
+  sprint: 'Maintenir : court plus vite en consommant de l\'endurance.',
+};
+
+const countOf = (inv, id) => {
+  let n = 0;
+  for (const s of inv || []) if (s && s.id === id) n += s.q || 1;
+  return n;
+};
 
 export function createActionBar(parent, { handlers, tooltip, isTyping, isActive, notify }) {
   let self = null;
   const slots = [];
   const bar = h('div', { class: 'bv-actionbar bv-frame' });
+  const fondGroup = h('div', { class: 'bv-ab-fond', 'aria-label': 'Fondamentaux' });
   const abGroup = h('div', { class: 'bv-ab-group' });
-  const potGroup = h('div', { class: 'bv-ab-group pots' });
 
-  for (let i = 0; i < 4; i++) {
+  // ---------------------------------------------------------------- Fondamentaux (read-only, real keys)
+  const fonds = FOND_SLOTS.map((f) => {
+    const key = h('kbd', { class: 'bv-slot-key' });
+    const el = h('div', { class: 'bv-slot bv-fond-slot', role: 'img', 'aria-label': f.label },
+      iconBox({ url: `/icons/ab_${f.id}.png`, glyph: f.glyph, c1: '#6a5a3a', c2: '#141009', fit: 'cover' }),
+      h('span', { class: 'bv-fond-lock' }, glyph('lock')), key);
+    tooltip.bind(el, () => {
+      if (!self) return null;
+      const k = keybinds.labels(f.action).join(' / ') || 'aucune touche';
+      const shared = f.id === 'roulade' || f.id === 'sprint' ? keybinds.codesOf('roll').some((c) => keybinds.rollSprintShared(c)) : false;
+      const how = shared ? (f.id === 'roulade' ? `${k} (appui court)` : `${k} (maintenir)`) : k;
+      if (!knows(self, f.id)) return simpleTooltip(f.label, `${FOND_HINT[f.id]} Pas encore appris : Fondamental de l'Arbre des Brumes (${keybinds.label('tree') || 'N'}).`, `Touche : ${how}`);
+      return abilityTip(self, f.id, { key: how });
+    });
+    fondGroup.appendChild(el);
+    return { ...f, el, key };
+  });
+
+  // ---------------------------------------------------------------- 8 slots
+  for (let i = 0; i < LOADOUT_SLOTS; i++) {
     const icon = iconBox(null);
     const cd = h('div', { class: 'bv-cd' });
     const cdText = h('div', { class: 'bv-cd-text' });
+    const count = h('span', { class: 'bv-slot-count' });
+    const key = h('kbd', { class: 'bv-slot-key' });
     const btn = h('button', {
-      class: 'bv-slot bv-ab-slot', type: 'button', 'aria-label': `Capacité ${i + 1}`,
+      class: 'bv-slot bv-ab-slot', type: 'button', 'aria-label': `Emplacement ${i + 1}`,
+      dataset: { drop: 'bar', slot: String(i) },
       onclick: () => {
         flash(i);
         handlers.ability?.(i);
       },
-    }, icon, cd, cdText, h('kbd', { class: 'bv-slot-key', text: String(i + 1) }));
-    const slot = { btn, icon, cd, cdText, abilityId: null, end: 0, dur: 0 };
-    tooltip.bind(btn, () => (slot.abilityId ? abilityTooltip(slot.abilityId, { self, key: String(i + 1) }) : null));
+    }, icon, cd, cdText, count, key);
+    const slot = { i, btn, icon, cd, cdText, count, key, entry: null, end: 0, dur: 0 };
+    tooltip.bind(btn, () => slotTooltip(slot));
+    makeDraggable(btn, {
+      payload: () => (slot.entry && hasTree(self) ? { from: i, entry: slot.entry } : null),
+      icon: () => iconBox(specFor(slot.entry)),
+      onDrop: (target, p) => dropOn(target, p),
+      onStart: () => tooltip.hide(),
+    });
+    btn.addEventListener('contextmenu', (e) => e.preventDefault());
     slots.push(slot);
     abGroup.appendChild(btn);
   }
 
-  function potionSlot(key, ids, label) {
-    const icon = iconBox(itemIconSpec(ids[ids.length - 1]));
-    const count = h('span', { class: 'bv-slot-count', text: '0' });
-    const btn = h('button', {
-      class: 'bv-slot bv-pot-slot', type: 'button', 'aria-label': `${label} (${key})`,
-      onclick: () => {
-        flash(key === '5' ? 4 : 5);
-        usePotion(ids, label);
-      },
-    }, icon, count, h('kbd', { class: 'bv-slot-key', text: key }));
-    const p = { btn, icon, count, ids, label, shown: null };
-    tooltip.bind(btn, () => {
-      const inv = self?.inv || [];
-      const parts = ids.map((id) => [id, countOf(inv, id)]).filter(([, n]) => n > 0).map(([id, n]) => `${ITEMS[id].name} ×${n}`);
-      return simpleTooltip(label, parts.length ? parts.join(' · ') : 'Aucune potion dans le sac.', `Raccourci : ${key}`);
-    });
-    potGroup.appendChild(btn);
-    return p;
-  }
-  const hpPot = potionSlot('5', HP_POTIONS, 'Potion de soin');
-  const mpPot = potionSlot('6', MP_POTIONS, 'Potion de mana');
-
-  bar.append(abGroup, h('div', { class: 'bv-ab-sep' }), potGroup);
+  bar.append(fondGroup, h('div', { class: 'bv-ab-sep' }), abGroup);
   parent.appendChild(bar);
 
-  function countOf(inv, id) {
-    let n = 0;
-    for (const s of inv) if (s && s.id === id) n += s.q || 1;
-    return n;
-  }
-  function usePotion(ids) {
-    const inv = self?.inv || [];
-    for (const id of ids) {
-      const slot = inv.findIndex((s) => s && s.id === id);
-      if (slot >= 0) {
-        handlers.useItem?.(slot);
-        return;
-      }
-    }
-    notify?.(ids === HP_POTIONS ? 'Vous n\'avez plus de potion de soin.' : 'Vous n\'avez plus de potion de mana.', 'error');
+  function specFor(entry) {
+    if (!entry) return null;
+    if (isItemEntry(entry)) return itemIconSpec(entry.slice(5));
+    return abilityIconSpec(entry, self?.cls);
   }
 
-  const allBtns = () => [...slots.map((s) => s.btn), hpPot.btn, mpPot.btn];
+  function slotTooltip(slot) {
+    const e = slot.entry;
+    const key = keybinds.labels(`slot${slot.i + 1}`).join(' / ');
+    if (!e) {
+      return simpleTooltip(`Emplacement ${slot.i + 1}`, hasTree(self)
+        ? `Vide. Glissez une compétence ou une potion depuis le livre de compétences (${keybinds.label('book') || 'K'}).`
+        : 'Vide.', key ? `Raccourci : ${key}` : null);
+    }
+    if (isItemEntry(e)) {
+      const id = e.slice(5);
+      const n = countOf(self?.inv, id);
+      return itemTooltip(id, { self, qty: n, hint: `${n ? `${n} dans le sac` : 'Aucun dans le sac'} · Raccourci : ${key || '—'}` });
+    }
+    const hint = slot.i === 0 && knows(self, 'attaque_chargee') ? 'Maintenir la touche : Attaque chargée' : null;
+    return abilityTip(self, e, { key, hint });
+  }
+
+  // ---------------------------------------------------------------- drag & drop → loadout message
+  /** Drop of a book entry ({ entry }) or a slot ({ from, entry }) on a bar slot (or outside: clear). */
+  function dropOn(target, p) {
+    if (!self || !hasTree(self)) return;
+    const cur = [...loadoutOf(self)];
+    const next = [...cur];
+    const to = target && target.dataset.drop === 'bar' ? Number(target.dataset.slot) : -1;
+    if (to < 0) {
+      if (p.from === undefined) return;
+      if (p.from === 0) { notify?.('L\'emplacement 1 garde toujours une attaque de base.', 'error'); return; }
+      next[p.from] = null;
+    } else if (p.from !== undefined) {
+      if (p.from === to) return;
+      [next[p.from], next[to]] = [next[to], next[p.from]];
+    } else {
+      const k = next.indexOf(p.entry);
+      if (k === to) return;
+      if (k >= 0) next[k] = next[to];
+      next[to] = p.entry;
+    }
+    const base0 = next[0] && !isItemEntry(next[0]) && ABILITY_DEFS.get(next[0])?.base;
+    if (!base0) {
+      notify?.('L\'emplacement 1 est réservé à une attaque de base (l\'attaque automatique).', 'error');
+      return;
+    }
+    const res = checkLoadout(next, treeOf(self).unlocked);
+    if (!res.ok) { notify?.('Cette barre d\'action n\'est pas valide.', 'error'); return; }
+    handlers.setLoadout?.(res.slots);
+  }
+
+  const allBtns = () => slots.map((s) => s.btn);
   function flash(i) {
     const b = allBtns()[i];
     if (!b) return;
@@ -82,12 +150,21 @@ export function createActionBar(parent, { handlers, tooltip, isTyping, isActive,
     b.classList.add('pressed');
   }
 
-  // keyboard feedback only (core performs the actions for keys 1-6)
+  // keyboard feedback only (core performs the actions)
   window.addEventListener('keydown', (e) => {
     if (e.repeat || e.ctrlKey || e.altKey || e.metaKey || !isActive() || isTyping()) return;
-    const m = e.code ? /^(?:Digit|Numpad)([1-6])$/.exec(e.code) : /^([1-6])$/.exec(e.key || '');
-    if (m) flash(Number(m[1]) - 1);
+    for (const a of keybinds.actionsOf(e.code)) {
+      const m = /^slot([1-8])$/.exec(a);
+      if (m) flash(Number(m[1]) - 1);
+    }
   });
+
+  function refreshKeys() {
+    for (const s of slots) setText(s.key, keybinds.label(`slot${s.i + 1}`));
+    for (const f of fonds) setText(f.key, keybinds.label(f.action));
+  }
+  keybinds.onChange(refreshKeys);
+  refreshKeys();
 
   // ---------------------------------------------------------------- cooldowns
   let raf = 0;
@@ -130,40 +207,53 @@ export function createActionBar(parent, { handlers, tooltip, isTyping, isActive,
       }
       if (!raf) raf = requestAnimationFrame(tick);
     },
-    update(s) {
-      self = s;
-      const abilities = s.abilities || [];
-      for (let i = 0; i < 4; i++) {
+    /** Visual feedback of a bar key held (charge) / released. */
+    press(slot, down) {
+      const s = slots[slot];
+      if (!s) return;
+      toggleClass(s.btn, 'held', !!down);
+    },
+    refreshKeys,
+    /** Screen rectangle of the bar (level-up card placement). */
+    get el() { return bar; },
+    update(sf) {
+      self = sf;
+      const lo = loadoutOf(sf);
+      const tree = hasTree(sf);
+      toggleClass(bar, 'has-tree', tree);
+      for (let i = 0; i < LOADOUT_SLOTS; i++) {
         const sl = slots[i];
-        const id = abilities[i] || null;
-        if (id !== sl.abilityId) {
-          sl.abilityId = id;
-          setIcon(sl.icon, id ? abilityIconSpec(id, s.cls) : null);
-          sl.btn.setAttribute('aria-label', id ? `${ABILITIES[id]?.name} (${i + 1})` : `Capacité ${i + 1}`);
+        const e = lo[i] || null;
+        if (e !== sl.entry) {
+          sl.entry = e;
+          setIcon(sl.icon, specFor(e));
+          const name = !e ? null : isItemEntry(e) ? ITEMS[e.slice(5)]?.name : ABILITY_DEFS.get(e)?.name;
+          sl.btn.setAttribute('aria-label', name ? `${name} (emplacement ${i + 1})` : `Emplacement ${i + 1}`);
+          toggleClass(sl.btn, 'is-empty', !e);
+          toggleClass(sl.btn, 'is-item', !!e && isItemEntry(e));
         }
-        const ab = id ? ABILITIES[id] : null;
-        toggleClass(sl.btn, 'no-mana', !!ab && ab.mp > (s.mp || 0));
-        toggleClass(sl.btn, 'is-auto', !!ab?.auto);
-        toggleClass(sl.btn, 'disabled', !!s.dead);
+        if (!e) { setText(sl.count, ''); toggleClass(sl.btn, 'no-mana', false); toggleClass(sl.btn, 'unusable', false); continue; }
+        if (isItemEntry(e)) {
+          const n = countOf(sf.inv, e.slice(5));
+          setText(sl.count, n);
+          toggleClass(sl.btn, 'empty', n === 0);
+          toggleClass(sl.btn, 'disabled', !!sf.dead);
+          continue;
+        }
+        setText(sl.count, '');
+        const ab = specOf(sf, e);
+        toggleClass(sl.btn, 'no-mana', !!ab && ab.mp > (sf.mp || 0));
+        toggleClass(sl.btn, 'unusable', !!ab && ab.usable === false);
+        toggleClass(sl.btn, 'inapt', !!ab && ab.inapt > 0);
+        toggleClass(sl.btn, 'is-auto', !!ab?.base);
+        toggleClass(sl.btn, 'disabled', !!sf.dead);
+        toggleClass(sl.btn, 'empty', false);
       }
-      for (const p of [hpPot, mpPot]) {
-        const inv = s.inv || [];
-        let n = 0;
-        let best = null;
-        for (const id of p.ids) {
-          const c = countOf(inv, id);
-          n += c;
-          if (c > 0 && !best) best = id;
-        }
-        const show = best || p.ids[p.ids.length - 1];
-        if (show !== p.shown) {
-          p.shown = show;
-          setIcon(p.icon, itemIconSpec(show));
-        }
-        setText(p.count, n);
-        toggleClass(p.btn, 'empty', n === 0);
-        toggleClass(p.btn, 'disabled', !!s.dead);
+      for (const f of fonds) {
+        const k = knows(sf, f.id);
+        toggleClass(f.el, 'locked', !k);
       }
+      fondGroup.hidden = !tree;
     },
   };
 }

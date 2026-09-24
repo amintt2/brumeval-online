@@ -75,6 +75,18 @@ const GLYPHS = {
   plus: ['M10.7 4h2.6v6.7H20v2.6h-6.7V20h-2.6v-6.7H4v-2.6h6.7Z'],
   trash: ['M9 3h6l1 1.6h4.4v2.6H3.6V4.6H8Z', 'M5.6 8.6h12.8L17.3 21H6.7Z'],
   back: ['M10.5 5 3.5 12l7 7 1.8-1.8-3.9-3.9H20.5v-2.6H8.4l3.9-3.9Z'],
+  // [skilltree] tree, book, statuses, lock, search
+  tree: ['M12 1.5 18.5 9h-3.2l4.2 5.2h-4.3l3.3 4.3H13.3V22.5h-2.6v-4H5.5l3.3-4.3H4.5L8.7 9H5.5Z'],
+  book: ['M3 4.2C5.8 3.4 8.6 3.6 11 5v15.5c-2.4-1.3-5.2-1.5-8-.8Z', 'M13 5c2.4-1.4 5.2-1.6 8-.8v15.5c-2.8-.7-5.6-.5-8 .8Z'],
+  snow: ['M11 1.8h2v4.1l2.3-1.6 1.1 1.6L13 8.3v2l1.8-1 .1-4 2 .1-.1 2.8 3.6-2 1 1.7-3.6 2 2.4 1.4-1 1.7-3.5-2-1.7 1 1.7 1 3.5-2 1 1.7-2.4 1.4 3.6 2-1 1.7-3.6-2 .1 2.8-2 .1-.1-4L13 13.7v2l3.4 2.4-1.1 1.6L13 18.1v4.1h-2v-4.1l-2.3 1.6-1.1-1.6 3.4-2.4v-2l-1.8 1-.1 4-2-.1.1-2.8-3.6 2-1-1.7 3.6-2-2.4-1.4 1-1.7 3.5 2 1.7-1-1.7-1-3.5 2-1-1.7 2.4-1.4-3.6-2 1-1.7 3.6 2-.1-2.8 2-.1.1 4 1.8 1v-2L7.6 5.9l1.1-1.6L11 5.9Z'],
+  crystal: ['M12 1.5 17.5 9 12 22.5 6.5 9Z', 'M4 8.5l2 1-2.4 5L2.5 12Z', 'M20 8.5l-2 1 2.4 5 1.1-2.5Z'],
+  root: ['M11 2h2v8l4-3 1.2 1.6L13 12.5V15l5 4-1.2 1.6L13 17.6V22h-2v-4.4l-3.8 3L6 19l5-4v-2.5L5.8 8.6 7 7l4 3Z'],
+  star: ['M12 2l2.6 6.3L21 9l-5 4.4L17.5 20 12 16.6 6.5 20 8 13.4 3 9l6.4-.7Z'],
+  eye: ['!M12 5C6.5 5 2.5 12 2.5 12s4 7 9.5 7 9.5-7 9.5-7-4-7-9.5-7Zm0 3.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7Z'],
+  lock: ['!M7 10V7a5 5 0 0 1 10 0v3h1.5v11h-13V10Zm2.5 0h5V7a2.5 2.5 0 0 0-5 0Z'],
+  search: ['!M10 3a7 7 0 0 1 5.6 11.2l5.2 5.2-1.6 1.6-5.2-5.2A7 7 0 1 1 10 3Zm0 2.4a4.6 4.6 0 1 0 0 9.2 4.6 4.6 0 1 0 0-9.2Z'],
+  wing: ['M2 18c3-8 9-13 20-15-2 3-3.6 5-6.2 6.5l3.2-.2c-2 2.4-4.4 3.8-7.5 4.4l2.6.6C11 17 7 18.2 2 18Z'],
+  swirl: ['!M12 2.5a9.5 9.5 0 1 1-9.5 9.5h2.6A6.9 6.9 0 1 0 12 5.1a4.4 4.4 0 1 0 4.4 4.4h2.6A7 7 0 1 1 12 2.5Z'],
 };
 
 /** Create an SVG glyph element (decorative, aria-hidden). */
@@ -173,15 +185,44 @@ export function itemIconSpec(itemId) {
   return { url: `/icons/${it.icon}.png`, glyph: g, c1, c2, fit: 'contain' };
 }
 
-const KIND_GLYPH = { melee: 'sword', projectile: 'arrow', aoe_self: 'burst', aoe_target: 'target', self_heal: 'cross' };
+const KIND_GLYPH = {
+  melee: 'sword', projectile: 'arrow', aoe_self: 'burst', aoe_target: 'target', self_heal: 'cross',
+  // [skilltree] v0.3 kinds
+  dash: 'wing', buff: 'shield', channel: 'swirl', summon: 'star', trap: 'target', debuff: 'eye', jump: 'wing', guard: 'shield', charge: 'burst', toggle: 'wing',
+};
+/** [skilltree] Emblem colours by element (fallback icons of the 65 abilities until Codex draws them). */
+const ELEMENT_BG = { feu: '#c2541f', givre: '#3f8fc4', arcane: '#7a3fc4', nature: '#3f8f45', poison: '#5f9a24', saignement: '#9a1f2a' };
+const HOME_BG = { warrior: '#8a2a20', mage: '#2a4f9a', ranger: '#2a7a3a' };
 export function abilityIconSpec(abilityId, cls) {
   const ab = ABILITIES[abilityId];
-  const color = CLASSES[cls]?.color || '#7a6a50';
+  const tags = ab?.tags || [];
+  const home = Array.isArray(ab?.home) ? ab.home[0] : ab?.home;
+  let color = CLASSES[cls]?.color || '#7a6a50';
+  if (ab && !ab.v02) {
+    const el = tags.find((t) => ELEMENT_BG[t]);
+    color = el ? ELEMENT_BG[el] : home ? HOME_BG[home] : '#6b6254';
+  }
   let g = KIND_GLYPH[ab?.kind] || 'burst';
-  if (ab?.kind === 'projectile' && cls === 'mage') g = 'flame';
+  if (ab?.kind === 'projectile' && (cls === 'mage' || tags.includes('feu'))) g = 'flame';
+  if (tags.includes('givre') && g !== 'wing') g = 'snow';
+  if (tags.includes('poison')) g = 'drop';
   if (abilityId === 'war_cry') g = 'shield';
   return { url: `/icons/ab_${abilityId}.png`, glyph: g, c1: color, c2: '#120d0a', fit: 'cover' };
 }
+
+/** [skilltree] Status effects shown on nameplates / the target frame (EntState.stt bits, shared/protocol.js). */
+export const STATUS_FLAGS = [
+  { bit: 1, id: 'brulure', name: 'Brûlure', glyph: 'flame', color: '#ff7a1a' },
+  { bit: 2, id: 'froid', name: 'Froid', glyph: 'snow', color: '#8fd8ff' },
+  { bit: 4, id: 'gel', name: 'Gel', glyph: 'crystal', color: '#c8f2ff' },
+  { bit: 8, id: 'enracine', name: 'Enraciné', glyph: 'root', color: '#8cc85a' },
+  { bit: 16, id: 'poison', name: 'Empoisonné', glyph: 'drop', color: '#7ddc3a' },
+  { bit: 32, id: 'saignement', name: 'Saignement', glyph: 'drop', color: '#e2303c' },
+  { bit: 64, id: 'marque', name: 'Marqué', glyph: 'target', color: '#ff6ad8' },
+  { bit: 128, id: 'etourdi', name: 'Étourdi', glyph: 'star', color: '#ffd54a' },
+  { bit: 256, id: 'aveugle', name: 'Aveuglé', glyph: 'eye', color: '#d0c8b0' },
+];
+export const statusList = (flags) => STATUS_FLAGS.filter((s) => (flags & s.bit) !== 0);
 
 /** Class emblem spec (portrait fallback). kind: 'portrait' | 'class'. */
 export function classIconSpec(cls, kind = 'portrait') {

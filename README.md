@@ -202,17 +202,24 @@ Mesures de charge : [docs/PERFORMANCES.md](docs/PERFORMANCES.md) (`node tests/lo
 | Clic gauche + clic droit maintenus | Courir tout droit |
 | Molette | Zoomer / dézoomer (3 à 28 m) |
 | **Tab** | Cibler l'ennemi suivant devant vous |
-| **Maj** (appui court, < 0,2 s) | Roulade d'esquive (direction du déplacement, sinon en arrière) — 30 d'endurance |
-| **Maj** (maintenue) | Sprinter (consomme de l'endurance) ; un appui court ne sprinte jamais |
-| **Espace** | Réservé au saut (v0.3) : sans effet pour l'instant |
+| **Maj** (appui court, < 0,2 s) | Roulade d'esquive (direction du déplacement, sinon en arrière) — Fondamental, dès le niveau 2 |
+| **Maj** (maintenue) | Sprinter (consomme de l'endurance) ; un appui court ne sprinte jamais — Fondamental |
+| **Espace** | Saut : passe au-dessus des attaques rasantes (zones dessinées en vagues) — Fondamental |
+| **E** (maintenue) | Garde : bloque les coups de face contre de l'endurance — Fondamental |
 | **Échap** | Fermer la fenêtre du dessus, sinon annuler la cible, sinon ouvrir le menu principal |
-| **1** | Attaque automatique de la classe |
-| **2 3 4** | Capacités |
-| **5** / **6** | Potion de soin (la meilleure disponible) / potion de mana |
+| **1** | Attaque de base (automatique) ; **maintenir** : Attaque chargée (Fondamental) |
+| **2** à **8** | Barre d'action (8 emplacements, potions sur 5 et 6 par défaut) ; glisser-déposer depuis le livre |
+| **N** | L'Arbre des Brumes : placer ses points de compétence (parcours conseillé, recherche Ctrl+F, Renaissance au niveau 30) |
+| **K** | Livre de compétences : vos compétences et leurs valeurs, à glisser sur la barre d'action |
 | **I** / **C** / **L** / **H** | Sac / Personnage / Journal de quêtes / Aide |
 | **Entrée** | Ouvrir la discussion, envoyer le message |
 | **M** | Carte du monde (molette : zoom, glisser : déplacer, clic : poser un repère) |
 | **O** | Options : graphismes (préréglages Bas / Moyen / Élevé / Ultra, voir [docs/RENDU.md](docs/RENDU.md)), volume du son, commandes |
+
+**Toutes les touches se changent** dans Options › Commandes (clavier, clic molette et boutons latéraux de la souris,
+deux touches par action, conflits signalés, retour aux valeurs par défaut) ; l'aide, la barre d'action et les
+messages affichent les touches réellement choisies. La Roulade et le Sprint peuvent partager une touche (appui court /
+maintien) ou avoir chacun la leur.
 
 Commandes de discussion : `/w nom message` (chuchoter), `/r message` (répondre au dernier chuchotement),
 `/who` (joueurs en ligne), `/help` (aide).
