@@ -5,6 +5,7 @@ import { CLASSES, MONSTERS, NPCS, QUESTS } from '@shared/data.js';
 import { KIND } from '@shared/protocol.js';
 import { terrainHeight } from '@shared/world.js';
 import { Animator } from './animator.js';
+import { renaissanceTitle } from '@shared/skills.js'; // [skilltree]
 
 const HIT_GEO = new THREE.CylinderGeometry(1, 1, 1, 10);
 HIT_GEO.translate(0, 0.5, 0);
@@ -67,6 +68,11 @@ export class EntityView {
     this.prevZ = rec.z;
     this.animAcc = 0;
     this.spawnFade = 0;
+    // [skilltree] jump (local prediction or FX jump), local guard (the self: instant), stagger / charge FX
+    this.jump = null;        // { t0, dur, h }
+    this.guardLocal = null;  // self only: guard key state (null = use the snapshot flags)
+    this.fxUntil = { charge: 0, stagger: 0 };
+    this.prevAc = 0;
     this.hit = new THREE.Mesh(HIT_GEO, HIT_MAT);
     this.hit.userData.entityId = rec.id;
     this.root.add(this.hit);
@@ -104,9 +110,27 @@ export class EntityView {
     return this.root.position.y + this.height * this.scale;
   }
 
+  /** [skilltree] Play a jump of `ms` (procedural arc on the pivot; the server gives it no height). */
+  startJump(ms = 400, h = 0.6) {
+    this.jump = { t0: performance.now(), dur: Math.max(150, ms), h };
+  }
+
+  /** [skilltree] Guard pose of the local player (instant, before the snapshot confirms it). */
+  setGuard(on) {
+    this.guardLocal = on;
+  }
+
+  /** [skilltree] Timed poses from FX (charge until released, stagger « vacille »). */
+  poseFor(kind, ms) {
+    this.fxUntil[kind] = ms > 0 ? performance.now() + ms : 0;
+  }
+
   refreshLabel(selfLevel, targeted) {
     const rec = this.rec;
     const p = this.plate;
+    // [skilltree] monster status effects (brûlure, froid, gel, poison…) and the Renaissance title of players
+    p.setStatus?.(rec.k === KIND.MONSTER && !rec.dead ? rec.stt || 0 : 0);
+    p.setTitle?.(rec.k === KIND.PLAYER && rec.rb > 0 ? renaissanceTitle(rec.rb) : '');
     const isBoss = !!rec.b || !!MONSTERS[rec.mt]?.boss;
     p.setText(rec.n || '', rec.k === KIND.NPC ? '' : rec.lv);
     let color = '#ffffff';
@@ -151,6 +175,22 @@ export class EntityView {
     // animation (reduced rate far away)
     const moving = !rec.dead && this.moveSpeed > 0.45;
     this.animator.setMoving(moving, this.moveSpeed / this.nominal);
+    // [skilltree] layered poses: guard, charge, stagger, jump arc (action flags of the snapshots for others)
+    if (rec.k === KIND.PLAYER) {
+      const ac = rec.ac || 0;
+      if (!rec.isSelf && (ac & 2) && !(this.prevAc & 2) && !this.jump) this.startJump(400);
+      this.prevAc = ac;
+      let air = 0;
+      if (this.jump) {
+        const k = (now - this.jump.t0) / this.jump.dur;
+        if (k >= 1) this.jump = null;
+        else air = this.jump.h * 4 * k * (1 - k);
+      }
+      const guard = rec.isSelf && this.guardLocal !== null ? this.guardLocal && !(ac & 16) : !!(ac & 1);
+      const charge = (ac & 4) || now < this.fxUntil.charge;
+      const stag = (ac & 16) || now < this.fxUntil.stagger;
+      this.animator.setPose(guard, charge, stag, air);
+    }
     this.animAcc += dt;
     const step = camD > 45 ? 1 / 15 : 0;
     if (r.visible && this.animAcc >= step) {

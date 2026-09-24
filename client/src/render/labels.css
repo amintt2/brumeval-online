@@ -92,3 +92,37 @@
 /* numbers of fights that do not involve the local player: smaller and softer */
 #labels .fct.other { font-size: 15px; filter: saturate(0.7) brightness(0.92); }
 #labels .fct.other.crit { font-size: 19px; }
+
+/* [skilltree] Renaissance title (« Né de la Brume II ») and status chips (brûlure, froid, gel, poison…) */
+#labels .np-title {
+  display: none;
+  font-size: 10px;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: #c9e4ff;
+  text-shadow: 0 0 4px rgba(120, 190, 255, 0.85), 0 1px 2px #000;
+  line-height: 1.1;
+}
+#labels .np.has-title .np-title { display: block; }
+#labels .np-st { display: none; gap: 2px; margin-top: 1px; }
+#labels .np.has-st .np-st { display: flex; }
+#labels .np-chip {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--c) 70%, #fff 30%), color-mix(in srgb, var(--c) 55%, #000 45%));
+  border: 1px solid rgba(0, 0, 0, 0.85);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--c) 70%, transparent);
+  animation: np-chip-in 0.25s ease-out;
+}
+#labels .np-chip svg { width: 10px; height: 10px; fill: #fff; filter: drop-shadow(0 1px 1px #000); }
+@keyframes np-chip-in { from { transform: scale(1.6); opacity: 0; } }
+#labels .fct.guard { color: #d8e6ff; font-size: 17px; }
+#labels .fct.parry { color: #fff4c0; font-size: 24px; text-shadow: 0 0 8px rgba(255, 220, 120, 0.9), 0 2px 3px #000; }
+#labels .fct.broken { color: #ff8a5a; font-size: 20px; }
+#labels .fct.perfect { color: #9fe4ff; font-size: 21px; text-shadow: 0 0 8px rgba(120, 210, 255, 0.9), 0 2px 3px #000; }
+#labels .fct.status { font-size: 14px; font-style: italic; }
+#labels .fct.renaissance { color: #d6ecff; font-size: 26px; text-shadow: 0 0 10px rgba(140, 200, 255, 0.95), 0 2px 3px #000; }

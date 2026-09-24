@@ -1,10 +1,12 @@
 // Target selection (raycast on hit cylinders), Tab cycling, NPC interaction, ability use with client-side
 // pre-checks (range / mana / cooldown / safe zone — the server has the final word) and potion hotkeys.
 import * as THREE from 'three';
-import { ABILITIES, ITEMS, MONSTERS } from '@shared/data.js';
+import { ITEMS, MONSTERS } from '@shared/data.js';
 import { C2S, KIND, INTERACT_RANGE } from '@shared/protocol.js';
 import { inVillage } from '@shared/world.js';
+import { WEAPON_NEED_TEXT } from '@shared/skills.js';
 import { raycastTerrain } from '../render/terrain.js';
+import { loadoutOf, specOf, isItemEntry } from './skillState.js'; // [skilltree]
 
 const round2 = (v) => Math.round(v * 100) / 100;
 
@@ -139,68 +141,101 @@ export class Targeting {
     return best;
   }
 
-  useAbility(slot) {
+  /** Hostile target for an ability: the current one, else the nearest in reach (selected). */
+  _aimTarget(range) {
+    let t = this.hostileTarget();
+    if (!t) {
+      t = this.nearestHostile(range + 4);
+      if (t) this.select(t.id);
+    }
+    return t;
+  }
+
+  /**
+   * [skilltree] Use the entry of action bar slot `slot` (0..7): an ability of the loadout (resolved with the tree:
+   * variants, passives, Inaptitude, weapon) or a consumable ('item:<id>'). Client-side pre-checks only; the server
+   * has the final word. `opts.ph` = 'start' | 'release' (Attaque chargée on the base attack).
+   */
+  useAbility(slot, opts = {}) {
     const { state, notify, send, player } = this.ctx;
     const self = state.self;
-    if (!state.inGame || !self) return;
-    if (self.dead) { notify('Vous êtes mort.', 'error'); return; }
-    const abId = self.abilities?.[slot];
-    const ab = ABILITIES[abId];
-    if (!ab) return;
+    if (!state.inGame || !self) return false;
+    if (self.dead) { notify('Vous êtes mort.', 'error'); return false; }
+    const entry = loadoutOf(self)[slot];
+    if (!entry) return false;
+    if (isItemEntry(entry)) return this.useItemEntry(entry.slice(5));
+    const ab = specOf(self, entry);
+    if (!ab) return false;
     const now = performance.now();
     // (slot 0 is the auto-attack: re-sending it while on cooldown just (re)selects the auto-attack target)
-    if (slot !== 0 && state.cooldowns[slot] > now + 80) {
+    if (!ab.base && state.cooldowns[slot] > now + 80) {
       notify(`${ab.name} n'est pas encore prêt.`, 'error');
-      return;
+      return false;
     }
-    if ((ab.mp || 0) > (self.mp ?? 0)) { notify('Pas assez de mana.', 'error'); return; }
+    if (ab.usable === false) { notify(`${ab.name} : il faut ${WEAPON_NEED_TEXT[ab.need] || 'une autre arme'}.`, 'error'); return false; }
+    if ((ab.mp || 0) > (self.mp ?? 0)) { notify('Pas assez de mana.', 'error'); return false; }
     // [combat-souls] no attack in the middle of a roll; stamina (the server has the final word)
-    if (player.rolling) return;
+    if (player.rolling) return false;
     if ((ab.st || 0) > player.st + 2) {
       notify('Pas assez d\'endurance.', 'error');
       this.ctx.ui.staminaEmpty?.();
-      return;
+      return false;
     }
     if (inVillage(player.x, player.z)) {
       notify('Le combat est interdit dans le village.', 'error');
-      return;
+      return false;
     }
-    // [skilltree] v0.3 kinds: marks and targeted channels (Tir rapide, Danse des lames, Trait fatal) need a target too
-    const kind = ab.kind === 'debuff' || (ab.kind === 'channel' && !ab.shape) ? 'projectile' : ab.kind;
-    switch (kind) {
-      case 'melee':
-      case 'projectile': {
-        let t = this.hostileTarget();
-        if (!t) {
-          t = this.nearestHostile(ab.range + 4);
-          if (t) this.select(t.id);
-        }
-        if (!t) { notify('Aucune cible.', 'error'); return; }
-        if (this._dist(t) > ab.range + 0.5) { notify('Cible hors de portée.', 'error'); return; }
-        player.faceTowards(t.x, t.z);
-        send({ t: C2S.ABILITY, slot, tg: t.id });
-        if (slot !== 0) this._commit(ab, now); // [combat-souls] (slot 0: on the server's `cd`)
-        break;
+    const range = ab.range || 0;
+    const kind = ab.kind;
+    const needTarget = kind === 'melee' || kind === 'projectile' || kind === 'debuff' || (kind === 'channel' && !ab.shape && !(ab.channel && typeof ab.channel === 'object'));
+    const msg = { t: C2S.ABILITY, slot };
+    if (opts.ph) msg.ph = opts.ph;
+    if (needTarget && !(kind === 'melee' && ab.shape?.arc >= 180)) {
+      const t = this._aimTarget(range);
+      if (!t) { notify('Aucune cible.', 'error'); return false; }
+      if (opts.ph !== 'start' && this._dist(t) > range + 0.5) { notify('Cible hors de portée.', 'error'); return false; }
+      player.faceTowards(t.x, t.z);
+      msg.tg = t.id;
+    } else if (kind === 'aoe_target' || kind === 'trap' || kind === 'summon' || (kind === 'channel' && ab.shape === 'circle' && ab.at !== 'self')) {
+      const t = this.hostileTarget();
+      let x, z;
+      if (t) { x = t.x; z = t.z; msg.tg = t.id; }
+      else if (this.groundPoint(this.ctx.input.mouseX, this.ctx.input.mouseY, this._ground)) { x = this._ground.x; z = this._ground.z; }
+      else if (kind === 'aoe_target') { notify('Aucune cible.', 'error'); return false; }
+      else { x = player.x + Math.sin(player.ry) * 4; z = player.z + Math.cos(player.ry) * 4; }
+      if (kind === 'aoe_target' && range > 0 && Math.hypot(x - player.x, z - player.z) > range + 0.5) { notify('Zone hors de portée.', 'error'); return false; }
+      if (range > 0 && Math.hypot(x - player.x, z - player.z) > range) {
+        // traps / summons: clamp to the reach in the pointed direction
+        const a = Math.atan2(x - player.x, z - player.z);
+        x = player.x + Math.sin(a) * range * 0.95; z = player.z + Math.cos(a) * range * 0.95;
       }
-      case 'aoe_target': {
-        const t = this.hostileTarget();
-        let x, z;
-        if (t) { x = t.x; z = t.z; }
-        else if (this.groundPoint(this.ctx.input.mouseX, this.ctx.input.mouseY, this._ground)) { x = this._ground.x; z = this._ground.z; }
-        else { notify('Aucune cible.', 'error'); return; }
-        if (Math.hypot(x - player.x, z - player.z) > ab.range + 0.5) { notify('Zone hors de portée.', 'error'); return; }
-        player.faceTowards(x, z);
-        const msg = { t: C2S.ABILITY, slot, x: round2(x), z: round2(z) };
-        if (t) msg.tg = t.id;
-        send(msg);
-        this._commit(ab, now); // [combat-souls]
-        break;
-      }
-      default:
-        send({ t: C2S.ABILITY, slot });
-        this._commit(ab, now); // [combat-souls]
-        break;
+      player.faceTowards(x, z);
+      msg.x = round2(x); msg.z = round2(z);
+    } else {
+      // self abilities, dashes, cones: aim at the target when there is one
+      const t = this.hostileTarget();
+      if (t) { msg.tg = t.id; player.faceTowards(t.x, t.z); }
     }
+    send(msg);
+    if (!ab.base && !opts.ph) this._commit(ab, now); // [combat-souls] (base attack: on the server's `cd`)
+    return true;
+  }
+
+  /** [skilltree] A consumable of the action bar: the first stack of it in the bag. */
+  useItemEntry(itemId) {
+    const { state, notify, send } = this.ctx;
+    const inv = state.self?.inv || [];
+    const idx = inv.findIndex((s) => s && s.id === itemId);
+    if (idx < 0) {
+      // potions: any potion of the same kind (the best first)
+      const it = ITEMS[itemId];
+      const mana = !!it?.mana;
+      if (it && (it.heal || it.mana)) return this.usePotion(mana);
+      notify(`Plus de ${it?.name || 'cet objet'} dans le sac.`, 'error');
+      return false;
+    }
+    send({ t: C2S.USE_ITEM, slot: idx });
+    return true;
   }
 
   /** [combat-souls] Predict the attack commitment (recovery slow) and stamina cost of a cast. */
@@ -214,8 +249,8 @@ export class Targeting {
   usePotion(mana) {
     const { state, notify, send } = this.ctx;
     const self = state.self;
-    if (!state.inGame || !self) return;
-    if (self.dead) { notify('Vous êtes mort.', 'error'); return; }
+    if (!state.inGame || !self) return false;
+    if (self.dead) { notify('Vous êtes mort.', 'error'); return false; }
     let best = -1, bestV = 0;
     (self.inv || []).forEach((s, i) => {
       if (!s) return;
@@ -226,9 +261,10 @@ export class Targeting {
     });
     if (best < 0) {
       notify(mana ? 'Aucune potion de mana.' : 'Aucune potion de soin.', 'error');
-      return;
+      return false;
     }
     send({ t: C2S.USE_ITEM, slot: best });
+    return true;
   }
 
   /** Push the target frame to the UI when something changed; auto-clear dead / vanished targets. */
@@ -247,8 +283,8 @@ export class Targeting {
       if (L.id !== 0 || force) { L.id = 0; ui.setTarget(null); }
       return;
     }
-    if (!force && L.id === t.id && L.hp === t.hp && L.mhp === t.mhp && L.lv === t.lv && L.n === t.n) return;
-    L.id = t.id; L.hp = t.hp; L.mhp = t.mhp; L.lv = t.lv; L.n = t.n;
+    if (!force && L.id === t.id && L.hp === t.hp && L.mhp === t.mhp && L.lv === t.lv && L.n === t.n && L.stt === (t.stt || 0) && L.rb === (t.rb || 0)) return;
+    L.id = t.id; L.hp = t.hp; L.mhp = t.mhp; L.lv = t.lv; L.n = t.n; L.stt = t.stt || 0; L.rb = t.rb || 0;
     const boss = !!t.b || !!MONSTERS[t.mt]?.boss;
     ui.setTarget({
       id: t.id,
@@ -259,6 +295,8 @@ export class Targeting {
       kind: t.k,
       boss,
       hostile: t.k === KIND.MONSTER,
+      stt: t.stt || 0, // [skilltree] status flags (brûlure, froid, gel, poison…)
+      rb: t.rb || 0,   // [skilltree] Renaissances of a player
     });
   }
 }

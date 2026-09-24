@@ -10,6 +10,7 @@ import { ParticleSystem } from './particles.js';
 import { glowTexture, sparkTexture, smokeTexture } from './textures.js';
 import { RENDER } from '../config.js';
 import { Flipbooks } from './flipbooks.js'; // [render-souls] Blender flipbook VFX (procedural fallback below)
+import { SkillFx } from './skillFx.js'; // [skilltree]
 
 const col = (hex) => new THREE.Color(hex);
 const AB = {
@@ -28,8 +29,28 @@ const AB = {
   // [combat-souls] monster projectiles
   goblin_spear: { color: col('#d8c9a0'), proj: 'arrow', scale: 1.9 },
 };
+// [skilltree] every ability of the tree gets a procedural style from its element / kind (colour, slash, projectile)
+export const ELEMENT_COLOR = { feu: '#ff6a1a', givre: '#8fdcff', arcane: '#c77dff', nature: '#8ee06a', poison: '#9be23a', saignement: '#ff3a3a', physique: '#f0e6d0' };
+export const elementOf = (ab) => (ab?.tags || []).find((t) => ELEMENT_COLOR[t] && t !== 'physique') || ((ab?.tags || []).includes('physique') ? 'physique' : null);
+for (const [id, a] of Object.entries(ABILITIES)) {
+  if (AB[id]) continue;
+  const tags = a.tags || [];
+  const el = elementOf(a);
+  const s = { color: col(ELEMENT_COLOR[el] || '#f5e6c8'), el };
+  if (a.kind === 'melee' || (tags.includes('melee') && a.kind !== 'projectile')) s.slash = (a.power || 1) >= 1.6 ? 1.35 : 1.1;
+  if (a.kind === 'projectile' || tags.includes('projectile')) {
+    const bow = tags.includes('arc') || a.weapon === 'arc' || tags.includes('lance') || id === 'javelot';
+    s.proj = bow ? 'arrow' : 'fire';
+    s.size = bow ? 0.2 : (a.radius ? 0.34 : 0.24);
+    s.glow = bow && !!el && el !== 'physique';
+    s.explode = !bow && !!(a.radius || a.splash);
+    if (id === 'javelot') s.scale = 1.9;
+  }
+  AB[id] = s;
+}
 // [combat-souls] player abilities that hit hard enough for a hitstop
 const HEAVY_AB = new Set(['heavy_blow', 'fireball', 'piercing_shot', 'whirlwind']);
+for (const [id, a] of Object.entries(ABILITIES)) if (!a.base && (Array.isArray(a.power) ? a.power[0] : a.power || 0) >= 1.8) HEAVY_AB.add(id); // [skilltree]
 const C_WHITE = col('#ffffff'), C_SPARK = col('#ffe7b0'), C_FIRE = col('#ff7a1a'), C_FIRE2 = col('#ffd35a');
 const C_SMOKE = col('#3a3530'), C_DUST = col('#9c8a6e'), C_FROST = col('#9fe0ff'), C_FROST2 = col('#e8f8ff');
 const C_GOLD = col('#ffd45a'), C_GOLD2 = col('#fff2b0'), C_HEAL = col('#6dff8a'), C_HEAL2 = col('#d8ffb0');
@@ -340,6 +361,9 @@ export class Effects {
     this._m = new THREE.Matrix4();
     this._z = new THREE.Vector3(0, 0, 1);
     this._s = new THREE.Vector3(1, 1, 1);
+    // [skilltree] Fondamentaux, zones, buffs, statuses, Renaissance (render/skillFx.js)
+    this.STYLE = STYLE;
+    this.skill = new SkillFx(this);
   }
 
   setViewport(heightPx, camera) {
@@ -509,7 +533,7 @@ export class Effects {
       case FX.CAST: {
         if (this._monsterCast(m)) break; // [combat-souls]
         const ab = ABILITIES[m.ab];
-        const isBow = m.ab === 'shot' || m.ab === 'piercing_shot' || m.ab === 'rapid_fire' || m.ab === 'arrow_rain';
+        const isBow = m.ab === 'shot' || m.ab === 'piercing_shot' || m.ab === 'rapid_fire' || m.ab === 'arrow_rain' || !!ab?.tags?.includes('arc'); // [skilltree]
         const played = E.playAnim(m.src, 'Cast');
         if (played && !played.animator.has('Cast') && isBow) played.animator.play('Attack');
         const c = AB[m.ab]?.color || C_GOLD;
@@ -693,6 +717,7 @@ export class Effects {
         break;
       }
       default:
+        this.skill?.handle(m); // [skilltree] Fondamentaux, zones, buffs, statuses… (render/skillFx.js)
         break;
     }
   }
@@ -752,6 +777,13 @@ export class Effects {
         }
         this._light(p, C_FIRE, 45, 0.45);
         this._sound('explode', p);
+      } else if (AB[pr.ab]?.el && AB[pr.ab].el !== 'feu') {
+        // [skilltree] frost / arcane / nature orbs: coloured burst
+        const c = pr.color;
+        this.flip.play(AB[pr.ab].el === 'givre' ? 'frost_burst' : 'arcane_burst', p, { size: 1.5, color: c });
+        this._burst(this.glow, p, c, 18, 4, 0.3, 0.4, 0, 3, 0.4, 0.05);
+        this._burst(this.spark, p, C_WHITE, 5, 5, 0.16, 0.3, 5);
+        this._sound(AB[pr.ab].el === 'givre' ? 'frost' : 'firehit', p);
       } else {
         if (!this.flip.play('fire_burst', p, { size: 1.7 })) this._burst(this.glow, p, C_FIRE, 16, 4, 0.3, 0.35, 0, 3, 0.4, 0.05); // [render-souls]
         this._burst(this.spark, p, C_FIRE2, 6, 5, 0.18, 0.3, 5);
@@ -825,6 +857,16 @@ export class Effects {
       }
     } else {
       const c = AB[ab]?.color || C_FIRE;
+      const el = AB[ab]?.el; // [skilltree] decal style by element
+      if (el && el !== 'feu') {
+        E.playAnim(m.src, AB[ab]?.slash ? 'Attack' : 'Cast');
+        this._decal(m.x, m.z, r, c, el === 'givre' ? STYLE.frost : el === 'physique' ? STYLE.slam : STYLE.ring, 1.0, 0.3);
+        p.setY(p.y + 0.4);
+        this._burst(el === 'physique' ? this.smoke : this.glow, p, el === 'physique' ? C_DUST : c, 26, r * 1.2, el === 'physique' ? 0.8 : 0.35, 0.7, 0, 2.5, 0.6);
+        if (el === 'physique') this._dustRing(m.x, m.z, r * 0.7, 6, r * 0.5);
+        this._sound(el === 'givre' ? 'frost' : el === 'physique' ? 'slam' : 'cast', p);
+        return;
+      }
       this._decal(m.x, m.z, r, c, STYLE.fire, 1.0, 0.3);
       p.setY(p.y + 0.5);
       if (!this.flip.play('fire_burst', p, { size: r * 1.3, color: c })) this._burst(this.glow, p, c, 30, r, 0.4, 0.6, 0, 2.5, 0.8); // [render-souls]
@@ -1112,6 +1154,7 @@ export class Effects {
         if (Math.random() < 0.25) this.smoke.emit(em.x, em.y + 1.0, em.z, (Math.random() - 0.5) * 0.3, 0.9, (Math.random() - 0.5) * 0.3, C_SMOKE, 0.6, 2.2, -0.1, 0.3, 1.8, 0.25);
       }
     }
+    this.skill?.update(dt, time); // [skilltree]
     for (const s of this.systems) s.update(dt);
     this.flip.update(dt, time); // [render-souls]
   }
@@ -1139,5 +1182,6 @@ export class Effects {
     for (const s of this.systems) s.clear();
     this.flip.clear(); // [render-souls]
     for (const em of this.emitters) em.fb = null;
+    this.skill?.clear(); // [skilltree]
   }
 }

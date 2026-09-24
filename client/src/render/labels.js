@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import './labels.css';
 import { RENDER } from '../config.js';
+import { glyph, statusList } from '../ui/icons.js'; // [skilltree] status chips
 
 const _v = new THREE.Vector3();
 /** Floating combat text farther than this from the camera is not drawn. */
@@ -26,7 +27,14 @@ export class Nameplate {
     this.hpEl.className = 'np-hp';
     this.hpFill = document.createElement('i');
     this.hpEl.appendChild(this.hpFill);
-    this.el.append(this.q, this.nameEl, this.hpEl);
+    // [skilltree] Renaissance title under the name, status chips above the health bar
+    this.titleEl = document.createElement('div');
+    this.titleEl.className = 'np-title';
+    this.stEl = document.createElement('div');
+    this.stEl.className = 'np-st';
+    this._title = '';
+    this._st = 0;
+    this.el.append(this.q, this.nameEl, this.titleEl, this.stEl, this.hpEl);
     this.el.style.display = 'none';
     this._shown = false;
     this._x = -1e9; this._y = -1e9; this._s = -1; this._o = -1;
@@ -47,6 +55,28 @@ export class Nameplate {
     if (Math.abs(f - this._hp) > 0.001) { this._hp = f; this.hpFill.style.transform = `scaleX(${f.toFixed(3)})`; }
   }
   toggle(cls, on) { this.el.classList.toggle(cls, !!on); }
+  /** [skilltree] « Né de la Brume II » under a player's name ('' = none). */
+  setTitle(t) {
+    if (t === this._title) return;
+    this._title = t;
+    this.titleEl.textContent = t;
+    this.el.classList.toggle('has-title', !!t);
+  }
+  /** [skilltree] Status flags (EntState.stt) as small coloured chips. */
+  setStatus(flags) {
+    if (flags === this._st) return;
+    this._st = flags;
+    this.stEl.replaceChildren();
+    for (const s of statusList(flags)) {
+      const chip = document.createElement('i');
+      chip.className = `np-chip st-${s.id}`;
+      chip.style.setProperty('--c', s.color);
+      chip.title = s.name;
+      chip.appendChild(glyph(s.glyph));
+      this.stEl.appendChild(chip);
+    }
+    this.el.classList.toggle('has-st', flags !== 0);
+  }
   setMarker(m, grey = false) {
     const key = m ? m + (grey ? 'g' : '') : null;
     if (key === this._marker) return;

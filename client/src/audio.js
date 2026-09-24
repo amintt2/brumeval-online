@@ -172,6 +172,16 @@ export class Audio {
       case 'notice': this._tone('triangle', 700 * r, 950, 0.1, 0.1, out); break;
       case 'spear': this._noise('bandpass', 1400 * r, 600, 0.22, 0.3, out, 0, 2); break;
       case 'echo': [880, 1175, 1568, 2093].forEach((f, i) => this._tone('sine', f * r, f * r, 0.7, 0.1, out, i * 0.08, 0.02)); break;
+      // [skilltree] Fondamentaux, tree, Renaissance
+      case 'jump': this._noise('bandpass', 700 * r, 1400, 0.16, 0.22, out, 0, 1.2, 0.02); break;
+      case 'land': this._tone('sine', 95 * r, 45, 0.16, 0.35, out); this._noise('lowpass', 700, 150, 0.16, 0.3, out); break;
+      case 'block': this._tone('square', 700 * r, 520, 0.1, 0.12, out); this._noise('highpass', 2600, 1800, 0.12, 0.3, out); break;
+      case 'parry': this._tone('triangle', 1900 * r, 1500, 0.35, 0.2, out); this._tone('sine', 2600 * r, 2400, 0.5, 0.1, out, 0.02); this._noise('highpass', 4000, 3000, 0.12, 0.25, out); break;
+      case 'charge': this._tone('sine', 160 * r, 420, 0.8, 0.12, out, 0, 0.3); break;
+      case 'charged': this._noise('bandpass', 1500 * r, 300, 0.3, 0.6, out, 0, 1.2); this._tone('sine', 140, 55, 0.3, 0.45, out); break;
+      case 'skill': [784, 988, 1319].forEach((f, i) => this._tone('sine', f * r, f * r, 0.45, 0.1, out, i * 0.06, 0.02)); break;
+      case 'renaissance': [262, 330, 392, 523, 659, 784].forEach((f, i) => this._tone('sine', f, f * 1.005, 1.4, 0.12, out, i * 0.14, 0.2)); this._noise('highpass', 5000, 2500, 2.2, 0.08, out, 0.2, 1, 0.8); break;
+      case 'zone': this._noise('lowpass', 900 * r, 300, 0.6, 0.3, out, 0, 1, 0.1); break;
       default: break;
     }
   }

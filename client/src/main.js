@@ -21,8 +21,10 @@ import { OrbitCamera } from './game/camera.js';
 import { LocalPlayer } from './game/player.js';
 import { Targeting } from './game/targeting.js';
 // [combat-souls]
-import { ABILITIES, MONSTERS } from '@shared/data.js';
-import { unlockedAbilities } from '@shared/skills.js'; // [skilltree]
+import { MONSTERS } from '@shared/data.js';
+// [skilltree] tree state of the self, rebindable controls
+import { keybinds, detectLayout } from './game/keybinds.js';
+import { knows as knowsSkill, specOf as specOfSkill, loadoutOf, treeState } from './game/skillState.js';
 import { Telegraphs } from './render/telegraphs.js';
 import { EchoRenderer } from './render/echo.js';
 // [accounts] accounts, characters, remembered sessions, passkeys (docs/COMPTES.md)
@@ -197,6 +199,21 @@ const handlers = {
   acceptQuest(npcId, questId) { send({ t: C2S.QUEST_ACCEPT, id: npcId, q: questId }); },
   turnInQuest(npcId, questId) { send({ t: C2S.QUEST_TURNIN, id: npcId, q: questId }); },
   respawn() { send({ t: C2S.RESPAWN }); },
+  // [skilltree] tree screen « Confirmer », action bar drag & drop, Renaissance ritual
+  allocNodes(nodes) {
+    if (!Array.isArray(nodes) || !nodes.length) return false;
+    return send(nodes.length === 1 ? { t: C2S.SKILL_ALLOC, node: nodes[0] } : { t: C2S.SKILL_ALLOC_BATCH, nodes });
+  },
+  setLoadout(slots) {
+    if (!state.self || !Array.isArray(slots)) return false;
+    state.mergeSelf({ loadout: slots.slice(), abilities: slots.slice(0, 4).map((v) => (v && !v.startsWith('item:') ? v : null)) }); // optimistic
+    return send({ t: C2S.LOADOUT, slots });
+  },
+  renaissance(affinity) {
+    const msg = { t: C2S.RENAISSANCE, confirm: true };
+    if (affinity) msg.affinity = affinity;
+    return send(msg);
+  },
   closeDialog() {
     state.dialog = null;
     ui.showDialog(null);
@@ -394,6 +411,7 @@ function onMessage(m) {
       break;
     case S2C.FX:
       if (!state.inGame) break;
+      if (m.src === state.selfId && selfFx(m, now)) break; // [skilltree]
       effects.fx(m);
       if (m.k === FX.RESPAWN) {
         const v = entities.get(m.src);
@@ -435,13 +453,13 @@ function onMessage(m) {
       break;
     }
     case S2C.CD:
-      if (m.slot >= 0 && m.slot < 4) {
+      if (m.slot >= 0 && m.slot < 8) {
         state.cooldowns[m.slot] = now + (m.ms || 0);
         ui.setCooldown(m.slot, m.ms || 0);
         // [combat-souls] the server swung the auto-attack: same recovery / stamina as the server
         if (m.slot === 0 && state.self) {
-          const ab = ABILITIES[state.self.abilities?.[0]];
-          if (ab) { player.commit(ab, now); player.spend(ab.st || 0, now); }
+          const ab = specOfSkill(state.self, m.ab || loadoutOf(state.self)[0]);
+          if (ab?.base) { player.commit(ab, now); player.spend(ab.st || 0, now); }
         }
       }
       break;
@@ -462,6 +480,7 @@ function onMessage(m) {
       else if (m.kind === 'quest') audio.play('quest');
       break;
     case S2C.ERR:
+      if (m.code === 'locked' && hintLocked(m.msg)) break; // [skilltree] (throttled)
       notify(m.msg || 'Action impossible.', 'error');
       if (m.code === 'no_stamina') ui.staminaEmpty(); // [combat-souls]
       break;
@@ -525,6 +544,8 @@ function enterGame(m) {
   if (m.motd) ui.addChat({ ch: 'system', text: m.motd });
   lastZone = null;
   input.reset();
+  guardOn = false; // [skilltree]
+  charge = null;
   // the login form's input may still own the keyboard focus: give it back to the game
   const a = document.activeElement;
   if (a && a !== document.body && a !== canvas && typeof a.blur === 'function') a.blur();
@@ -598,14 +619,8 @@ state.on('self', (self, changed) => {
 // ------------------------------------------------------------------ input
 function onKey(code, e) {
   if (!state.inGame) return;
+  if (e?.repeat && code === 'Tab' && keybinds.is('Tab', 'target')) { targeting.cycle(); return; }
   switch (code) {
-    case 'Digit1': case 'Numpad1': targeting.useAbility(0); break;
-    case 'Digit2': case 'Numpad2': targeting.useAbility(1); break;
-    case 'Digit3': case 'Numpad3': targeting.useAbility(2); break;
-    case 'Digit4': case 'Numpad4': targeting.useAbility(3); break;
-    case 'Digit5': case 'Numpad5': targeting.usePotion(false); break;
-    case 'Digit6': case 'Numpad6': targeting.usePotion(true); break;
-    case 'Tab': targeting.cycle(); break;
     case 'Escape':
       if (!e.defaultPrevented && targeting.id) {
         targeting.clear();
@@ -669,13 +684,13 @@ async function boot() {
   entities = new EntityRenderer({ scene, assets, labels }, state);
   player = new LocalPlayer(collision, send);
   // [skilltree] never predict a roll / sprint the server would refuse (not learnt yet: the movement would be corrected)
-  let knownTree = null, known = null;
   player.knows = (id) => {
     const self = state.self;
-    if (!self?.tree) return true; // older server: everything as before
-    if (self.tree !== knownTree) { knownTree = self.tree; known = unlockedAbilities(self.cls, self.tree.alloc, self.tree.gift); }
-    return known.has(id);
+    if (!treeState(self)) return true; // older server: everything as before
+    return knowsSkill(self, id);
   };
+  player.spec = (id) => (treeState(state.self) ? specOfSkill(state.self, id) : null);
+  player.onJump = (ms) => entities.get(state.selfId)?.startJump(ms);
   effects = new Effects({
     scene,
     entities,
@@ -704,12 +719,15 @@ async function boot() {
     isTyping: () => !!ui.isTyping?.(),
     onKey,
     onDodge: () => { if (state.inGame) roll(); }, // Shift tap = dodge roll (hold = sprint)
+    onAction, // [skilltree] jump, guard, bar slots (hold = Attaque chargée), target (rebindable)
     onClick: (button, x, y) => targeting.onClick(button, x, y),
     onDrag: (dx, dy) => orbit.rotate(dx, dy),
     onWheel: (dy) => orbit.zoom(dy),
     onHover: (x, y) => targeting.onHover(x, y),
   });
   targeting = new Targeting({ camera, canvas, state, entities, ui, send, player, notify, input, orbit });
+  // [skilltree] AZERTY / QWERTY labels of the bindings (Chromium Keyboard Map API; keydown events teach the rest)
+  detectLayout().then((ok) => { if (ok) ui.refreshKeys?.(); });
 
   onResize();
   window.addEventListener('resize', onResize);
@@ -834,6 +852,8 @@ function step(dt, now) {
   if (state.inGame && self) {
     input.axes(axes);
     orbit.forward(fwd);
+    player.noSprint = guardOn || !!charge; // [skilltree] the server never sprints while guarding / charging
+    if (charge && now - charge.at > 2600) charge = null; // released by the server (auto-release at 2 s)
     player.update(dt, axes, fwd, self.stats?.speed || 6, !self.dead, now, input.sprinting); // [combat-souls] + sprint
     ui.setStamina(player.st, player.mst); // [combat-souls]
     const rec = state.entities.get(state.selfId);
@@ -898,13 +918,126 @@ function roll() {
   input.axes(rollAxes);
   orbit.forward(rollFwd);
   const now = performance.now();
-  if (player.tryRoll(rollAxes, rollFwd, now)) return;
+  if (player.tryRoll(rollAxes, rollFwd, now)) { charge = null; return; } // [skilltree] a roll cancels a charge
   if (!player.knows('roulade')) {
     const t = performance.now();
     if (t - (roll.hintAt || 0) > 4000) { roll.hintAt = t; notify('Apprenez la Roulade dans l\'arbre des compétences (dès le niveau 2).', 'info'); }
     return;
   }
   if (!player.rolling && player.st < 30) ui.staminaEmpty();
+}
+
+// ------------------------------------------------------------------ [skilltree] Fondamentaux & action bar
+let guardOn = false;   // guard key held (sent to the server)
+let charge = null;     // { slot, at, code } Attaque chargée started on the base attack
+const hintAt = new Map();
+const FOND_HINT = {
+  roulade: 'la Roulade', saut: 'le Saut', garde: 'la Garde', attaque_chargee: 'l\'Attaque chargée', sprint: 'le Sprint',
+};
+/** Throttled hint to learn a Fondamental in the tree. */
+function hintLearn(id) {
+  const t = performance.now();
+  if (t - (hintAt.get(id) || 0) < 5000) return;
+  hintAt.set(id, t);
+  const key = keybinds.label('tree') || 'N';
+  notify(`Apprenez ${FOND_HINT[id] || 'cette compétence'} dans l'Arbre des Brumes (touche ${key}).`, 'info');
+}
+/** Server `locked` errors (a Fondamental not learnt): shown at most every 5 s each. */
+function hintLocked(msg) {
+  const t = performance.now();
+  const k = `locked|${msg}`;
+  if (t - (hintAt.get(k) || 0) < 5000) return true;
+  hintAt.set(k, t);
+  return false;
+}
+
+/** Rebindable actions other than movement / roll / sprint (game/input.js). */
+function onAction(a, down, code) {
+  if (!state.inGame) return;
+  if (a === 'jump') { if (down) jump(); return; }
+  if (a === 'guard') { setGuard(down); return; }
+  if (a === 'target') { if (down) targeting.cycle(); return; }
+  const m = /^slot([1-8])$/.exec(a);
+  if (!m) return;
+  const slot = Number(m[1]) - 1;
+  if (down) slotDown(slot, code);
+  else slotUp(slot, code);
+  ui.pressSlot?.(slot, down);
+}
+
+/** Bar key pressed: the base attack starts an Attaque chargée when it is learnt (released = normal / charged). */
+function slotDown(slot, code) {
+  const self = state.self;
+  if (!self || self.dead) return;
+  const entry = loadoutOf(self)[slot];
+  const ab = entry && !entry.startsWith('item:') ? specOfSkill(self, entry) : null;
+  const now = performance.now();
+  if (ab?.base && treeState(self) && knowsSkill(self, 'attaque_chargee') && !player.rolling && !player.airborne
+    && state.cooldowns[slot] <= now + 80 && player.st >= (ab.st || 0) + (specOfSkill(self, 'attaque_chargee')?.st ?? 10)) {
+    const t = targeting.hostileTarget() || targeting.nearestHostile((ab.range || 3) + 4);
+    if (t && Math.hypot(t.x - player.x, t.z - player.z) <= (ab.range || 3) + 6) {
+      targeting.select(t.id);
+      if (targeting.useAbility(slot, { ph: 'start' })) { charge = { slot, at: now, code }; return; }
+    }
+  }
+  targeting.useAbility(slot);
+}
+
+function slotUp(slot) {
+  if (!charge || charge.slot !== slot) return;
+  const held = performance.now() - charge.at;
+  charge = null;
+  // a tap: the normal attack (the server cancels the charge and swings, auto-attack included)
+  if (held < 300) targeting.useAbility(slot);
+  else {
+    const t = targeting.hostileTarget();
+    const msg = { t: C2S.ABILITY, slot, ph: 'release' };
+    if (t) msg.tg = t.id;
+    send(msg);
+  }
+}
+
+/** Jump (Fondamental « Saut »): in the movement direction, on the spot without input. */
+function jump() {
+  const self = state.self;
+  if (!self || self.dead) return;
+  if (treeState(self) && !knowsSkill(self, 'saut')) { hintLearn('saut'); return; }
+  if (!treeState(self)) return; // older server: no jump
+  input.axes(rollAxes);
+  orbit.forward(rollFwd);
+  const spec = specOfSkill(self, 'saut');
+  if (!player.tryJump(rollAxes, rollFwd, performance.now(), spec) && player.st < (spec?.st ?? 15)) ui.staminaEmpty();
+}
+
+/** Guard held / released (E by default). */
+function setGuard(on) {
+  const self = state.self;
+  if (on && (!self || self.dead)) return;
+  if (on && treeState(self) && !knowsSkill(self, 'garde')) { hintLearn('garde'); return; }
+  if (!treeState(self)) return;
+  if (on === guardOn) return;
+  guardOn = on;
+  if (on && charge) charge = null;
+  send({ t: C2S.GUARD, on });
+  entities.get(state.selfId)?.setGuard(on);
+}
+
+/** FX about the local player handled locally (prediction already played it). Returns true when consumed. */
+function selfFx(m, now) {
+  switch (m.k) {
+    case FX.JUMP:
+      // the local jump already started the animation (a server-initiated one, e.g. a leap, still plays)
+      if (player.air && now - player.air.t0 < 400) return true;
+      return false;
+    case FX.DASH:
+      if (Number.isFinite(m.x) && Number.isFinite(m.z)) player.dash(m.x, m.z, m.ms || 0, now);
+      return false; // + trail visuals
+    case FX.CHARGED:
+      if (charge && m.lvl === -1) charge = null;
+      return false;
+    default:
+      return false;
+  }
 }
 
 /** Red arc on the screen edge pointing to the attacker (relative to the camera). */
@@ -968,6 +1101,7 @@ function exposeDebug() {
     state, scene, camera, renderer, entities, effects, labels, env, world, assets, player, orbit, targeting, ui, net: conn,
     get account() { return account; }, accountStore, handlers, get charPreview() { return charPreview; }, // [accounts]
     telegraphs, echo: echoFx, roll, input, // [combat-souls]
+    keybinds, jump, guard: setGuard, skill: { knows: (id) => knowsSkill(state.self, id), spec: (id) => specOfSkill(state.self, id), loadout: () => loadoutOf(state.self) }, // [skilltree]
     bootTimes,
     get fps() { return fps; },
     get ping() { return ping; },

@@ -35,6 +35,50 @@ export class LocalPlayer {
     this.recoverUntil = 0;
     this.recoverSlow = 1;
     this.onRoll = null;          // (dx, dz) → play the roll animation
+    // [skilltree] Saut, ability movement (leap, blink…), guard / charge (no sprint on the server meanwhile)
+    this.spec = () => null;      // (abilityId) → resolved ability of the tree (main.js plugs it in)
+    this.air = null;             // { t0, until } local jump
+    this.jumpReady = 0;
+    this.onJump = null;          // (ms) → play the jump on the local view
+    this.dashing = null;         // { t0, ms, fx, fz, x, z }
+    this.noSprint = false;       // guard held / charging
+  }
+
+  get airborne() { return !!this.air && performance.now() < this.air.until; }
+
+  /**
+   * [skilltree] Jump (Fondamental « Saut »): direction of travel frozen at take-off (the server gives no extra
+   * speed). Returns false when impossible (not learnt, stamina, cooldown, rolling).
+   */
+  tryJump(axes, camFwd, now, spec) {
+    if (!spec || this.roll || this.dashing || now < this.jumpReady || this.airborne) return false;
+    const st = spec.st ?? 15;
+    if (this.st < st) return false;
+    let dx = 0, dz = 0;
+    if (axes.fx || axes.fz) {
+      const rx = -camFwd.z, rz = camFwd.x;
+      dx = camFwd.x * axes.fz + rx * axes.fx;
+      dz = camFwd.z * axes.fz + rz * axes.fx;
+      const l = Math.hypot(dx, dz);
+      if (l > 1e-4) { dx /= l; dz /= l; } else { dx = dz = 0; }
+    }
+    this._send(now, true);
+    this.send({ t: C2S.JUMP, dx: round3(dx), dz: round3(dz) });
+    const ms = (spec.takeoffMs ?? 50) + (spec.airMs ?? 350);
+    this.air = { t0: now, until: now + ms };
+    this.jumpReady = now + Math.max(ms + 60, (spec.cd ?? 0.5) * 1000);
+    this.spend(st, now);
+    this.onJump?.(ms);
+    return true;
+  }
+
+  /** [skilltree] Ability movement of the local player (server FX dash): glide to (x, z) in ms; `correct` follows. */
+  dash(x, z, ms, now = performance.now()) {
+    this.roll = null;
+    if (!(ms > 20)) { this.correct(x, z); return; }
+    this.dashing = { t0: now, ms, fx: this.x, fz: this.z, x, z };
+    const dx = x - this.x, dz = z - this.z;
+    if (dx * dx + dz * dz > 0.01) { this.targetRy = Math.atan2(dx, dz); this.ry = this.targetRy; }
   }
 
   reset(x, z, ry = 0) {
@@ -46,6 +90,8 @@ export class LocalPlayer {
     this.recoverUntil = 0;
     this.sprintSent = false;
     this.exhausted = false;
+    this.air = null;
+    this.dashing = null;
   }
 
   /** Server rejected our movement: snap back immediately. */
@@ -53,6 +99,7 @@ export class LocalPlayer {
     this.x = x; this.z = z;
     this.sentX = x; this.sentZ = z;
     this.roll = null;
+    this.dashing = null;
   }
 
   /** Turn towards a world point (used when attacking while standing still). */
@@ -91,7 +138,18 @@ export class LocalPlayer {
   }
 
   canRoll(now) {
-    return !this.roll && now >= this.rollReady && this.st >= STAMINA.roll && this.knows('roulade');
+    return !this.roll && !this.dashing && now >= this.rollReady && this.st >= this.rollCost() && this.knows('roulade');
+  }
+
+  /** [skilltree] Stamina of a roll (Roulade variants / passives), and the sprint of the tree. */
+  rollCost() {
+    const s = this.spec('roulade');
+    return Number.isFinite(s?.st) ? s.st : STAMINA.roll;
+  }
+
+  sprintSpec() {
+    const s = this.spec('sprint');
+    return { mult: Number.isFinite(s?.mult) ? s.mult : STAMINA.sprintMult, perS: Number.isFinite(s?.stPerS) ? s.stPerS : STAMINA.sprintPerS };
   }
 
   /**
@@ -114,7 +172,7 @@ export class LocalPlayer {
     this.send({ t: C2S.DODGE, dx: round3(dx), dz: round3(dz) });
     this.roll = { t0: now, dx, dz };
     this.rollReady = now + ROLL.cdMs;
-    this.spend(STAMINA.roll, now);
+    this.spend(this.rollCost(), now);
     this.recoverUntil = 0;
     this.targetRy = Math.atan2(dx, dz);
     this.ry = this.targetRy;
@@ -124,7 +182,7 @@ export class LocalPlayer {
 
   _staminaTick(dt, now, sprintMoving) {
     if (sprintMoving) {
-      this.st = Math.max(0, this.st - STAMINA.sprintPerS * dt);
+      this.st = Math.max(0, this.st - this.sprintSpec().perS * dt);
       this.stSpentAt = now;
       if (this.st <= 0) this.exhausted = true;
     } else if (this.st < this.mst) {
@@ -148,12 +206,26 @@ export class LocalPlayer {
       if (l > 1e-4) { dx /= l; dz /= l; } else { dx = dz = 0; }
     }
     // [combat-souls] sprint request (the server applies the same stamina rules)
-    const wantSprint = canMove && sprintHeld && !this.exhausted && this.st > 0 && this.knows('sprint');
+    const wantSprint = canMove && sprintHeld && !this.exhausted && this.st > 0 && !this.noSprint && this.knows('sprint');
     if (wantSprint !== this.sprintSent) {
       this.sprintSent = wantSprint;
       this.send({ t: C2S.SPRINT, on: wantSprint });
     }
     const wasMoving = this.moving;
+    if (this.air && now >= this.air.until) this.air = null;
+    if (this.dashing) {
+      // [skilltree] ability movement: the server computed the destination (a `correct` confirms it)
+      const k = Math.min(1, (now - this.dashing.t0) / this.dashing.ms);
+      const d = this.dashing;
+      this.x = d.fx + (d.x - d.fx) * k;
+      this.z = d.fz + (d.z - d.fz) * k;
+      this.moving = k < 1;
+      if (k >= 1) { this.dashing = null; this.sentX = round2(this.x); this.sentZ = round2(this.z); }
+      this._staminaTick(dt, now, false);
+      const dr = angleDelta(this.ry, this.targetRy);
+      this.ry += dr * Math.min(1, dt * 14);
+      return;
+    }
     if (this.roll && canMove) {
       // dodge roll: fixed direction and speed, input ignored
       const el = now - this.roll.t0;
@@ -169,7 +241,7 @@ export class LocalPlayer {
       const sprinting = this.moving && wantSprint;
       this.sprinting = sprinting;
       if (this.moving) {
-        let mult = sprinting ? STAMINA.sprintMult : 1;
+        let mult = sprinting ? this.sprintSpec().mult : 1;
         if (now < this.recoverUntil) mult = Math.min(mult, this.recoverSlow);
         this._step(dx, dz, speed * mult * Math.min(dt, 0.1));
         this.targetRy = Math.atan2(dx, dz);

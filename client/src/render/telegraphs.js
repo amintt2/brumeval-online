@@ -19,10 +19,12 @@ const STRIKE_AT = 0.55; // fraction of a wind-up clip where the strike happens
 const vert = /* glsl */ `
 attribute float aF;
 attribute float aS;
+attribute float aA;
 varying float vF;
 varying float vS;
+varying float vA;
 void main() {
-  vF = aF; vS = aS;
+  vF = aF; vS = aS; vA = aA;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 
@@ -34,8 +36,10 @@ uniform float uFade;
 uniform float uFlash;
 uniform float uTime;
 uniform float uShape;
+uniform float uMark;
 varying float vF;
 varying float vS;
+varying float vA;
 void main() {
   // distance to the border in "shape units" (0 at the border)
   float outer = 1.0 - vF;
@@ -51,17 +55,33 @@ void main() {
   float pulse = 0.85 + 0.15 * sin(uTime * 10.0);
   vec3 col = mix(uBase, uFill, filled * 0.75 + front);
   float a = 0.16 + filled * 0.30 + front * 0.55 + edge * 0.75 * pulse;
+  // [skilltree] markers (ARBRE_COMPETENCES.md §5.2): lo = waves (jump it), nb = crenellated border (unblockable),
+  // mag = violet runes (spell)
+  if (uMark > 0.5 && uMark < 1.5) {
+    float w = pow(0.5 + 0.5 * sin(vF * 16.0 - uTime * 10.0), 3.0);
+    col = mix(col, vec3(1.0, 0.9, 0.45), w * 0.45);
+    a += w * 0.22;
+  } else if (uMark > 1.5 && uMark < 2.5) {
+    float band = 1.0 - smoothstep(0.0, 0.11, border);
+    float cren = step(0.5, fract(vA * 30.0));
+    a += band * cren * 0.7;
+    col = mix(col, vec3(0.05, 0.0, 0.0), band * (1.0 - cren) * 0.8);
+  } else if (uMark > 2.5) {
+    float rune = step(0.8, fract(vA * 20.0 + uTime * 0.3)) * smoothstep(0.66, 0.72, vF) * (1.0 - smoothstep(0.86, 0.92, vF));
+    a += rune * 0.65;
+    col = mix(col, vec3(0.95, 0.7, 1.0), rune);
+  }
   col = mix(col, vec3(1.0, 0.93, 0.8), uFlash * 0.7);
   a = max(a, uFlash * 0.85);
   gl_FragColor = vec4(col, clamp(a, 0.0, 0.95) * uFade);
 }`;
 
 /** Grid geometry in world space for a telegraph message. */
-function buildGeometry(t) {
-  const pos = [], aF = [], aS = [], idx = [];
-  const pushV = (x, z, f, s) => {
+export function buildGeometry(t) {
+  const pos = [], aF = [], aS = [], aA = [], idx = [];
+  const pushV = (x, z, f, s, an = 0) => {
     pos.push(x, terrainHeight(x, z) + LIFT, z);
-    aF.push(f); aS.push(s);
+    aF.push(f); aS.push(s); aA.push(an);
   };
   const grid = (nu, nv, fn) => {
     for (let i = 0; i <= nu; i++) for (let j = 0; j <= nv; j++) fn(i / nu, j / nv);
@@ -79,7 +99,7 @@ function buildGeometry(t) {
       const segs = Math.max(48, Math.ceil(r1 * 7));
       grid(Math.max(4, Math.ceil((r1 - r0) * 1.2)), segs, (u, v) => {
         const rr = r0 + (r1 - r0) * u, ang = v * Math.PI * 2;
-        pushV(t.x + Math.sin(ang) * rr, t.z + Math.cos(ang) * rr, u, 0);
+        pushV(t.x + Math.sin(ang) * rr, t.z + Math.cos(ang) * rr, u, 0, v);
       });
       break;
     }
@@ -88,7 +108,7 @@ function buildGeometry(t) {
       const segs = Math.max(12, Math.ceil(t.r * half * 4));
       grid(Math.max(5, Math.ceil(t.r * 1.2)), segs, (u, v) => {
         const rr = Math.max(0.001, t.r * u), ang = (t.a || 0) + (v * 2 - 1) * half;
-        pushV(t.x + Math.sin(ang) * rr, t.z + Math.cos(ang) * rr, u, v * 2 - 1);
+        pushV(t.x + Math.sin(ang) * rr, t.z + Math.cos(ang) * rr, u, v * 2 - 1, v * half * t.r / 3);
       });
       break;
     }
@@ -97,7 +117,7 @@ function buildGeometry(t) {
       grid(Math.max(4, Math.ceil(len * 1.5)), 4, (u, v) => {
         const along = len * u, across = (v * 2 - 1) * (w / 2);
         // forward (sa, ca), right (ca, -sa)
-        pushV(t.x + sa * along + ca * across, t.z + ca * along - sa * across, u, v * 2 - 1);
+        pushV(t.x + sa * along + ca * across, t.z + ca * along - sa * across, u, v * 2 - 1, along / 6);
       });
       break;
     }
@@ -105,7 +125,7 @@ function buildGeometry(t) {
       const segs = Math.max(40, Math.ceil(t.r * 8));
       grid(Math.max(5, Math.ceil(t.r * 1.5)), segs, (u, v) => {
         const rr = t.r * u, ang = v * Math.PI * 2;
-        pushV(t.x + Math.sin(ang) * rr, t.z + Math.cos(ang) * rr, u, 0);
+        pushV(t.x + Math.sin(ang) * rr, t.z + Math.cos(ang) * rr, u, 0, v);
       });
       break;
     }
@@ -114,6 +134,7 @@ function buildGeometry(t) {
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setAttribute('aF', new THREE.Float32BufferAttribute(aF, 1));
   g.setAttribute('aS', new THREE.Float32BufferAttribute(aS, 1));
+  g.setAttribute('aA', new THREE.Float32BufferAttribute(aA, 1));
   g.setIndex(idx);
   g.computeBoundingSphere();
   return g;
@@ -124,8 +145,13 @@ const THEMES = {
   default: { base: '#ff2a14', fill: '#ff8a1e' },
   boss: { base: '#ff1438', fill: '#ff6a1a' },
   arcane: { base: '#c02aff', fill: '#ff5ad2' },
+  low: { base: '#ff6a10', fill: '#ffc83a' },   // [skilltree] lo: jump it
+  unblock: { base: '#a80818', fill: '#ff2a1a' }, // [skilltree] nb: roll, never block
 };
 const themeOf = (ab) => (ab?.startsWith('golem') ? THEMES.boss : ab === 'skel_curse' ? THEMES.arcane : THEMES.default);
+/** [skilltree] marker of a telegraph: 1 lo (rasant), 2 nb (imblocable), 3 mag (sort). */
+const markOf = (m) => (m.lo ? 1 : m.nb ? 2 : m.mag ? 3 : 0);
+const MARK_THEME = [null, THEMES.low, THEMES.unblock, THEMES.arcane];
 
 export class Telegraphs {
   /** ctx: { scene, entities: EntityRenderer } */
@@ -144,7 +170,8 @@ export class Telegraphs {
   add(m, now = performance.now(), rtt = 0) {
     if (!m || !Number.isFinite(m.x) || !Number.isFinite(m.z) || !SHAPE_ID.hasOwnProperty(m.shape)) return;
     this.remove(m.id);
-    const theme = themeOf(m.ab);
+    const mark = markOf(m);
+    const theme = MARK_THEME[mark] || themeOf(m.ab);
     const u = {
       uBase: { value: new THREE.Color(theme.base) },
       uFill: { value: new THREE.Color(theme.fill) },
@@ -153,6 +180,7 @@ export class Telegraphs {
       uFlash: { value: 0 },
       uTime: { value: this.time },
       uShape: { value: SHAPE_ID[m.shape] },
+      uMark: { value: mark },
     };
     const mat = new THREE.ShaderMaterial({
       name: 'telegraph',
@@ -174,7 +202,7 @@ export class Telegraphs {
     mesh.frustumCulled = false;
     this.ctx.scene.add(mesh);
     const ms = windupMs(Math.max(50, m.ms || 800), rtt);
-    this.list.set(m.id, { id: m.id, src: m.src, mesh, u, start: now, end: now + ms, state: 'wind', t: 0, x: m.x, z: m.z, shape: m.shape, r: m.r });
+    this.list.set(m.id, { id: m.id, src: m.src, mesh, u, start: now, end: now + ms, state: 'wind', t: 0, x: m.x, z: m.z, shape: m.shape, r: m.r, mark });
     if (m.clip && m.src) this._animate(m.src, m.clip, ms, now);
   }
 
@@ -222,7 +250,7 @@ export class Telegraphs {
 
   /** Active (winding-up) telegraphs, for debugging / tests. */
   active() {
-    return [...this.list.values()].filter((d) => d.state === 'wind').map((d) => ({ id: d.id, shape: d.shape, x: d.x, z: d.z, p: d.u.uP.value }));
+    return [...this.list.values()].filter((d) => d.state === 'wind').map((d) => ({ id: d.id, shape: d.shape, x: d.x, z: d.z, p: d.u.uP.value, mark: d.mark }));
   }
 
   update(dt, time, now = performance.now()) {

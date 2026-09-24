@@ -5,6 +5,7 @@ import { TICK_RATE, INTERP_DELAY_MS, STATE, KIND, DAY_LENGTH_S } from '@shared/p
 const RING = 16;
 const STATIC_FIELDS = ['k', 'n', 'm', 'lv', 'c', 'sc', 'b', 'mt', 'nk'];
 STATIC_FIELDS.push('el', 'vr'); // [combat-souls] elite flag, monster variant
+STATIC_FIELDS.push('rb'); // [skilltree] Renaissances of a player (aura + title)
 const TWO_PI = Math.PI * 2;
 
 /** Shortest signed angle from a to b. */
@@ -21,6 +22,7 @@ export class EntityRecord {
     this.k = null; this.n = ''; this.m = null; this.lv = 1; this.c = null; this.sc = 1; this.b = 0;
     this.mt = null; this.nk = null;
     this.hp = 1; this.mhp = 1; this.s = STATE.IDLE; this.tg = 0; this.sl = 0;
+    this.ac = 0; this.stt = 0; this.rb = 0; // [skilltree]
     // interpolation ring buffer
     this.st = new Float64Array(RING); this.sx = new Float32Array(RING); this.sz = new Float32Array(RING);
     this.sry = new Float32Array(RING);
@@ -150,7 +152,7 @@ export class GameState {
     this.lastTick = -1;
     this.snapStamp = 0;          // [netcode-perf] snapshots applied (marks the entities each one carried)
     this.dialog = null;          // currently open NPC dialog payload
-    this.cooldowns = [0, 0, 0, 0]; // performance.now() when each slot is ready again
+    this.cooldowns = new Array(8).fill(0); // performance.now() when each action bar slot is ready again ([skilltree] 8)
     this.listeners = { add: [], remove: [], self: [] };
   }
 
@@ -233,6 +235,9 @@ export class GameState {
         // [netcode-perf] field-level deltas (ROADMAP §4.3): an omitted field keeps its previous value
         if (e.tg !== undefined) rec.tg = e.tg || 0;
         if (e.sl !== undefined) rec.sl = e.sl || 0;
+        // [skilltree] players: action flags (guard, airborne, charging, casting, staggered); monsters: status flags
+        if (e.ac !== undefined) rec.ac = e.ac || 0;
+        if (e.stt !== undefined) { if ((e.stt || 0) !== rec.stt) rec.dirtyLabel = true; rec.stt = e.stt || 0; }
         rec.snapStamp = this.snapStamp + 1;
         const hasX = typeof e.x === 'number', hasZ = typeof e.z === 'number', hasRy = typeof e.ry === 'number';
         if (hasX || hasZ || hasRy) {

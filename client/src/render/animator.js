@@ -34,6 +34,9 @@ export class Animator {
     this.t = Math.random() * 10;
     this.phase = Math.random() * Math.PI * 2;
     this.walkBlend = 0;
+    // [skilltree] procedural poses layered on top of any clip: guard, charged attack, stagger, jump height (m)
+    this.pose = { guard: 0, charge: 0, stagger: 0, air: 0 };
+    this.poseTarget = { guard: 0, charge: 0, stagger: 0, air: 0 };
     // start idle at a random time so crowds don't breathe in sync
     const idle = this.actions.get('Idle');
     if (idle) {
@@ -114,6 +117,15 @@ export class Animator {
     }
     this.one = { name, action: null, t: 0, dur: (PROC_DUR[name] || 0.4) / ts };
     return false;
+  }
+
+  /** [skilltree] Target of the layered poses (blended in _procedural); air = jump height in metres (not blended). */
+  setPose(guard, charge, stagger, air = 0) {
+    const t = this.poseTarget;
+    t.guard = guard ? 1 : 0;
+    t.charge = charge ? 1 : 0;
+    t.stagger = stagger ? 1 : 0;
+    t.air = air;
   }
 
   /** Back to life (player respawn). */
@@ -243,6 +255,17 @@ export class Animator {
         }
       }
     }
+    // [skilltree] layered poses (never while dead)
+    const P = this.pose, T = this.poseTarget;
+    const kb = Math.min(1, dt * 12);
+    P.guard += ((this.dead ? 0 : T.guard) - P.guard) * kb;
+    P.charge += ((this.dead ? 0 : T.charge) - P.charge) * Math.min(1, dt * 6);
+    P.stagger += ((this.dead ? 0 : T.stagger) - P.stagger) * kb;
+    P.air = this.dead ? 0 : T.air;
+    if (P.guard > 0.001) { rx += 0.12 * P.guard; sy *= 1 - 0.06 * P.guard; py -= 0.03 * h * P.guard; }
+    if (P.charge > 0.001) { rx -= 0.22 * P.charge; rz += Math.sin(this.t * 38) * 0.012 * P.charge; sy *= 1 - 0.03 * P.charge; }
+    if (P.stagger > 0.001) { rz += Math.sin(this.t * 24) * 0.13 * P.stagger; rx -= 0.14 * P.stagger; }
+    if (P.air > 0.001) { py += P.air; rx += 0.18 * Math.min(1, P.air / 0.4); sy *= 1 - 0.05 * Math.min(1, P.air / 0.4); }
     p.position.y = py;
     p.position.z = pz;
     p.rotation.x = rx;
