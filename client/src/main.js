@@ -22,6 +22,7 @@ import { LocalPlayer } from './game/player.js';
 import { Targeting } from './game/targeting.js';
 // [combat-souls]
 import { ABILITIES, MONSTERS } from '@shared/data.js';
+import { unlockedAbilities } from '@shared/skills.js'; // [skilltree]
 import { Telegraphs } from './render/telegraphs.js';
 import { EchoRenderer } from './render/echo.js';
 // [accounts] accounts, characters, remembered sessions, passkeys (docs/COMPTES.md)
@@ -667,6 +668,14 @@ async function boot() {
 
   entities = new EntityRenderer({ scene, assets, labels }, state);
   player = new LocalPlayer(collision, send);
+  // [skilltree] never predict a roll / sprint the server would refuse (not learnt yet: the movement would be corrected)
+  let knownTree = null, known = null;
+  player.knows = (id) => {
+    const self = state.self;
+    if (!self?.tree) return true; // older server: everything as before
+    if (self.tree !== knownTree) { knownTree = self.tree; known = unlockedAbilities(self.cls, self.tree.alloc, self.tree.gift); }
+    return known.has(id);
+  };
   effects = new Effects({
     scene,
     entities,
@@ -890,6 +899,11 @@ function roll() {
   orbit.forward(rollFwd);
   const now = performance.now();
   if (player.tryRoll(rollAxes, rollFwd, now)) return;
+  if (!player.knows('roulade')) {
+    const t = performance.now();
+    if (t - (roll.hintAt || 0) > 4000) { roll.hintAt = t; notify('Apprenez la Roulade dans l\'arbre des compétences (dès le niveau 2).', 'info'); }
+    return;
+  }
   if (!player.rolling && player.st < 30) ui.staminaEmpty();
 }
 

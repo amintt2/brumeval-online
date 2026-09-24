@@ -24,6 +24,8 @@ export class LocalPlayer {
     // [combat-souls]
     this.st = STAMINA.max;
     this.mst = STAMINA.max;
+    // [skilltree] Roulade / Sprint are learnt in the tree (level 1: neither); main.js plugs the real test in
+    this.knows = () => true;
     this.stSpentAt = -Infinity;
     this.sprintSent = false;
     this.exhausted = false;
@@ -89,7 +91,7 @@ export class LocalPlayer {
   }
 
   canRoll(now) {
-    return !this.roll && now >= this.rollReady && this.st >= STAMINA.roll;
+    return !this.roll && now >= this.rollReady && this.st >= STAMINA.roll && this.knows('roulade');
   }
 
   /**
@@ -146,7 +148,7 @@ export class LocalPlayer {
       if (l > 1e-4) { dx /= l; dz /= l; } else { dx = dz = 0; }
     }
     // [combat-souls] sprint request (the server applies the same stamina rules)
-    const wantSprint = canMove && sprintHeld && !this.exhausted && this.st > 0;
+    const wantSprint = canMove && sprintHeld && !this.exhausted && this.st > 0 && this.knows('sprint');
     if (wantSprint !== this.sprintSent) {
       this.sprintSent = wantSprint;
       this.send({ t: C2S.SPRINT, on: wantSprint });
