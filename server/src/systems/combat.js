@@ -4,7 +4,7 @@
 import { ABILITIES, ITEMS, QUESTS, NPCS, computeDamage, monsterXp, playerStats } from '../../../shared/data.js';
 import { S2C, KIND, CORPSE_TIME_S } from '../../../shared/protocol.js';
 import { inVillage } from '../../../shared/world.js';
-import { stat } from '../../../shared/skills.js';
+import { stat, statEffects } from '../../../shared/skills.js';
 import { RANGE_TOLERANCE } from '../config.js';
 import { recordKill, killLabel } from '../quests.js';
 import { dist, randInt } from '../util.js';
@@ -16,7 +16,9 @@ import { FX } from '../../../shared/protocol.js';
 import { isRolling, isRunning } from './stamina.js';
 import { applyPoise, guardReduction, onMonsterDamaged, onMonsterDeath, cancelTelegraphs } from './ai.js';
 // [skilltree]
-import { setStatusHooks, takenMult, defMult, froidStacks, hasStatus, stunMonster } from './status.js';
+import { setStatusHooks, takenMult, defMult, froidStacks, hasStatus, stunMonster, applyStatus, poisonStacks } from './status.js';
+
+const BEAST_TYPES = new Set(['wolf', 'slime']); // family « bête » (Instinct du chasseur, Dépeceur, Appât)
 import { buffStat, consumeRiposte } from './buffs.js';
 import { castAbility, handleAbility, specOf } from './abilities.js';
 
@@ -99,6 +101,19 @@ export function hitMonster(game, p, m, power, abId, spec = null, opts = {}) {
   }
   const hall = p.buffs?.get('hallali');
   if (hall && now < hall.until && m.status?.mark?.src === p.id) pw *= 1 + (hall.dmgVsMarked || 0);
+  // target-dependent passives: elites / bosses, unmarked targets (Proie unique), beasts, chained hits, fury
+  for (const e of statEffects(tree, 'dmgVsPct')) if ((e.target || []).some((k) => (k === 'boss' && m.boss) || (k === 'elite' && m.elite))) pw *= 1 + e.value;
+  if (!(m.status?.mark && now < m.status.mark.until && m.status.mark.src === p.id)) pw *= 1 + s('dmgVsUnmarkedPct');
+  for (const e of statEffects(tree, 'dmgVsFamilyPct')) if (e.family === 'bete' && BEAST_TYPES.has(m.type)) pw *= 1 + e.value;
+  const combo = statEffects(tree, 'comboDmgPct')[0];
+  if (combo && spec && (spec.power || 0) > 0) {
+    p.combo = now - (p.comboAt ?? -Infinity) <= (combo.window || 2) * 1000 ? Math.min(combo.maxStacks || 5, (p.combo || 0) + 1) : 0;
+    p.comboAt = now;
+    pw *= 1 + combo.value * p.combo;
+  }
+  if (p.fury && now < p.fury.until) pw *= 1 + p.fury.pct * p.fury.n;
+  const pr = p.buffs?.get('parry_riposte');
+  if (pr && now < pr.until && spec?.id === pr.ability) { pw *= pr.mult; p.buffs.delete('parry_riposte'); }
   if (spec?.lowHp && m.hp / m.mhp < spec.lowHp.under) pw *= m.boss ? spec.lowHp.bossMult || spec.lowHp.mult : spec.lowHp.mult;
   let poise = opts.poise ?? spec?.poise ?? ((abId && ABILITIES[abId]?.poise) || 0);
   if (!opts.noRiposte && spec && (spec.power || 0) > 0) {
@@ -109,6 +124,12 @@ export function hitMonster(game, p, m, power, abId, spec = null, opts = {}) {
   // ---- crit
   let crit = p.stats.crit + (spec?.critAdd || 0);
   if (hasStatus(m, 'brulure', now)) crit += s('critVsStatus.brulure');
+  // Coups mesurés (keystone): one hit in four is critical (+50 % critical damage), the others never
+  const measured = statEffects(tree, 'critMode').find((e) => e.value === 'every4');
+  if (measured && spec && (spec.power || 0) > 0) {
+    p.critCount = (p.critCount || 0) + 1;
+    crit = p.critCount % 4 === 0 ? 1 : 0;
+  }
   const nh = p.buffs?.get('sidestep');
   if (spec?.guaranteedCrit || (nh && now < nh.until && (spec?.power || 0) > 0)) {
     crit = 1;
@@ -118,14 +139,19 @@ export function hitMonster(game, p, m, power, abId, spec = null, opts = {}) {
   const r = computeDamage(attackFor(p, spec), pw, def, crit, game.rng(), game.rng());
   let amount = r.amount;
   if (r.crit) {
-    const cd = s('critDmgPct');
+    const cd = s('critDmgPct') + (measured?.critDmgPct || 0);
     if (cd) amount = Math.max(1, Math.round(amount * (1.6 + cd) / 1.6));
     poise *= 1 + s('critPoisePct');
   }
   poise *= spec?.poiseMult || 1;
+  // Hiver éternel: a boss at 3 stacks of Froid takes more poise damage
+  const bf = stat(tree, 'bossFroidPoiseTakenPct');
+  if (bf && m.boss && froidStacks(m, now) >= 3) poise *= 1 + (bf.pct || 25) / 100;
   const ok = damageMonster(game, m, p, amount, r.crit, abId, poise, { ignoreGuard: spec?.ignoreGuard });
   if (!ok) return 0;
   onPlayerHit(game, p, m, amount, spec, melee, now);
+  // Maîtrise du cimeterre: critical hits open a wound
+  if (r.crit && !m.dead) for (const e of statEffects(tree, 'onCritBleed')) if (cond(e.when)) applyStatus(game, m, p, 'saignement', { hit: amount, total: e.value, dur: e.dur || 4 });
   return amount;
 }
 
@@ -194,6 +220,15 @@ export function killMonster(game, m) {
   m.ai = 'dead';
   m.target = 0;
   m.slowUntil = 0;
+  // [skilltree] Épidémie: a poisoned monster passes its poison on when it dies
+  if (m.status && poisonStacks(m, now) > 0) {
+    const src = game.players.get(m.status.poison.find((x) => now < x.until)?.src);
+    const epi = src && stat(src.tree, 'onPoisonedDeath');
+    if (epi) {
+      const near = monstersInRadius(game, m.x, m.z, epi.spreadR || 5).filter((o) => o !== m).slice(0, epi.targets || 1);
+      for (const o of near) applyStatus(game, o, src, 'poison', { stacks: poisonStacks(m, now), atk: src.stats.atk, dur: 6 });
+    }
+  }
   m.status = null; // [skilltree]
   onMonsterDeath(game, m); // [combat-souls] pending telegraphs are cancelled
 
@@ -228,7 +263,12 @@ export function killMonster(game, m) {
     const [gMin, gMax] = m.def.gold;
     const eliteMul = m.elite ? ELITE.gold : 1; // [combat-souls] elites: more gold, better drop chances
     giveGold(game, killer, randInt(game.rng, gMin, gMax) * eliteMul);
-    for (const drop of m.def.drops || []) if (game.rng() < drop.ch * (m.elite ? ELITE.drops : 1)) giveItem(game, killer, drop.id, 1);
+    // [skilltree] Dépeceur: more materials from beasts
+    const skin = BEAST_TYPES.has(m.type) ? 1 + stat(killer.tree, 'beastMaterialPct') : 1;
+    for (const drop of m.def.drops || []) {
+      const mat = ITEMS[drop.id]?.type === 'junk' ? skin : 1;
+      if (game.rng() < drop.ch * (m.elite ? ELITE.drops : 1) * mat) giveItem(game, killer, drop.id, 1);
+    }
   }
   game.store?.markDirty();
 

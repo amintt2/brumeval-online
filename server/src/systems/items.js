@@ -3,6 +3,7 @@ import { ITEMS, CLASSES, INV_SIZE, EQUIP_SLOTS } from '../../../shared/data.js';
 import { removeAt, firstEmpty, equipSlotOf, addItem, formatItem } from '../inventory.js';
 import { isInt } from '../util.js';
 import { healPlayer } from './players.js';
+import { stat } from '../../../shared/skills.js'; // [skilltree]
 
 function slotItem(game, p, slot) {
   if (!isInt(slot, 0, INV_SIZE - 1)) { game.error(p, 'bad_request', 'Emplacement invalide.'); return null; }
@@ -58,7 +59,9 @@ export function handleUseItem(game, p, msg) {
   p.markDirty('inv');
   if (item.heal > 0) healPlayer(game, p, item.heal, null);
   if (item.mana > 0) {
-    p.mp = Math.min(p.mmp, p.mp + item.mana);
+    // [skilltree] Alchimiste de fortune (+x %), Pacte de la lune de sang (−50 % on mana potions)
+    const k = p.tree ? Math.max(0, 1 + stat(p.tree, 'potionPct') + stat(p.tree, 'potionPct.mana')) : 1;
+    p.mp = Math.min(p.mmp, p.mp + Math.round(item.mana * k));
     p.markDirty('mp');
   }
 }

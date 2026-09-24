@@ -94,6 +94,19 @@ export const EXOTIC = {
   spread: '✓ Embrasement contagieux : la brûlure se propage',
   detonateBleed: '✓ Hémorragie : fait éclater le saignement',
   everyNth: '✓ tous les N tirs : charge de poison',
+  ignoreArmorWeight: '✗ pas encore de poids d’armure (objets v0.3)',
+  wallHp: '✗ le Mur de glace n’a pas de PV : il dure 6 s',
+  resFeu: '✗ aucun monstre n’inflige encore de feu (seuls les sorts « mag » comptent comme arcane)',
+  resGivre: '✗ aucun monstre n’inflige encore de givre',
+  resPoison: '✗ aucun monstre n’empoisonne encore',
+  echoOnMap: '✗ affichage sur la carte : côté client',
+  echoKeepOld: '✗ un seul écho de mort à la fois',
+  echoMax: '✗ un seul écho de mort à la fois',
+  redirectGroupDmg: '✗ pas encore de groupes',
+  dotTakenDurPct: '✗ les monstres n’infligent pas encore de dégâts sur la durée',
+  gatherHerbPct: '✗ récolte (métiers v0.3)',
+  teleEarlyMarkedMs: '✗ affichage anticipé : côté client',
+  dualWield: '✗ pas encore de main gauche',
 };
 
 // ------------------------------------------------------------------ resolution helpers
@@ -163,6 +176,7 @@ export function handleAbility(game, p, msg) {
     if (e && !e.dead) target = e; // optional aim (aoe at the target, dash towards it…)
   }
   if (inVillage(p.x, p.z)) return game.error(p, 'safe_zone', 'Impossible de combattre dans le village');
+  if (target) p.lastTargetId = target.id; // the wisp shoots at it
   // [combat-souls] no attacking in the middle of a dodge roll
   if (isRolling(p, now)) {
     if (target && slot === 0) p.autoTarget = target.id;
@@ -229,7 +243,12 @@ export function castAbility(game, p, slot, target, point, now, override = null) 
   } else {
     px = p.x + Math.sin(p.ry) * 5; pz = p.z + Math.cos(p.ry) * 5;
   }
-  if (p.mp < (spec.mp || 0)) return { code: 'no_mana', msg: 'Pas assez de mana' };
+  if (p.mp < (spec.mp || 0)) {
+    // Pacte de la lune de sang (keystone): spells take the missing mana from the hp (never under floorPct %)
+    const blood = stat(p.tree, 'bloodMagic');
+    const hpCost = ((spec.mp || 0) - p.mp) * (blood?.hpPerMana || 1);
+    if (!blood || !(spec.tags || []).includes('sort') || p.hp - hpCost < p.mhp * ((blood.floorPct || 10) / 100)) return { code: 'no_mana', msg: 'Pas assez de mana' };
+  }
   // [combat-souls] stamina + no ranged auto-attack spam while running full speed
   if (p.st < (spec.st || 0)) return { code: 'no_stamina', msg: 'Pas assez d\'endurance' };
   if (spec.auto && spec.kind === 'projectile' && isRunning(p, now)) return { code: 'moving', msg: 'Ralentissez pour tirer' };
@@ -238,6 +257,10 @@ export function castAbility(game, p, slot, target, point, now, override = null) 
   // [skilltree] Élan (sprint variant): the base attack after 0.8 s of sprint becomes an Assault
   let sp = spec;
   if (spec.base) sp = assaultOf(game, p, spec, target, now) || spec;
+  // Au plus près (Tir): at point-blank range the shot becomes two knife cuts
+  if (spec.melee_under && target && dist(p.x, p.z, target.x, target.z) <= spec.melee_under.dist) {
+    sp = { ...sp, kind: 'melee', range: spec.melee_under.dist, powerSeq: spec.melee_under.power, poise: spec.melee_under.poise ?? sp.poise, tags: [...(sp.tags || []).filter((t) => t !== 'projectile'), 'melee', 'dague'] };
+  }
   p.guardUp = false; // attacking lowers the guard (the client raises it again)
   const ctx = { slot, id, target, x: px, z: pz, point };
   if ((sp.cast || 0) > 0) {
@@ -273,7 +296,13 @@ export function pay(game, p, spec, ctx, now) {
   spendStamina(p, spec.st || 0, now); // [combat-souls]
   applyRecovery(p, spec, now); // [combat-souls] attack commitment
   if (spec.mp > 0) {
-    p.mp -= spec.mp;
+    const missing = Math.max(0, spec.mp - p.mp);
+    if (missing > 0) {
+      // Pacte de la lune de sang: the rest is paid with hp (checked in castAbility)
+      p.hp = Math.max(1, p.hp - missing * (stat(p.tree, 'bloodMagic')?.hpPerMana || 1));
+      p.markDirty('hp');
+    }
+    p.mp = Math.max(0, p.mp - spec.mp);
     p.markDirty('mp');
   }
   if (spec.hpCost > 0 && !p.dead) {
@@ -421,11 +450,12 @@ export function onHitEffects(game, p, m, spec, dmg, now) {
     p.everyCount.set(key, c);
     return c % n === 0;
   };
+  const burnMax = stat(tree, 'statusMaxStacks.brulure') || 1; // Cœur de braise: burns stack (3)
   for (const a of spec.applies || []) {
     const e = typeof a === 'string' ? { id: a } : a;
     if (e.every && !every(`${spec.id}:${e.id}`, e.every)) continue;
     switch (e.id) {
-      case 'brulure': applyStatus(game, m, p, 'brulure', { hit: dmg, dur: dur('brulure', e.dur ?? 3) }); break;
+      case 'brulure': applyStatus(game, m, p, 'brulure', { hit: dmg, dur: dur('brulure', e.dur ?? 3), max: burnMax }); break;
       case 'froid': applyStatus(game, m, p, 'froid', { stacks: e.stacks ?? 1, dur: dur('froid', e.dur ?? 3), toGel: stat(tree, 'froidToGel') || null }); break;
       case 'marque': applyStatus(game, m, p, 'marque', { pct: e.dmgTakenPct ?? 0.12, dur: e.dur ?? 6 }); break;
       case 'saignement': applyStatus(game, m, p, 'bleedBuild', { add: 20 * (1 + s('bleedBuildPct')), hit: dmg }); break;

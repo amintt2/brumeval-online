@@ -4,6 +4,7 @@
 import { MAX_LEVEL } from '../../../shared/data.js';
 import { S2C, FX } from '../../../shared/protocol.js';
 import { ECHO } from '../../../shared/combat.js';
+import { stat } from '../../../shared/skills.js'; // [skilltree]
 import { isWalkable } from '../../../shared/world.js';
 import { Echo } from '../entities/echo.js';
 import { round2 } from '../util.js';
@@ -82,6 +83,7 @@ export function updateEchoes(game) {
     const e = p.echo;
     if (!e || p.dead) continue;
     const dx = p.x - e.x, dz = p.z - e.z;
-    if (dx * dx + dz * dz <= ECHO.pickupR * ECHO.pickupR) recoverEcho(game, p);
+    const r = (p.tree && stat(p.tree, 'echoPickupR')) || ECHO.pickupR; // [skilltree] Appel de l'écho: 4 m
+    if (dx * dx + dz * dz <= r * r) recoverEcho(game, p);
   }
 }

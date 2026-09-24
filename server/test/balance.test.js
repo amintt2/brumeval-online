@@ -26,3 +26,19 @@ test('balance: the golem is a long, dangerous fight but can be won solo at level
   // it hurts: every class takes real damage
   assert.ok(res.boss.every((r) => r.dmgPct > 0.1));
 });
+
+// [skilltree] builds of l'Arbre des Brumes (tests/balance/sim.mjs › BUILDS): every build spends its points, can use
+// its whole bar with its weapon, kills its opponents in reasonable time and rarely dies.
+test('balance (tree): 2 builds per class + 2 hybrids at levels 10, 20 and 30', async () => {
+  const { runTreeBalance, BUILDS } = await import('../../tests/balance/sim.mjs');
+  const tree = runTreeBalance({ n: 30, seed: 3 });
+  for (const [key, b] of Object.entries(tree.builds)) {
+    assert.ok(b.budget - b.spent <= 1, `${key} : les points sont placés (${b.spent}/${b.budget})`);
+    assert.ok(b.usable, `${key} : toute la barre est utilisable avec l'arme choisie`);
+  }
+  for (const r of tree.rows) {
+    assert.ok(r.ttk < 40, `${r.build} niv. ${r.level} contre ${r.type} : ${r.ttk.toFixed(1)} s`);
+    assert.ok(r.deathRate <= 0.1, `${r.build} niv. ${r.level} contre ${r.type} : ${Math.round(r.deathRate * 100)} % de morts`);
+  }
+  assert.equal(Object.keys(tree.eff[30]).length, BUILDS.length);
+});

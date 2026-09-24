@@ -741,3 +741,41 @@ test('statuses on EntState, exotic mechanics are listed', () => {
   for (const [id, it] of Object.entries(ITEMS)) if (it.type === 'weapon') assert.ok(Array.isArray(it.wt) && it.wt.length, id);
   assert.equal(freshSkills('ranger').loadout[0], 'shot');
 });
+
+test('coverage: every field / stat modified by the tree is read by the engine or listed as approximated', async () => {
+  const { coverage } = await import('../../scripts/skilltree-coverage.mjs');
+  const c = coverage(EXOTIC);
+  assert.deepEqual(c.missing.map((m) => m.f), []);
+  assert.deepEqual(c.statsMissing.map((m) => m.s), []);
+  assert.ok(c.engine.length > 90 && c.stats.length > 80);
+});
+
+test('keystones in play: Coups mesurés (1 critical in 4), Dernier souffle (survive a lethal hit), Course feutrée (aggro)', () => {
+  const game = makeGame();
+  const s1 = skillsFor('warrior', 'strike', { extra: ['gu_md_ks_coups_mesures'] }).sk;
+  s1.loadout = ['strike', null, null, null, null, null, null, null];
+  const p = addPlayer(game, { cls: 'warrior', level: 30, skills: s1, eq: { weapon: 'steel_sword', armor: null } });
+  const m = spawnAt(game, 'skeleton', ZX, ZZ);
+  m.hp = m.mhp = 100_000; m.speed = 0; m.atkReady = Infinity; m.brain.guard = null;
+  place(game, p, ZX, ZZ + 2.4);
+  game.handleMessage(p, { t: 'ability', slot: 0, tg: m.id });
+  advance(game, 8 * 1400);
+  const crits = p.session.of('dmg', (d) => d.src === p.id && d.ab === 'strike').map((d) => d.crit);
+  assert.ok(crits.length >= 8);
+  crits.forEach((c, i) => assert.equal(c, (i + 1) % 4 === 0, `coup ${i + 1}`));
+  // Dernier souffle
+  const s2 = skillsFor('warrior', 'strike', { extra: ['ks_dernier_souffle'] }).sk;
+  const q = addPlayer(game, { cls: 'warrior', level: 30, skills: s2 });
+  place(game, q, ZX + 5, ZZ);
+  damagePlayer(game, q, m, q.hp + 500, false, 'golem_punch', { kind: 'melee' });
+  assert.equal(q.dead, false);
+  assert.equal(q.hp, 1);
+  assert.ok(q.iframeUntil > game.now());
+  advance(game, 1000);
+  damagePlayer(game, q, m, q.hp + 500, false, 'golem_punch', { kind: 'melee' });
+  assert.equal(q.dead, true, 'une seule fois toutes les 120 s');
+  // Course feutrée
+  const s3 = skillsFor('ranger', 'shot', { extra: ['sv_course_feutree'] }).sk;
+  const r = addPlayer(game, { cls: 'ranger', level: 30, skills: s3 });
+  assert.equal(r.aggroMult, 0.6);
+});

@@ -304,6 +304,12 @@ export function stat(tree, name, ctx = null) {
   return cap !== undefined ? Math.min(cap, v) : v;
 }
 
+/** Every effect of a stat (with its extra parameters: dur, maxStacks, target, family…), conditional ones included. */
+export function statEffects(tree, name) {
+  if (!tree) return [];
+  return tree.effects.filter((e) => e.stat === name);
+}
+
 /** Total Inaptitude reduction for an ability (sum of inaptitudeReduce effects, capped by the rules). */
 export function inaptitudeReduction(tree, ability) {
   let red = 0;

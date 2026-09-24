@@ -161,6 +161,8 @@ function tickTrap(game, t, p, now) {
       else applyStatus(game, m, p, 'enracine', { dur: spec.root, durElite: spec.rootElite || 1 });
     }
     if (spec.slow) applyStatus(game, m, p, 'slow', { pct: spec.slow.pct, dur: spec.slow.dur || 4 });
+    // Piège de ronces: bleed per second while it lasts
+    if (spec.bleedPerS > 0) applyStatus(game, m, p, 'saignement', { hit: spec.bleedPerS * 4, total: 1, dur: 4 });
   }
 }
 

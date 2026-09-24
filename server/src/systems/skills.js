@@ -6,7 +6,7 @@ import { CLASSES, ITEMS, MAX_LEVEL } from '../../../shared/data.js';
 import { S2C, FX } from '../../../shared/protocol.js';
 import { STAMINA } from '../../../shared/combat.js';
 import {
-  allocate, buildTree, stat, checkLoadout, repairLoadout, autoSlot, unlockedAbilities, pointsSummary, freshSkills,
+  allocate, buildTree, stat, resolveAbility, checkLoadout, repairLoadout, autoSlot, unlockedAbilities, pointsSummary, freshSkills,
   RENAISSANCE, renaissanceTitle, affinitySlots, TREE_ERRORS, TREE_CLASSES, NODES, ABILITY_DEFS, RULES, MAX_ALLOC_BATCH,
 } from '../../../shared/skills.js';
 import { firstEmpty } from '../inventory.js';
@@ -20,6 +20,8 @@ const RENAISSANCE_CALM_MS = 10_000;
 /** (Re)build the tree cache of a player and everything derived from it (stats, stamina caps, bar). */
 export function refreshTree(p) {
   p.tree = buildTree(p.cls, p.skills);
+  // Course feutrée: the monsters notice you at 60 % of their usual distance
+  p.aggroMult = resolveAbility(p.tree, 'sprint', {}).aggroRadiusMult || 1;
   p.skills.loadout = repairLoadout(p.skills.loadout, p.tree.unlocked, p.cls);
   p.recomputeStats();
   p.markDirty('tree', 'points', 'loadout', 'renaissance', 'abilities', 'mst');

@@ -121,6 +121,7 @@ function tryAggro(game, m, now) {
   for (const p of aoiOf(game).playersNear(m.x, m.z, r, aggroBuf, false)) { // [netcode-perf] grid query
     if (!validVictim(p)) continue;
     const d = dist2(m.x, m.z, p.x, p.z);
+    if (p.aggroMult < 1 && d > (r * p.aggroMult) ** 2) continue; // [skilltree] Course feutrée
     if (d <= bestD) { best = p; bestD = d; }
   }
   if (!best) return false;

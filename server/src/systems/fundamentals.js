@@ -5,7 +5,7 @@
 // server and never raises the movement allowance (except Envol's ×1.4 distance), the validator stays in charge.
 import { S2C, FX } from '../../../shared/protocol.js';
 import { PLAYER_STAGGER } from '../../../shared/combat.js';
-import { stat, weaponTags } from '../../../shared/skills.js';
+import { stat, statEffects, weaponTags } from '../../../shared/skills.js';
 import { isNum, dist } from '../util.js';
 import { spendStamina, isRolling, applyRecovery, setRollCancel } from './stamina.js';
 import { setTelegraphHooks } from './telegraph.js';
@@ -153,7 +153,7 @@ function guardHit(game, p, src, amount, info, now) {
     p.lastBlockAt = now;
     game.broadcastNear(p.x, p.z, { t: S2C.FX, k: FX.PARRY, src: p.id, tg: src.id });
     if (src.kind === 'monster') applyPoise(game, src, g.parryPoise || 60, now);
-    grantRiposte(game, p, now);
+    grantRiposte(game, p, now, true);
     return { blocked: true, amount: 0 };
   }
   if (since < (g.raiseMs ?? 150)) return null; // still raising the guard
@@ -161,6 +161,8 @@ function guardHit(game, p, src, amount, info, now) {
   const r = g.reduce;
   let red = g.reduceAll ?? (typeof r === 'number' ? r : melee ? r?.melee ?? 0.5 : r?.autre ?? 0.3);
   red = Math.min(0.9, red + stat(p.tree, 'guardReducePct'));
+  // Mur vivant (keystone): 100 % (85 % against a boss) — only with a shield in the off-hand (none in the v0.3 items yet)
+  for (const e of statEffects(p.tree, 'guardReduce')) if (!e.when?.offhand) red = Math.max(red, info.boss ? e.bossValue ?? e.value : e.value);
   let cost = Math.min(60, 8 + (60 * amount) / Math.max(1, p.mhp)) * (info.tele ? 1.5 : 1);
   cost *= Math.max(0.1, 1 + stat(p.tree, 'guardStaminaPct')) * (g.blockStMult || 1);
   cost = Math.round(cost);
@@ -185,7 +187,10 @@ function guardHit(game, p, src, amount, info, now) {
   return { blocked: true, amount: through };
 }
 
-function grantRiposte(game, p, now) {
+function grantRiposte(game, p, now, parry = false) {
+  // Garde au couteau: after a perfect parry, the next Coup de dague hits much harder
+  const pr = parry && stat(p.tree, 'parryRiposte');
+  if (pr) addBuff(game, p, 'parry_riposte', 1500, { ability: pr.ability, mult: pr.mult || 2.5 });
   const g = specOf(p, 'riposte_parfaite', now).grant;
   if (!g) return;
   addBuff(game, p, 'riposte_parfaite', g.ms || 1000, { powerMult: g.powerMult, powerMultNonMelee: g.powerMultNonMelee, poiseAdd: g.poiseAdd });
@@ -202,11 +207,23 @@ export function onDodged(game, p, now) {
   const refund = Math.min(roll.perfectRefundSt || 15, p.rollPaid || 0); // never more than the roll cost
   if (refund > 0) p.st = Math.min(p.mst, p.st + refund);
   grantRiposte(game, p, now);
+  // Fantôme des brumes: the monsters lose sight of you for a moment (never bosses, half on elites), internal cd
+  const ghost = stat(p.tree, 'onPerfectDodge');
+  if (ghost && now >= (p.ghostReady || 0)) {
+    p.ghostReady = now + (ghost.icd || 8) * 1000;
+    for (const m of game.monsters.values()) {
+      if (m.dead || m.target !== p.id || m.boss || m.act?.kind === 'stagger') continue;
+      if (m.act?.kind === 'attack') continue; // never cancels an attack already launched
+      m.act = { kind: 'pause', until: now + (ghost.stealth || 1.5) * 1000 * (m.elite ? ghost.elites ?? 0.5 : 1) };
+    }
+  }
 }
 
 // ------------------------------------------------------------------ player stagger (vacillement)
 export function stagger(game, p, ms, now) {
-  const k = Math.max(0.4, 1 - (p.equilibre || 0) / 100);
+  // Équilibre (+ Roulade lourde: +50 for 0.4 s after the roll), Inébranlable (ccDurationPct)
+  const eq = (p.equilibre || 0) + (now < (p.equilibreBonusUntil || 0) ? p.equilibreBonus || 0 : 0);
+  const k = Math.max(0.4, 1 - Math.min(90, eq) / 100) * Math.max(0.3, 1 + stat(p.tree, 'ccDurationPct'));
   const d = Math.round(ms * k);
   p.staggerUntil = Math.max(p.staggerUntil || 0, now + d);
   p.guardUp = false;
@@ -239,6 +256,14 @@ export function defendPlayer(game, p, src, amount, info, now) {
     if (amount <= 0) return { amount: 0, negated: true, blocked };
   }
   amount *= Math.max(0.1, 1 + stat(p.tree, 'dmgTakenPct') + buffStat(p, 'dmgTakenPct'));
+  // resistances: only spells (mag) have an element in v0.3 (arcane)
+  if (info.mag) amount *= 1 - Math.min(0.6, stat(p.tree, 'resArcane'));
+  // Fureur: each hit taken gives +x % damage for a few seconds (stacks)
+  const fury = statEffects(p.tree, 'onHitTakenDmgPct')[0];
+  if (fury && fromMonster) {
+    const n = p.fury && now < p.fury.until ? Math.min(fury.maxStacks || 5, p.fury.n + 1) : 1;
+    p.fury = { n, pct: fury.value, until: now + (fury.dur || 5) * 1000 };
+  }
   // Égide runique (absorb shield)
   const sh = p.buffs?.get('rune_aegis');
   if (sh && sh.shieldHp > 0 && now < sh.until) {
@@ -345,6 +370,7 @@ function releaseCharge(game, p, now, msg = {}) {
   const powerMax = s.powerMax || 1.8, poiseMax = s.poiseMax || 2;
   const spec = { ...base };
   spec.power = (Array.isArray(base.power) ? base.power[0] : base.power || 1) * (1 + (powerMax - 1) * lvl);
+  // Éventail: poisePerTarget (mul −40 %) → poisePerTargetMult
   spec.poise = (base.poise || 0) * (1 + (poiseMax - 1) * lvl) * (s.poisePerTargetMult || 1);
   spec.st = (base.st || 0) + (s.st || 10);
   spec.rec = s.rec ?? 0.5;
@@ -383,10 +409,21 @@ export function updateFundamentals(game, now) {
 
 export { dist };
 
-// a roll cancels a cast (nothing spent), a channel (Trait fatal: half the mana back) and a charge
-setRollCancel((game, p) => {
+// a roll cancels a cast (nothing spent), a channel (Trait fatal: half the mana back) and a charge;
+// Roulade lourde: +50 Équilibre just after, poise shock (landingPoise) at 1.5 m on arrival
+setRollCancel((game, p, r) => {
   cancelCast(game, p);
   stopChannel(game, p, 'roll');
   cancelCharge(game, p);
+  if (r?.equilibreBonus) {
+    p.equilibreBonus = r.equilibreBonus;
+    p.equilibreBonusUntil = game.now() + (r.ms || 650) + 400;
+  }
+  if (r?.landingPoise) {
+    game.schedule(r.ms || 650, () => {
+      if (p.dead || game.players.get(p.id) !== p) return;
+      for (const m of monstersInRadius(game, p.x, p.z, 1.5)) applyPoise(game, m, r.landingPoise, game.now());
+    });
+  }
 });
 setTelegraphHooks({ dodged: onDodged, airborne: isAirborne });

@@ -52,9 +52,14 @@ export function applyStatus(game, m, src, id, opts = {}) {
     case 'brulure': {
       const dur = (opts.dur ?? 3) * 1000;
       const total = Math.max(1, (opts.hit || 0) * (opts.pct ?? 0.3));
-      const dps = total / (dur / 1000);
-      if (s.burn && now < s.burn.until && s.burn.dps >= dps) return false;
-      s.burn = { dps, until: now + dur, next: now + TICK_MS, src: src?.id || 0 };
+      let dps = total / (dur / 1000);
+      const max = opts.max || 1;
+      if (max > 1 && s.burn && now < s.burn.until) {
+        // Cœur de braise: burns stack (up to `max` burns of this strength)
+        s.burn.n = Math.min(max, (s.burn.n || 1) + 1);
+        dps = Math.min(dps * s.burn.n, s.burn.dps + dps);
+      } else if (s.burn && now < s.burn.until && s.burn.dps >= dps) return false;
+      s.burn = { dps, n: s.burn?.n || 1, until: now + dur, next: now + TICK_MS, src: src?.id || 0 };
       fx(game, m, id, dur);
       return true;
     }

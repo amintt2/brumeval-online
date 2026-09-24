@@ -7,7 +7,7 @@ import { MoveValidator } from '../movement.js';
 import { round2, round3 } from '../util.js';
 import { initCombatState, maxSpeedAt } from '../systems/stamina.js'; // [combat-souls]
 // [skilltree]
-import { buildTree, sanitizeSkills, freshSkills, repairLoadout } from '../../../shared/skills.js';
+import { buildTree, sanitizeSkills, freshSkills, repairLoadout, resolveAbility } from '../../../shared/skills.js';
 import { applyTreeStats, treeField, pointsField, renaissanceField } from '../systems/skills.js';
 import { buffStat } from '../systems/buffs.js';
 
@@ -38,6 +38,7 @@ export class Player {
     this.skills = sanitizeSkills(account.skills, this.cls, this.level) || freshSkills(this.cls);
     this.tree = buildTree(this.cls, this.skills);
     this.skills.loadout = repairLoadout(this.skills.loadout, this.tree.unlocked, this.cls);
+    this.aggroMult = resolveAbility(this.tree, 'sprint', {}).aggroRadiusMult || 1; // Course feutrée
     this.buffs = new Map(); // ability id -> { until, … } (systems/buffs.js)
     this.recomputeStats();
     this.hp = account.hp == null ? this.mhp : Math.max(1, Math.min(this.mhp, account.hp));

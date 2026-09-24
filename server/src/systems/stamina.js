@@ -158,7 +158,7 @@ export function handleDodge(game, p, msg) {
   p.moveUntil = Math.max(p.moveUntil, now + ms);
   p.ry = Math.atan2(dx, dz);
   // [skilltree] a roll cancels a cast (nothing spent), a channel (Trait fatal: half the mana back) and a charge
-  cancelInProgress?.(game, p);
+  cancelInProgress?.(game, p, r);
   p.guardUp = false;
   // the auto-attack resumes after the roll
   const base = p.loadout?.[0];
