@@ -111,8 +111,11 @@ action par les invariants de sécurité) :
   la barre `[attaque de base, –, –, –, potion de soin, potion de mana, –, –]`.
 - **Personnage v0.1 / v0.2** (aucun champ `skills`), à son premier chargement par un serveur v0.3
   (`legacySkills` dans `shared/skills.js`, appelé par `migrateCharacter`) :
-  - **Roulade et Sprint offerts** (`gift` : gratuits, ils comptent pour la porte des 3 Fondamentaux) ;
-  - un **plancher de points** (`legacyFloor` : Guerrier 4, Mage 5, Rôdeur 6 = le coût du préréglage) tant que les
+  - **Roulade et Sprint offerts** (`gift` : gratuits, ils comptent pour la porte des 3 Fondamentaux). C'est un
+    **avantage permanent et voulu des vétérans** (décision du 24/09) : ces 2 nœuds ne coûtent jamais de point, un
+    personnage migré a donc 2 points de plus qu'un nouveau à niveau égal (37 contre 35 au niveau 30). Il disparaît
+    à la Renaissance, qui vide `gift` ;
+  - un **plancher de points** (`legacyFloor` : Guerrier 4, Mage 6, Rôdeur 6 = le coût du préréglage) tant que les
     points de son niveau sont inférieurs — un personnage de niveau 1 retrouve donc tout de suite ses compétences ;
   - le préréglage « Reprendre mon style » placé d'office, nœud par nœud dans l'ordre ci-dessous (un nœud n'est
     gardé que si l'arbre reste valide ; avec le plancher, tous le sont) ;
@@ -121,12 +124,14 @@ action par les invariants de sécurité) :
 | Classe | Compétences v0.2 (touches 1 → 4) | Nœuds placés (coût) | En plus |
 |---|---|---|---|
 | Guerrier | Frappe, Coup puissant, Tourbillon, Cri de guerre | `fond_garde`, `gu_coup_puissant`, `gu_ga_cri`, `gu_be_tourbillon` (4) | la Garde (3ᵉ Fondamental) |
-| Mage | Trait (de feu), Boule de feu, Nova de givre, Soin | `fond_saut`, `ma_fireball`, `ma_v_bolt_feu`, `ma_frost_nova`, `ma_heal` (5) | le Saut ; le Trait arcanique redevient « Trait de feu » (variante) |
+| Mage | Trait (de feu), Boule de feu, Nova de givre, Soin | `fond_saut`, `ma_fireball`, `ma_v_bolt_feu`, `ma_frost_nova`, `ma_heal`, `ma_v_heal_remanence` (6) | le Saut ; le Trait arcanique redevient « Trait de feu » (variante) ; le Soin garde ses 35 % avec la variante Rémanence (35 % en 6 s, sans incantation) |
 | Rôdeur | Tir, Tir perçant, Pluie de flèches, Tir rapide | `fond_saut`, `ro_ti_main_sure`, `ro_ti_tir_percant`, `ro_ti_tir_rapide`, `ro_ti_oeil_exerce`, `ro_ti_pluie` (6) | le Saut, Main sûre et Œil exercé (préréglage de la conception) |
 
   Les points au-delà (par exemple 13 au niveau 12, dont 4 à 6 déjà placés) restent **libres** : le joueur les
   place où il veut. Personne ne perd une compétence ni une touche ; les valeurs des compétences suivent la
   conception v0.3 (docs/EQUILIBRAGE.md §7). Il n'y a **pas de réinitialisation** : la Renaissance la remplace.
+  À la première connexion, une carte « Bienvenue dans la v0.3 » résume les changements de ses compétences
+  (`rules.migration.notes` de l'arbre, avec les touches réellement assignées ; une seule fois par personnage).
 - **Renaissance** (niveau 30, `renaissance { confirm: true, affinity? }`) : niveau 1, XP 0, `alloc` et `gift` vidés
   (tout est à rechoisir, Fondamentaux compris), `legacyFloor` remis à 0, barre par défaut, `rb` + 1 (au plus 5),
   `affinity` + 1 classe aux 2ᵉ et 4ᵉ Renaissances. Équipement, or, inventaire, banque, quêtes et métiers sont

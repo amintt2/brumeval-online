@@ -1768,6 +1768,11 @@
       "exclusiveGroup": "ma_g_heal",
       "effects": [
         {
+          "mod": "heal.heal",
+          "op": "set",
+          "value": 0
+        },
+        {
           "mod": "heal.hot",
           "op": "set",
           "value": {

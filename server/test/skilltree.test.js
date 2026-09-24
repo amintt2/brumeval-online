@@ -276,6 +276,14 @@ test('migrated characters are not nerfed on first login: same abilities, same sl
     const heal = resolveAbility(buildTree('mage', legacySkills('mage', lvl)), 'heal');
     assert.ok(Math.max(heal.heal || 0, heal.hot?.pct || 0) >= 0.35, `Soin du Mage migré niv. ${lvl}`);
   }
+  // Rémanence replaces the instant heal (35 % over 6 s in total, not 25 % + 35 %)
+  const mage = addPlayer(game, { cls: 'mage', level: 10 });
+  place(game, mage, ZX, ZZ);
+  mage.hp = 10;
+  game.handleMessage(mage, { t: 'ability', slot: mage.skills.loadout.indexOf('heal') });
+  advance(game, 7000);
+  const healed = mage.session.of('heal', (m) => m.tg === mage.id).reduce((a, m) => a + m.v, 0);
+  assert.ok(Math.abs(healed - mage.mhp * 0.35) <= 3, `Rémanence : ${healed} / ${mage.mhp}`);
   // Roulade / Sprint stay free for veterans (DECISIONS §3, documented in docs/COMPTES.md)
   assert.equal(pointsSummary('warrior', 30, legacySkills('warrior', 30)).spent, TREE.migration.presets.warrior.cost);
 });

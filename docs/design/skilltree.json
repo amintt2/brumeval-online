@@ -19,8 +19,8 @@
    },
    {
     "target": "ma_v_heal_remanence",
-    "before": "[{\"mod\":\"heal.hot\",\"op\":\"set\",\"value\":{\"pct\":0.35,\"dur\":6}},{\"mod\":\"heal.cast\",\"op\":\"set\",\"value\":0},{\"mod\":\"heal.cd\",\"op\":\"set\",\"value\":16}]",
-    "after": "[{\"mod\":\"heal.hot\",\"op\":\"set\",\"value\":{\"pct\":0.35,\"dur\":6}},{\"mod\":\"heal.cast\",\"op\":\"set\",\"value\":0},{\"mod\":\"heal.cd\",\"op\":\"set\",\"value\":18}]",
+    "before": "[{\"mod\":\"heal.heal\",\"op\":\"set\",\"value\":0},{\"mod\":\"heal.hot\",\"op\":\"set\",\"value\":{\"pct\":0.35,\"dur\":6}},{\"mod\":\"heal.cast\",\"op\":\"set\",\"value\":0},{\"mod\":\"heal.cd\",\"op\":\"set\",\"value\":16}]",
+    "after": "[{\"mod\":\"heal.heal\",\"op\":\"set\",\"value\":0},{\"mod\":\"heal.hot\",\"op\":\"set\",\"value\":{\"pct\":0.35,\"dur\":6}},{\"mod\":\"heal.cast\",\"op\":\"set\",\"value\":0},{\"mod\":\"heal.cd\",\"op\":\"set\",\"value\":18}]",
     "why": "Suit la nouvelle recharge du Soin (15 s)."
    },
    {
@@ -9245,6 +9245,11 @@
    "ability": "heal",
    "exclusiveGroup": "ma_g_heal",
    "effects": [
+    {
+     "mod": "heal.heal",
+     "op": "set",
+     "value": 0
+    },
     {
      "mod": "heal.hot",
      "op": "set",

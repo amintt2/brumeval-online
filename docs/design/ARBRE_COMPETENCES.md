@@ -78,7 +78,7 @@
 
 #### Parcours conseillé (niveaux 2 à 10, `rules.guide`)
 
-À chaque montée de niveau jusqu'au niveau 10, la fenêtre propose le prochain nœud du parcours conseillé de la classe (un clic : « Apprendre »). Le joueur peut toujours choisir autre chose ; le parcours reprend au nœud suivant encore libre. Réinitialisation gratuite jusqu'au niveau 10.
+À chaque montée de niveau jusqu'au niveau 10, la fenêtre propose le prochain nœud du parcours conseillé de la classe (un clic : « Apprendre »). Le joueur peut toujours choisir autre chose ; le parcours reprend au nœud suivant encore libre. Pas de réinitialisation : chaque point est définitif jusqu'à la Renaissance (niveau 30).
 
 | Niveau | Guerrier | Mage | Rôdeur |
 |---|---|---|---|
@@ -255,10 +255,10 @@ Données v0.2 à marquer : `golem_stomp` et `golem_sweep` → `lo`, `golem_quake
 | id | Type | Nom | Effet | Rangs | Coût G/M/R | (x, y) | Liens |
 |---|---|---|---|---|---|---|---|
 | `fond_garde` | Compétence | **Garde** | Débloque la Garde : bloquer de face au prix d'endurance. *(Fondamental)* | 1 | 1/1/1 | 0, 110 | `coeur` `sv_bras` |
-| `fond_roulade` | Compétence | **Roulade** | Débloque la Roulade d'esquive (Espace). *(Fondamental · offert aux personnages v0.2)* | 1 | 1/1/1 | -65, -89 | `coeur` `sv_souplesse` |
+| `fond_roulade` | Compétence | **Roulade** | Débloque la Roulade d'esquive. *(Fondamental · offert aux personnages v0.2)* | 1 | 1/1/1 | -65, -89 | `coeur` `sv_souplesse` |
 | `fond_saut` | Compétence | **Saut** | Débloque le Saut et l'Attaque sautée. *(Fondamental)* | 1 | 1/1/1 | 65, -89 | `coeur` `sv_jarret` |
 | `fond_charge` | Compétence | **Attaque chargée** | Débloque l'Attaque chargée : maintenir l'attaque de base. *(Fondamental)* | 1 | 1/1/1 | -105, 34 | `coeur` `sv_concentration` |
-| `fond_sprint` | Compétence | **Sprint** | Débloque le Sprint (Maj). *(Fondamental · offert aux personnages v0.2)* | 1 | 1/1/1 | 105, 34 | `coeur` `sv_foulee` |
+| `fond_sprint` | Compétence | **Sprint** | Débloque le Sprint. *(Fondamental · offert aux personnages v0.2)* | 1 | 1/1/1 | 105, 34 | `coeur` `sv_foulee` |
 
 #### Sprint (4 nœuds)
 
@@ -1334,51 +1334,51 @@ Javelots et lances, *Coup d'épieu*, appâts, deux armes (Ambidextrie) et la cl�
 - **Victimes par vie** = (DPS / PV du monstre) × temps avant de mourir. L'**exposition** de chaque classe (la part des
   coups du monstre qui la touchent : la mêlée reste au contact, le mage et le rôdeur non) est calibrée **une seule fois**
   sur le kit v0.2 (préréglage de migration + armes v0.2) aux niveaux 5, 10 et 14, que la simulation v0.2
-  (`tests/balance/sim.mjs`, `docs/EQUILIBRAGE.md`) mesurait à ±9 %. Exposition obtenue : Guerrier 1,746, Mage 0,515, Rôdeur 0,731.
+  (`tests/balance/sim.mjs`, `docs/EQUILIBRAGE.md`) mesurait à ±9 %. Exposition obtenue : Guerrier 1,779, Mage 0,465, Rôdeur 0,745.
 - Cibles : classes (moyenne de leurs deux constructions) à **±15 %** à chaque niveau, aucune construction à plus de
   ±25 % de la moyenne ; hybrides entre **80 % et 100 %** de la meilleure construction pure de leur classe.
 - Ce modèle est une **vérification rapide**, pas la simulation de combat : elle devra être refaite avec
   `tests/balance/sim.mjs` étendu à l'arbre (les profils ci-dessus sont prêts à y être repris).
 
-### 12.2 Résultats (toutes les cibles atteintes)
+### 12.2 Résultats (HORS CIBLE)
 
 | Niv. | Guerrier | Mage | Rôdeur | Écart max | Résultat |
 |---|---|---|---|---|---|
-| 5 | 5,77 (+5,1 %) | 5,27 (-4,1 %) | 5,44 (-1 %) | 5,1 % | OK |
-| 15 | 7,66 (+1,7 %) | 7,91 (+5,1 %) | 7,01 (-6,8 %) | 6,8 % | OK |
-| 30 | 9,83 (+2,2 %) | 9,13 (-5,2 %) | 9,91 (+3 %) | 5,2 % | OK |
+| 5 | 5,61 (-1,2 %) | 6,13 (+8 %) | 5,28 (-6,9 %) | 8 % | hors cible |
+| 15 | 7,52 (-2,6 %) | 8,76 (+13,5 %) | 6,88 (-10,8 %) | 13,5 % | OK |
+| 30 | 9,65 (-1,5 %) | 10,11 (+3,1 %) | 9,65 (-1,6 %) | 3,1 % | OK |
 
 | Niv. | Build | Points | PV | Attaque | Défense | DPS | Contrôle | Survie (s) | Victimes par vie | Écart au niveau |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 5 | `g_gardien` | 5/5 | 219 | 34 | 41 | 34,9 | 27 % | 35,3 | 6,84 | +24,5 % |
-| 15 | `g_gardien` | 17/17 | 467 | 77 | 102 | 100,8 | 32 % | 44,8 | 9,02 | +19,8 % |
-| 30 | `g_gardien` | 35/35 | 832 | 141 | 221 | 215,5 | 24 % | 43,5 | 9,57 | -0,6 % |
-| 5 | `g_berserker` | 5/5 | 219 | 39 | 32 | 34,3 | 30 % | 24,7 | 4,71 | -14,3 % |
-| 15 | `g_berserker` | 17/17 | 465 | 90 | 80 | 111,4 | 20 % | 28,3 | 6,3 | -16,3 % |
-| 30 | `g_berserker` | 35/35 | 894 | 166 | 136 | 327,7 | 32 % | 30,2 | 10,1 | +4,9 % |
-| 5 | `m_pyro` | 5/5 | 146 | 34 | 13 | 28,5 | 0 % | 37,6 | 5,96 | +8,4 % |
-| 15 | `m_pyro` | 17/17 | 279 | 83 | 33 | 95,3 | 11 % | 37,5 | 7,14 | -5,1 % |
-| 30 | `m_pyro` | 35/35 | 536 | 156 | 61 | 267,9 | 8 % | 30,2 | 8,27 | -14,1 % |
-| 5 | `m_givre` | 5/5 | 146 | 34 | 13 | 18,4 | 5 % | 44,7 | 4,58 | -16,7 % |
-| 15 | `m_givre` | 17/17 | 307 | 83 | 33 | 95,6 | 16 % | 45,4 | 8,68 | +15,2 % |
-| 30 | `m_givre` | 35/35 | 584 | 156 | 67 | 182,9 | 31 % | 53,5 | 9,99 | +3,8 % |
-| 5 | `r_tireur` | 5/5 | 173 | 36 | 21 | 32,1 | 0 % | 29,7 | 5,3 | -3,5 % |
-| 15 | `r_tireur` | 17/17 | 336 | 85 | 52 | 102,4 | 0 % | 31,7 | 6,49 | -13,8 % |
-| 30 | `r_tireur` | 35/35 | 651 | 157 | 96 | 287,9 | 9 % | 34,4 | 10,1 | +5 % |
-| 5 | `r_venin` | 5/5 | 173 | 33 | 21 | 33,7 | 0 % | 29,7 | 5,57 | +1,5 % |
-| 15 | `r_venin` | 17/17 | 336 | 79 | 52 | 119,1 | 0 % | 31,7 | 7,54 | +0,2 % |
-| 30 | `r_venin` | 35/35 | 651 | 145 | 96 | 316,2 | 0 % | 30,1 | 9,72 | +1 % |
-| 15 | *hybride* `h_lame_spirituelle` | 17/17 | 279 | 82 | 33 | 98,6 | 8 % | 36,8 | 7,26 | — |
-| 30 | *hybride* `h_lame_spirituelle` | 35/35 | 469 | 153 | 61 | 258 | 12 % | 32,5 | 8,55 | — |
-| 15 | *hybride* `h_rodeur_givre` | 17/17 | 336 | 85 | 52 | 104,4 | 8 % | 34,2 | 7,15 | — |
-| 30 | *hybride* `h_rodeur_givre` | 35/35 | 610 | 157 | 96 | 274,2 | 3 % | 29,3 | 8,2 | — |
+| 5 | `g_gardien` | 5/5 | 219 | 34 | 41 | 34,9 | 27 % | 34,2 | 6,63 | +16,9 % |
+| 15 | `g_gardien` | 17/17 | 467 | 77 | 102 | 100,8 | 32 % | 43,9 | 8,85 | +14,7 % |
+| 30 | `g_gardien` | 35/35 | 832 | 141 | 221 | 215,5 | 24 % | 42,7 | 9,39 | -4,2 % |
+| 5 | `g_berserker` | 5/5 | 219 | 39 | 32 | 34,3 | 30 % | 24,1 | 4,58 | -19,2 % |
+| 15 | `g_berserker` | 17/17 | 465 | 90 | 80 | 111,4 | 20 % | 27,7 | 6,18 | -19,9 % |
+| 30 | `g_berserker` | 35/35 | 894 | 166 | 136 | 327,7 | 32 % | 29,6 | 9,91 | +1,1 % |
+| 5 | `m_pyro` | 5/5 | 146 | 34 | 13 | 28,5 | 0 % | 45,4 | 7,19 | +26,8 % |
+| 15 | `m_pyro` | 17/17 | 279 | 83 | 33 | 95,3 | 11 % | 41,5 | 7,91 | +2,5 % |
+| 30 | `m_pyro` | 35/35 | 536 | 156 | 61 | 267,9 | 8 % | 33,5 | 9,15 | -6,6 % |
+| 5 | `m_givre` | 5/5 | 146 | 34 | 13 | 18,4 | 5 % | 49,5 | 5,07 | -10,7 % |
+| 15 | `m_givre` | 17/17 | 307 | 83 | 33 | 95,6 | 16 % | 50,3 | 9,61 | +24,5 % |
+| 30 | `m_givre` | 35/35 | 584 | 156 | 67 | 182,9 | 31 % | 59,3 | 11,06 | +12,9 % |
+| 5 | `r_tireur` | 5/5 | 173 | 36 | 21 | 32,1 | 0 % | 28,9 | 5,15 | -9,2 % |
+| 15 | `r_tireur` | 17/17 | 336 | 85 | 52 | 102,4 | 0 % | 31,1 | 6,36 | -17,6 % |
+| 30 | `r_tireur` | 35/35 | 651 | 157 | 96 | 287,9 | 9 % | 33,7 | 9,91 | +1,1 % |
+| 5 | `r_venin` | 5/5 | 173 | 33 | 21 | 33,7 | 0 % | 28,9 | 5,42 | -4,6 % |
+| 15 | `r_venin` | 17/17 | 336 | 79 | 52 | 119,1 | 0 % | 31,1 | 7,4 | -4,1 % |
+| 30 | `r_venin` | 35/35 | 651 | 145 | 96 | 316,2 | 0 % | 29,1 | 9,38 | -4,3 % |
+| 15 | *hybride* `h_lame_spirituelle` | 17/17 | 279 | 82 | 33 | 98,6 | 8 % | 40,8 | 8,04 | — |
+| 30 | *hybride* `h_lame_spirituelle` | 35/35 | 469 | 153 | 61 | 258 | 12 % | 36 | 9,47 | — |
+| 15 | *hybride* `h_rodeur_givre` | 17/17 | 336 | 85 | 52 | 104,4 | 8 % | 33,6 | 7,02 | — |
+| 30 | *hybride* `h_rodeur_givre` | 35/35 | 610 | 157 | 96 | 274,2 | 3 % | 28,8 | 8,05 | — |
 
 | Hybride | Niv. | Victimes par vie | Meilleur pur de sa classe | Ratio | Cible 80–100 % |
 |---|---|---|---|---|---|
-| `h_lame_spirituelle` | 15 | 7,26 | `m_givre` (8,68) | 83,7 % | OK |
-| `h_lame_spirituelle` | 30 | 8,55 | `m_givre` (9,99) | 85,6 % | OK |
-| `h_rodeur_givre` | 15 | 7,15 | `r_venin` (7,54) | 94,8 % | OK |
-| `h_rodeur_givre` | 30 | 8,2 | `r_tireur` (10,1) | 81,2 % | OK |
+| `h_lame_spirituelle` | 15 | 8,04 | `m_givre` (9,61) | 83,7 % | OK |
+| `h_lame_spirituelle` | 30 | 9,47 | `m_givre` (11,06) | 85,6 % | OK |
+| `h_rodeur_givre` | 15 | 7,02 | `r_venin` (7,4) | 94,8 % | OK |
+| `h_rodeur_givre` | 30 | 8,05 | `r_tireur` (9,91) | 81,2 % | OK |
 
 Lecture : le Gardien est la construction la plus sûre et le Berserker la plus risquée (même classe, ±20 %), le Mage
 de givre domine vers le niveau 15 par le contrôle et le pyromancien au niveau 30 par les dégâts ; les hybrides sont
@@ -1493,28 +1493,27 @@ Coût maximal pour atteindre une zone depuis son départ (Dijkstra, sans la port
 
 ### 14.2 Validation serveur et protocole
 
-- État persistant : `skills: { ver, alloc: { nodeId: rang }, gift: ['fond_roulade', 'fond_sprint'], respecFree, loadout: [8] }`.
+- État persistant : `skills: { ver, alloc: { nodeId: rang }, gift: ['fond_roulade', 'fond_sprint'], legacyFloor, rb, affinity, loadout: [8] }`.
 - `validateTree(cls, level, alloc, gift)` vérifie l'état complet : ids, rangs, niveau minimum, points, groupe
   exclusif, porte, points dans la région, connexité, variante de capacité connue (implémentation de référence :
   `docs/design/tools/lib/treelib.mjs`). Codes : `tree_unknown`, `tree_points`, `tree_gate`, `tree_link`,
   `tree_exclusive`, `tree_rank`, `tree_level`, `tree_req`, `tree_variant`, `tree_combat`, `tree_gold`, `tree_npc`, `loadout_bad`.
 - Messages (additifs) : C2S `skill_alloc { add: [{ id, r? }] }` (tout ou rien), `skill_respec { mode, id?, npc? }`,
   `loadout { slots }`, `ability { slot, tg?, x?, z?, ph?: 'start' | 'release' }`, `jump { dx, dz }`, `guard { on }`,
-  `settings { keys }` ; S2C `skills { pts, spent, alloc, gift, respecFree, loadout }`, FX `jump`, `land`, `guard`,
+  `settings { keys }` ; S2C `skills { pts, spent, alloc, gift, loadout }`, FX `jump`, `land`, `guard`,
   `block`, `parry`, `perfect`, `charge`, `charged`, `vacille`, `guard_break`, télégraphes `lo`/`nb`/`mag`.
 - Limites : 5 messages d'arbre par seconde, 64 nœuds par message (au-delà : `security.flag(player, 'tree_spam', 1)`).
   Le serveur ne fait jamais confiance aux valeurs du client : il résout la capacité et vérifie l'arme à chaque usage.
 
-### 14.3 Réinitialisation et migration
+### 14.3 Pas de réinitialisation ; migration
 
-- Gratuite jusqu'au niveau 10 ; ensuite chez le npc_master (Maître des arts) : tout l'arbre 25 × niveau po,
-  une feuille 5 × niveau × coût du nœud po. Interdite en combat, mort ou zone rouge.
-- **Personnages v0.2** : Roulade et Sprint offerts (ils comptent pour la porte), une réinitialisation gratuite, un plancher de points (Guerrier 4, Mage 5, Rôdeur 6 : le coût du préréglage) tant que points(niveau) est plus petit, et le préréglage « Reprendre mon style » appliqué automatiquement à la première connexion : chacun retrouve ses 4 compétences v0.2.
+- Aucune réinitialisation (DECISIONS.md §3) : la Renaissance, au niveau 30, rend tous les points.
+- **Personnages v0.2** : Roulade et Sprint placés d'office et offerts (ils comptent pour la porte, sans coûter de point : un avantage permanent des vétérans), un plancher de points (Guerrier 4, Mage 6, Rôdeur 6 : le coût du préréglage) tant que points(niveau) est plus petit, et le préréglage « Reprendre mon style » appliqué automatiquement à la première connexion : chacun retrouve ses 4 compétences v0.2 (le Mage garde un Soin de 35 % avec la variante Rémanence). Pas de réinitialisation : la Renaissance au niveau 30 la remplace.
 
 | Classe | Préréglage « Reprendre mon style » | Points |
 |---|---|---|
 | Guerrier | Garde, Coup puissant, Cri de guerre, Tourbillon | 4 |
-| Mage | Saut, Boule de feu, Trait de feu, Nova de givre, Soin | 5 |
+| Mage | Saut, Boule de feu, Trait de feu, Nova de givre, Soin, Rémanence | 6 |
 | Rôdeur | Saut, Main sûre, Tir perçant, Tir rapide, Œil exercé, Pluie de flèches | 6 |
 
 ### 14.4 Barre d'action, livre et touches
@@ -1526,9 +1525,9 @@ Coût maximal pour atteindre une zone depuis son départ (Dijkstra, sans la port
 
 | Action | Touche par défaut |
 |---|---|
-| roulade | Space |
+| roulade | ShiftLeft (appui court) |
 | sprint | ShiftLeft (maintenir) |
-| saut | KeyC |
+| saut | Space |
 | garde | KeyE (maintenir) |
 | attaque_chargee | maintenir l'attaque de base |
 | slots | Digit1..Digit8 |
