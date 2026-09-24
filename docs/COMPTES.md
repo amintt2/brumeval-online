@@ -16,6 +16,13 @@ Depuis la v0.2, Brumeval Online sépare le **compte** (qui se connecte) des **pe
   passe**, contenant ce personnage avec toute sa progression (niveau, expérience, or, sac, équipement, quêtes,
   position, écho de mort…).
 
+### Vos personnages et l'Arbre des Brumes (v0.3)
+
+Vos personnages de la v0.2 gardent leur roulade, leur sprint et leurs 4 compétences, sur les mêmes touches : le
+serveur place pour vous les nœuds correspondants dans l'arbre et vous donne les points de votre niveau. Les points
+restants sont à placer où vous voulez. Un nouveau personnage commence avec sa seule attaque de base et apprend la
+Roulade dès le niveau 2.
+
 ### Rester connecté
 
 La case « Rester connecté » (cochée par défaut dans le launcher, décochée par défaut dans un navigateur, votre
@@ -88,6 +95,46 @@ quotidienne compressée dans `backups/`). Schéma v3 :
 - Rôles (`/role`) : le rôle est enregistré sur le compte (il vaut pour tous ses personnages). `ADMIN_NAMES`
   accepte des noms de compte ou de personnage.
 - Un bannissement visant un personnage (`/ban nom`) bloque la connexion à tout son compte.
+
+### Migration v0.3 : l'Arbre des Brumes
+
+Chaque personnage porte son arbre dans `skills` (validé à chaque chargement par `sanitizeSkills`, puis à chaque
+action par les invariants de sécurité) :
+
+```json
+"skills": { "v": 1, "alloc": { "fond_garde": 1, "gu_coup_puissant": 1 }, "gift": ["fond_roulade", "fond_sprint"],
+            "legacyFloor": 4, "loadout": ["strike", "heavy_blow", "whirlwind", "war_cry", "item:potion_hp_s", "item:potion_mp_s", null, null],
+            "rb": 0, "affinity": [], "migrated": "v0.2" }
+```
+
+- **Nouveau personnage** : `alloc` vide, rien d'offert : seulement l'attaque de base au niveau 1 (décision du 23/09),
+  la barre `[attaque de base, –, –, –, potion de soin, potion de mana, –, –]`.
+- **Personnage v0.1 / v0.2** (aucun champ `skills`), à son premier chargement par un serveur v0.3
+  (`legacySkills` dans `shared/skills.js`, appelé par `migrateCharacter`) :
+  - **Roulade et Sprint offerts** (`gift` : gratuits, ils comptent pour la porte des 3 Fondamentaux) ;
+  - un **plancher de points** (`legacyFloor` : Guerrier 4, Mage 5, Rôdeur 6 = le coût du préréglage) tant que les
+    points de son niveau sont inférieurs — un personnage de niveau 1 retrouve donc tout de suite ses compétences ;
+  - le préréglage « Reprendre mon style » placé d'office, nœud par nœud dans l'ordre ci-dessous (un nœud n'est
+    gardé que si l'arbre reste valide ; avec le plancher, tous le sont) ;
+  - **la même barre qu'en v0.2** : les 4 compétences sur les touches 1 à 4 dans le même ordre, potions sur 5 et 6.
+
+| Classe | Compétences v0.2 (touches 1 → 4) | Nœuds placés (coût) | En plus |
+|---|---|---|---|
+| Guerrier | Frappe, Coup puissant, Tourbillon, Cri de guerre | `fond_garde`, `gu_coup_puissant`, `gu_ga_cri`, `gu_be_tourbillon` (4) | la Garde (3ᵉ Fondamental) |
+| Mage | Trait (de feu), Boule de feu, Nova de givre, Soin | `fond_saut`, `ma_fireball`, `ma_v_bolt_feu`, `ma_frost_nova`, `ma_heal` (5) | le Saut ; le Trait arcanique redevient « Trait de feu » (variante) |
+| Rôdeur | Tir, Tir perçant, Pluie de flèches, Tir rapide | `fond_saut`, `ro_ti_main_sure`, `ro_ti_tir_percant`, `ro_ti_tir_rapide`, `ro_ti_oeil_exerce`, `ro_ti_pluie` (6) | le Saut, Main sûre et Œil exercé (préréglage de la conception) |
+
+  Les points au-delà (par exemple 13 au niveau 12, dont 4 à 6 déjà placés) restent **libres** : le joueur les
+  place où il veut. Personne ne perd une compétence ni une touche ; les valeurs des compétences suivent la
+  conception v0.3 (docs/EQUILIBRAGE.md §7). Il n'y a **pas de réinitialisation** : la Renaissance la remplace.
+- **Renaissance** (niveau 30, `renaissance { confirm: true, affinity? }`) : niveau 1, XP 0, `alloc` et `gift` vidés
+  (tout est à rechoisir, Fondamentaux compris), `legacyFloor` remis à 0, barre par défaut, `rb` + 1 (au plus 5),
+  `affinity` + 1 classe aux 2ᵉ et 4ᵉ Renaissances. Équipement, or, inventaire, banque, quêtes et métiers sont
+  gardés ; l'équipement trop haut repart dans le sac s'il y a de la place, sinon il reste porté mais ne donne rien
+  jusqu'au niveau requis. Bonus : +15 % d'XP, Inaptitude −5 points, +1 point par Renaissance, titre
+  « Né de la Brume I à V » et aura (`rb` dans l'état statique de l'entité).
+- Un état d'arbre invalide (données modifiées, fichier édité à la main) est réparé sans perte : les nœuds fautifs
+  sont retirés et leurs points redeviennent libres.
 
 ### Protocole (résumé, détails dans `shared/protocol.js`)
 

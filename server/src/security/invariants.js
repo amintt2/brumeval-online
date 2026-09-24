@@ -5,6 +5,7 @@
 //   - gold: integer in [0, maxGold]
 // Violations are repaired and reported; in strict mode (tests, SECURITY_ASSERT=1) they throw.
 import { ITEMS, INV_SIZE } from '../../../shared/data.js';
+import { validateTree, sanitizeSkills, buildTree } from '../../../shared/skills.js'; // [skilltree]
 
 const has = (o, k) => typeof k === 'string' && Object.prototype.hasOwnProperty.call(o, k);
 const stackOf = (id) => Math.max(1, ITEMS[id].stack || 1);
@@ -81,6 +82,22 @@ export function checkPlayerInvariants(p, { maxGold = 10_000_000, repair = true }
           p.eq[slot] = null;
           p.recomputeStats?.();
           p.markDirty?.('eq');
+        }
+      }
+    }
+  }
+  // [skilltree] tree state: valid allocation, points never negative (spent <= budget), bar of learnt abilities
+  if (p.skills && typeof p.skills === 'object' && p.cls) {
+    const res = validateTree(p.cls, p.level, p.skills);
+    if (!res.ok) {
+      problems.push(`tree:${res.code}:${res.node || ''}`);
+      if (repair) {
+        const fixed = sanitizeSkills(p.skills, p.cls, p.level);
+        if (fixed) {
+          p.skills = fixed;
+          p.tree = buildTree(p.cls, p.skills);
+          p.recomputeStats?.();
+          p.markDirty?.('tree', 'points', 'loadout', 'abilities');
         }
       }
     }

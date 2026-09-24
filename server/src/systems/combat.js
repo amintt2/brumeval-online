@@ -16,7 +16,7 @@ import { FX } from '../../../shared/protocol.js';
 import { isRolling, isRunning } from './stamina.js';
 import { applyPoise, guardReduction, onMonsterDamaged, onMonsterDeath, cancelTelegraphs } from './ai.js';
 // [skilltree]
-import { setStatusHooks, takenMult, defMult, froidStacks, hasStatus, stunMonster, applyStatus, poisonStacks } from './status.js';
+import { setStatusHooks, takenMult, defMult, froidStacks, hasStatus, stunMonster, applyStatus, poisonStacks, critTakenAdd } from './status.js';
 
 const BEAST_TYPES = new Set(['wolf', 'slime']); // family « bête » (Instinct du chasseur, Dépeceur, Appât)
 import { buffStat, consumeRiposte } from './buffs.js';
@@ -124,6 +124,7 @@ export function hitMonster(game, p, m, power, abId, spec = null, opts = {}) {
   // ---- crit
   let crit = p.stats.crit + (spec?.critAdd || 0);
   if (hasStatus(m, 'brulure', now)) crit += s('critVsStatus.brulure');
+  crit += critTakenAdd(m, now);
   // Coups mesurés (keystone): one hit in four is critical (+50 % critical damage), the others never
   const measured = statEffects(tree, 'critMode').find((e) => e.value === 'every4');
   if (measured && spec && (spec.power || 0) > 0) {

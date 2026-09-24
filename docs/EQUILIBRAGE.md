@@ -1,4 +1,4 @@
-# Équilibrage — combat « soulslike » (v0.2)
+# Équilibrage — combat « soulslike » (v0.2) et Arbre des Brumes (v0.3)
 
 > Document de référence de l'agent `combat-souls`. Les chiffres ci-dessous sont produits par la simulation
 > `tests/balance/sim.mjs` (`node tests/balance/sim.mjs` réimprime les tableaux) et vérifiés à chaque `npm test`
@@ -162,3 +162,129 @@ Lecture :
 
 Pour rééquilibrer : modifier `shared/data.js`, relancer `node tests/balance/sim.mjs`, puis `npm test`
 (le test `balance.test.js` échoue si une classe sort des ±15 %).
+
+## 7. L'Arbre des Brumes (v0.3) — moteur, builds et mécaniques approchées
+
+> Conception : `docs/design/ARBRE_COMPETENCES.md` et `docs/design/DECISIONS.md` (prioritaire). Données :
+> `docs/design/skilltree.json`, copié tel quel dans `shared/skilltree.js` par `node scripts/build-skilltree.mjs`
+> (un test vérifie que la copie est à jour). Règles pures partagées client/serveur : `shared/skills.js`.
+
+### 7.1 Ce qui change pour le combat
+
+- **Niveau 1 = attaque de base seulement** (décision du 23/09) : la Roulade, le Sprint, le Saut, la Garde et
+  l'Attaque chargée s'apprennent dans l'arbre (1 point chacun). Un personnage v0.2 garde sa roulade, son sprint
+  et ses 4 compétences (voir `docs/COMPTES.md`, « Migration v0.3 »).
+- **Niveau max 30.** XP inchangée jusqu'au niveau 20, puis +10 % par niveau au-delà de 19 (×1,1 au niveau 20,
+  ×2,0 au niveau 29). 1 point par niveau à partir du niveau 2, +1 tous les 5 niveaux : 35 points au niveau 30.
+- **Moteur de compétences piloté par les données** (`server/src/systems/abilities.js`) : les 65 capacités et
+  toutes leurs variantes passent par `resolveAbility` (variante → ajouts → multiplicateurs → enveloppe de dégâts de
+  l'arbre plafonnée à +75 % → Inaptitude et attaque de référence → arme → garde-fous → clés de voûte). Types :
+  mêlée (cible ou cône), projectile (nombre, éventail, perforation, explosion, éclats, ricochet, Fracas), zone
+  autour de soi, zone au sol (retardée, persistante, ligne, anneau), soin (+ soin sur la durée, soin de groupe),
+  renfort (statistiques, boucliers d'absorption, bouclier de mana), marque, déplacement (bond, fente, téléportation,
+  pas de côté, bond arrière — destination calculée par le serveur), canalisation (coups ciblés, cône, cercle,
+  rayon, tir visé), invocation (feu follet, mur de glace), piège.
+- **Temps de préparation** : les coups ont maintenant leur `windup` de la conception (Frappe 0,15 s, Coup
+  puissant 0,35 s, Tourbillon 0,2 s…) : le coup part, puis touche. Les **incantations** (`cast`) ne dépensent
+  rien avant la fin : une roulade les annule sans coût (le Soin se place dans les fenêtres de récupération).
+- **Statuts des monstres** (`server/src/systems/status.js`) : Brûlure, Froid (3 charges : −15 % de vitesse et
+  préparations +10 % par charge), Gel, Enraciné, Étourdi (8 s d'immunité ensuite, jamais sur un boss), Poison
+  (charges, aucun déséquilibre), Saignement (plaies + jauge d'hémorragie), Marqué, Aveuglé, ralentissements,
+  Brise-garde (défense −25 %, garde frontale des squelettes supprimée). EntState `stt` les montre au client.
+- **Fondamentaux** (`server/src/systems/fundamentals.js`) : Saut (Espace côté client) — 350 ms en l'air qui
+  font passer au-dessus des attaques **rasantes** (`lo` : onde de choc et balayage du golem) mais pas des autres ;
+  aucune vitesse en plus pour l'anti-triche (sauf Envol ×1,4) ; touché en l'air = vacillement à l'atterrissage.
+  Garde (E maintenue) — 120° de face, 50 % avec une arme de mêlée, 30 % sinon, endurance `min(60, 8 + 60 ×
+  dégâts / PV max)` (×1,5 contre un télégraphe), garde brisée à 0 (vacillement 1 s) ; ne bloque ni les rasants
+  ni les imblocables (`nb` : séisme du golem) ni les sorts (`mag` : malédiction de l'occultiste) sauf avec
+  l'Égide ; Parade parfaite (variante) dans les 180 ms. Attaque chargée — ×1,0 → ×1,8 et déséquilibre ×2 entre
+  0,4 et 1,2 s, super-armure les 0,3 dernières secondes, recharge au relâchement.
+- **Vacillement du joueur** : un coup télégraphié qui touche fait vaciller 0,4 s (boss 0,6 s), × (1 − Équilibre
+  / 100) : ni attaque, ni roulade, ni garde, incantation annulée.
+- **Inaptitude** : hors de sa classe, −25 % de puissance, +25 % de coût, +20 % de recharge, et l'attaque d'un
+  personnage de la classe d'origine au même niveau (exemple de la conception vérifié par les tests : un mage de
+  niveau 18 lance le Tourbillon à ×1,43, 25 mana, 23 endurance, 12 s). Chaque Renaissance retire 5 points de
+  pénalité (0 % à la cinquième).
+- **Équipement** : plus de restriction de classe (un hybride porte l'arme de ses compétences). Les armes portent
+  des étiquettes (`wt` : `melee`, `une_main`, `focalisateur`, `distance`) et une famille ; une compétence d'arme
+  sans la bonne arme est refusée (« Il faut une arme de mêlée. »), un sort sans focalisateur perd 20 %,
+  l'attaque de base n'est jamais grisée (×0,8 à mains nues).
+
+### 7.2 Simulation des builds (`node tests/balance/sim.mjs`)
+
+Le modèle du §3 est étendu aux arbres : chaque build prend les 3 Fondamentaux (+ la Garde en mêlée), le chemin
+le moins cher vers ses compétences, puis les passifs de ses branches (et, à défaut, ceux de Survie) jusqu'au
+dernier point. Les capacités sont résolues par le **même code que le serveur** (`resolveAbility`, statistiques
+de l'arbre, Inaptitude, arme). Les dégâts sur la durée sont comptés d'un bloc (brûlure +30 %, plaies, poison sur
+6 s, jauge d'hémorragie). Les monstres sont ceux de la v0.2 portés au niveau du joueur (les régions de niveau 15
+à 30 arrivent avec la refonte du monde). `server/test/balance.test.js` vérifie que chaque build place ses points,
+peut utiliser toute sa barre avec son arme, tue en moins de 40 s et meurt dans au plus 10 % des combats.
+
+| Build | Niv. 10 (XP/min) | Niv. 20 (XP/min) | Niv. 30 (XP/min) | Points niv. 30 | Barre (1 à 4) |
+|---|---:|---:|---:|---:|---|
+| Guerrier Gardien | 572 | 893 | 1106 | 35/35 | Frappe, Coup puissant, Coup de bouclier, Cri de guerre |
+| Guerrier Berserker | 540 | 949 | 1401 | 35/35 | Frappe, Tourbillon, Entaille, Rage sanguinaire |
+| Mage Pyromancien | 567 | 1088 | 1266 | 35/35 | Trait arcanique (Trait de feu), Boule de feu, Embrasement, Soin |
+| Mage de Givre | 471 | 757 | 902 | 35/35 | Trait arcanique, Lance de glace, Nova de givre, Soin |
+| Rôdeur Tireur | 587 | 1191 | 1582 | 35/35 | Tir, Tir perçant, Tir rapide, Pluie de flèches |
+| Rôdeur Venin | 517 | 809 | 1117 | 35/35 | Tir, Flèche empoisonnée, Flèche barbelée, Marque du chasseur |
+| Hybride Lame spirituelle (Guerrier → Mage) | 406 | 677 | 1157 | 35/35 | Frappe, Onde tranchante, Lame enchantée, Coup puissant |
+| Hybride Mage de bataille (Mage + Tourbillon) | 637 | 899 | 995 | 35/35 | Trait arcanique, Tourbillon (Inapte), Boule de feu, Soin |
+
+Au niveau 30 (monstres niveau 29) :
+
+| Build | Squelette : TTK · dégâts subis | Occultiste : TTK · dégâts | Gobelin : TTK · dégâts | Morts |
+|---|---|---|---|---:|
+| Guerrier Gardien | 14,6 s · 22 % | 9,3 s · 0 % | 7,8 s · 10 % | 0 % |
+| Guerrier Berserker | 10,8 s · 14 % | 7,8 s · 0 % | 4,7 s · 5 % | 0 % |
+| Mage Pyromancien | 15,0 s · 1 % | 8,6 s · 0 % | 6,5 s · 0 % | 0 % |
+| Mage de Givre | 19,1 s · 2 % | 17,1 s · 0 % | 10,7 s · 3 % | 0 % |
+| Rôdeur Tireur | 11,5 s · 0 % | 5,7 s · 0 % | 3,8 s · 0 % | 0 % |
+| Rôdeur Venin | 15,9 s · 1 % | 11,8 s · 0 % | 7,8 s · 1 % | 0 % |
+| Hybride Lame spirituelle | 9,1 s · 12 % | 6,3 s · 0 % | 4,5 s · 2 % | 0 % |
+| Hybride Mage de bataille | 14,8 s · 72 % | 6,9 s · 0 % | 6,6 s · 31 % | 3 % au squelette |
+
+Les presets v0.2 (§5) donnent toujours un écart de 2 à 10 % entre les classes aux niveaux 1 à 14 avec les
+valeurs v0.3 (Soin 25 % / 15 s avec 1 s d'incantation, Tourbillon ×1,9, Nova de givre à 2 charges de Froid…).
+
+Lecture :
+
+- Aucun build ne meurt en solo contre son niveau, sauf l'hybride mage au corps à corps (3 % contre la brute) :
+  c'est le prix de l'Inaptitude et d'un mage sans armure au contact — l'hybride reste jouable mais n'est pas un
+  « meilleur mage ».
+- **Écart au niveau 30** : de −24 % (Mage de Givre) à +33 % (Rôdeur Tireur) autour de la moyenne. Le modèle
+  ne compte pas la valeur défensive du Froid (monstres ralentis, préparations plus lentes) ni les monstres
+  multiples où la Pluie de flèches et le Tourbillon valent plus : le Givre est sous-estimé, le Tireur surestimé
+  (il tue les lanceurs en une volée). À surveiller avec les vraies régions de niveau 20 à 30 : pistes
+  `ice_lance.power` 1,6 → 1,8 ou `ma_ks_hiver_eternel`, et `rapid_fire.cd` 9 → 10 s.
+- Les hybrides de passerelle (Lame spirituelle) sont au niveau des builds purs (sans Inaptitude pour le
+  guerrier) : c'est voulu par la conception.
+
+### 7.3 Mécaniques approchées ou pas encore simulées
+
+`node scripts/skilltree-coverage.mjs` liste, pour chaque champ modifié par les nœuds de l'arbre, s'il est lu par
+le moteur ; un test échoue si un champ n'est ni lu ni listé ici (`EXOTIC` dans `server/src/systems/abilities.js`).
+Au total : 105 champs de variantes et 92 statistiques passives lus par le moteur, 73 approchés ou non simulés.
+
+**Approchés (✓)** : projectiles à tête chercheuse (touchent toujours), ricochet et éclats (sur les monstres
+proches, sans trajectoire), attraction et recul instantanés, rayon qui suit l'orientation, Prison de glace (gel de
+la cible au lieu d'un mur), salve en éventail, pluie de météores répartie autour du point, boule collante,
+appât piégé, Bout portant, Riposte au couteau, Perce-cœur, Flèche d'arrêt, Point faible, Défi (marque), Venin
+corrosif, Brume étouffante, Hémorragie, Épidémie, Fantôme des brumes (les monstres non-boss vous perdent 1,5 s),
+Garde au couteau (via Contre parfait), Ronces givrées (dégâts d'un coup au lieu de 3 s).
+
+**Pas encore simulés (✗)** : auras (Cri d'effroi, Armure de l'aurore), alternance taille / pointe, prolongation
+de la Rage, effets « à la mort d'une cible », explosion de l'Égide brisée, conversion en mana, charges multiples
+du Pas de brume, mur de flammes mobile, nuage rampant, éclats en orbite, leurre, interception et renvoi de
+projectiles, épines / explosion / PV du Mur de glace, filet collant au sol, ajout des dégâts bloqués à la Riposte,
+Bastion épineux, Pas tranchant, effets de groupe (pas encore de groupes), résistances au feu / givre / poison
+(aucun monstre n'inflige encore ces éléments ; les sorts `mag` comptent comme arcane), poids d'armure, main
+gauche (bouclier, grimoire, double arme — la clé Mur vivant ne s'active donc pas encore), récolte, affichage de
+l'écho sur la carte et échos multiples. Le Mur de glace bloque les déplacements et les projectiles des monstres
+mais pas les télégraphes (conforme : « une attaque télégraphiée le traverse »). La Renaissance se fait hors
+combat (10 s) tant que l'Arbre-Brume n'existe pas dans le monde.
+
+**Hors moteur, à faire côté client** (l'agent client) : touches (Espace = Saut, E = Garde, maintien de l'attaque de
+base, 1 à 8), écran de l'arbre (N), livre (K), barre à 8 emplacements, rendu des nouveaux FX (`jump`, `land`,
+`block`, `parry`, `guard_break`, `perfect`, `charge`, `charged`, `vacille`, `dash`, `zone`, `buff`, `channel`,
+`status`, `trap`), décals `lo` / `nb` / `mag`, aura de Renaissance (`rb`).

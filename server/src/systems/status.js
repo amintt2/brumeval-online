@@ -146,7 +146,7 @@ export function applyStatus(game, m, src, id, opts = {}) {
       return true;
     }
     case 'debuff': {
-      s.debuff = { defPct: opts.defPct || 0, breakGuard: !!opts.breakGuard, until: now + (opts.dur ?? 6) * 1000 };
+      s.debuff = { defPct: opts.defPct || 0, breakGuard: !!opts.breakGuard, critTaken: opts.critTaken || 0, until: now + (opts.dur ?? 6) * 1000 };
       return true;
     }
     default:
@@ -169,8 +169,12 @@ export function moveMult(m, now) {
 /** Attack speed factor applied to wind-ups (Froid: +10 % per stack, boss half). */
 export function windupMult(m, now) {
   const s = m.status;
-  if (!s?.froid || now >= s.froid.until) return 1;
-  return 1 + 0.1 * s.froid.n * (m.boss ? 0.5 : 1);
+  if (!s) return 1;
+  let k = 1;
+  if (s.froid && now < s.froid.until) k *= 1 + 0.1 * s.froid.n * (m.boss ? 0.5 : 1);
+  // Brume étouffante: slower attacks inside the toxic cloud
+  if (s.cloudUntil && now < s.cloudUntil && s.cloudAtk) k *= 1 - s.cloudAtk;
+  return k;
 }
 
 /** Damage dealt multiplier (Aveuglé −20 %, toxic cloud −10 %). */
@@ -190,8 +194,13 @@ export function takenMult(m, attacker, now) {
 }
 export function defMult(m, now) {
   const s = m.status;
-  return s?.debuff && now < s.debuff.until ? Math.max(0, 1 + s.debuff.defPct) : 1;
+  let k = s?.debuff && now < s.debuff.until ? Math.max(0, 1 + s.debuff.defPct) : 1;
+  // Venin corrosif: −x % defence per poison stack
+  if (s?.poisonDefPct) k *= Math.max(0, 1 + s.poisonDefPct * s.poison.filter((x) => now < x.until).length);
+  return k;
 }
+/** Extra critical chance against this monster (Point faible on a Brise-garde debuff). */
+export const critTakenAdd = (m, now) => (m.status?.debuff && now < m.status.debuff.until ? m.status.debuff.critTaken || 0 : 0);
 export const guardBroken = (m, now) => !!(m.status?.debuff && now < m.status.debuff.until && m.status.debuff.breakGuard);
 export const froidStacks = (m, now) => (m.status?.froid && now < m.status.froid.until ? m.status.froid.n : 0);
 export const isFrozen = (m, now) => !!(m.status?.gel && now < m.status.gel.until);
@@ -209,6 +218,9 @@ export function detonate(m, now, what) {
   } else if (what === 'brulure' && s.burn && now < s.burn.until) {
     total = (s.burn.dps * (s.burn.until - now)) / 1000;
     s.burn = null;
+  } else if (what === 'saignement') {
+    for (const d of s.dots) if (d.kind === 'saignement' && now < d.until) total += (d.dps * (d.until - now)) / 1000;
+    s.dots = s.dots.filter((d) => d.kind !== 'saignement');
   }
   return total;
 }

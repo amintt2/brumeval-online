@@ -82,6 +82,7 @@ function zoneTick(game, p, z, now) {
       applyStatus(game, m, p, 'poison', { stacks: Math.max(1, Math.round((spec.poisonPerS || 1) * (z.tickMs / 1000))), atk: p.stats.atk, dur: 6 });
       m.status.cloudUntil = now + z.tickMs + 100;
       m.status.cloudMod = spec.dmgDealtMod ?? -0.1;
+      m.status.cloudAtk = spec.enemyAtkSpeed || 0; // Brume étouffante: −25 % attack speed → wind-ups ×1.25
     }
     return;
   }

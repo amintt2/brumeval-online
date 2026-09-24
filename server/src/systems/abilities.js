@@ -56,14 +56,14 @@ export const EXOTIC = {
   extendOnKill: '✗ prolongation de la Rage à chaque mort',
   onKill: '✗ effets à la mort d\'une cible',
   onBreak: '✗ explosion de l\'Égide brisée',
-  absorbToMana: '✗',
-  absorbOneHit: '✗',
+  absorbToMana: '✗ Égide de mana : conversion en mana non simulée',
+  absorbOneHit: '✗ Carapace : absorption d’un coup non simulée',
   allyRadius: '✗ effets de groupe (pas encore de groupes)',
-  allyFactor: '✗',
-  appliesToAllies: '✗',
+  allyFactor: '✗ effets de groupe (pas encore de groupes)',
+  appliesToAllies: '✗ marque partagée avec le groupe (pas encore de groupes)',
   groupHeal: '✓ soigne aussi les joueurs proches',
   single: '✓ Défi : provoque la cible seule',
-  mark: '✗',
+  mark: '✓ Défi : la cible provoquée est aussi marquée (+10 % de dégâts subis)',
   distanceMult: '✓ Bout portant : dégâts selon la distance',
   afterDodgeOrGuard: '✓ coup critique juste après une roulade ou un blocage',
   pattern: '✓ salve en éventail : les flèches visent les monstres autour de la cible',
@@ -72,23 +72,23 @@ export const EXOTIC = {
   fuse: '✓ boule collante : explose après le délai',
   ground: '✗ filet collant au sol',
   explode: '✓ appât piégé : explosion à la fin',
-  onFixate: '✗',
-  onHit: '✗',
-  onBleedBurst: '✗',
-  bleedTakenMod: '✗',
-  bleedBuildMod: '✗',
+  onFixate: '✗ Appât sanglant : bonus de dégâts sur les bêtes fixées',
+  onHit: '✗ Trait de brèche : effet à l’impact non simulé',
+  onBleedBurst: '✗ effets à l’éclatement d’une hémorragie',
+  bleedTakenMod: '✗ Marque de sang : saignement subi accru',
+  bleedBuildMod: '✗ Hallali sanglant : saignement accru',
   slowPerStack: '✓ ralentissement par charge de poison',
-  defPerStack: '✗',
-  debuffCritTaken: '✗',
+  defPerStack: '✓ Venin corrosif : −5 % de défense par charge de poison',
+  debuffCritTaken: '✓ Point faible : +15 % de chances de critique contre la cible du Brise-garde',
   addBlocked: '✗ Riposte vengeresse : ajout des dégâts bloqués',
   vsStaggered: '✓ Perce-cœur : ×1,6 et critique contre une cible déséquilibrée',
   interruptTele: '✓ annule une attaque télégraphiée non-boss en préparation',
   lastHit: '✓ dernier coup renforcé',
-  slowSelf: '✗',
+  slowSelf: '✗ Rempart de mana : ralentissement du lanceur',
   passDmg: '✗ Pas tranchant : dégâts au passage',
   arrivalBurst: '✓ explosion à l\'arrivée du Pas de brume',
   charges: '✗ charges multiples (Pas de brume redoublé : une seule charge)',
-  enemyAtkSpeed: '✗',
+  enemyAtkSpeed: '✓ Brume étouffante : attaques plus lentes dans le nuage',
   freezeIfChilled: '✓ Nova glaciale : gèle les cibles déjà sous Froid',
   endFreeze: '✓ Œil du blizzard : gèle en fin de canalisation',
   spread: '✓ Embrasement contagieux : la brûlure se propage',
@@ -480,7 +480,13 @@ export function onHitEffects(game, p, m, spec, dmg, now) {
   if (spec.slow && typeof spec.slow === 'object' && spec.kind !== 'trap') applyStatus(game, m, p, 'slow', { pct: spec.slow.pct, dur: spec.slow.dur ?? 3 });
   if (spec.root > 0 && spec.kind !== 'trap') applyStatus(game, m, p, 'enracine', { dur: spec.root });
   if (spec.stun > 0) applyStatus(game, m, p, 'etourdi', { dur: spec.stun });
-  if (spec.debuff) applyStatus(game, m, p, 'debuff', spec.debuff);
+  if (spec.debuff) applyStatus(game, m, p, 'debuff', { ...spec.debuff, critTaken: spec.debuffCritTaken || 0 });
+  if (spec.defPerStack && m.status) m.status.poisonDefPct = spec.defPerStack;
+  // Hémorragie (Entaille): the wounds already open burst at once (×1.3 of what remains)
+  if (spec.detonateBleed && dmg > 0) {
+    const rest = detonate(m, now, 'saignement');
+    if (rest > 0) damageMonster(game, m, p, Math.round(rest * spec.detonateBleed), false, 'saignement', 0);
+  }
   if (spec.knockback > 0) pushMonster(game, m, p.x, p.z, spec.knockback);
   if (spec.pull > 0) pushMonster(game, m, p.x, p.z, -spec.pull);
   const eb = p.buffs?.get('enchant_blade');
@@ -669,7 +675,11 @@ function aoeSelf(game, p, spec, ctx, now) {
   // Provocation / Défi: monsters switch to the caster after their current attack (never a cancelled telegraph)
   if (spec.id === 'taunt') {
     const list = spec.single ? (ctx.target ? [ctx.target] : []) : monstersInRadius(game, p.x, p.z, r);
-    for (const m of list) taunt(game, p, m, now, (spec.single?.dur || spec.dur || 4) * (m.boss ? 0.5 : 1));
+    for (const m of list) {
+      taunt(game, p, m, now, (spec.single?.dur || spec.dur || 4) * (m.boss ? 0.5 : 1));
+      // Défi: the challenged monster also takes more damage
+      if (spec.mark) applyStatus(game, m, p, 'marque', { pct: spec.mark.dmgTakenPct || 0.1, dur: spec.single?.dur || 6 });
+    }
     if (spec.buff) addBuff(game, p, 'taunt', (spec.dur || 4) * 1000, { stats: numericStats(spec.buff) });
     return;
   }

@@ -1,5 +1,28 @@
 # Journal des versions — Brumeval Online
 
+## v0.3.0 (en préparation) — L'Arbre des Brumes (moteur serveur)
+
+L'interface de l'arbre arrive avec la mise à jour du client ; le serveur est prêt.
+
+- **L'Arbre des Brumes** : un seul grand arbre de 318 nœuds pour tout le monde. Au niveau 1, seulement l'attaque de
+  base ; 1 point par niveau (+1 tous les 5 niveaux), **35 points au niveau 30**. D'abord 3 **Fondamentaux**
+  (Roulade, Sprint, Saut, Garde, Attaque chargée), puis la région de votre classe, les passerelles hybrides… ou une
+  autre classe, plus chère et avec une pénalité d'**Inaptitude**. Tout est vérifié par le serveur.
+- **Niveau maximum 30** (l'XP jusqu'au niveau 20 ne change pas).
+- **Nouveaux Fondamentaux** : le **Saut** passe au-dessus des ondes de choc du golem ; la **Garde** bloque les coups
+  de face au prix d'endurance (Parade parfaite en variante) ; l'**Attaque chargée** (maintenir l'attaque de base)
+  brise les postures.
+- **65 compétences** et leurs variantes, avec brûlure, froid, gel, poison, saignement, marques, pièges, murs de
+  glace, zones au sol… Les télégraphes indiquent désormais les attaques **rasantes** (à sauter), **imblocables** et
+  les **sorts**. Un coup télégraphié qui touche fait **vaciller** un instant.
+- **Barre d'action à 8 emplacements**, enregistrée sur le serveur ; une compétence apprise s'y place toute seule.
+- **Pas de réinitialisation : la Renaissance.** Au niveau 30, retour au niveau 1 avec tous les points rendus, en
+  gardant équipement, or, sac et quêtes, et des bonus permanents (jusqu'à 5 fois) : +15 % d'XP, Inaptitude réduite,
+  classe d'affinité, +1 point, titre « Né de la Brume » et aura.
+- **L'équipement n'est plus réservé à une classe** : un hybride porte l'arme de ses compétences.
+- **Vos personnages v0.2 ne perdent rien** : roulade et sprint offerts, leurs 4 compétences sur les mêmes touches,
+  et les points de leur niveau à placer (docs/COMPTES.md, « Migration v0.3 »).
+
 ## v0.2.1 — correctifs
 
 ### Sécurité des comptes
