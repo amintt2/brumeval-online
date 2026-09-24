@@ -112,7 +112,7 @@ export const REGION_CONTENT = {
     weather: [['clair', 5], ['brume', 3], ['pluie', 2]],
     ambiance: 'Lac calme qui reflète le ciel, saules, roseaux, brume à l’aube ; plages de l’Anse au sud.',
     monsters: [m('slime', 6, 9, 'gluant d’eau'), m('spider', 7, 11), m('bandit', 8, 12), m('crab', 9, 12, 'Anse des Songes')],
-    miniBosses: [{ name: 'La Tisseuse des Saules', model: 'spider', lvl: 12, x: -880, z: 700, desc: 'toiles au sol qui ralentissent' }],
+    miniBosses: [{ name: 'La Tisseuse des Saules', model: 'spider', lvl: 12, x: -820, z: 800, desc: 'toiles au sol qui ralentissent' }],
     bosses: [], harvest: ['node_copper', 'node_herb_brume'],
   },
   port_salin: {
@@ -288,11 +288,11 @@ export const SERVICES = {
 };
 // Camps : petits lieux habités sans zone verte (pas de nivellement dans la carte : posés sur un replat < 12°).
 export const CAMPS = [
-  { id: 'sanctuaire_veilleuse', name: 'Sanctuaire de la Veilleuse', x: -75, z: -1135, region: 'arbre', services: ['echange_brumillons', 'feu', 'pierre'], safeRadius: 45, version: 'v0.3' },
+  { id: 'sanctuaire_veilleuse', name: 'Sanctuaire de la Veilleuse', x: -95, z: -1135, region: 'arbre', services: ['echange_brumillons', 'feu', 'pierre'], safeRadius: 45, version: 'v0.3' },
   { id: 'hameau_saules', name: 'Hameau des Saules', x: -430, z: 560, region: 'songes', services: ['alchimie', 'feu'], version: 'v0.3' },
-  { id: 'pilotis_brumenoire', name: 'Pilotis de Brumenoire', x: 1120, z: -860, region: 'brumenoire', services: ['alchimie', 'guerisseuse', 'feu'], version: 'v0.3' },
-  { id: 'fort_couchant', name: 'Fort du Couchant', x: -1560, z: -700, region: 'rougecrete', services: ['forge', 'primes', 'feu'], version: 'v0.3' },
-  { id: 'camp_grandes_portes', name: 'Camp des Grandes Portes', x: -20, z: -1250, region: 'arbre', services: ['marchand', 'feu'], version: 'v0.3' },
+  { id: 'pilotis_brumenoire', name: 'Pilotis de Brumenoire', x: 1120, z: -860, region: 'brumenoire', services: ['alchimie', 'guerisseuse', 'feu'], version: 'v0.3', onWater: true, note: 'village sur pilotis : planchers à 1,5 m au-dessus de 0,7 m d’eau' },
+  { id: 'fort_couchant', name: 'Fort du Couchant', x: -1567, z: -707, region: 'rougecrete', services: ['forge', 'primes', 'feu'], version: 'v0.3' },
+  { id: 'camp_grandes_portes', name: 'Camp des Grandes Portes', x: 0, z: -1250, region: 'arbre', services: ['marchand', 'feu'], version: 'v0.3' },
 ];
 
 // ------------------------------------------------------------------ lieux nommés (points d'intérêt)
@@ -316,10 +316,10 @@ export const POIS = [
   p('mo_hure', 'mordore', 'arene', 'Bauge de la Vieille-Hure', -560, -300, 'v0.3'),
   p('mo_guet', 'mordore', 'belvedere', 'Mont Guet', -1035, -1323, 'v0.3', '200 m, vue sur Rougecrête et Givreval'),
   // Rives du Lac des Songes
-  p('so_temple', 'songes', 'grotte', 'Temple englouti', -640, 835, 'v0.4', 'donjon niv. 12–15'),
+  p('so_temple', 'songes', 'grotte', 'Temple englouti', -658, 843, 'v0.4', 'donjon niv. 12–15'),
   p('so_anse', 'songes', 'repere', 'Anse des Songes', -600, 1090),
-  p('so_ponton', 'songes', 'belvedere', 'Ponton des Brumes', -420, 700, 'v0.3', 'belvédère sur le lac'),
-  p('so_saules', 'songes', 'arene', 'Nid de la Tisseuse des Saules', -880, 700),
+  p('so_ponton', 'songes', 'belvedere', 'Ponton des Brumes', -400, 700, 'v0.3', 'belvédère sur le lac'),
+  p('so_saules', 'songes', 'arene', 'Nid de la Tisseuse des Saules', -820, 800),
   // Côte de Port-Salin
   p('ps_port', 'port_salin', 'repere', 'Port-Salin', 690, 870),
   p('ps_falaises', 'port_salin', 'belvedere', 'Falaises Blanches', 60, 1130, 'v0.3'),
@@ -336,7 +336,7 @@ export const POIS = [
   p('sy_lucioles', 'sylve', 'source', 'Source aux Lucioles', 650, -1580, 'v0.3', 'la nuit'),
   p('sy_croc', 'sylve', 'arene', 'Tanière de Croc-Pâle', -480, -1720),
   p('sy_tisseuse', 'sylve', 'arene', 'Nid de la Tisseuse', 700, -2180),
-  p('sy_aiguille', 'sylve', 'belvedere', 'Aiguille Grise', -742, -2461, 'v0.3', '331 m'),
+  p('sy_aiguille', 'givreval', 'belvedere', 'Aiguille Grise', -742, -2461, 'v0.3', '331 m'),
   // Parvis de l'Arbre-Brume
   p('ar_arbre', 'arbre', 'repere', "L'Arbre-Brume", -120, -1200, 'v0.3', 'CX-10, cime à ≈ 300 m'),
   p('ar_escalier', 'arbre', 'repere', 'Grand Escalier de la Voie Royale', -40, -880),
@@ -346,7 +346,7 @@ export const POIS = [
   p('al_tour', 'aldmar', 'belvedere', 'Tour Brisée', -330, -1300),
   p('al_porte_est', 'aldmar', 'ruine', "Porte de l'Est", 250, -940),
   p('ca_portes', 'coeur_aldmar', 'ruine', 'Grandes Portes', 75, -1200, 'v0.3', 'fermées par 4 Sceaux'),
-  p('ca_bassin', 'coeur_aldmar', 'source', 'Bassin des Rois', 120, -1080),
+  p('ca_bassin', 'aldmar', 'source', 'Bassin des Rois', 120, -1080),
   p('ca_arene', 'coeur_aldmar', 'arene', 'Arène Écarlate', 250, -1300),
   // Bois des Égarés
   p('eg_lanternes', 'egares', 'repere', 'Sentier des Lanternes', -120, -1900),
@@ -360,13 +360,13 @@ export const POIS = [
   p('br_delta', 'brumenoire', 'repere', 'Delta de la Brumeuse', 1620, -300),
   // Désert de Sable-Rouge
   p('sr_ville', 'sable_rouge', 'repere', 'Ambresable', -1240, 400),
-  p('sr_mirages', 'sable_rouge', 'source', 'Oasis des Mirages', -1760, 760),
+  p('sr_mirages', 'sable_rouge', 'source', 'Oasis des Mirages', -1830, 760),
   p('sr_enclumes', 'sable_rouge', 'belvedere', 'Les Trois Enclumes', -2000, 520),
   p('sr_colonne', 'sable_rouge', 'belvedere', 'Colonne des Vents', -1560, 560),
   p('sr_sentinelle', 'sable_rouge', 'belvedere', 'Sentinelle Rouge', -1120, 720),
   p('sr_miroirs', 'sable_rouge', 'ruine', 'Temple aux Miroirs', -1300, 820),
-  p('sr_palmes', 'sable_rouge', 'source', 'Puits des Palmes', -1000, 980),
-  p('sr_creux', 'sable_rouge', 'arene', 'Creux du Ver', -1500, 980),
+  p('sr_palmes', 'sable_rouge', 'source', 'Puits des Palmes', -1000, 920),
+  p('sr_creux', 'sable_rouge', 'arene', 'Creux du Ver', -1450, 1000),
   p('sr_palais', 'sable_rouge', 'ruine', 'Palais-Mirage', -1350, 1200, 'v0.3', 'visible seulement à midi'),
   // Mer de Dunes (rouge)
   p('md_squelette', 'mer_dunes', 'repere', 'Squelette du Grand Ver', -1900, 1150),
@@ -375,30 +375,30 @@ export const POIS = [
   p('rc_table', 'rougecrete', 'belvedere', 'Table du Géant', -1850, -800, 'v0.3', '260 m, meilleur point de vue de l’ouest'),
   p('rc_tour', 'rougecrete', 'belvedere', 'Tour des Quatre-Vents', -1850, -1250),
   p('rc_repaire', 'rougecrete', 'camp_monstres', 'Repaire de Maraude', -1650, -1100),
-  p('rc_gorge', 'rougecrete', 'repere', 'Gorge Sèche', -1420, -625),
+  p('rc_gorge', 'entaille', 'repere', 'Gorge Sèche', -1420, -625),
   // Canyon de l'Entaille
   p('en_pont', 'entaille', 'pont', "Pont de l'Entaille", -1440, -760),
   p('en_chutes', 'entaille', 'cascade', "Chutes d'Ambresable", -1356, 78, 'v0.3', '53 m'),
   p('en_fresques', 'entaille', 'ruine', "Fresques d'Aldmar", -1470, -400),
-  p('en_gardien', 'entaille', 'arene', 'Seuil du Gardien', -1480, -1150),
+  p('en_gardien', 'entaille', 'arene', 'Seuil du Gardien', -1471, -1146),
   // Falaises des Embruns
   p('em_phare', 'embruns', 'belvedere', 'Phare des Embruns', 1985, -1010),
   p('em_ecumeur', 'embruns', 'belvedere', 'Mont Écumeur', 1872, -1147, 'v0.3', '289 m'),
   p('em_breche', 'embruns', 'repere', 'Brèche des Embruns', 1760, -760),
-  p('em_aire', 'embruns', 'arene', 'Aire de Brise-Coque', 1840, -1300),
+  p('em_aire', 'embruns', 'arene', 'Aire de Brise-Coque', 1780, -1280),
   // Archipel d'Azurine
-  p('az_palmes', 'azurine', 'repere', 'Plage des Palmes', 1240, 720),
+  p('az_palmes', 'port_salin', 'repere', 'Plage des Palmes', 1240, 720),
   p('az_chaussee', 'azurine', 'pont', 'Chaussée des Sables', 1430, 930, 'v0.3', 'banc de sable à gué'),
   p('az_ile', 'azurine', 'belvedere', "Sommet d'Azurine", 1620, 1150),
-  p('az_corail', 'azurine', 'arene', 'Île du Corail', 1300, 1380, 'v0.4', 'Roi-Carapace'),
+  p('az_corail', 'azurine', 'arene', 'Île du Corail', 1270, 1400, 'v0.4', 'Roi-Carapace'),
   p('az_ilot', 'azurine', 'repere', 'Îlot des Palmes', 1850, 860),
   // Île de l'Épave (rouge)
   p('ep_epave', 'epave', 'epave', 'Épave géante', 1950, 1440),
   p('ep_passe', 'epave', 'pont', 'Passe des Naufrageurs', 1830, 1320, 'v0.3', 'banc de sable'),
   // Pics de Givreval
   p('gi_col', 'givreval', 'repere', 'Col du Loup Blanc', -1070, -1510),
-  p('gi_lac', 'givreval', 'repere', 'Lac Glacé', -1450, -2150, 'v0.3', 'glace qui craque'),
-  p('gi_cirque', 'givreval', 'arene', 'Cirque du Géant', -1470, -1960),
+  p('gi_lac', 'givreval', 'repere', 'Lac Glacé', -1450, -2020, 'v0.3', 'glace qui craque'),
+  p('gi_cirque', 'givreval', 'arene', 'Cirque du Géant', -1520, -1840),
   p('gi_blanchecorne', 'givreval', 'belvedere', 'Belvédère de Blanchecorne', -1760, -1960),
   p('gi_dent', 'givreval', 'belvedere', "Dent de l'Hiver", -1242, -2079, 'v0.3', '356 m'),
   // Couronne de Givre (rouge)
@@ -411,6 +411,21 @@ export const POIS = [
   p('ce_suie', 'cendres', 'belvedere', 'Pic de Suie', 891, -2434, 'v0.4', '280 m'),
   p('cb_cratere', 'coeur_brasier', 'arene', 'Caldeira de la Brasier-Mère', 1400, -2000, 'v0.4'),
 ];
+
+// Accès particuliers (le contrôle à pied les signale sans les compter comme erreurs) et replats à tailler à la cuisson du terrain.
+const POI_NOTES = {
+  sr_enclumes: { access: 'sommet de mesa : vu de loin en v0.3, atteint en vol plané (v0.5)' },
+  sr_sentinelle: { access: 'sommet de mesa : vu de loin en v0.3, atteint en vol plané (v0.5)' },
+  cb_cratere: { bake: 'plateforme de 40 m à niveler dans la caldeira (v0.4)' },
+  em_aire: { bake: 'replat de 30 m à tailler dans la falaise (v0.3)' },
+};
+for (const q of POIS) Object.assign(q, POI_NOTES[q.id] || {});
+// Corrections de placement des objets posés par le générateur (tools/out/carto.json), appliquées par build_layout.mjs.
+export const PLACEMENT_OVERRIDES = {
+  poste_cendres: { x: 1003, z: -1507, why: 'pente de 48° au point du générateur' },
+  wp_delta: { region: 'brumenoire', why: 'le delta est dans le marais' },
+  grotte_marees: { x: 1880, z: 1292, why: 'entrée hors de l’eau, sur la plage de l’Épave' },
+};
 
 // ------------------------------------------------------------------ donjons (entrées posées dans le monde dès la v0.3, « Scellé par la Brume »)
 export const DUNGEON_CONTENT = {
@@ -426,7 +441,7 @@ export const DUNGEON_CONTENT = {
 // Donjons ajoutés par le contenu (entrées marquées aussi dans POIS).
 export const EXTRA_DUNGEONS = [
   { id: 'mine_cuivrefond', name: 'Mine de Cuivrefond', x: -350, z: -560, region: 'brumeval', kind: 'instance', levels: [6, 8], boss: 'Contremaître gobelin', version: 'v0.4', kit: 'dng_* + filons' },
-  { id: 'temple_englouti', name: 'Temple englouti', x: -640, z: 835, region: 'songes', kind: 'instance', levels: [12, 15], boss: 'La Nixe du lac', version: 'v0.4', kit: 'dng_* + eau' },
+  { id: 'temple_englouti', name: 'Temple englouti', x: -658, z: 843, region: 'songes', kind: 'instance', levels: [12, 15], boss: 'La Nixe du lac', version: 'v0.4', kit: 'dng_* + eau' },
   { id: 'racines_arbre', name: "Racines de l'Arbre-Brume", x: -200, z: -1260, region: 'arbre', kind: 'instance', levels: [14, 18], boss: 'Le Ver-Racine', version: 'v0.4', kit: 'kit racines (nouveau)' },
 ];
 
@@ -452,5 +467,20 @@ export const TRAVERSAL = [
   ['Barque et voilier (Port-Salin ↔ archipel, lac)', 'v0.5'],
   ['Vol plané « Aile de toile » depuis les étages E5 et plus', 'v0.5'],
 ];
+// Ouverture des régions (le relief entier existe dès la v0.3 ; une région fermée est visible mais barrée par le jeu).
+export const OPENING = {
+  brumeval: 'v0.3.0', mordore: 'v0.3.0', songes: 'v0.3.0', port_salin: 'v0.3.0', ventfauve: 'v0.3.0', sylve: 'v0.3.0', egares: 'v0.3.0',
+  arbre: 'v0.3.0', aldmar: 'v0.3.0', coeur_aldmar: 'v0.3.0', brumenoire: 'v0.3.0', sable_rouge: 'v0.3.0', mer_dunes: 'v0.3.0',
+  embruns: 'v0.3.0', // seule région jaune 18–24 ouverte en v0.3.0 : comble le creux 22–24 entre Sable-Rouge (≤ 22) et Aldmar (24+)
+  givreval: 'v0.3.1', couronne: 'v0.3.1', rougecrete: 'v0.3.1', entaille: 'v0.3.1', azurine: 'v0.3.1', epave: 'v0.3.1',
+  cendres: 'v0.4', coeur_brasier: 'v0.4',
+};
+// Barrières de jeu des régions fermées (jamais un mur invisible nu).
+export const CLOSED_BY = {
+  givreval: 'Col du Loup Blanc enseveli (avalanche) jusqu’à la v0.3.1', couronne: 'derrière Givreval',
+  rougecrete: 'Gorge Sèche obstruée par un éboulement', entaille: 'Pont de l’Entaille effondré',
+  azurine: 'Chaussée des Sables recouverte (grande marée)', epave: 'derrière Azurine',
+  cendres: 'Col des Cendres : nuée ardente permanente (dégâts de zone) jusqu’à la v0.4', coeur_brasier: 'derrière les Terres de Cendre',
+};
 // Niveau conseillé des pierres « de région » : sert au contrôle de la courbe de niveaux (validate.mjs).
 export const HUBS = ['brumeval', 'port_salin', 'ambresable', 'rochegivre', 'clairsaule'];

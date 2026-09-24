@@ -54,3 +54,5 @@ export function drawText(img, W, H, str, x, y, s, color, halo) {
   if (halo) for (const [px, py] of pixels) for (let dy = -1; dy <= s; dy++) for (let dx = -1; dx <= s; dx++) plot(px + dx, py + dy, halo);
   for (const [px, py] of pixels) for (let dy = 0; dy < s; dy++) for (let dx = 0; dx < s; dx++) plot(px + dx, py + dy, color);
 }
+G['_'] = ['00000', '00000', '00000', '00000', '00000', '00000', '11111'];
+export { G as GLYPHS, ACC as ACCENTS, MARK as MARKS };

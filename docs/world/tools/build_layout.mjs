@@ -66,7 +66,7 @@ const regions = carto.regions.map((r) => {
   if (!c) throw new Error('contenu manquant pour la région ' + r.id);
   return {
     id: r.id, char: r.char, name: r.name, biome: r.biome, biomeName: r.biomeName, levels: r.levels, danger: r.danger, tier: r.tier,
-    version: c.version, shape: r.shape, bbox: r.bbox, areaKm2: r.areaKm2, landKm2: r.landKm2,
+    version: c.version, opening: C.OPENING[r.id], ...(C.CLOSED_BY[r.id] ? { closedBy: C.CLOSED_BY[r.id] } : {}), shape: r.shape, bbox: r.bbox, areaKm2: r.areaKm2, landKm2: r.landKm2,
     relief: c.relief.map((k) => ({ id: reliefId[k], key: k })),
     heightTypology: { ...typology[r.id], elevation: { ...r.elevation, ...typology[r.id].elevation } },
     walkableLandPct: r.walkableLandPct,
@@ -76,6 +76,8 @@ const regions = carto.regions.map((r) => {
   };
 });
 
+const fix = (o) => { const f = C.PLACEMENT_OVERRIDES[o.id]; if (!f) return o; const { why, ...rest } = f; const q = { ...o, ...rest }; if (rest.x != null) q.y = hAt(q.x, q.z); return q; };
+for (const k of ['towns', 'outposts', 'waypoints', 'dungeons']) carto[k] = carto[k].map(fix);
 const towns = carto.towns.map((t) => ({ ...t, region: regionAt(t.x, t.z), ...(C.SERVICES[t.id] || {}) }));
 const outposts = carto.outposts.map((o) => ({ ...o, region: regionAt(o.x, o.z), ...(C.SERVICES[o.id] || {}) }));
 const camps = C.CAMPS.map((c) => ({ ...c, y: hAt(c.x, c.z) }));

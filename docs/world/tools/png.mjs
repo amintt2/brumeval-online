@@ -17,6 +17,25 @@ function encode(w, h, bitDepth, colorType, bpp, rowWriter, text) {
   const stride = w * bpp;
   const raw = Buffer.alloc((stride + 1) * h);
   for (let y = 0; y < h; y++) { raw[y * (stride + 1)] = 0; rowWriter(y, raw, y * (stride + 1) + 1); }
+  // filtres PNG adaptatifs (Sub, Up, Paeth : on garde la ligne la plus « plate ») — fichiers 2 à 3 × plus petits
+  const out = Buffer.alloc(raw.length), cand = [Buffer.alloc(stride), Buffer.alloc(stride), Buffer.alloc(stride), Buffer.alloc(stride), Buffer.alloc(stride)];
+  for (let y = 0; y < h; y++) {
+    const o = y * (stride + 1) + 1, po = o - (stride + 1);
+    let best = 0, bestSum = Infinity;
+    for (let f = 0; f < 5; f++) {
+      const c = cand[f]; let sum = 0;
+      for (let i = 0; i < stride; i++) {
+        const x = raw[o + i], a = i >= bpp ? raw[o + i - bpp] : 0, b = y ? raw[po + i] : 0, cc = y && i >= bpp ? raw[po + i - bpp] : 0;
+        let v;
+        if (f === 0) v = x; else if (f === 1) v = x - a; else if (f === 2) v = x - b; else if (f === 3) v = x - ((a + b) >> 1);
+        else { const p = a + b - cc, pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - cc); v = x - (pa <= pb && pa <= pc ? a : pb <= pc ? b : cc); }
+        v &= 255; c[i] = v; sum += v < 128 ? v : 256 - v;
+      }
+      if (sum < bestSum) { bestSum = sum; best = f; }
+    }
+    out[o - 1] = best; cand[best].copy(out, o);
+  }
+  out.copy(raw);
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = bitDepth; ihdr[9] = colorType; ihdr[10] = 0; ihdr[11] = 0; ihdr[12] = 0;
   const parts = [Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr)];

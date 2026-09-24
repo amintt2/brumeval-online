@@ -85,6 +85,19 @@ function dijkstra(x, z) {
 }
 const tAt = (T, x, z) => { let best = Infinity; for (let dj = -2; dj <= 2; dj++) for (let di = -2; di <= 2; di++) { const k = (J(z) + dj) * N + I(x) + di; if (T[k] < best) best = T[k]; } return best; };
 
+// ------------------------------------------------------------------ mode sonde : node validate.mjs --probe "x,z;x,z;…"
+const PROBE = process.argv.indexOf('--probe');
+if (PROBE > 0) {
+  const Tb = dijkstra(0, 0);
+  for (const pt of process.argv[PROBE + 1].split(';')) {
+    const [x, z] = pt.split(',').map(Number), k = J(z) * N + I(x);
+    let s = 0, n = 0; box(x - 15, z - 15, x + 15, z + 15, (i, j) => { s += slopeAt(i, j); n++; });
+    const t = tAt(Tb, x, z);
+    console.log(`(${x}, ${z}) région=${regionAt(x, z)} h=${H[k].toFixed(1)} eau=${depth(k).toFixed(1)} pente15=${(s / n).toFixed(0)}° brumeval=${t === Infinity ? '∞' : (t / 60).toFixed(1) + ' min'}`);
+  }
+  process.exit(0);
+}
+
 // ------------------------------------------------------------------ 1. références et unicité
 const ids = new Map();
 const addId = (kind, id) => { if (ids.has(id) && ids.get(id) !== kind) warn(`id partagé ${id} (${ids.get(id)} / ${kind})`); else if (ids.has(id)) err(`id en double : ${id} (${kind})`); ids.set(id, kind); };
@@ -114,10 +127,10 @@ const lastTier = L.collectible.rewards.at(-1)[0]; if (lastTier !== brumTotal) er
 const placed = [
   ...L.towns.map((t) => ({ kind: 'ville', id: t.id, name: t.name, x: t.x, z: t.z, region: t.region, flat: true })),
   ...L.outposts.map((t) => ({ kind: 'avant-poste', id: t.id, name: t.name, x: t.x, z: t.z, region: t.region, flat: true })),
-  ...L.camps.map((t) => ({ kind: 'camp', id: t.id, name: t.name, x: t.x, z: t.z, region: t.region, flat: true })),
+  ...L.camps.map((t) => ({ kind: 'camp', id: t.id, name: t.name, x: t.x, z: t.z, region: t.region, flat: true, water: !!t.onWater })),
   ...L.waypoints.map((t) => ({ kind: 'pierre', id: t.id, name: t.name, x: t.x, z: t.z, region: t.region })),
   ...L.dungeons.map((t) => ({ kind: 'donjon', id: t.id, name: t.name, x: t.x, z: t.z, region: t.region })),
-  ...L.pois.map((t) => ({ kind: 'lieu:' + t.type, id: t.id, name: t.name, x: t.x, z: t.z, region: t.region, flat: t.type === 'arene', water: ['source', 'pont', 'cascade', 'repere', 'epave'].includes(t.type) })),
+  ...L.pois.map((t) => ({ kind: 'lieu:' + t.type, id: t.id, name: t.name, x: t.x, z: t.z, region: t.region, flat: t.type === 'arene' && !t.bake, bake: t.bake, access: t.access, water: ['source', 'pont', 'cascade', 'repere', 'epave'].includes(t.type) })),
 ];
 const meanSlope = (x, z, r) => { let s = 0, n = 0; box(x - r, z - r, x + r, z + r, (i, j) => { s += slopeAt(i, j); n++; }); return s / n; };
 const dryAt = (x, z) => { const k = J(z) * N + I(x); return depth(k) <= 0.05 && !LAVA[k]; };
@@ -156,7 +169,7 @@ const hubs = L.towns.map((t) => t.id);
 const T = {}; for (const t of L.towns) { T[t.id] = dijkstra(t.x, t.z); lap('chemins depuis ' + t.id); }
 const min = (s) => (s === Infinity ? null : +(s / 60).toFixed(1));
 const reach = {};
-for (const p of placed) { const s = tAt(T.brumeval, p.x, p.z); reach[p.id] = min(s); if (s === Infinity) err(`${p.kind} ${p.id} « ${p.name} » inaccessible à pied depuis Brumeval`); }
+for (const p of placed) { const s = tAt(T.brumeval, p.x, p.z); reach[p.id] = min(s); if (s === Infinity) (p.access ? warn : err)(`${p.kind} ${p.id} « ${p.name} » inaccessible à pied depuis Brumeval${p.access ? ' (prévu : ' + p.access + ')' : ''}`); }
 info.hubTimes = Object.fromEntries(hubs.map((a) => [a, Object.fromEntries(hubs.map((b) => { const t = L.towns.find((q) => q.id === b); return [b, min(tAt(T[a], t.x, t.z))]; }))]));
 // pierre la plus proche : part des terres jouables à plus de 700 m d'une pierre (ligne droite)
 let far = 0, land = 0, worst = 0;

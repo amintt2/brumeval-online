@@ -273,11 +273,11 @@
    }
   ],
   "slopeHistogramPlayableLand": {
-   "<10°": 377799,
-   "10-25°": 196793,
-   "25-40°": 70638,
-   "40-55°": 34385,
-   ">55°": 23237
+   "<10°": 377524,
+   "10-25°": 197146,
+   "25-40°": 70891,
+   "40-55°": 34143,
+   ">55°": 22746
   }
  },
  "biomes": {
@@ -396,6 +396,7 @@
    "danger": "jaune",
    "tier": "T3",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -552,6 +553,7 @@
    "danger": "rouge",
    "tier": "T6",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -705,6 +707,7 @@
    "danger": "jaune",
    "tier": "T6",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -873,6 +876,8 @@
    "danger": "rouge",
    "tier": "T6",
    "version": "v0.3",
+   "opening": "v0.3.1",
+   "closedBy": "derrière Givreval",
    "shape": {
     "circle": [
      -1720,
@@ -993,6 +998,8 @@
    "danger": "rouge",
    "tier": "T6",
    "version": "v0.4",
+   "opening": "v0.4",
+   "closedBy": "derrière les Terres de Cendre",
    "shape": {
     "circle": [
      1450,
@@ -1007,7 +1014,7 @@
     -1732
    ],
    "areaKm2": 0.32,
-   "landKm2": 0.31,
+   "landKm2": 0.32,
    "relief": [
     {
      "id": 6,
@@ -1018,26 +1025,26 @@
     "mainBand": "E6",
     "bandsPct": {
      "E4": 0.1,
-     "E5": 9.1,
-     "E6": 90.8
+     "E5": 8.8,
+     "E6": 91
     },
     "slopePct": {
-     "plat": 3.9,
-     "marchable": 16.9,
-     "raide": 46.2,
-     "glissade": 22.9,
-     "falaise": 10.1
+     "plat": 5.2,
+     "marchable": 17,
+     "raide": 45.2,
+     "glissade": 22.5,
+     "falaise": 10.2
     },
     "elevation": {
      "min": 151,
      "mean": 302,
      "max": 379,
-     "p5": 248,
-     "median": 300,
+     "p5": 249,
+     "median": 302,
      "p95": 368
     }
    },
-   "walkableLandPct": 67,
+   "walkableLandPct": 68,
    "weather": [
     {
      "kind": "cendres",
@@ -1108,6 +1115,7 @@
    "danger": "rouge",
    "tier": "T6",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "circle": [
      -1830,
@@ -1223,6 +1231,8 @@
    "danger": "rouge",
    "tier": "T5",
    "version": "v0.3",
+   "opening": "v0.3.1",
+   "closedBy": "derrière Azurine",
    "shape": {
     "circle": [
      1930,
@@ -1237,7 +1247,7 @@
     1535
    ],
    "areaKm2": 0.09,
-   "landKm2": 0.06,
+   "landKm2": 0.05,
    "relief": [
     {
      "id": 10,
@@ -1249,29 +1259,29 @@
     }
    ],
    "heightTypology": {
-    "mainBand": "E3",
+    "mainBand": "E2",
     "bandsPct": {
-     "E1": 1.1,
-     "E2": 13,
-     "E3": 85.9
+     "E1": 18.8,
+     "E2": 74.9,
+     "E3": 6.3
     },
     "slopePct": {
-     "plat": 31.7,
-     "marchable": 28.9,
-     "raide": 25.2,
-     "glissade": 3.9,
-     "falaise": 10.2
+     "plat": 9.1,
+     "marchable": 50.1,
+     "raide": 39.3,
+     "glissade": 1.5,
+     "falaise": 0
     },
     "elevation": {
      "min": 0,
-     "mean": 49,
-     "max": 66,
-     "p5": 22,
-     "median": 56,
-     "p95": 64
+     "mean": 15,
+     "max": 43,
+     "p5": 2,
+     "median": 14,
+     "p95": 41
     }
    },
-   "walkableLandPct": 79,
+   "walkableLandPct": 99,
    "weather": [
     {
      "kind": "clair",
@@ -1346,6 +1356,7 @@
    "danger": "jaune",
    "tier": "T3",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -1501,6 +1512,8 @@
    "danger": "jaune",
    "tier": "T4",
    "version": "v0.3",
+   "opening": "v0.3.1",
+   "closedBy": "Pont de l’Entaille effondré",
    "shape": {
     "polygon": [
      [
@@ -1649,6 +1662,7 @@
    "danger": "jaune",
    "tier": "T1-T3",
    "version": "v0.1",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -1850,6 +1864,7 @@
    "danger": "jaune",
    "tier": "T1-T2",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -2018,6 +2033,7 @@
    "danger": "jaune",
    "tier": "T2",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -2081,8 +2097,8 @@
     },
     "slopePct": {
      "plat": 68.4,
-     "marchable": 28.3,
-     "raide": 2,
+     "marchable": 28.4,
+     "raide": 1.9,
      "glissade": 0.4,
      "falaise": 1
     },
@@ -2090,7 +2106,7 @@
      "min": 8,
      "mean": 49,
      "max": 137,
-     "p5": 17,
+     "p5": 16,
      "median": 49,
      "p95": 85
     }
@@ -2176,6 +2192,7 @@
    "danger": "jaune",
    "tier": "T2-T3",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -2243,11 +2260,11 @@
      "E6": 1.2
     },
     "slopePct": {
-     "plat": 62.9,
-     "marchable": 22.6,
-     "raide": 9.3,
-     "glissade": 4.4,
-     "falaise": 0.7
+     "plat": 63.1,
+     "marchable": 22.5,
+     "raide": 9.2,
+     "glissade": 4.3,
+     "falaise": 0.8
     },
     "elevation": {
      "min": 48,
@@ -2356,6 +2373,8 @@
    "danger": "jaune",
    "tier": "T5",
    "version": "v0.3",
+   "opening": "v0.3.1",
+   "closedBy": "Col du Loup Blanc enseveli (avalanche) jusqu’à la v0.3.1",
    "shape": {
     "polygon": [
      [
@@ -2519,6 +2538,8 @@
    "danger": "jaune",
    "tier": "T5-T6",
    "version": "v0.4",
+   "opening": "v0.4",
+   "closedBy": "Col des Cendres : nuée ardente permanente (dégâts de zone) jusqu’à la v0.4",
    "shape": {
     "polygon": [
      [
@@ -2582,17 +2603,17 @@
     "bandsPct": {
      "E1": 0.8,
      "E2": 4.4,
-     "E3": 11.8,
+     "E3": 11.7,
      "E4": 16.4,
      "E5": 64.4,
      "E6": 2.3
     },
     "slopePct": {
-     "plat": 8.9,
-     "marchable": 36.1,
-     "raide": 31.9,
-     "glissade": 14.7,
-     "falaise": 8.4
+     "plat": 8.3,
+     "marchable": 35.8,
+     "raide": 32.3,
+     "glissade": 14.8,
+     "falaise": 8.7
     },
     "elevation": {
      "min": 1,
@@ -2686,6 +2707,7 @@
    "danger": "jaune",
    "tier": "T4",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -2744,16 +2766,16 @@
     "mainBand": "E2",
     "bandsPct": {
      "E1": 40.3,
-     "E2": 53.2,
-     "E3": 6,
+     "E2": 53.5,
+     "E3": 5.7,
      "E4": 0.5
     },
     "slopePct": {
-     "plat": 70.6,
-     "marchable": 20.1,
+     "plat": 71,
+     "marchable": 20.5,
      "raide": 5.2,
-     "glissade": 3.1,
-     "falaise": 1.1
+     "glissade": 2.8,
+     "falaise": 0.4
     },
     "elevation": {
      "min": 4,
@@ -2761,10 +2783,10 @@
      "max": 128,
      "p5": 4,
      "median": 5,
-     "p95": 45
+     "p95": 44
     }
    },
-   "walkableLandPct": 96,
+   "walkableLandPct": 97,
    "weather": [
     {
      "kind": "brume",
@@ -2864,6 +2886,7 @@
    "danger": "jaune",
    "tier": "T4-T5",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -3020,6 +3043,8 @@
    "danger": "jaune",
    "tier": "T4",
    "version": "v0.3",
+   "opening": "v0.3.1",
+   "closedBy": "Gorge Sèche obstruée par un éboulement",
    "shape": {
     "polygon": [
      [
@@ -3203,6 +3228,7 @@
    "danger": "jaune",
    "tier": "T4",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -3377,6 +3403,7 @@
    "danger": "jaune",
    "tier": "T2",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -3507,8 +3534,8 @@
      "name": "La Tisseuse des Saules",
      "model": "spider",
      "lvl": 12,
-     "x": -880,
-     "z": 700,
+     "x": -820,
+     "z": 800,
      "desc": "toiles au sol qui ralentissent"
     }
    ],
@@ -3537,6 +3564,7 @@
    "danger": "jaune",
    "tier": "T2",
    "version": "v0.3",
+   "opening": "v0.3.0",
    "shape": {
     "polygon": [
      [
@@ -3714,6 +3742,8 @@
    "danger": "jaune",
    "tier": "T3",
    "version": "v0.3",
+   "opening": "v0.3.1",
+   "closedBy": "Chaussée des Sables recouverte (grande marée)",
    "shape": {
     "polygon": [
      [
@@ -4035,7 +4065,7 @@
    "id": "sanctuaire_veilleuse",
    "kind": "sanctuaire",
    "circle": [
-    -75,
+    -95,
     -1135,
     45
    ]
@@ -4167,9 +4197,9 @@
   {
    "id": "poste_cendres",
    "name": "Poste des Cendres",
-   "x": 1010,
-   "z": -1620,
-   "y": 127.6,
+   "x": 1003,
+   "z": -1507,
+   "y": 88.7,
    "region": "cendres",
    "services": [
     "marchand",
@@ -4197,7 +4227,7 @@
   {
    "id": "sanctuaire_veilleuse",
    "name": "Sanctuaire de la Veilleuse",
-   "x": -75,
+   "x": -95,
    "z": -1135,
    "region": "arbre",
    "services": [
@@ -4207,7 +4237,7 @@
    ],
    "safeRadius": 45,
    "version": "v0.3",
-   "y": 174.5
+   "y": 174.7
   },
   {
    "id": "hameau_saules",
@@ -4234,13 +4264,15 @@
     "feu"
    ],
    "version": "v0.3",
+   "onWater": true,
+   "note": "village sur pilotis : planchers à 1,5 m au-dessus de 0,7 m d’eau",
    "y": 3.3
   },
   {
    "id": "fort_couchant",
    "name": "Fort du Couchant",
-   "x": -1560,
-   "z": -700,
+   "x": -1567,
+   "z": -707,
    "region": "rougecrete",
    "services": [
     "forge",
@@ -4248,12 +4280,12 @@
     "feu"
    ],
    "version": "v0.3",
-   "y": 185.9
+   "y": 186.3
   },
   {
    "id": "camp_grandes_portes",
    "name": "Camp des Grandes Portes",
-   "x": -20,
+   "x": 0,
    "z": -1250,
    "region": "arbre",
    "services": [
@@ -4261,7 +4293,7 @@
     "feu"
    ],
    "version": "v0.3",
-   "y": 167.9
+   "y": 168.5
   }
  ],
  "landmarks": [
@@ -4328,7 +4360,7 @@
    "name": "Clairsaule",
    "x": 450,
    "z": -1840,
-   "y": 110.8,
+   "y": 110.1,
    "region": "sylve"
   },
   {
@@ -4374,9 +4406,9 @@
   {
    "id": "wp_entaille",
    "name": "Pont de l'Entaille",
-   "x": -1440,
+   "x": -1420,
    "z": -760,
-   "y": 134.5,
+   "y": 136.3,
    "region": "entaille"
   },
   {
@@ -4454,9 +4486,9 @@
   {
    "id": "wp_delta",
    "name": "Delta de la Brumeuse",
-   "x": 1620,
-   "z": -300,
-   "y": 3.5,
+   "x": 1627,
+   "z": -293,
+   "y": 3.3,
    "region": "brumenoire"
   },
   {
@@ -4470,17 +4502,73 @@
   {
    "id": "wp_cendres",
    "name": "Poste des Cendres",
-   "x": 1010,
-   "z": -1600,
-   "y": 112,
+   "x": 995,
+   "z": -1515,
+   "y": 88.5,
    "region": "cendres"
+  },
+  {
+   "id": "wp_aiguille",
+   "name": "Pied de l'Aiguille Grise",
+   "x": -700,
+   "z": -2300,
+   "y": 216.6,
+   "region": "sylve"
+  },
+  {
+   "id": "wp_clairiere_nord",
+   "name": "Clairière du Nord",
+   "x": 150,
+   "z": -2380,
+   "y": 111.5,
+   "region": "sylve"
+  },
+  {
+   "id": "wp_plage_noire",
+   "name": "Plage noire du Cendreux",
+   "x": 1900,
+   "z": -1830,
+   "y": 105.7,
+   "region": "cendres"
+  },
+  {
+   "id": "wp_cretes",
+   "name": "Crêtes Calcinées",
+   "x": 1750,
+   "z": -2380,
+   "y": 213.6,
+   "region": "cendres"
+  },
+  {
+   "id": "wp_palais",
+   "name": "Palais-Mirage",
+   "x": -1300,
+   "z": 1250,
+   "y": 32.6,
+   "region": "sable_rouge"
+  },
+  {
+   "id": "wp_mines",
+   "name": "Mines de Rougecrête",
+   "x": -1680,
+   "z": -420,
+   "y": 181.9,
+   "region": "rougecrete"
+  },
+  {
+   "id": "wp_ajoncs",
+   "name": "Lande des Ajoncs",
+   "x": 850,
+   "z": 80,
+   "y": 36.1,
+   "region": "port_salin"
   },
   {
    "id": "wp_brasier",
    "name": "Flanc du Brasier",
    "x": 1200,
    "z": -1780,
-   "y": 238.8,
+   "y": 232.4,
    "region": "cendres"
   }
  ],
@@ -4539,9 +4627,9 @@
   {
    "id": "tombeau_sables",
    "name": "Tombeau des Sables",
-   "x": -1700,
-   "z": 1060,
-   "y": 8.7,
+   "x": -1693,
+   "z": 1067,
+   "y": 9.4,
    "region": "mer_dunes",
    "note": "arène du Ver des sables au-dessus",
    "kind": "instance",
@@ -4573,9 +4661,9 @@
   {
    "id": "grotte_marees",
    "name": "Grotte des Marées",
-   "x": 1850,
+   "x": 1880,
    "z": 1292,
-   "y": 24.2,
+   "y": 0.4,
    "region": "epave",
    "note": "Île de l'Épave, par la Passe des Naufrageurs (banc de sable)",
    "kind": "instance",
@@ -4640,8 +4728,8 @@
   {
    "id": "temple_englouti",
    "name": "Temple englouti",
-   "x": -640,
-   "z": 835,
+   "x": -658,
+   "z": 843,
    "region": "songes",
    "kind": "instance",
    "levels": [
@@ -4651,7 +4739,7 @@
    "boss": "La Nixe du lac",
    "version": "v0.4",
    "kit": "dng_* + eau",
-   "y": 13.9
+   "y": 18.4
   },
   {
    "id": "racines_arbre",
@@ -4819,11 +4907,11 @@
    "region": "songes",
    "type": "grotte",
    "name": "Temple englouti",
-   "x": -640,
-   "z": 835,
+   "x": -658,
+   "z": 843,
    "version": "v0.4",
    "desc": "donjon niv. 12–15",
-   "y": 13.9
+   "y": 18.4
   },
   {
    "id": "so_anse",
@@ -4841,22 +4929,22 @@
    "region": "songes",
    "type": "belvedere",
    "name": "Ponton des Brumes",
-   "x": -420,
+   "x": -400,
    "z": 700,
    "version": "v0.3",
    "desc": "belvédère sur le lac",
-   "y": 16.4
+   "y": 23.5
   },
   {
    "id": "so_saules",
    "region": "songes",
    "type": "arene",
    "name": "Nid de la Tisseuse des Saules",
-   "x": -880,
-   "z": 700,
+   "x": -820,
+   "z": 800,
    "version": "v0.3",
    "desc": "",
-   "y": 23.6
+   "y": 20.2
   },
   {
    "id": "ps_port",
@@ -5003,7 +5091,7 @@
   },
   {
    "id": "sy_aiguille",
-   "region": "sylve",
+   "region": "givreval",
    "type": "belvedere",
    "name": "Aiguille Grise",
    "x": -742,
@@ -5091,7 +5179,7 @@
   },
   {
    "id": "ca_bassin",
-   "region": "coeur_aldmar",
+   "region": "aldmar",
    "type": "source",
    "name": "Bassin des Rois",
    "x": 120,
@@ -5215,11 +5303,11 @@
    "region": "sable_rouge",
    "type": "source",
    "name": "Oasis des Mirages",
-   "x": -1760,
+   "x": -1830,
    "z": 760,
    "version": "v0.3",
    "desc": "",
-   "y": 53.6
+   "y": 56
   },
   {
    "id": "sr_enclumes",
@@ -5230,6 +5318,7 @@
    "z": 520,
    "version": "v0.3",
    "desc": "",
+   "access": "sommet de mesa : vu de loin en v0.3, atteint en vol plané (v0.5)",
    "y": 128.5
   },
   {
@@ -5252,6 +5341,7 @@
    "z": 720,
    "version": "v0.3",
    "desc": "",
+   "access": "sommet de mesa : vu de loin en v0.3, atteint en vol plané (v0.5)",
    "y": 92.3
   },
   {
@@ -5271,21 +5361,21 @@
    "type": "source",
    "name": "Puits des Palmes",
    "x": -1000,
-   "z": 980,
+   "z": 920,
    "version": "v0.3",
    "desc": "",
-   "y": 28.9
+   "y": 33.1
   },
   {
    "id": "sr_creux",
    "region": "sable_rouge",
    "type": "arene",
    "name": "Creux du Ver",
-   "x": -1500,
-   "z": 980,
+   "x": -1450,
+   "z": 1000,
    "version": "v0.3",
    "desc": "",
-   "y": 39.2
+   "y": 47
   },
   {
    "id": "sr_palais",
@@ -5355,7 +5445,7 @@
   },
   {
    "id": "rc_gorge",
-   "region": "rougecrete",
+   "region": "entaille",
    "type": "repere",
    "name": "Gorge Sèche",
    "x": -1420,
@@ -5402,11 +5492,11 @@
    "region": "entaille",
    "type": "arene",
    "name": "Seuil du Gardien",
-   "x": -1480,
-   "z": -1150,
+   "x": -1471,
+   "z": -1146,
    "version": "v0.3",
    "desc": "",
-   "y": 150.9
+   "y": 152.1
   },
   {
    "id": "em_phare",
@@ -5446,15 +5536,16 @@
    "region": "embruns",
    "type": "arene",
    "name": "Aire de Brise-Coque",
-   "x": 1840,
-   "z": -1300,
+   "x": 1780,
+   "z": -1280,
    "version": "v0.3",
    "desc": "",
-   "y": 208
+   "bake": "replat de 30 m à tailler dans la falaise (v0.3)",
+   "y": 234.2
   },
   {
    "id": "az_palmes",
-   "region": "azurine",
+   "region": "port_salin",
    "type": "repere",
    "name": "Plage des Palmes",
    "x": 1240,
@@ -5490,11 +5581,11 @@
    "region": "azurine",
    "type": "arene",
    "name": "Île du Corail",
-   "x": 1300,
-   "z": 1380,
+   "x": 1270,
+   "z": 1400,
    "version": "v0.4",
    "desc": "Roi-Carapace",
-   "y": 10.8
+   "y": 16.2
   },
   {
    "id": "az_ilot",
@@ -5516,7 +5607,7 @@
    "z": 1440,
    "version": "v0.3",
    "desc": "",
-   "y": 61
+   "y": 31.6
   },
   {
    "id": "ep_passe",
@@ -5527,7 +5618,7 @@
    "z": 1320,
    "version": "v0.3",
    "desc": "banc de sable",
-   "y": 39.2
+   "y": -0.5
   },
   {
    "id": "gi_col",
@@ -5546,21 +5637,21 @@
    "type": "repere",
    "name": "Lac Glacé",
    "x": -1450,
-   "z": -2150,
+   "z": -2020,
    "version": "v0.3",
    "desc": "glace qui craque",
-   "y": 246.2
+   "y": 245.4
   },
   {
    "id": "gi_cirque",
    "region": "givreval",
    "type": "arene",
    "name": "Cirque du Géant",
-   "x": -1470,
-   "z": -1960,
+   "x": -1520,
+   "z": -1840,
    "version": "v0.3",
    "desc": "",
-   "y": 217.6
+   "y": 195.4
   },
   {
    "id": "gi_blanchecorne",
@@ -5615,7 +5706,7 @@
    "z": -1900,
    "version": "v0.4",
    "desc": "",
-   "y": 150.5
+   "y": 134.9
   },
   {
    "id": "ce_fumerolles",
@@ -5659,6 +5750,7 @@
    "z": -2000,
    "version": "v0.4",
    "desc": "",
+   "bake": "plateforme de 40 m à niveler dans la caldeira (v0.4)",
    "y": 342.2
   }
  ],
@@ -6305,18 +6397,18 @@
      -1400
     ],
     [
-     1010,
-     -1600
+     975,
+     -1535
     ]
    ],
-   "length": 975,
+   "length": 901,
    "maxGradePct": 12,
-   "maxCut": -31.1,
-   "maxFill": 29.4,
+   "maxCut": -16.6,
+   "maxFill": 16.1,
    "bridges": [
     [
-     765,
-     -1050
+     764,
+     -1049
     ]
    ]
   },
@@ -6327,8 +6419,8 @@
    "grade": 0.3,
    "pts": [
     [
-     1010,
-     -1600
+     975,
+     -1535
     ],
     [
      1150,
@@ -6343,10 +6435,10 @@
      -1780
     ]
    ],
-   "length": 431,
+   "length": 462,
    "maxGradePct": 30,
-   "maxCut": -11.6,
-   "maxFill": 15.2,
+   "maxCut": -20,
+   "maxFill": 20.6,
    "bridges": []
   },
   {
@@ -6391,8 +6483,8 @@
    "name": "Route de la Sylve",
    "cls": "main",
    "grade": 0.12,
-   "maxCut": -35.4,
-   "maxFill": 16.9,
+   "maxCut": -50.8,
+   "maxFill": 30.1,
    "pts": [
     [
      -60,
@@ -6431,15 +6523,15 @@
      -1900
     ],
     [
-     1010,
-     -1620
+     975,
+     -1535
     ]
    ],
-   "length": 2019,
+   "length": 2100,
    "maxGradePct": 12,
    "bridges": [
     [
-     81,
+     83,
      -1763
     ]
    ]
@@ -7913,8 +8005,8 @@
    "name": "Lac de lave du Brasier",
    "x": 1450,
    "z": -2050,
-   "rx": 55,
-   "rz": 55,
+   "rx": 30,
+   "rz": 30,
    "level": 317,
    "depth": 4,
    "lava": true,
@@ -8322,8 +8414,8 @@
     "x": 1930,
     "z": 1400,
     "r": 150,
-    "summit": 62,
-    "cliff": 0.6
+    "summit": 44,
+    "cliff": 0.2
    },
    {
     "id": "mouettes",
@@ -8536,7 +8628,7 @@
     "name": "Col des Cendres",
     "x": 960,
     "z": -1900,
-    "h": 151
+    "h": 135
    },
    {
     "id": "breche_embruns",
@@ -9490,11 +9582,11 @@
      "mountMin": 1.2
     },
     "poste_cendres": {
-     "straight": 1909,
-     "path": 2064,
-     "walkMin": 6.2,
-     "sprintMin": 4.8,
-     "mountMin": 2.5
+     "straight": 1818,
+     "path": 1974,
+     "walkMin": 5.8,
+     "sprintMin": 4.5,
+     "mountMin": 2.4
     },
     "phare": {
      "straight": 2227,
@@ -9588,11 +9680,11 @@
      "mountMin": 2.7
     },
     "wp_entaille": {
-     "straight": 1628,
-     "path": 1809,
+     "straight": 1611,
+     "path": 1780,
      "walkMin": 5.2,
      "sprintMin": 4.1,
-     "mountMin": 2.2
+     "mountMin": 2.1
     },
     "wp_ambresable": {
      "straight": 1309,
@@ -9658,8 +9750,8 @@
      "mountMin": 1.9
     },
     "wp_delta": {
-     "straight": 1648,
-     "path": 1726,
+     "straight": 1653,
+     "path": 1731,
      "walkMin": 4.8,
      "sprintMin": 3.8,
      "mountMin": 2.1
@@ -9672,15 +9764,64 @@
      "mountMin": 3
     },
     "wp_cendres": {
-     "straight": 1892,
-     "path": 2042,
-     "walkMin": 6,
-     "sprintMin": 4.7,
+     "straight": 1813,
+     "path": 1949,
+     "walkMin": 5.8,
+     "sprintMin": 4.6,
+     "mountMin": 2.3
+    },
+    "wp_aiguille": {
+     "straight": 2404,
+     "path": 2641,
+     "walkMin": 7.8,
+     "sprintMin": 6.2,
+     "mountMin": 3.1
+    },
+    "wp_clairiere_nord": {
+     "straight": 2385,
+     "path": 2502,
+     "walkMin": 7.2,
+     "sprintMin": 5.7,
+     "mountMin": 3
+    },
+    "wp_plage_noire": {
+     "straight": 2638,
+     "path": 2845,
+     "walkMin": 8.9,
+     "sprintMin": 7,
+     "mountMin": 3.4
+    },
+    "wp_cretes": {
+     "straight": 2954,
+     "path": 3165,
+     "walkMin": 10.4,
+     "sprintMin": 8.2,
+     "mountMin": 3.8
+    },
+    "wp_palais": {
+     "straight": 1803,
+     "path": 1990,
+     "walkMin": 5.6,
+     "sprintMin": 4.4,
      "mountMin": 2.4
+    },
+    "wp_mines": {
+     "straight": 1732,
+     "path": 2054,
+     "walkMin": 6.1,
+     "sprintMin": 4.8,
+     "mountMin": 2.4
+    },
+    "wp_ajoncs": {
+     "straight": 854,
+     "path": 865,
+     "walkMin": 2.5,
+     "sprintMin": 1.9,
+     "mountMin": 1
     },
     "wp_brasier": {
      "straight": 2147,
-     "path": 2308,
+     "path": 2309,
      "walkMin": 7.5,
      "sprintMin": 5.9,
      "mountMin": 2.7
@@ -9707,8 +9848,8 @@
      "mountMin": 3.1
     },
     "tombeau_sables": {
-     "straight": 2003,
-     "path": 2185,
+     "straight": 2001,
+     "path": 2186,
      "walkMin": 6,
      "sprintMin": 4.7,
      "mountMin": 2.6
@@ -9722,7 +9863,7 @@
     },
     "grotte_marees": {
      "straight": 2256,
-     "path": 2388,
+     "path": 2390,
      "walkMin": 6.8,
      "sprintMin": 5.4,
      "mountMin": 2.8
@@ -9774,7 +9915,7 @@
     "clairsaule": {
      "straight": 2741,
      "path": 2993,
-     "walkMin": 9,
+     "walkMin": 8.9,
      "sprintMin": 7,
      "mountMin": 3.6
     },
@@ -9786,11 +9927,11 @@
      "mountMin": 2.5
     },
     "poste_cendres": {
-     "straight": 2510,
-     "path": 2607,
-     "walkMin": 7.9,
-     "sprintMin": 6.2,
-     "mountMin": 3.1
+     "straight": 2422,
+     "path": 2518,
+     "walkMin": 7.5,
+     "sprintMin": 5.9,
+     "mountMin": 3
     },
     "phare": {
      "straight": 2283,
@@ -9884,9 +10025,9 @@
      "mountMin": 3.9
     },
     "wp_entaille": {
-     "straight": 2682,
-     "path": 2860,
-     "walkMin": 8.4,
+     "straight": 2666,
+     "path": 2831,
+     "walkMin": 8.3,
      "sprintMin": 6.6,
      "mountMin": 3.4
     },
@@ -9954,8 +10095,8 @@
      "mountMin": 2.5
     },
     "wp_delta": {
-     "straight": 1495,
-     "path": 1537,
+     "straight": 1493,
+     "path": 1531,
      "walkMin": 4.4,
      "sprintMin": 3.5,
      "mountMin": 1.8
@@ -9968,15 +10109,64 @@
      "mountMin": 3.1
     },
     "wp_cendres": {
-     "straight": 2491,
-     "path": 2586,
-     "walkMin": 7.7,
-     "sprintMin": 6.1,
-     "mountMin": 3.1
+     "straight": 2404,
+     "path": 2493,
+     "walkMin": 7.5,
+     "sprintMin": 5.9,
+     "mountMin": 3
+    },
+    "wp_aiguille": {
+     "straight": 3461,
+     "path": 3805,
+     "walkMin": 11.1,
+     "sprintMin": 8.7,
+     "mountMin": 4.5
+    },
+    "wp_clairiere_nord": {
+     "straight": 3295,
+     "path": 3507,
+     "walkMin": 10.1,
+     "sprintMin": 8,
+     "mountMin": 4.2
+    },
+    "wp_plage_noire": {
+     "straight": 2959,
+     "path": 3388,
+     "walkMin": 10.6,
+     "sprintMin": 8.3,
+     "mountMin": 4
+    },
+    "wp_cretes": {
+     "straight": 3418,
+     "path": 3709,
+     "walkMin": 12.1,
+     "sprintMin": 9.5,
+     "mountMin": 4.4
+    },
+    "wp_palais": {
+     "straight": 2026,
+     "path": 2162,
+     "walkMin": 6.1,
+     "sprintMin": 4.8,
+     "mountMin": 2.6
+    },
+    "wp_mines": {
+     "straight": 2698,
+     "path": 3105,
+     "walkMin": 9.3,
+     "sprintMin": 7.3,
+     "mountMin": 3.7
+    },
+    "wp_ajoncs": {
+     "straight": 806,
+     "path": 836,
+     "walkMin": 2.5,
+     "sprintMin": 1.9,
+     "mountMin": 1
     },
     "wp_brasier": {
      "straight": 2699,
-     "path": 2852,
+     "path": 2853,
      "walkMin": 9.2,
      "sprintMin": 7.2,
      "mountMin": 3.4
@@ -10003,10 +10193,10 @@
      "mountMin": 3.8
     },
     "tombeau_sables": {
-     "straight": 2398,
-     "path": 2540,
+     "straight": 2391,
+     "path": 2525,
      "walkMin": 7.2,
-     "sprintMin": 5.7,
+     "sprintMin": 5.6,
      "mountMin": 3
     },
     "antre_sorciere": {
@@ -10018,8 +10208,8 @@
     },
     "grotte_marees": {
      "straight": 1234,
-     "path": 1396,
-     "walkMin": 4,
+     "path": 1397,
+     "walkMin": 4.1,
      "sprintMin": 3.2,
      "mountMin": 1.7
     },
@@ -10082,11 +10272,11 @@
      "mountMin": 1.4
     },
     "poste_cendres": {
-     "straight": 3024,
-     "path": 3460,
-     "walkMin": 10.1,
-     "sprintMin": 7.9,
-     "mountMin": 4.1
+     "straight": 2941,
+     "path": 3371,
+     "walkMin": 9.7,
+     "sprintMin": 7.6,
+     "mountMin": 4
     },
     "phare": {
      "straight": 3520,
@@ -10180,7 +10370,7 @@
      "mountMin": 2
     },
     "wp_entaille": {
-     "straight": 1177,
+     "straight": 1174,
      "path": 1228,
      "walkMin": 3.4,
      "sprintMin": 2.7,
@@ -10250,8 +10440,8 @@
      "mountMin": 3.5
     },
     "wp_delta": {
-     "straight": 2944,
-     "path": 3184,
+     "straight": 2950,
+     "path": 3189,
      "walkMin": 8.7,
      "sprintMin": 6.9,
      "mountMin": 3.8
@@ -10264,15 +10454,64 @@
      "mountMin": 4.6
     },
     "wp_cendres": {
-     "straight": 3010,
-     "path": 3438,
-     "walkMin": 9.9,
-     "sprintMin": 7.8,
-     "mountMin": 4.1
+     "straight": 2943,
+     "path": 3346,
+     "walkMin": 9.7,
+     "sprintMin": 7.6,
+     "mountMin": 4
+    },
+    "wp_aiguille": {
+     "straight": 2753,
+     "path": 2926,
+     "walkMin": 8.8,
+     "sprintMin": 6.9,
+     "mountMin": 3.5
+    },
+    "wp_clairiere_nord": {
+     "straight": 3108,
+     "path": 3348,
+     "walkMin": 9.8,
+     "sprintMin": 7.7,
+     "mountMin": 4
+    },
+    "wp_plage_noire": {
+     "straight": 3851,
+     "path": 4241,
+     "walkMin": 12.8,
+     "sprintMin": 10.1,
+     "mountMin": 5
+    },
+    "wp_cretes": {
+     "straight": 4083,
+     "path": 4662,
+     "walkMin": 14.2,
+     "sprintMin": 11.1,
+     "mountMin": 5.5
+    },
+    "wp_palais": {
+     "straight": 852,
+     "path": 859,
+     "walkMin": 2.4,
+     "sprintMin": 1.9,
+     "mountMin": 1
+    },
+    "wp_mines": {
+     "straight": 931,
+     "path": 1091,
+     "walkMin": 3.8,
+     "sprintMin": 3,
+     "mountMin": 1.3
+    },
+    "wp_ajoncs": {
+     "straight": 2114,
+     "path": 2250,
+     "walkMin": 6.2,
+     "sprintMin": 4.9,
+     "mountMin": 2.7
     },
     "wp_brasier": {
      "straight": 3272,
-     "path": 3705,
+     "path": 3706,
      "walkMin": 11.4,
      "sprintMin": 9,
      "mountMin": 4.4
@@ -10299,7 +10538,7 @@
      "mountMin": 4.8
     },
     "tombeau_sables": {
-     "straight": 804,
+     "straight": 806,
      "path": 833,
      "walkMin": 2.3,
      "sprintMin": 1.8,
@@ -10314,7 +10553,7 @@
     },
     "grotte_marees": {
      "straight": 3216,
-     "path": 3539,
+     "path": 3540,
      "walkMin": 10,
      "sprintMin": 7.8,
      "mountMin": 4.2
@@ -10378,10 +10617,10 @@
      "mountMin": 1.6
     },
     "poste_cendres": {
-     "straight": 2370,
-     "path": 2828,
-     "walkMin": 8.1,
-     "sprintMin": 6.4,
+     "straight": 2337,
+     "path": 2837,
+     "walkMin": 8,
+     "sprintMin": 6.3,
      "mountMin": 3.4
     },
     "phare": {
@@ -10476,8 +10715,8 @@
      "mountMin": 1.4
     },
     "wp_entaille": {
-     "straight": 884,
-     "path": 944,
+     "straight": 882,
+     "path": 899,
      "walkMin": 2.5,
      "sprintMin": 2,
      "mountMin": 1.1
@@ -10546,8 +10785,8 @@
      "mountMin": 3.7
     },
     "wp_delta": {
-     "straight": 3267,
-     "path": 3635,
+     "straight": 3277,
+     "path": 3640,
      "walkMin": 10.4,
      "sprintMin": 8.2,
      "mountMin": 4.3
@@ -10560,18 +10799,67 @@
      "mountMin": 4.8
     },
     "wp_cendres": {
-     "straight": 2370,
-     "path": 2854,
-     "walkMin": 8.1,
-     "sprintMin": 6.4,
+     "straight": 2358,
+     "path": 2879,
+     "walkMin": 8.2,
+     "sprintMin": 6.5,
      "mountMin": 3.4
+    },
+    "wp_aiguille": {
+     "straight": 933,
+     "path": 1005,
+     "walkMin": 3.4,
+     "sprintMin": 2.7,
+     "mountMin": 1.2
+    },
+    "wp_clairiere_nord": {
+     "straight": 1682,
+     "path": 1974,
+     "walkMin": 5.6,
+     "sprintMin": 4.4,
+     "mountMin": 2.3
+    },
+    "wp_plage_noire": {
+     "straight": 3266,
+     "path": 3875,
+     "walkMin": 11.7,
+     "sprintMin": 9.2,
+     "mountMin": 4.6
+    },
+    "wp_cretes": {
+     "straight": 3197,
+     "path": 3617,
+     "walkMin": 11.1,
+     "sprintMin": 8.8,
+     "mountMin": 4.3
+    },
+    "wp_palais": {
+     "straight": 2891,
+     "path": 3058,
+     "walkMin": 8.3,
+     "sprintMin": 6.5,
+     "mountMin": 3.6
+    },
+    "wp_mines": {
+     "straight": 1261,
+     "path": 1340,
+     "walkMin": 3.9,
+     "sprintMin": 3.1,
+     "mountMin": 1.6
+    },
+    "wp_ajoncs": {
+     "straight": 2800,
+     "path": 2987,
+     "walkMin": 8.5,
+     "sprintMin": 6.7,
+     "mountMin": 3.6
     },
     "wp_brasier": {
      "straight": 2564,
-     "path": 3014,
+     "path": 2965,
      "walkMin": 9.1,
      "sprintMin": 7.1,
-     "mountMin": 3.6
+     "mountMin": 3.5
     },
     "crypte_aldmar": {
      "straight": 1518,
@@ -10589,14 +10877,14 @@
     },
     "forge_brasier": {
      "straight": 2936,
-     "path": 3357,
+     "path": 3320,
      "walkMin": 10.7,
      "sprintMin": 8.4,
      "mountMin": 4
     },
     "tombeau_sables": {
-     "straight": 2721,
-     "path": 2953,
+     "straight": 2727,
+     "path": 2954,
      "walkMin": 8,
      "sprintMin": 6.3,
      "mountMin": 3.5
@@ -10610,7 +10898,7 @@
     },
     "grotte_marees": {
      "straight": 4347,
-     "path": 4552,
+     "path": 4554,
      "walkMin": 12.9,
      "sprintMin": 10.2,
      "mountMin": 5.4
@@ -10674,10 +10962,10 @@
      "mountMin": 2.3
     },
     "poste_cendres": {
-     "straight": 609,
-     "path": 638,
-     "walkMin": 1.9,
-     "sprintMin": 1.5,
+     "straight": 617,
+     "path": 647,
+     "walkMin": 1.8,
+     "sprintMin": 1.4,
      "mountMin": 0.8
     },
     "phare": {
@@ -10698,7 +10986,7 @@
      "straight": 1792,
      "path": 1991,
      "walkMin": 5.7,
-     "sprintMin": 4.5,
+     "sprintMin": 4.4,
      "mountMin": 2.4
     },
     "wp_gue_argentine": {
@@ -10772,11 +11060,11 @@
      "mountMin": 3.5
     },
     "wp_entaille": {
-     "straight": 2187,
-     "path": 2548,
-     "walkMin": 7.4,
-     "sprintMin": 5.9,
-     "mountMin": 3
+     "straight": 2170,
+     "path": 2462,
+     "walkMin": 7.3,
+     "sprintMin": 5.8,
+     "mountMin": 2.9
     },
     "wp_ambresable": {
      "straight": 2838,
@@ -10817,7 +11105,7 @@
      "straight": 2698,
      "path": 2940,
      "walkMin": 8.3,
-     "sprintMin": 6.6,
+     "sprintMin": 6.5,
      "mountMin": 3.5
     },
     "wp_azurine": {
@@ -10831,7 +11119,7 @@
      "straight": 1175,
      "path": 1475,
      "walkMin": 4.1,
-     "sprintMin": 3.3,
+     "sprintMin": 3.2,
      "mountMin": 1.8
     },
     "wp_brumenoire": {
@@ -10842,30 +11130,79 @@
      "mountMin": 1.6
     },
     "wp_delta": {
-     "straight": 1950,
-     "path": 2023,
+     "straight": 1960,
+     "path": 2035,
      "walkMin": 5.5,
-     "sprintMin": 4.3,
+     "sprintMin": 4.4,
      "mountMin": 2.4
     },
     "wp_phare": {
      "straight": 1738,
-     "path": 1994,
+     "path": 1943,
      "walkMin": 6.2,
-     "sprintMin": 4.8,
-     "mountMin": 2.4
+     "sprintMin": 4.9,
+     "mountMin": 2.3
     },
     "wp_cendres": {
-     "straight": 617,
-     "path": 664,
-     "walkMin": 1.9,
-     "sprintMin": 1.5,
+     "straight": 645,
+     "path": 689,
+     "walkMin": 2,
+     "sprintMin": 1.6,
      "mountMin": 0.8
+    },
+    "wp_aiguille": {
+     "straight": 1231,
+     "path": 1316,
+     "walkMin": 4.1,
+     "sprintMin": 3.2,
+     "mountMin": 1.6
+    },
+    "wp_clairiere_nord": {
+     "straight": 600,
+     "path": 628,
+     "walkMin": 1.8,
+     "sprintMin": 1.4,
+     "mountMin": 0.7
+    },
+    "wp_plage_noire": {
+     "straight": 1450,
+     "path": 1733,
+     "walkMin": 5.4,
+     "sprintMin": 4.3,
+     "mountMin": 2.1
+    },
+    "wp_cretes": {
+     "straight": 1400,
+     "path": 1517,
+     "walkMin": 5.1,
+     "sprintMin": 4,
+     "mountMin": 1.8
+    },
+    "wp_palais": {
+     "straight": 3569,
+     "path": 4001,
+     "walkMin": 11.3,
+     "sprintMin": 8.9,
+     "mountMin": 4.8
+    },
+    "wp_mines": {
+     "straight": 2571,
+     "path": 2793,
+     "walkMin": 8.4,
+     "sprintMin": 6.6,
+     "mountMin": 3.3
+    },
+    "wp_ajoncs": {
+     "straight": 1981,
+     "path": 2144,
+     "walkMin": 6.1,
+     "sprintMin": 4.8,
+     "mountMin": 2.6
     },
     "wp_brasier": {
      "straight": 754,
      "path": 824,
-     "walkMin": 2.7,
+     "walkMin": 2.8,
      "sprintMin": 2.2,
      "mountMin": 1
     },
@@ -10886,13 +11223,13 @@
     "forge_brasier": {
      "straight": 1114,
      "path": 1167,
-     "walkMin": 4.3,
-     "sprintMin": 3.4,
+     "walkMin": 4.4,
+     "sprintMin": 3.5,
      "mountMin": 1.4
     },
     "tombeau_sables": {
-     "straight": 3626,
-     "path": 3974,
+     "straight": 3628,
+     "path": 3975,
      "walkMin": 11.2,
      "sprintMin": 8.8,
      "mountMin": 4.7
@@ -10900,13 +11237,13 @@
     "antre_sorciere": {
      "straight": 1409,
      "path": 1444,
-     "walkMin": 4.1,
+     "walkMin": 4,
      "sprintMin": 3.2,
      "mountMin": 1.7
     },
     "grotte_marees": {
      "straight": 3449,
-     "path": 3804,
+     "path": 3806,
      "walkMin": 10.9,
      "sprintMin": 8.6,
      "mountMin": 4.5
@@ -10959,24 +11296,24 @@
    "SSSRRRRSSSSSSSSSSSSSSSSZZZZZZZSSSSSSSSSSSSRRRRFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVVVVVVVVVVVVVVRRRQQQQQQQQQQQQ",
    "SSSRRRRSSSSSSSSSSSSSSSSZZZZZZZSSSSSSSSSSSRRFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVVVVVVVVVVVVVVRRRQQQQQQQQQQQQ",
    "SSSRRRRSSSSSSSSSSSSSSSSZZZZZZZSSSSSSSSSSRFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVRRRVVVVVRRRRVRRRQQQQQQQQQQQQ",
-   "SSSSRRRSSSSSSSSSSSSSSSSSZZZZZZSSSSSSSSSRFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVRYYRRVVVVRRVRRRRQQQQQQQQQQQQQ",
-   "SSSRRRRSSSSSSSSSSSSSSSSSSRZRSSSSSSSSSSSFFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVRYYYRVVVVRRVVVRRRQQQQQQQQQQQQ",
-   "SSSRRRRRSSSSSSSSSSSSSSSSRRZRSSSSSSSSSSRFFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFRRVVVVVVVVVVVVVVRYYYRVVVVVRRVVRRVQQQQQQQQQQQQ",
-   "SSSRRRRRSSSSSSSSSSSRRRRRRRZRSSSSSSSSSSRFFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVRRRRRRVVVVRRRRMRVQQQQQQQQQQQQ",
+   "SSSSRRRSSSSSSSSSSSSSSSSSZZZZZZSSSSSSSSSRFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVRVVVRVVVVRRVRRRRQQQQQQQQQQQQQ",
+   "SSSRRRRSSSSSSSSSSSSSSSSSSRZRSSSSSSSSSSSFFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVRYYVRVVVVRRVVVRRRQQQQQQQQQQQQ",
+   "SSSRRRRRSSSSSSSSSSSSSSSSRRZRSSSSSSSSSSRFFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFRRVVVVVVVVVVVVVVRVYVRVVVVVRRVVRRVQQQQQQQQQQQQ",
+   "SSSRRRRRSSSSSSSSSSSRRRRRRRZRSSSSSSSSSSRFFFFFFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVRRVRRRVVVVRRRRMRVQQQQQQQQQQQQ",
    "SSSRRRRRSSSSSSSSSSSRRRRRRRZRSSSSSSSSSSRFFFFFZFFFFFFFFFFFFFFFFLLLLLLLLLLLLLLLFFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVVRVRRVVVVRRRMMRRVQQQQQQQQQQQ",
    "SSSRRRRRSSSSSSSSRRRRRFFFFFZRRSSSSSSSSSFFFFFFZFFFFFFFFFFFFFFFFFLLLLLLLLZLLLLFFFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVVVVVVRVVVVRRMMRRRVBQQQQQQQQQ",
-   "SSSSRRRRSSSSSSSSRRRRRRFFFFFFRRSSSSSSSSFFFFFFFFFFFFFFFFFFFFFFFFFLLLLLLLLZZLLFFFFFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVVVVVRVRRRRRRRVVVVBQQQQQQQQ",
-   "SSSSRRRRSSSSSSSSRRRRRFFFFZFFRRRRRSSSSSRFFFFFFZFFFFFFFFFFFFFFFFFFLLLLLLLLZLFFFFFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVVVVVVVRRRRRVRRRVVVBQQQQQQQQ",
+   "SSSSRRRRSSSSSSSSRRRRRRFFFFFFRRSSSSSSSSFFFFFFFFFFFFFFFFFFFFFFFFFLLLLLLLLZZLLFFFFFFFFFFFFFFFFFFFFFFFFFRRRVVVVVVVVVVVVVVVVVVVRVRRRRRRRVVVVBQQQQQQQQ",
+   "SSSSRRRRSSSSSSSSRRRRRFFFFZFFRRRRRSSSSSRFFFFFFZFFFFFFFFFFFFFFFFFFLLLLLLLLZLFFFFFFFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVVVVVRRRRRVRRRVVVBQQQQQQQQ",
    "SSSSRRRRSSSSSSSSRRRRFFFFFZFFFFFRRRSSSSRFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVVVVVRRVRRRRRRVVVVQQQQQQQQ",
    "SSSSRRRRSSSSSSSSRRRRFFFFFZFFFFFFRRSSSRRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVVVVVVRRRVVZRRRRVVBQQQQQQQ",
-   "SSSSRRRRSSSSSSSSRRRRFFFFZFFFFFFFFRRSSRRFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVVVVVVVVVRRRRRRRRRVBQQQQQQQ",
+   "SSSSRRRRSSSSSSSSRRRRFFFFZFFFFFFFFRRSSRRFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFRVVVVVVVVVVVVVVVVVVVVVVVRRRRRRRRRVBQQQQQQQ",
    "SSSSRRRRSSSSSSSSRRRRFFFFZFFFFFFFFRRRSRRFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZZFFFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVVVVVVVVVVVRRRRVRRMBQQQQQQQ",
    "SSSSRRRRRRRSSSSRRRRFFFFFZFFFFFFFFFRRSRRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVVVVVVVVVVVVRVVMRMMBQQQQQQQ",
    "SSSSRRRRRRRRRSRRRRRFFFFFZFFFFFFFFFRRRRRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZZFFFFFFFFFFFFFFFFFFFFFFFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMRMBQQQQQQQQ",
-   "SSSRRRRRRRRRRRRRRRFFFFFFZFFFFFFFFFFRRRRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFMRVVVVVVVVVVVVVVVVVVVVVVVVVVVMMMBQQQQQQQQ",
+   "SSSRRRRRRRRRRRRRRRFFFFFFZFFFFFFFFFFRRRRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFMMVVVVVVVVVVVVVVVVVVVVVVVVVVVMMMBQQQQQQQQ",
    "SSSRRRRRRRRRRRRRFFFFFFFFZFFFFFFFFFFRRRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFMMMMVVVVVVVVVVVVVVVVVVVVVVVVVVMMMQQQQQQQQQ",
    "SSRRRRRRRRRRRRRRFFFFFFFFZFFFFFFFFFFRRFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFMMMMVVVVVVVVVVVVVVVVVVVVVVVVVVMMBQQQQQQQQQ",
-   "SSRRRRRRRRRRRRRFFFFFFFFZFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFVVMMMMVVVVVVVVVVVVVVVVVVVVVVVMMMBQQQQQQQQQ",
+   "SSRRRRRRRRRRRRRFFFFFFFFZFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFRVRRMVVVVVVVVVVVVVVVVVVVVVVVVMMMBQQQQQQQQQ",
    "SSRRRRRRRRRRRRFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFVVVVMMMVVVVVVVVVVVVVVVVVVVVVVMMMMKQQQQQQQQQ",
    "SSSRRRRRRRRRRRFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFFFFAAAAAAAFFFFFFFFZFFFFFFFFFFFFFFFFVVVVMMMMVVVVVVVVVVVVVVVVVVKKKKKKKKQQQQQQQQQ",
    "CCHHHHHHHHHHHHFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFZFFFFFFFFFFFFFFFFFFFAAAAAAAAAAAAAFFFFFFZFFFFFFFFFFFFFFFVVVVVMMMMMVVVVVVVVVVVKKKKKKKKKRKRRKQQQQQQQQ",
@@ -10987,12 +11324,12 @@
    "CHCHHHHHHHHHHHHHHHHHHHCCZCCHHHHHHHHFFFFFFOOOOOOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAAAAAAAAFFFFFFFZFFFFFWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRKKKKKKKKKKKKQQQQQQ",
    "CCHHHHHHHHHHHHCHHHHHHHCCZCCCHHHHHHCFFFFFFOOOOZOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAAAAAAAAAFFFFFFZFFFFWWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKKKKKKKKRQQQQQ",
    "CCHHHHHHHHHHHHHHHHHHHHCCZCCCHHHHHHHFFFFFFOOOOZOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAAAAAAARAMMMMMMMZMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKKKRRKKKQQQQQQ",
-   "CCHHHHHHHHHHHHHHHHHHHHCCCZCCHHHHHHHFFFFFFOOOOZOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAAAAAAAAAMMMMMMMZWWWWWRWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKKKKRRKRQQQQQQ",
+   "CCHHHHHHHHHHHHHHHHHHHHCCCZCCHHHHHHHFFFFFFOOOOZOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAAAAAAAAAMMMMMMMZWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKKKKRRKRQQQQQQ",
    "CCHHHHHHHHHHHHHHHHHHHHCCCZCCHHHHHHCFFFFFFOOOOOOOOOOOOOOOOORAAAAAAAAAAAAAAAAAAAAAAARAMMMMMMMMZWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKKKKRRKRQQQQQQ",
    "CCHHHHHHHHHHHHHHHHHHHHCCCZCCHHHHHHCFFFFFFOOOOOOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAAAAAAARAMMMMMMMMWZZWWWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRKKKKKKKKKKQQQQQQQ",
-   "CCHHHHHHHHHHHHHHHHHHHHHCCCCCHHHHHHHROOOOOOOOOOZOOOOOOOOOOOOAAAAAAAAAAAAAAAZZZAAAAAAAMMMMMMMMWWWZRWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKKKKKRQQQQQQQ",
+   "CCHHHHHHHHHHHHHHHHHHHHHCCCCCHHHHHHHROOOOOOOOOOZOOOOOOOOOOOOAAAAAAAAAAAAAAAZZZAAAAAAAMMMMMMMMWWWZWWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKKKKKRQQQQQQQ",
    "CHHHHHHHHHHHHHHHHHHHHHHCCCZCHHHHHHHOOOOOOOOOOOZOOOOOOOOOOOOAAAAAAAAAAAAAAAZZZAAAAAAAMMMMMMMMWWWWZWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKKKRRKKKQQQQQQQ",
-   "CHHHHHHHHHHHHHHHHHHHHHHCCCZCCHHHHHHOOOOOOOOOOOOOOOOOOOOOOOOAAAAAAAAAARAAAAAARAAAAARMMMMMMMMMMWWRZWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKRRKKKKRQQQQQQQ",
+   "CHHHHHHHHHHHHHHHHHHHHHHCCCZCCHHHHHHOOOOOOOOOOOOOOOOOOOOOOOOAAAAAAAAAARAAAAAARAAAAARMMMMMMMMMMWWWZWWWWWWWWWWWWWWWWWWWWWWWWWWWRRRRKKRRKKKKRQQQQQQQ",
    "CHHHHHHHHHHHHHHHHHHHHHHCCCZCCHCHHCHOOOOOOOOOOOOOOOOOOOOOOOOAAAAAAAAAARAAAAAAARAAAMMMMMMMMMMMMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWKRRRKRRRRKKKKQQQQQQQ",
    "CHHHHHHHHHHHHHHHHHHHHHHCCCZCCCCCCCHOOOOOOOOOOZOOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAARAAMMMMMMMMMMMMWWWWZWWWWWWWWWWWWWWWWWWWWWWWWWWKRRRKRRRRKKKRQQQQQQQ",
    "CHHHHHHHHHHHHHHHHHHHHHHCCCZCCCCCHCCOOOOOOOOOZOOOOOOOOOOOOOOOAAAAAAAAAAAAAAAAAAARAMMMMMMMMMMMMWWWWZWWWWWWWWWWWWWWWWWWWWWWWWWWKKRRRRRRKKKKRQQQQQQQ",
@@ -11064,14 +11401,14 @@
    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDOOOOOOOBQQQQQQBBOTTTTTTTTTTTTTTTTTBBBBQBBBTBBQQQQQQQQQQQQQQQQQUUUUUUBTTTTTTTTTTTTTTUUUUUUQQQQQQQQQ",
    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDOOOOOOBQQQQZQQQBBBTTTTTTBBTBQQTTTTQQQQQQBBBBBQQQQQQQQQQQQQQQQQUUUUUUUUTTTTTTTTTTTBUUUUUUUQQQQQQQQQ",
    "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDBBBDOOOOOBBQQQQZQQQQQQBBTTTBBBBQQQQQQQQQQQQQQQBBQQQQQQQQQQQQQQQQQQQUUUUUUUUTTTTTTTTTTUUUUUUUUUQQQQQQQQ",
-   "DDHDDHDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDBBBBBBDOOOOBQQQQQQZQQQQQQQBBTBBQQQQQQQQQQQQQQQQQQQBQQQQQQQQQQQQQQQQQQQUUUUUUUUTTTTTTTTTUUUURTTTRUUQQQQQQQ",
-   "QDHHCHDHDDDDDDDDZDDDDDDDDDDDDDDDDDDDDDDBBQQQBBBBBBQQQQQQQQQQQQUUUUBBBUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUUBBUUUUBTTTTTTTTBUURTTTTTRUUQQQQQQ",
-   "QQDHQDDHCDDDDDDDDDDDDDDDBBDDDDDDDDDDDBBQQQQQQQBBBQQQQQQQQQQQQUUUUUUUUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUBBTBBUUUUBUUTTTTTURTTTTTTTTUQQQQQQQ",
-   "QQQQQQQQDDDDDDDZDDDDDBBBBBBBDDDDDDDDBBQQQQQQQQQQQQQQQQQQQQQQUUUUUUUUUUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUBTTTTBUUUUUUUUUUTBUTTTTTTTTTRQQQQQQQ",
-   "QQQQQQQQUHDDDDUUDDBBBBQQQQQQBBDDDDBBQQQQQQQQQQQQQQQQQQQQQQQQUUUUUTTTTUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQBTTTTTUUUUUUUUUUUUURTTTTTTTTRQQQQQQQ",
-   "QQQQQQQQUDDDDDUUDDBBBUQQQQQQQQBBBBQQQQQQQQQQQQQQQQQQQQQQQQQQUUUUTTTTTUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQBTTTBUUBUUUUUUUUUUUTTTTTTTTRQQQQQQQ",
-   "QQQQQQQQQUUDDDBBBBUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUUUTTTTUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQBBBUUBTBUUUUUUUUUURTTTTTTTRQQQQQQQ",
-   "QQQQQQQQQQUUBBBBUUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUTTTTTUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUBTBUQQQQQUUUUUURTTTTRQQQQQQQQ",
+   "DDHDDHDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDBBBBBBDOOOOBQQQQQQZQQQQQQQBBTBBQQQQQQQQQQQQQQQQQQQBQQQQQQQQQQQQQQQQQQQUUUUUUUUTTTTTTTTTUUUUUUBBUUUQQQQQQQ",
+   "QDHHCHDHDDDDDDDDZDDDDDDDDDDDDDDDDDDDDDDBBQQQBBBBBBQQQQQQQQQQQQUUUUBBBUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUUBBUUUUBTTTTTTTTBUUUBTTTBUUUQQQQQQ",
+   "QQDHQDDHCDDDDDDDDDDDDDDDBBDDDDDDDDDDDBBQQQQQQQBBBQQQQQQQQQQQQUUUUUUUUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUBBTBBUUUUBUUTTTTTUUUBTTTTTBUQQQQQQQ",
+   "QQQQQQQQDDDDDDDZDDDDDBBBBBBBDDDDDDDDBBQQQQQQQQQQQQQQQQQQQQQQUUUUUUUUUUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUBTTTTBUUUUUUUUUUTBUUTTTTTTTBUQQQQQQQ",
+   "QQQQQQQQUHDDDDUUDDBBBBQQQQQQBBDDDDBBQQQQQQQQQQQQQQQQQQQQQQQQUUUUUTTTTUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQBTTTTTUUUUUUUUUUUUUUBTTTTTTTQQQQQQQQ",
+   "QQQQQQQQUDDDDDUUDDBBBUQQQQQQQQBBBBQQQQQQQQQQQQQQQQQQQQQQQQQQUUUUTTTTTUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQBTTTBUUBUUUUUUUUUUUBTTTTTTTBQQQQQQQ",
+   "QQQQQQQQQUUDDDBBBBUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUUUTTTTUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQBBBUUBTBUUUUUUUUUUUTTTTTTBQQQQQQQQ",
+   "QQQQQQQQQQUUBBBBUUUUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUTTTTTUQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQUUBTBUQQQQQUUUUUUUQQBTBQQQQQQQQ",
    "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQTQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQBBUUQQQQQQQQUUQQQQQQQQQQQQQQQ",
    "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
    "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
@@ -14558,9 +14895,9 @@
     357,
     374,
     343,
-    317,
-    315,
-    322,
+    320,
+    318,
+    324,
     360,
     369,
     349,
@@ -14703,10 +15040,10 @@
     337,
     359,
     372,
-    327,
+    328,
+    317,
     314,
-    313,
-    316,
+    318,
     345,
     373,
     353,
@@ -14850,9 +15187,9 @@
     359,
     372,
     335,
-    315,
-    314,
-    317,
+    318,
+    316,
+    319,
     351,
     372,
     350,
@@ -14996,8 +15333,8 @@
     353,
     371,
     362,
-    331,
-    324,
+    332,
+    326,
     333,
     343,
     356,
@@ -15409,18 +15746,18 @@
     105,
     103,
     103,
-    105,
-    109,
-    115,
-    120,
+    104,
+    108,
+    112,
+    116,
+    121,
     126,
     131,
-    136,
-    142,
-    151,
-    158,
-    159,
-    179,
+    137,
+    144,
+    148,
+    147,
+    176,
     203,
     214,
     224,
@@ -15551,22 +15888,22 @@
     111,
     110,
     110,
-    110,
+    109,
+    105,
+    105,
+    106,
+    107,
     109,
     110,
-    111,
     112,
-    112,
-    112,
-    113,
     117,
     124,
     132,
     141,
     155,
     164,
-    171,
-    169,
+    162,
+    170,
     199,
     210,
     220,
@@ -15696,9 +16033,9 @@
     117,
     112,
     110,
-    111,
     110,
-    106,
+    109,
+    105,
     103,
     103,
     104,
@@ -15711,8 +16048,8 @@
     141,
     151,
     158,
-    168,
-    163,
+    159,
+    165,
     193,
     204,
     215,
@@ -15857,7 +16194,7 @@
     140,
     150,
     154,
-    162,
+    155,
     159,
     187,
     198,
@@ -16003,15 +16340,15 @@
     135,
     141,
     144,
-    154,
-    156,
-    181,
+    150,
+    155,
+    183,
     192,
     200,
     208,
     218,
     229,
-    236,
+    233,
     243,
     250,
     260,
@@ -16149,16 +16486,16 @@
     128,
     135,
     138,
-    145,
-    153,
-    170,
+    143,
+    148,
+    174,
     186,
     194,
     201,
     209,
     216,
-    223,
-    231,
+    222,
+    229,
     235,
     243,
     252,
@@ -16295,16 +16632,16 @@
     120,
     127,
     133,
-    139,
-    148,
-    160,
+    137,
+    140,
+    164,
     177,
     185,
     195,
     201,
     205,
     215,
-    219,
+    215,
     224,
     232,
     244,
@@ -16442,16 +16779,16 @@
     115,
     122,
     128,
-    138,
-    150,
+    132,
+    153,
     165,
     174,
     184,
     194,
     198,
     207,
-    208,
-    212,
+    206,
+    210,
     222,
     233,
     232,
@@ -16588,16 +16925,16 @@
     104,
     108,
     115,
-    126,
-    137,
-    141,
+    124,
+    138,
+    149,
     159,
     171,
     182,
     191,
     194,
-    196,
-    201,
+    194,
+    199,
     212,
     219,
     218,
@@ -16733,16 +17070,16 @@
     96,
     97,
     99,
-    105,
-    119,
-    120,
-    127,
+    106,
+    117,
+    121,
+    129,
     139,
     152,
     166,
     177,
-    181,
-    191,
+    178,
+    190,
     196,
     202,
     205,
@@ -16880,13 +17217,13 @@
     93,
     95,
     98,
-    99,
-    100,
-    111,
-    121,
-    136,
-    150,
-    162,
+    108,
+    103,
+    109,
+    118,
+    133,
+    148,
+    158,
     173,
     180,
     187,
@@ -17025,13 +17362,13 @@
     88,
     89,
     90,
-    91,
     90,
-    91,
+    103,
     96,
-    105,
-    119,
-    131,
+    103,
+    112,
+    122,
+    132,
     143,
     154,
     164,
@@ -17171,8 +17508,8 @@
     86,
     86,
     87,
-    86,
-    86,
+    82,
+    83,
     89,
     92,
     101,
@@ -17317,7 +17654,7 @@
     84,
     84,
     83,
-    81,
+    72,
     83,
     88,
     92,
@@ -17462,8 +17799,8 @@
     81,
     82,
     81,
-    78,
-    77,
+    72,
+    73,
     77,
     79,
     82,
@@ -17608,7 +17945,7 @@
     78,
     79,
     76,
-    72,
+    63,
     70,
     67,
     67,
@@ -17753,8 +18090,8 @@
     72,
     74,
     72,
-    69,
-    65,
+    64,
+    62,
     61,
     56,
     55,
@@ -17899,7 +18236,7 @@
     68,
     66,
     62,
-    61,
+    53,
     54,
     49,
     44,
@@ -18044,8 +18381,8 @@
     63,
     59,
     56,
-    54,
-    52,
+    51,
+    46,
     42,
     38,
     33,
@@ -18190,8 +18527,8 @@
     55,
     51,
     46,
-    49,
-    39,
+    42,
+    37,
     32,
     27,
     23,
@@ -18336,7 +18673,7 @@
     46,
     41,
     37,
-    44,
+    35,
     27,
     22,
     17,
@@ -18481,8 +18818,8 @@
     39,
     33,
     31,
-    34,
-    30,
+    29,
+    26,
     18,
     14,
     10,
@@ -18627,7 +18964,7 @@
     25,
     23,
     21,
-    34,
+    25,
     14,
     10,
     7,
@@ -18772,8 +19109,8 @@
     23,
     17,
     14,
+    15,
     17,
-    24,
     6,
     4,
     4,
@@ -18918,8 +19255,8 @@
     18,
     11,
     8,
-    21,
-    9,
+    14,
+    6,
     3,
     3,
     4,
@@ -19064,7 +19401,7 @@
     16,
     8,
     3,
-    14,
+    8,
     3,
     3,
     3,
@@ -19355,8 +19692,8 @@
     28,
     17,
     9,
-    18,
-    3,
+    10,
+    2,
     2,
     5,
     5,
@@ -19500,8 +19837,8 @@
     39,
     29,
     20,
-    12,
-    18,
+    11,
+    10,
     2,
     2,
     4,
@@ -19646,8 +19983,8 @@
     36,
     27,
     20,
-    18,
-    11,
+    13,
+    7,
     3,
     1,
     3,
@@ -19792,7 +20129,7 @@
     34,
     26,
     19,
-    21,
+    13,
     6,
     3,
     2,
@@ -19938,7 +20275,7 @@
     33,
     25,
     19,
-    19,
+    13,
     7,
     4,
     3,
@@ -20083,8 +20420,8 @@
     41,
     32,
     25,
-    21,
-    15,
+    18,
+    13,
     9,
     6,
     4,
@@ -20229,7 +20566,7 @@
     40,
     30,
     23,
-    21,
+    18,
     13,
     9,
     6,
@@ -20375,7 +20712,7 @@
     40,
     30,
     22,
-    19,
+    18,
     12,
     9,
     7,
@@ -29757,8 +30094,8 @@
     -1,
     -1,
     -1,
-    2,
-    2,
+    -1,
+    -1,
     -1,
     -1,
     -2,
@@ -29901,13 +30238,13 @@
     0,
     0,
     -1,
+    -1,
+    -1,
     0,
-    22,
-    38,
-    44,
-    36,
-    18,
     3,
+    2,
+    0,
+    -1,
     -2,
     -21,
     -27,
@@ -30046,14 +30383,14 @@
     10,
     1,
     -1,
+    0,
+    -1,
+    2,
+    9,
+    11,
     7,
-    22,
-    46,
-    56,
-    58,
-    54,
-    49,
-    23,
+    3,
+    0,
     -1,
     -11,
     -31,
@@ -30191,16 +30528,16 @@
     10,
     8,
     0,
-    19,
-    42,
-    50,
-    58,
-    61,
-    63,
-    61,
-    55,
-    42,
-    2,
+    -1,
+    1,
+    5,
+    12,
+    22,
+    25,
+    20,
+    9,
+    1,
+    -1,
     -11,
     -35,
     -39,
@@ -30336,17 +30673,17 @@
     1,
     2,
     2,
+    -1,
     0,
-    36,
-    53,
-    58,
-    61,
-    63,
-    64,
-    63,
-    60,
-    48,
-    8,
+    6,
+    14,
+    25,
+    35,
+    39,
+    32,
+    16,
+    3,
+    -1,
     -3,
     -37,
     -41,
@@ -30483,16 +30820,16 @@
     -1,
     -1,
     -1,
-    17,
-    50,
-    59,
-    63,
-    63,
-    62,
-    64,
-    63,
-    54,
-    27,
+    -1,
+    4,
+    14,
+    29,
+    40,
+    43,
+    37,
+    23,
+    7,
+    0,
     -1,
     -22,
     -44,
@@ -30629,16 +30966,16 @@
     -1,
     -1,
     -1,
-    0,
+    -1,
+    2,
+    11,
+    24,
+    33,
     35,
-    59,
-    63,
-    63,
-    62,
-    62,
-    63,
-    57,
-    34,
+    32,
+    21,
+    9,
+    1,
     -1,
     -16,
     -45,
@@ -30776,15 +31113,15 @@
     -1,
     -1,
     -1,
-    31,
-    57,
-    53,
-    55,
-    55,
-    60,
-    60,
-    50,
-    15,
+    2,
+    9,
+    8,
+    12,
+    14,
+    18,
+    14,
+    5,
+    0,
     -1,
     -16,
     -45,
@@ -30922,14 +31259,14 @@
     -5,
     -4,
     -1,
-    10,
-    18,
-    28,
-    41,
-    42,
-    50,
-    52,
-    35,
+    0,
+    0,
+    -1,
+    0,
+    1,
+    5,
+    6,
+    1,
     -1,
     -10,
     -43,
@@ -31071,11 +31408,11 @@
     -15,
     -7,
     -1,
-    6,
-    3,
-    10,
-    10,
-    1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
     -1,
     -28,
     -45,
@@ -32277,10 +32614,10 @@
    "000000000000000000000003333333000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111",
    "000000000000000000000003333333300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111",
    "000000000000000000000003333333000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111",
-   "000000000000000000000000333333000000000000000000000000000000000000000000000000000000000000000000000000000000000000006660000000000001111111111111",
-   "000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000066660000000000000111111111111",
-   "000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006660000000000000111111111111",
+   "000000000000000000000000333333000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111",
+   "000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006600000000000000111111111111",
    "000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000111111111111",
+   "000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111",
    "000000000000000000000000004000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111111111",
    "000000000000000000000000004000000000000000004000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000111111111",
    "000000000000000000000000044000000000000000000400000000000000000000000004400000000000000000000000000000000000000000000000000000000000000011111111",
@@ -32308,7 +32645,7 @@
    "000000000000000000000000440000000000000000000400000000000000000000000000000000000000000000040000000000050000055555000055000000000000000000111111",
    "000000000000000000000000040000000000000000000400000000000000000000000000000000000000000000004400000550000055555550000555000000000000000001111111",
    "000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000440055555000555505500000555000000000000000001111111",
-   "000000000000000000000000044000000000000000000040000000000000000000000000003330000000000000000004055550000005555500055055000000000000000001111111",
+   "000000000000000000000000044000000000000000000040000000000000000000000000003330000000000000000004555550000005555500055055000000000000000001111111",
    "000000000000000000000000004000000000000000000040000000000000000000000000003330000000000000000005450000000000000000555505000000000000000001111111",
    "000000000000000000000000004000000000000000000040000000000000000000000000000000000000000000000000450000005000000000555000000000000000000001111111",
    "000000000000000000000000004000000000000000000400000000000000000000000000000000000000000000000000555005500000005550000000000000000000000001111111",
@@ -32382,14 +32719,14 @@
    "000000000000000004000000000000000000000000000000000000111111000000000000000000000100100000011111111111111111222222000000000000000222222111111111",
    "000000000000000000000000000000000000000000000000000001111411100000000000011110001111111000011111111111111111222222220000000000002222222111111111",
    "000000000000000004000000000000000000000000000000000011111411111100000000111111111111111100111111111111111111122222222000000000022222222211111111",
-   "000000000000000004000000000000000000000000000000000111111411111110000011111111111111111111111111111111111111122222222000000000222200002221111111",
-   "100000000000000040000000000000000000000001110000001111111111112222000211111111111111111111111111111111111111222222222000000000222000000022111111",
-   "110011100000000040000000000000000000000111111100011111111111122222222221111111111111111111111111111111111112200000222202200000200000000021111111",
-   "111111112000002400000000010000000000001111111111111111111111222222222222111111111111111111111111111111111112000000222222222200200000000001111111",
-   "111111112000002200000011111110000000111111111111111111111111222220000222111111111111111111111111111111111111000000222222222222200000000001111111",
-   "111111112200002200022211111111000011111111111111111111111111222200000222111111111111111111111111111111111111100000220222222222220000000001111111",
-   "111111111220000000222111111111111111111111111111111111111111122220000221111111111111111111111111111111111111110002200022222222220000000011111111",
-   "111111111122000022221111111111111111111111111111111111111111111200000211111111111111111111111111111111111111111112200021111122222200000011111111",
+   "000000000000000004000000000000000000000000000000000111111411111110000011111111111111111111111111111111111111122222222000000000222222002221111111",
+   "100000000000000040000000000000000000000001110000001111111111112222000211111111111111111111111111111111111111222222222000000000222200000222111111",
+   "110011100000000040000000000000000000000111111100011111111111122222222221111111111111111111111111111111111112200000222202200000222000000221111111",
+   "111111112000002400000000010000000000001111111111111111111111222222222222111111111111111111111111111111111112000000222222222200220000000021111111",
+   "111111112000002200000011111110000000111111111111111111111111222220000222111111111111111111111111111111111111000000222222222222220000000011111111",
+   "111111112200002200022211111111000011111111111111111111111111222200000222111111111111111111111111111111111111100000220222222222220000000011111111",
+   "111111111220000000222111111111111111111111111111111111111111122220000221111111111111111111111111111111111111110002200022222222222000000011111111",
+   "111111111122000022221111111111111111111111111111111111111111111200000211111111111111111111111111111111111111111112200021111122222221100111111111",
    "111111111111111111111111111111111111111111111111111111111111111111101111111111111111111111111111111111111111111111112221111111122111111111111111",
    "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
    "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
@@ -32430,17 +32767,17 @@
    "000000000000000001000000077000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
    "000000000000000001110000027100000000000000002200000000000000000000000222000000000000000000000000000000000000000000000000110000000000000000000000",
    "000000000000000000011111177110000000000000002200000000000022000000000022200000000000000000001111111111100000000000000000011000000000000000000000",
-   "000000000000000000000001022010000000000000002200000000000022000000000000220000000000000111111100000000100000000000000000001100000000000000000000",
-   "000000000000000000000000220010000000000000000200000000000220000000000000222000000001111100000000000000100000000000000000000132220000000000000000",
+   "000000000000000000000001022010000000000000002200000000000022000000000000220000000000000111111100000001100000000000000000001100000000000000000000",
+   "000000000000000000000000220010000000000000000200000000000220000000000000222000000001111100000000000001100000000000000000000132220000000000000000",
    "000000000000000000000000220010000000000000000220000000000220000000000000022200011111000000000000000000100000000000000000000012222222222222000000",
    "000000000000000000000000220011000000000000000200000000002200000000000111117751110000000000000000000000100000011000000000000011002222222220000000",
-   "000000000000000000000000200001000000000000000200000000022200000000000100000222000000000000000000000000110000011110000000011110000000000000000000",
-   "000000000000000000000000200001000000000000002200000000022000000000000110000222200000000000000000000000110000001011111111110000000000000000000000",
-   "000000000000000000000000200001100000000000002200000000220000000000000010000002220000000000000000000000010000001100000000000000000000000000000000",
-   "000000000000222000000000200000100000000000002200000000220000000000000010000000022000000000000000000000010000001100000000000000000000000000000000",
-   "000000000000022222000002200011111110000000002200000002200000000000000011000000002200000000000000000000011000011000000000000000000000000000000000",
-   "000000000000000222220002200110000111100000002200000022200000000000000001000000002220000000000000000000111111110000000000000000000000000000000000",
-   "000000000000000000222222211100000000110000000220000022000000000000000001000000000222000000000000000000100001100000000000000000000000000000000000",
+   "000000000000000000000000200001000000000000000200000000022200000000000100000222000000000000000000000000100000011110000000011110000000000000000000",
+   "000000000000000000000000200001000000000000002200000000022000000000000110000222200000000000000000000000100000001011111111110000000000000000000000",
+   "000000000000000000000000200001100000000000002200000000220000000000000010000002220000000000000000000000100000001100000000000000000000000000000000",
+   "000000000000222000000000200000100000000000002200000000220000000000000010000000022000000000000000000000100000001100000000000000000000000000000000",
+   "000000000000022222000002200011111110000000002200000002200000000000000011000000002200000000000000000000100000011000000000000000000000000000000000",
+   "000000000000000222220002200110000111100000002200000022200000000000000001000000002220000000000000000000100001110000000000000000000000000000000000",
+   "000000000000000000222222211100000000110000000220000022000000000000000001000000000222000000000000000000111111100000000000000000000000000000000000",
    "000000000000000000002227710000000000011000000220000222000000000000000001000000000022200000000000000001100000000000000000000000000000000000000000",
    "000000000000000000000007200000000000001100000022000220000000000000000001100000000002220000000000000001000000000000000000000000000000000000000000",
    "000000000000000000000007700000000000000100000022002200000000000000000001100000000000222200000000000011000000000000000000000000000000000000000000",
