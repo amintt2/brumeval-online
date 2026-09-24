@@ -97,6 +97,7 @@ export function createSkillTree(parent, { handlers, menus, notify, onOpenBook, o
   let pending = [];               // node ids, one entry per rank
   let st = null;                  // computed states
   let hover = null;               // hovered node
+  const tipAt = { n: null, x: 0, y: 0 }; // node and pointer position of the visible tooltip
   let hoverPath = null;           // cheapest path preview { path, cost }
   let search = '';
   let matches = [];
@@ -208,6 +209,8 @@ export function createSkillTree(parent, { handlers, menus, notify, onOpenBook, o
     hoverPath = null;
     if (hover) planHover(hover);
     refreshChrome();
+    // the tree / points changed (Confirmer accepted, level up…): rebuild the visible tooltip, never a stale one
+    if (tipAt.n && tip?.classList.contains('show')) showTip(tipAt.n, tipAt.x, tipAt.y);
   }
 
   function refreshChrome() {
@@ -368,10 +371,19 @@ export function createSkillTree(parent, { handlers, menus, notify, onOpenBook, o
   function centerOnOwn(animate = false) {
     if (!self) return;
     const fond = FOND_IDS.filter((id) => st?.withPend.has(id)).length;
-    let x = 0, y = 0, s = 1.0;
+    const start = NODES.get(CLASS_START[cls()]);
+    let x, y, s;
     if (fond >= RULES.gate.fondamentaux) {
-      const start = NODES.get(CLASS_START[cls()]);
       x = start.x * 0.75; y = start.y * 0.75; s = 0.55;
+    } else {
+      // before the gate: between the Cœur (the Fondamentaux) and the own class start, both on screen, so a new
+      // character sees its own region first (not the other classes' nodes)
+      x = start.x * 0.45; y = start.y * 0.45;
+      const r = canvas.getBoundingClientRect();
+      const halfW = Math.max(100, r.width) / 2, halfH = Math.max(100, r.height) / 2;
+      const margin = 110; // world units around the two ends (node + label)
+      s = Math.min(1, halfW / (Math.abs(start.x) * 0.55 + margin), halfH / (Math.abs(start.y) * 0.55 + margin));
+      s = Math.max(ZMIN, s);
     }
     if (animate) flyTo(x, -y, s);
     else { view.cx = x; view.cy = -y; view.s = s * dpr; }
@@ -833,6 +845,7 @@ export function createSkillTree(parent, { handlers, menus, notify, onOpenBook, o
   }
 
   function showTip(n, mx, my) {
+    tipAt.n = n; tipAt.x = mx; tipAt.y = my;
     if (!n || !st) { tip.classList.remove('show'); return; }
     clear(tip).append(...nodeTip(n));
     tip.classList.add('show');

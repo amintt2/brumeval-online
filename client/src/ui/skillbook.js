@@ -4,7 +4,7 @@
 // double-click to put it in the first free slot).
 import { ITEMS } from '@shared/data.js';
 import { ABILITY_DEFS, NOT_SLOTTABLE, checkLoadout, autoSlot } from '@shared/skills.js';
-import { h, setText, fmt1, clear } from './dom.js';
+import { h, setText, fmt2 as fmt1, clear } from './dom.js';
 import { iconBox, abilityIconSpec, itemIconSpec, glyph } from './icons.js';
 import { itemTooltip } from './tooltip.js';
 import { abilityTip, KIND_LABEL, activeVariants } from './skillTips.js';
