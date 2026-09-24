@@ -1,5 +1,8 @@
 # Brumeval Online — le monde ouvert v0.3
 
+> ⚠️ **Décision du 24/09** : toute la carte est présente dès la v0.3.0 ; les régions pas encore ouvertes sont gardées par une **Brume** qui s'épaissit et ramène les joueurs vers la sortie (pas de mur invisible). Voir `docs/design/DECISIONS.md` §5.
+
+
 > Conception finale du monde (concepteur principal), issue des quatre brouillons de `docs/world/drafts/`
 > (cartographe, architecte technique, contenu, direction artistique). **Les données font foi** :
 > `world_layout.json` (tout ce qui est placé), `heightmap.png` (le relief), `carte_monde.png` (la carte rendue).

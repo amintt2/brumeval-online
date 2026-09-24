@@ -32,3 +32,12 @@ La réinitialisation contre de l'or chez le Maître des arts est **supprimée**,
 - **Garde = E maintenue** par défaut.
 - Clic gauche = attaque de base / sélection, clic droit = cibler et attaquer, 1 à 8 = barre d'action.
 - **Toutes les touches sont réassignables** dans Options > Commandes (clavier et boutons de souris). Chaque touche du menu d'aide et de l'interface affiche la touche réellement assignée.
+
+## 5. Monde ouvert (décidé le 24/09)
+- **Ruines d'Aldmar gardées aux niveaux 24-28**, visibles depuis le départ derrière leurs falaises (frisson soulslike, comme le château au centre de Zelda).
+- **Toute la carte est présente dès la v0.3.0** (relief, rivières, horizon, Arbre-Brume visibles de partout), **mais les régions pas encore terminées sont gardées par la Brume** :
+  - en avançant dans une région fermée, un brouillard surnaturel s'épaissit progressivement jusqu'à ne plus rien voir (le son s'étouffe, la minicarte se brouille) ;
+  - passé un seuil, le joueur est **désorienté puis ramené doucement vers la sortie** (fondu, il se retrouve tourné vers la lisière d'où il vient), comme s'il s'était perdu : **la Brume repousse les intrus** ;
+  - aucun mur invisible, aucun message technique : c'est un élément du monde (des PNJ en parlent : « la Brume ne laisse passer personne vers le nord… pour l'instant ») ;
+  - quand une région ouvre dans une mise à jour, sa Brume se lève (événement annoncé).
+- Zones rouges de la v0.3.0 et cycle jour/nuit : valeurs proposées dans `docs/world/MONDE.md` conservées par défaut.
