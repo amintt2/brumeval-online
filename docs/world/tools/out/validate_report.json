@@ -11,37 +11,37 @@
   "hubTimes": {
    "brumeval": {
     "brumeval": 0,
-    "port_salin": 3.2,
+    "port_salin": 3.1,
     "ambresable": 3.9,
     "rochegivre": 6.7,
     "clairsaule": 6.3
    },
    "port_salin": {
-    "brumeval": 3.3,
+    "brumeval": 3.2,
     "port_salin": 0,
-    "ambresable": 6.1,
-    "rochegivre": 10,
-    "clairsaule": 8.3
+    "ambresable": 6.2,
+    "rochegivre": 9.9,
+    "clairsaule": 8.2
    },
    "ambresable": {
     "brumeval": 3.9,
-    "port_salin": 6,
+    "port_salin": 6.1,
     "ambresable": 0,
-    "rochegivre": 6.9,
-    "clairsaule": 9.1
+    "rochegivre": 6.8,
+    "clairsaule": 9.5
    },
    "rochegivre": {
-    "brumeval": 6.2,
-    "port_salin": 9.3,
-    "ambresable": 6.3,
+    "brumeval": 6.1,
+    "port_salin": 9.2,
+    "ambresable": 6.2,
     "rochegivre": 0,
-    "clairsaule": 5.6
+    "clairsaule": 5.9
    },
    "clairsaule": {
-    "brumeval": 6.2,
-    "port_salin": 8,
-    "ambresable": 8.9,
-    "rochegivre": 5.9,
+    "brumeval": 6.1,
+    "port_salin": 7.9,
+    "ambresable": 9.3,
+    "rochegivre": 6.2,
     "clairsaule": 0
    }
   },
@@ -102,7 +102,7 @@
      16
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 6.3
+    "walkMinFromBrumeval": 6.5
    },
    {
     "id": "arbre",
@@ -111,7 +111,7 @@
      18
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 3.6
+    "walkMinFromBrumeval": 3.9
    },
    {
     "id": "azurine",
@@ -120,7 +120,7 @@
      18
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 4.7
+    "walkMinFromBrumeval": 4.8
    },
    {
     "id": "egares",
@@ -129,7 +129,7 @@
      18
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 6.2
+    "walkMinFromBrumeval": 6.7
    },
    {
     "id": "brumenoire",
@@ -138,7 +138,7 @@
      20
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 4.7
+    "walkMinFromBrumeval": 4.9
    },
    {
     "id": "sable_rouge",
@@ -147,7 +147,7 @@
      22
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 5.1
+    "walkMinFromBrumeval": 5.2
    },
    {
     "id": "rougecrete",
@@ -156,7 +156,7 @@
      22
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 6.9
+    "walkMinFromBrumeval": 7.2
    },
    {
     "id": "entaille",
@@ -165,7 +165,7 @@
      22
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 6
+    "walkMinFromBrumeval": 6.4
    },
    {
     "id": "embruns",
@@ -174,7 +174,7 @@
      24
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 7.9
+    "walkMinFromBrumeval": 8.1
    },
    {
     "id": "epave",
@@ -192,7 +192,7 @@
      25
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 8.1
+    "walkMinFromBrumeval": 8.2
    },
    {
     "id": "mer_dunes",
@@ -210,7 +210,7 @@
      26
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 8.2
+    "walkMinFromBrumeval": 8.3
    },
    {
     "id": "aldmar",
@@ -219,7 +219,7 @@
      28
     ],
     "danger": "jaune",
-    "walkMinFromBrumeval": 3.6
+    "walkMinFromBrumeval": 3.8
    },
    {
     "id": "couronne",
@@ -246,10 +246,10 @@
      30
     ],
     "danger": "rouge",
-    "walkMinFromBrumeval": 4.1
+    "walkMinFromBrumeval": 4.2
    }
   ],
-  "levelDistanceSpearman": 0.77,
+  "levelDistanceSpearman": 0.75,
   "levelJumps": [
    "sylve (10–16) ↔ givreval (20–25) : +10",
    "sylve (10–16) ↔ cendres (22–26) : +12",
@@ -269,62 +269,62 @@
  },
  "reachFromBrumevalMin": {
   "brumeval": 0,
-  "port_salin": 3.2,
+  "port_salin": 3.1,
   "ambresable": 3.9,
   "rochegivre": 6.7,
   "clairsaule": 6.3,
-  "relais_mordore": 2.7,
-  "poste_cendres": 5.6,
-  "phare": 8,
-  "sanctuaire_veilleuse": 3.5,
+  "relais_mordore": 2.8,
+  "poste_cendres": 5.5,
+  "phare": 8.1,
+  "sanctuaire_veilleuse": 3.8,
   "hameau_saules": 2,
-  "pilotis_brumenoire": 4.5,
-  "fort_couchant": 5.7,
-  "camp_grandes_portes": 3.8,
+  "pilotis_brumenoire": 4.6,
+  "fort_couchant": 6.3,
+  "camp_grandes_portes": 4,
   "wp_brumeval": 0,
-  "wp_mordore": 2.6,
+  "wp_mordore": 2.7,
   "wp_gue_argentine": 3.9,
   "wp_porte_aldmar": 2.3,
-  "wp_arbre": 3.3,
-  "wp_lisiere": 5.1,
+  "wp_arbre": 3.7,
+  "wp_lisiere": 5.6,
   "wp_clairsaule": 6.3,
-  "wp_col_loup": 5.7,
+  "wp_col_loup": 5.8,
   "wp_rochegivre": 6.6,
-  "wp_lac_glace": 8.3,
-  "wp_blanchecorne": 8.5,
-  "wp_table": 6.8,
+  "wp_lac_glace": 8.5,
+  "wp_blanchecorne": 8.6,
+  "wp_table": 8.6,
   "wp_entaille": 5.2,
   "wp_ambresable": 3.9,
   "wp_mirages": 5.5,
   "wp_songes": 1.8,
-  "wp_anse": 3.7,
-  "wp_port_salin": 3.2,
+  "wp_anse": 3.6,
+  "wp_port_salin": 3,
   "wp_palmes": 4.3,
   "wp_azurine": 6.4,
   "wp_ventfauve": 2.7,
-  "wp_brumenoire": 4.6,
+  "wp_brumenoire": 4.7,
   "wp_delta": 4.9,
-  "wp_phare": 7.8,
-  "wp_cendres": 5.6,
-  "wp_aiguille": 7.8,
-  "wp_clairiere_nord": 7.2,
-  "wp_plage_noire": 9.1,
+  "wp_phare": 8.1,
+  "wp_cendres": 5.5,
+  "wp_aiguille": 7.9,
+  "wp_clairiere_nord": 7.7,
+  "wp_plage_noire": 9.3,
   "wp_cretes": 10.3,
-  "wp_palais": 5.6,
-  "wp_mines": 6.2,
+  "wp_palais": 5.7,
+  "wp_mines": 7,
   "wp_ajoncs": 2.5,
   "wp_brasier": 7.2,
-  "crypte_aldmar": 4,
+  "crypte_aldmar": 4.1,
   "grotte_gelee": 8.4,
-  "forge_brasier": 8.9,
+  "forge_brasier": 8.7,
   "tombeau_sables": 6.1,
-  "antre_sorciere": 5.2,
-  "grotte_marees": 7.6,
-  "mines_rougecrete": 6.4,
+  "antre_sorciere": 5.3,
+  "grotte_marees": 7.7,
+  "mines_rougecrete": 7.2,
   "antre_golem": 0.5,
   "mine_cuivrefond": 2,
-  "temple_englouti": 3.8,
-  "racines_arbre": 4,
+  "temple_englouti": 3.9,
+  "racines_arbre": 4.3,
   "vb_village": 0,
   "vb_camp_gobelin": 0.3,
   "vb_cimetiere": 0.3,
@@ -336,69 +336,69 @@
   "mo_menhirs": 3.2,
   "mo_meules": 2.7,
   "mo_digue": 3,
-  "mo_hure": 1.8,
+  "mo_hure": 1.9,
   "mo_guet": 5.3,
-  "so_temple": 3.8,
-  "so_anse": 3.7,
+  "so_temple": 3.9,
+  "so_anse": 3.6,
   "so_ponton": 2.3,
   "so_saules": 3.9,
-  "ps_port": 3.2,
+  "ps_port": 3.1,
   "ps_falaises": 3.2,
   "ps_crique": 3.5,
-  "ps_embouchure": 3.5,
-  "ps_tour": 2.1,
+  "ps_embouchure": 3.4,
+  "ps_tour": 2,
   "ve_grande_stele": 2.3,
-  "ve_colosse": 2.7,
+  "ve_colosse": 2.8,
   "ve_caveau": 3.2,
   "ve_rampe": 2.1,
-  "sy_souche": 5,
-  "sy_lucioles": 5.4,
+  "sy_souche": 5.3,
+  "sy_lucioles": 5.3,
   "sy_croc": 5.6,
-  "sy_tisseuse": 7.2,
+  "sy_tisseuse": 7.1,
   "sy_aiguille": 9.1,
-  "ar_arbre": 3.7,
-  "ar_escalier": 2.5,
-  "ar_racines": 4,
-  "al_remparts": 3.9,
-  "al_tour": 4.3,
-  "al_porte_est": 3.2,
-  "ca_portes": 3.8,
-  "ca_bassin": 3.6,
-  "ca_arene": 4.2,
-  "eg_lanternes": 5.5,
-  "eg_coeur": 6,
-  "eg_dame": 6.1,
-  "br_antre": 5.2,
-  "br_mares": 4.2,
-  "br_passerelles": 5.5,
+  "ar_arbre": 4,
+  "ar_escalier": 3,
+  "ar_racines": 4.3,
+  "al_remparts": 4.1,
+  "al_tour": 4.5,
+  "al_porte_est": 3,
+  "ca_portes": 3.9,
+  "ca_bassin": 3.7,
+  "ca_arene": 4.4,
+  "eg_lanternes": 6,
+  "eg_coeur": 6.5,
+  "eg_dame": 6.7,
+  "br_antre": 5.3,
+  "br_mares": 4.4,
+  "br_passerelles": 5.6,
   "br_noyeur": 4.1,
   "br_delta": 4.9,
   "sr_ville": 3.9,
   "sr_mirages": 6,
   "sr_enclumes": null,
-  "sr_colonne": 5.1,
+  "sr_colonne": 5,
   "sr_sentinelle": null,
-  "sr_miroirs": 4.7,
+  "sr_miroirs": 4.8,
   "sr_palmes": 4.3,
-  "sr_creux": 5.4,
-  "sr_palais": 5.5,
-  "md_squelette": 6.7,
-  "md_tour_sel": 6,
-  "rc_table": 6.7,
-  "rc_tour": 7.8,
-  "rc_repaire": 6.7,
-  "rc_gorge": 4.9,
-  "en_pont": 5.4,
-  "en_chutes": 5,
-  "en_fresques": 6,
-  "en_gardien": 6.1,
-  "em_phare": 8,
-  "em_ecumeur": 8.8,
-  "em_breche": 6.9,
-  "em_aire": 8.1,
+  "sr_creux": 5.5,
+  "sr_palais": 5.6,
+  "md_squelette": 6.8,
+  "md_tour_sel": 6.1,
+  "rc_table": 8.6,
+  "rc_tour": 7.9,
+  "rc_repaire": 6.8,
+  "rc_gorge": 5.8,
+  "en_pont": 5.3,
+  "en_chutes": 4.8,
+  "en_fresques": 6.7,
+  "en_gardien": 6,
+  "em_phare": 8.1,
+  "em_ecumeur": 9,
+  "em_breche": 7,
+  "em_aire": 8.4,
   "az_palmes": 4.3,
   "az_chaussee": 5.4,
-  "az_ile": 6.5,
+  "az_ile": 6.6,
   "az_corail": 7.4,
   "az_ilot": 7.1,
   "ep_epave": 8.1,
@@ -406,14 +406,14 @@
   "gi_col": 5.8,
   "gi_lac": 8,
   "gi_cirque": 7.7,
-  "gi_blanchecorne": 8.5,
-  "gi_dent": 8.3,
-  "co_givrecime": 9.7,
+  "gi_blanchecorne": 8.6,
+  "gi_dent": 8.4,
+  "co_givrecime": 9.8,
   "co_glacier": 10.2,
-  "ce_col": 6.6,
-  "ce_fumerolles": 5.9,
-  "ce_plage": 9.3,
-  "ce_suie": 8.8,
+  "ce_col": 6.9,
+  "ce_fumerolles": 6,
+  "ce_plage": 9.5,
+  "ce_suie": 8.7,
   "cb_cratere": 8.9
  }
 }

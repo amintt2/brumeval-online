@@ -532,6 +532,113 @@ const BRIDGE = new Uint8Array(N * N);
 const ROAD_INFO = [];
 const nearRiver = (x, z) => { let best = { d: 1e9, r: null }; for (const P of RIVER_PROFILES) { const Rv = S.RIVERS.find((r) => r.id === P.id); const n = polyNearest(Rv.pts.map((p) => [p[0], p[1]]), x, z); const lim = P.hw + 8; if (n.d < lim && n.d < best.d) best = { d: n.d, r: P, n }; } return best; };
 const inLake = (x, z) => { const i = Math.round((x - X0) / STEP), j = Math.round((z - Z0) / STEP); return LAKE_ID[idx(clamp(i, 0, N - 1), clamp(j, 0, N - 1))] >= 0; };
+
+// ------------------------------------------------------------------ 11a. road routing (A* over the relief)
+// The authored polylines only fix where a road must go: towns, outposts, waypoints, dungeons and junctions. Between
+// two such stops the road follows the cheapest path on the terrain as it is before the roads: slope cost against
+// the road's grade (it winds around hills and climbs in switchbacks instead of cutting straight), lakes and sea
+// forbidden, one expensive step per river crossing (a single ford or bridge), and roads already routed are cheaper
+// (roads join and share their way instead of running side by side). The path is then simplified and smoothed.
+{
+  const T0 = Date.now();
+  const stops = [
+    ...S.TOWNS.map((t) => [t.x, t.z]), ...S.OUTPOSTS.map((o) => [o.x, o.z]), ...S.LANDMARKS.map((l) => [l.x, l.z]),
+    ...S.WAYPOINTS.map((w) => [w[2], w[3]]), ...(S.DUNGEONS || []).map((d) => [d[2], d[3]]),
+  ];
+  const ptKey = (p) => `${p[0]},${p[1]}`;
+  const uses = new Map();
+  for (const Rd of S.ROADS) for (const p of Rd.pts) uses.set(ptKey(p), (uses.get(ptKey(p)) || 0) + 1);
+  const isStop = (p, q, last) => q === 0 || q === last || uses.get(ptKey(p)) > 1 || stops.some(([x, z]) => Math.hypot(x - p[0], z - p[1]) < 45);
+  const wetRiver = (k) => RIVER_ID[k] >= 0 && LAKE_ID[k] < 0 && RIVER_D[k] < RIVER_PROFILES[RIVER_ID[k]].hw + 4;
+  // the Brumenoire marsh is crossed on boardwalks (Pontons de Brumenoire): walkable at twice the cost of a road
+  const marshSDF = makePolySDF(S.WETLAND.poly, 50), MARSH = new Uint8Array(N * N);
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) if (marshSDF(X(i), Z(j)) < 0) MARSH[idx(i, j)] = 1;
+  const wetOpen = (k) => LAKE_ID[k] >= 0 || (H[k] < 0.6 && !MARSH[k]);  // lake or sea: a pier at most
+  const bank = (k) => RIVER_ID[k] >= 0 && RIVER_D[k] < RIVER_PROFILES[RIVER_ID[k]].hw + 14;
+  const ROUTED = new Uint8Array(N * N);
+  // binary heap on (cost, node)
+  const heapK = new Int32Array(N * N * 4), heapF = new Float64Array(N * N * 4);
+  const G = new Float64Array(N * N), FROM = new Int32Array(N * N), CLOSED = new Uint8Array(N * N);
+  const NB = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, Math.SQRT2], [1, -1, Math.SQRT2], [-1, 1, Math.SQRT2], [-1, -1, Math.SQRT2],
+    [2, 1, Math.sqrt(5)], [1, 2, Math.sqrt(5)], [-2, 1, Math.sqrt(5)], [-1, 2, Math.sqrt(5)], [2, -1, Math.sqrt(5)], [1, -2, Math.sqrt(5)], [-2, -1, Math.sqrt(5)], [-1, -2, Math.sqrt(5)]];
+  const touched = [];
+  function route(ax, az, bx, bz, grade) {
+    const cell = (x, z) => idx(clamp(Math.round((x - X0) / STEP), 0, N - 1), clamp(Math.round((z - Z0) / STEP), 0, N - 1));
+    const s = cell(ax, az), t = cell(bx, bz), ti = t % N, tj = (t / N) | 0;
+    for (const k of touched) { G[k] = Infinity; CLOSED[k] = 0; }
+    touched.length = 0;
+    let n = 0;
+    const push = (k, f) => { let c = n++; while (c > 0) { const p = (c - 1) >> 1; if (heapF[p] <= f) break; heapK[c] = heapK[p]; heapF[c] = heapF[p]; c = p; } heapK[c] = k; heapF[c] = f; };
+    const pop = () => { const top = heapK[0], k = heapK[--n], f = heapF[n]; let c = 0; for (;;) { let m = 2 * c + 1; if (m >= n) break; if (m + 1 < n && heapF[m + 1] < heapF[m]) m++; if (heapF[m] >= f) break; heapK[c] = heapK[m]; heapF[c] = heapF[m]; c = m; } heapK[c] = k; heapF[c] = f; return top; };
+    const hEst = (k) => Math.hypot((k % N) - ti, ((k / N) | 0) - tj) * STEP * 0.5;
+    G[s] = 0; FROM[s] = -1; touched.push(s); push(s, hEst(s));
+    while (n > 0) {
+      const k = pop();
+      if (CLOSED[k]) continue;
+      CLOSED[k] = 1;
+      if (k === t) break;
+      const i = k % N, j = (k / N) | 0, wk = wetRiver(k);
+      for (const [di, dj, dl] of NB) {
+        const ii = i + di, jj = j + dj;
+        if (ii < 0 || jj < 0 || ii >= N || jj >= N) continue;
+        const m = idx(ii, jj);
+        if (CLOSED[m]) continue;
+        const d = dl * STEP, sl = Math.abs(H[m] - H[k]) / d, r = sl / grade;
+        let c = d * (1 + 1.2 * r * r + (r > 1.3 ? 30 * (r - 1.3) : 0));  // gentle climbs cheap, beyond the grade very costly
+        const wm = wetRiver(m);
+        if (wm) c += wk ? d * 2 : 250;                                  // entering a river: one crossing ≈ 250 m of road
+        else if (bank(m)) c *= 1.6;                                      // do not follow the river along its bank
+        if (wetOpen(m)) c = c * 40 + (wetOpen(k) ? 0 : 2000);           // lakes and sea: only when there is no way round
+        else if (MARSH[m] && H[m] < 0.6) c *= 2;                          // boardwalk
+        if (ROUTED[m]) c *= 0.45;                                        // share an existing road
+        const g = G[k] + c;
+        if (G[m] === undefined || !(G[m] <= g)) {
+          if (!(G[m] < Infinity)) touched.push(m);
+          G[m] = g; FROM[m] = k; push(m, g + hEst(m));
+        }
+      }
+    }
+    if (!CLOSED[t]) { log(`  route: no path ${ax},${az} → ${bx},${bz}, straight line kept`); return [[ax, az], [bx, bz]]; }
+    const path = [];
+    for (let k = t; k >= 0 && path.length < N * 4; k = FROM[k]) { path.push([X(k % N), Z((k / N) | 0)]); if (k === s) break; }
+    return path.reverse();
+  }
+  G.fill(Infinity);
+  // Douglas-Peucker then Chaikin: a smooth line close to the path
+  const simplify = (p, tol) => {
+    if (p.length < 3) return p;
+    let best = 0, bi = 0;
+    for (let q = 1; q < p.length - 1; q++) { const d = segDist(p[q][0], p[q][1], p[0][0], p[0][1], p[p.length - 1][0], p[p.length - 1][1])[0]; if (d > best) { best = d; bi = q; } }
+    if (best < tol) return [p[0], p[p.length - 1]];
+    return [...simplify(p.slice(0, bi + 1), tol).slice(0, -1), ...simplify(p.slice(bi), tol)];
+  };
+  const chaikin = (p) => { const o = [p[0]]; for (let q = 0; q < p.length - 1; q++) { const [a, b] = [p[q], p[q + 1]]; o.push([a[0] * 0.75 + b[0] * 0.25, a[1] * 0.75 + b[1] * 0.25], [a[0] * 0.25 + b[0] * 0.75, a[1] * 0.25 + b[1] * 0.75]); } o.push(p[p.length - 1]); return o; };
+  // main roads first: the trails then join them
+  const order = [...S.ROADS].sort((a, b) => (a.cls === 'main' ? 0 : 1) - (b.cls === 'main' ? 0 : 1));
+  let before = 0, after = 0;
+  for (const Rd of order) {
+    if (Rd.route === false) continue;
+    const last = Rd.pts.length - 1;
+    const keep = Rd.pts.filter((p, q) => isStop(p, q, last));
+    const out = [];
+    for (let q = 0; q < keep.length - 1; q++) {
+      const raw = route(keep[q][0], keep[q][1], keep[q + 1][0], keep[q + 1][1], Rd.grade);
+      raw[0] = keep[q]; raw[raw.length - 1] = keep[q + 1];              // exact stops
+      let p = simplify(raw, 3);
+      p = chaikin(chaikin(p));
+      p[0] = keep[q]; p[p.length - 1] = keep[q + 1];
+      out.push(...(q ? p.slice(1) : p));
+    }
+    for (let q = 0; q < Rd.pts.length - 1; q++) before += Math.hypot(Rd.pts[q + 1][0] - Rd.pts[q][0], Rd.pts[q + 1][1] - Rd.pts[q][1]);
+    Rd.pts = out.map(([x, z]) => [Math.round(x * 10) / 10, Math.round(z * 10) / 10]);
+    for (let q = 0; q < Rd.pts.length - 1; q++) after += Math.hypot(Rd.pts[q + 1][0] - Rd.pts[q][0], Rd.pts[q + 1][1] - Rd.pts[q][1]);
+    for (const [x, z] of resample(Rd.pts, STEP)) {
+      const i = Math.round((x - X0) / STEP), j = Math.round((z - Z0) / STEP);
+      for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) { const ii = i + di, jj = j + dj; if (ii >= 0 && jj >= 0 && ii < N && jj < N) ROUTED[idx(ii, jj)] = 1; }
+    }
+  }
+  log(`roads routed over the relief: ${(before / 1000).toFixed(1)} km authored → ${(after / 1000).toFixed(1)} km, ${((Date.now() - T0) / 1000).toFixed(1)} s`);
+}
 for (const Rd of S.ROADS) {
   if (Rd.carve === false) { ROAD_INFO.push({ id: Rd.id, carve: false }); continue; }
   const half = S.ROAD_HALF[Rd.cls], shoulder = Rd.cls === 'main' ? 12 : 7;
