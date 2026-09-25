@@ -868,3 +868,30 @@ test('keystones in play: Coups mesurés (1 critical in 4), Dernier souffle (surv
   const r = addPlayer(game, { cls: 'ranger', level: 30, skills: s3 });
   assert.equal(r.aggroMult, 0.6);
 });
+
+// [hotfix v0.3.0-a] the tree screen can confirm more than 32 pending ranks at once (level 30: 35 points)
+test('server: a 35-node skill_alloc_batch passes the message validation and is allocated in one go', async () => {
+  const { validateC2S } = await import('../src/security/validate.js');
+  const game = makeGame();
+  const p = addPlayer(game, { cls: 'warrior', fresh: true, level: 30 });
+  // greedy walk over cost-1 nodes from the frontier, checked with the shared rules
+  const cls = 'warrior';
+  let s = sk({});
+  const nodes = [];
+  for (const id of ['fond_roulade', 'fond_sprint', 'fond_saut']) { s = { ...s, alloc: allocate(cls, 30, s, [id]).alloc }; nodes.push(id); }
+  for (let guard = 0; guard < 400 && budgetOf(30, s) - spentOf(cls, s) > 0; guard++) {
+    const owned = new Set([...Object.keys(s.alloc), 'coeur', CLASS_START[cls]]);
+    const next = TREE.nodes.find((n) => !owned.has(n.id) && n.type !== 'root' && !n.start && n.links.some((l) => owned.has(l))
+      && allocate(cls, 30, s, [n.id]).ok);
+    if (!next) break;
+    s = { ...s, alloc: allocate(cls, 30, s, [next.id]).alloc };
+    nodes.push(next.id);
+  }
+  assert.ok(nodes.length > 32, `lot de ${nodes.length} nœuds`);
+  const msg = { t: 'skill_alloc_batch', nodes };
+  assert.equal(validateC2S(msg), null, 'le lot passe la validation des messages');
+  game.handleMessage(p, msg);
+  assert.deepEqual(p.session.errs(), []);
+  assert.equal(Object.keys(p.skills.alloc).length, nodes.length);
+  assert.ok(p.session.notes('info').includes(`${nodes.length} nœuds appris.`));
+});

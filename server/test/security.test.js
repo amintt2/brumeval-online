@@ -362,3 +362,24 @@ test('account moderation fields survive a save/load round trip and old saves loa
   for (const k of ['role', 'muteUntil', 'ignore', 'lastIp']) assert.ok(!(k in v1) && !(k in v1.chars[0]), k);
   assert.deepEqual(sanitizeSecurityFields({ role: 'superadmin', muteUntil: 'demain' }), {});
 });
+
+// [hotfix v0.3.0-a] the 8-slot action bar, the held charged attack and the tree screen's « Confirmer » batch
+test('message validation: ability slots 0..7 and the charge phase, tree batches up to 64 nodes (32 elsewhere)', () => {
+  for (let slot = 0; slot < 8; slot++) assert.equal(validateC2S({ t: 'ability', slot, tg: 12 }), null, `slot ${slot}`);
+  assert.equal(validateC2S({ t: 'ability', slot: 8 }), 'bad_field:slot');
+  assert.equal(validateC2S({ t: 'ability', slot: -1 }), 'bad_field:slot');
+  assert.equal(validateC2S({ t: 'ability', slot: 6, ph: 'start', tg: 12 }), null);
+  assert.equal(validateC2S({ t: 'ability', slot: 0, ph: 'release' }), null);
+  assert.equal(validateC2S({ t: 'ability', slot: 0, ph: 'hold' }), 'bad_field:ph');
+  assert.equal(validateC2S({ t: 'ability', slot: 0, ph: 3 }), 'bad_field:ph');
+  const nodes = (n) => new Array(n).fill('fond_saut');
+  assert.equal(validateC2S({ t: 'skill_alloc_batch', nodes: nodes(40) }), null);
+  assert.equal(validateC2S({ t: 'skill_alloc_batch', nodes: nodes(64) }), null);
+  assert.equal(validateC2S({ t: 'skill_alloc_batch', nodes: nodes(65) }), 'array_too_long');
+  assert.equal(validateC2S({ t: 'skill_alloc_batch', nodes: [...nodes(39), 'x'.repeat(65)] }), 'bad_field:nodes');
+  assert.equal(validateC2S({ t: 'skill_alloc_batch', nodes: [...nodes(39), 7] }), 'bad_field:nodes');
+  assert.equal(validateC2S({ t: 'skill_alloc_batch', nodes: nodes(3), other: new Array(40).fill(1) }), 'array_too_long');
+  // everything else keeps the 32 cap
+  assert.equal(validateC2S({ t: 'skill_alloc', add: new Array(40).fill({ id: 'fond_saut' }) }), 'array_too_long');
+  assert.equal(validateC2S({ t: 'loadout', slots: new Array(33).fill(null) }), 'array_too_long');
+});

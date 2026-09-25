@@ -2,7 +2,8 @@
 // Generic rules apply to all messages (size, depth, forbidden keys); known types also get a field schema.
 // Unknown types pass the generic rules only, so new gameplay messages added by other modules keep working.
 import { CHAT_MAX_LEN } from '../../../shared/protocol.js';
-import { INV_SIZE, CLASSES } from '../../../shared/data.js';
+import { INV_SIZE } from '../../../shared/data.js';
+import { LOADOUT_SLOTS, MAX_ALLOC_BATCH } from '../../../shared/skills.js';
 
 /** Keys that could pollute prototypes when an object is merged/spread somewhere. */
 export const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
@@ -14,7 +15,15 @@ const MAX_STRING = 256;
 /** Coordinates are metres; anything beyond this is garbage (the world is ±180 m). */
 const COORD_LIMIT = 10_000;
 
-const ABILITY_SLOTS = Math.max(...Object.values(CLASSES).map((c) => c.abilities.length));
+/** [skilltree] v0.3 action bar: keys 1-8 send `ability { slot: 0..7 }` (shared/skills.js LOADOUT_SLOTS). */
+const ABILITY_SLOTS = LOADOUT_SLOTS;
+/** [skilltree] Attaque chargée: `ability { ph }` phases of the held base attack (systems/fundamentals.js handleCharge). */
+const CHARGE_PHASES = new Set(['start', 'release']);
+/**
+ * [skilltree] top-level arrays allowed beyond MAX_ARRAY, per message type: the tree screen's « Confirmer » sends one
+ * entry per pending rank (≤ MAX_ALLOC_BATCH). Every other array, in these messages too, keeps the generic cap.
+ */
+const WIDE_ARRAYS = { skill_alloc_batch: { nodes: MAX_ALLOC_BATCH } };
 
 // ---------------------------------------------------------------- field validators
 export const isFiniteNum = (v, lim = COORD_LIMIT) => typeof v === 'number' && Number.isFinite(v) && Math.abs(v) <= lim;
@@ -31,6 +40,8 @@ const bool = () => (v) => typeof v === 'boolean';
 const opt = (f) => (v) => v === undefined || v === null || f(v);
 const either = (...fs) => (v) => fs.some((f) => f(v));
 const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+const oneOf = (set) => (v) => set.has(v);
+const arrOf = (f, max) => (v) => Array.isArray(v) && v.length <= max && v.every(f);
 
 /**
  * Field schemas of the known C2S messages (shared/protocol.js). Extra fields are tolerated (they are only
@@ -40,7 +51,7 @@ export const SCHEMAS = {
   register: { name: str(64), password: str(256), cls: opt(str(32)), remember: opt(bool()) },
   login: { name: str(64), password: str(256), remember: opt(bool()) },
   move: { x: num(), z: num(), ry: opt(num(1000)) },
-  ability: { slot: int(0, ABILITY_SLOTS - 1), tg: opt(either(id(), (v) => v === 0)), x: opt(num()), z: opt(num()) },
+  ability: { slot: int(0, ABILITY_SLOTS - 1), tg: opt(either(id(), (v) => v === 0)), x: opt(num()), z: opt(num()), ph: opt(oneOf(CHARGE_PHASES)) },
   stop: {},
   chat: { text: str(CHAT_MAX_LEN * 4) },
   interact: { id: id() },
@@ -73,6 +84,8 @@ export const SCHEMAS = {
   passkey_login_verify: { resp: isObj, remember: opt(bool()) },
   passkey_rename: { id: str(1400), label: str(64) },
   passkey_delete: { id: str(1400) },
+  // [skilltree] tree screen « Confirmer » (the game logic re-checks every node: systems/skills.js)
+  skill_alloc_batch: { nodes: arrOf(str(64), MAX_ALLOC_BATCH) },
 };
 
 /**
@@ -83,8 +96,11 @@ const LARGE_TYPES = new Set(['passkey_reg_verify', 'passkey_login_verify', 'pass
 const LARGE_LIMITS = { depth: 6, keys: 24, array: 16, string: 6000 };
 const DEFAULT_LIMITS = null;
 
-/** Generic structural checks. Returns null or a reason. */
-export function checkStructure(value, depth = 0, lim = DEFAULT_LIMITS) {
+/**
+ * Generic structural checks. Returns null or a reason. `wide`: at depth 0, { key: max length } of the top-level arrays
+ * allowed beyond the array cap (WIDE_ARRAYS); internally, the max length of the array being checked.
+ */
+export function checkStructure(value, depth = 0, lim = DEFAULT_LIMITS, wide = null) {
   if (value === null) return null;
   const t = typeof value;
   if (t === 'string') return value.length > (lim ? lim.string : CHAT_MAX_LEN * 4) ? 'string_too_long' : null;
@@ -93,7 +109,7 @@ export function checkStructure(value, depth = 0, lim = DEFAULT_LIMITS) {
   if (t !== 'object') return 'bad_type';
   if (depth >= (lim ? lim.depth : MAX_DEPTH)) return 'too_deep';
   if (Array.isArray(value)) {
-    if (value.length > (lim ? lim.array : MAX_ARRAY)) return 'array_too_long';
+    if (value.length > (typeof wide === 'number' ? wide : lim ? lim.array : MAX_ARRAY)) return 'array_too_long';
     for (const v of value) {
       const r = checkStructure(v, depth + 1, lim);
       if (r) return r;
@@ -107,7 +123,8 @@ export function checkStructure(value, depth = 0, lim = DEFAULT_LIMITS) {
     if (k.length > 32) return 'key_too_long';
     const v = value[k];
     if (typeof v === 'string' && v.length > (lim ? lim.string : MAX_STRING) && !(depth === 0 && k === 'text')) return 'string_too_long';
-    const r = checkStructure(v, depth + 1, lim);
+    const cap = depth === 0 && wide && typeof wide === 'object' && Object.prototype.hasOwnProperty.call(wide, k) ? wide[k] : null;
+    const r = checkStructure(v, depth + 1, lim, cap);
     if (r) return r;
   }
   return null;
@@ -120,7 +137,8 @@ export function checkStructure(value, depth = 0, lim = DEFAULT_LIMITS) {
 export function validateC2S(msg) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg)) return 'not_object';
   if (typeof msg.t !== 'string' || msg.t.length > 32) return 'bad_type';
-  const s = checkStructure(msg, 0, LARGE_TYPES.has(msg.t) ? LARGE_LIMITS : DEFAULT_LIMITS);
+  const wide = Object.prototype.hasOwnProperty.call(WIDE_ARRAYS, msg.t) ? WIDE_ARRAYS[msg.t] : null;
+  const s = checkStructure(msg, 0, LARGE_TYPES.has(msg.t) ? LARGE_LIMITS : DEFAULT_LIMITS, wide);
   if (s) return s;
   if (!Object.prototype.hasOwnProperty.call(SCHEMAS, msg.t)) return null;
   const schema = SCHEMAS[msg.t];
