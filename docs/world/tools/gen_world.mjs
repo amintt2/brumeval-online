@@ -591,8 +591,15 @@ const bedHalfOf = (Rd) => Math.max(S.ROAD_HALF[Rd.cls] + 1.5, STEP * 1.25);
         if (ii < 0 || jj < 0 || ii >= N || jj >= N) continue;
         const m = idx(ii, jj);
         if (CLOSED[m]) continue;
-        const d = dl * STEP, sl = Math.abs(H[m] - H[k]) / d, r = sl / grade;
-        let c = d * (1 + 1.2 * r * r + (r > 1.3 ? 30 * (r - 1.3) : 0));  // gentle climbs cheap, beyond the grade very costly
+        const d = dl * STEP, along = (H[m] - H[k]) / d, r = Math.abs(along) / grade;
+        let c = d * (1 + 1.5 * r * r + (r > 1.0 ? 40 * (r - 1.0) : 0)); // gentle climbs cheap, beyond the grade very costly
+        // ground slope across the road: a road across a steep flank needs a deep cut above and a high fill below, so
+        // it looks for the spurs, cols and valleys, and turns back in switchbacks where the flank is gentler
+        const mi = ii, mj = jj;
+        const gx = (H[idx(Math.min(mi + 1, N - 1), mj)] - H[idx(Math.max(mi - 1, 0), mj)]) / (2 * STEP);
+        const gz = (H[idx(mi, Math.min(mj + 1, N - 1))] - H[idx(mi, Math.max(mj - 1, 0))]) / (2 * STEP);
+        const side = Math.sqrt(Math.max(0, gx * gx + gz * gz - along * along));
+        if (side > 0.3) c *= 1 + Math.min(1, 2.5 * (side - 0.3) * (side - 0.3)); // at most ×2: a pass between walls stays usable
         const wm = wetRiver(m);
         if (wm) c += wk ? d * 2 : 250;                                  // entering a river: one crossing ≈ 250 m of road
         else if (bank(m)) c *= 1.6;                                      // do not follow the river along its bank
@@ -632,8 +639,8 @@ const bedHalfOf = (Rd) => Math.max(S.ROAD_HALF[Rd.cls] + 1.5, STEP * 1.25);
     for (let q = 0; q < keep.length - 1; q++) {
       const raw = route(keep[q][0], keep[q][1], keep[q + 1][0], keep[q + 1][1], gradeOf(Rd));
       raw[0] = keep[q]; raw[raw.length - 1] = keep[q + 1];              // exact stops
-      let p = simplify(raw, 3);
-      p = chaikin(chaikin(p));
+      let p = simplify(raw, 4.5);                                        // no grid wiggles
+      p = chaikin(chaikin(chaikin(p)));
       p[0] = keep[q]; p[p.length - 1] = keep[q + 1];
       out.push(...(q ? p.slice(1) : p));
     }
