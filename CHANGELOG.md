@@ -1,5 +1,10 @@
 # Journal des versions — Brumeval Online
 
+## v0.3.0-a1 — correctif
+
+- Les touches **5 à 8** de la barre d'action et l'**attaque chargée** ne sont plus refusées par le serveur, et
+  « Confirmer » dans l'Arbre des Brumes accepte jusqu'à **64 nœuds** en une fois (un personnage de niveau 30 a 35 points).
+
 ## v0.3.0-a — L'Arbre des Brumes (interface du jeu)
 
 - **Écran de l'Arbre des Brumes** (touche **N**, bouton « Arbre » et menu principal) : les 318 nœuds en plein écran,
