@@ -533,6 +533,14 @@ const ROAD_INFO = [];
 const nearRiver = (x, z) => { let best = { d: 1e9, r: null }; for (const P of RIVER_PROFILES) { const Rv = S.RIVERS.find((r) => r.id === P.id); const n = polyNearest(Rv.pts.map((p) => [p[0], p[1]]), x, z); const lim = P.hw + 8; if (n.d < lim && n.d < best.d) best = { d: n.d, r: P, n }; } return best; };
 const inLake = (x, z) => { const i = Math.round((x - X0) / STEP), j = Math.round((z - Z0) / STEP); return LAKE_ID[idx(clamp(i, 0, N - 1), clamp(j, 0, N - 1))] >= 0; };
 
+// every road must take a cart: 8 % at most on the main roads, 12 % on the trails (the authored grades of some
+// mountain trails went up to 35 %); the router then climbs in switchbacks
+const CART_GRADE = { main: 0.08, trail: 0.12 };
+const gradeOf = (Rd) => Math.min(Rd.grade, CART_GRADE[Rd.cls] ?? 0.12);
+// the bed is flat across over at least 2.5 grid steps (a 2.5 m half-width is narrower than one 4.5 m cell), with
+// wide gentle banks on both sides
+const bedHalfOf = (Rd) => Math.max(S.ROAD_HALF[Rd.cls] + 1.5, STEP * 1.25);
+
 // ------------------------------------------------------------------ 11a. road routing (A* over the relief)
 // The authored polylines only fix where a road must go: towns, outposts, waypoints, dungeons and junctions. Between
 // two such stops the road follows the cheapest path on the terrain as it is before the roads: slope cost against
@@ -622,7 +630,7 @@ const inLake = (x, z) => { const i = Math.round((x - X0) / STEP), j = Math.round
     const keep = Rd.pts.filter((p, q) => isStop(p, q, last));
     const out = [];
     for (let q = 0; q < keep.length - 1; q++) {
-      const raw = route(keep[q][0], keep[q][1], keep[q + 1][0], keep[q + 1][1], Rd.grade);
+      const raw = route(keep[q][0], keep[q][1], keep[q + 1][0], keep[q + 1][1], gradeOf(Rd));
       raw[0] = keep[q]; raw[raw.length - 1] = keep[q + 1];              // exact stops
       let p = simplify(raw, 3);
       p = chaikin(chaikin(p));
@@ -641,7 +649,7 @@ const inLake = (x, z) => { const i = Math.round((x - X0) / STEP), j = Math.round
 }
 for (const Rd of S.ROADS) {
   if (Rd.carve === false) { ROAD_INFO.push({ id: Rd.id, carve: false }); continue; }
-  const half = S.ROAD_HALF[Rd.cls], shoulder = Rd.cls === 'main' ? 12 : 7;
+  const half = bedHalfOf(Rd), shoulder = Rd.cls === 'main' ? 16 : 12;
   const smp = resample(Rd.pts, 4);
   const bridge = smp.map(([x, z]) => nearRiver(x, z).d < 1e9);
   const wet = smp.map(([x, z]) => sampleH(x, z) < 0.3 || inLake(x, z));
@@ -654,7 +662,7 @@ for (const Rd of S.ROADS) {
   }
   // smooth (moving average 36 m) then limit the grade both ways
   const sm = prof.map((_, q) => { let s = 0, c = 0; for (let o = -4; o <= 4; o++) { const p = prof[clamp(q + o, 0, prof.length - 1)]; s += p; c++; } return s / c; });
-  const g = Rd.grade * 4;
+  const g = gradeOf(Rd) * 4;
   // two feasible grade-limited profiles (cut-biased and fill-biased); their mean is feasible too and balances cut & fill
   const limit = (arr, fwdFirst) => {
     const p = arr.slice();
